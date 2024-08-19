@@ -1,0 +1,22 @@
+# Java相关
+*.class
+*.jar
+*.war
+*.ear
+*.iml
+
+# IDE相关
+.idea/
+*.log
+*.project
+*.classpath
+*.settings/
+*.vscode/
+
+# 操作系统相关
+.DS_Store
+Thumbs.db
+
+# 构建输出目录
+/target/
+/out/
