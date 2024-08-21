@@ -15,7 +15,6 @@ public class User {
     private String role; // 角色 (ST, TC, AD)
 
     // Getters and setters
-
     public String getId() {
         return id;
     }
