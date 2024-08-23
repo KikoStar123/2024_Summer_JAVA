@@ -1,6 +1,7 @@
 package server.handler;
 
 import server.service.UserService;
+import server.service.StudentInformationService;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -35,6 +36,13 @@ public class ClientHandler implements Runnable {
                 } else {
                     jsonResponse.put("status", "fail").put("message", "Invalid credentials");
                 }
+                response = jsonResponse.toString();
+            } else if ("getAllStudentInformation".equals(requestType)) {
+                StudentInformationService studentService = new StudentInformationService();
+                JSONObject studentInfo = studentService.getAllStudentInformation();
+
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("status", "success").put("data", studentInfo);
                 response = jsonResponse.toString();
             } else {
                 response = new JSONObject().put("status", "error").put("message", "Unknown request").toString();
