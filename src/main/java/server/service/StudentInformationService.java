@@ -21,7 +21,7 @@ public class StudentInformationService {
                 JSONObject student = new JSONObject();
                 student.put("id", rs.getInt("id"));
                 student.put("name", rs.getString("name"));
-                student.put("gender", rs.getInt("age"));
+                student.put("gender", rs.getInt("gender"));
                 student.put("origin", rs.getString("origin"));
                 student.put("birthday", rs.getString("birthday"));
                 student.put("academy", rs.getString("academy"));
