@@ -2,11 +2,16 @@ package client.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.json.JSONObject;
 
+import java.io.*;
+import java.net.Socket;
 public class Library {
     private List<Book> books = new ArrayList<>();
     private List<User> users = new ArrayList<>();
 
+    private static final String SERVER_ADDRESS = "localhost"; // 服务器地址
+    private static final int SERVER_PORT = 8080; // 服务器端口号
     public boolean borrowBook(String userId, String bookId) {
         // 查找用户和书籍
         User user = findUserById(userId);

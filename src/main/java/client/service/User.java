@@ -1,10 +1,9 @@
 package client.service;
 
 public class User {
-
     private String id;//用户登录名
     private String username;//用户姓名
-    private String role;//用户角色：老师/学生/管理员
+    private Role role;//用户角色：老师/学生/管理员
     private String pwd;//password
     private int age;
 
@@ -12,7 +11,7 @@ public class User {
         return id;
     }
     // 构造函数（可选，根据需要实现）
-    public User(String id, String username, String role, String pwd, int age) {
+    public User(String id, String username, Role role, String pwd, int age) {
         this.id = id;
         this.username = username;
         this.role = role;
@@ -38,12 +37,12 @@ public class User {
     }
 
     // 获取用户角色
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
     // 设置用户角色
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
