@@ -1,0 +1,59 @@
+package client.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Library {
+    private List<Book> books = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
+
+    public boolean borrowBook(String userId, String bookId) {
+        // 查找用户和书籍
+        User user = findUserById(userId);
+        Book book = findBookById(bookId);
+
+        if (user != null && book != null && book.isAvailable()) {
+            book.setAvailable(false); // 标记为已借出
+            return true; // 借阅成功
+        }
+        return false; // 借阅失败
+    }
+
+    public boolean returnBook(String userId, String bookId) {
+        Book book = findBookById(bookId);
+        if (book != null) {
+            book.setAvailable(true); // 标记为可借
+            return true; // 还书成功
+        }
+        return false; // 还书失败
+    }
+
+    public List<Book> searchBooks(String query) {
+        List<Book> result = new ArrayList<>();
+        for (Book book : books) {
+            if (book.getTitle().contains(query) || book.getAuthor().contains(query)) {
+                result.add(book);
+            }
+        }
+        return result; // 返回符合条件的书籍列表
+    }
+
+    private User findUserById(String userId) {
+        // 查找用户的逻辑
+        // 使用Java 8的流式编程查找用户
+        return users.stream()
+                .filter(user -> userId.equals(user.getId()))
+                .findFirst()
+                .orElse(null); // 如果没有找到，返回null
+    }
+
+    private Book findBookById(String bookId) {
+        // 查找书籍的逻辑
+        // 使用Java 8的流式编程查找书籍
+        return books.stream()
+                .filter(book -> bookId.equals(book.getId()))
+                .findFirst()
+                .orElse(null); // 如果没有找到，返回null
+    }
+
+}
