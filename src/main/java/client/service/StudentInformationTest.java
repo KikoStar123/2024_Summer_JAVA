@@ -16,7 +16,7 @@ public class StudentInformationTest {
         // 测试查看所有学生信息与修改学生信息
         System.out.println("\nTesting modifyStudentInfo method:");
         JSONObject newStudentInfo = new JSONObject();
-        newStudentInfo.put("id", 1);
+        newStudentInfo.put("id", "1");
         newStudentInfo.put("name", "Jane Doe");
         newStudentInfo.put("gender", "Female");
         newStudentInfo.put("origin", "California");
