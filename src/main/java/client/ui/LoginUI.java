@@ -1,6 +1,8 @@
 package client.ui;
 
 import client.service.ClientService;
+import client.ui.MainUI;
+import client.ui.RegisterUI;
 import javax.swing.*;
 
 public class LoginUI {
@@ -12,7 +14,7 @@ public class LoginUI {
         frame = new JFrame("Login");
         frame.setSize(300, 150);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        frame.setLocationRelativeTo(null);
         JPanel panel = new JPanel();
         frame.add(panel);
         placeComponents(panel);
@@ -39,11 +41,16 @@ public class LoginUI {
         passwordField.setBounds(100, 50, 165, 25);
         panel.add(passwordField);
 
-        JButton loginButton = new JButton("Login");
+        JButton loginButton = new JButton("登录");
         loginButton.setBounds(10, 80, 80, 25);
         panel.add(loginButton);
 
+        JButton RegisterButton = new JButton("注册");
+        RegisterButton.setBounds(100, 80, 80, 25);
+        panel.add(RegisterButton);
+
         loginButton.addActionListener(e -> handleLogin());
+        RegisterButton.addActionListener(e -> handleRegister());
     }
 
     private void handleLogin() {
@@ -55,8 +62,30 @@ public class LoginUI {
 
         if (success) {
             JOptionPane.showMessageDialog(frame, "Login successful!");
+
         } else {
             JOptionPane.showMessageDialog(frame, "Login failed. Please try again.");
+            MainUI mainUI = new MainUI();
+            mainUI.display(username,password);
         }
+    }
+    private void handleRegister(){
+        RegisterUI regUI=new RegisterUI();
+        regUI.display();
+    }
+    private void showMainUI() {
+        JFrame mainFrame = new JFrame("主界面");
+        mainFrame.setSize(400, 300);
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JPanel mainPanel = new JPanel();
+        mainFrame.add(mainPanel);
+
+        JLabel welcomeLabel = new JLabel("欢迎来到主界面！");
+        welcomeLabel.setBounds(10, 20, 200, 25);
+        mainPanel.add(welcomeLabel);
+
+        mainFrame.setVisible(true);
+        frame.dispose(); // 关闭登录窗口
     }
 }
