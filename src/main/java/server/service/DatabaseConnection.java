@@ -1,24 +1,28 @@
 package server.service;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
-//拿postgreSQL先测试一下功能
 public class DatabaseConnection {
-    private final String url = "jdbc:postgresql://localhost:5432/testStudentInfo";
-    private final String user = "postgres";
-    private final String password = "123456";
+    private static HikariDataSource dataSource;
+
+    static {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:h2:file:./testdb");
+        config.setUsername("sa");
+        config.setPassword("");
+        dataSource = new HikariDataSource(config);
+    }
 
     public Connection connect() {
-        Connection conn = null;
         try {
-            conn = DriverManager.getConnection(url, user, password);
-            System.out.println("Connected to the PostgreSQL server successfully.");
+            return dataSource.getConnection();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
+            return null;
         }
-
-        return conn;
     }
 }
