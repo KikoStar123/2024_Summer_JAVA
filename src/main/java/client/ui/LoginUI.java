@@ -65,27 +65,14 @@ public class LoginUI {
 
         } else {
             JOptionPane.showMessageDialog(frame, "Login failed. Please try again.");
-            MainUI mainUI = new MainUI();
-            mainUI.display(username,password);
+            MainUI mainUI = new MainUI(username,password);
+            mainUI.display();
+            frame.dispose();
         }
     }
     private void handleRegister(){
         RegisterUI regUI=new RegisterUI();
         regUI.display();
     }
-    private void showMainUI() {
-        JFrame mainFrame = new JFrame("主界面");
-        mainFrame.setSize(400, 300);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        JPanel mainPanel = new JPanel();
-        mainFrame.add(mainPanel);
-
-        JLabel welcomeLabel = new JLabel("欢迎来到主界面！");
-        welcomeLabel.setBounds(10, 20, 200, 25);
-        mainPanel.add(welcomeLabel);
-
-        mainFrame.setVisible(true);
-        frame.dispose(); // 关闭登录窗口
-    }
 }

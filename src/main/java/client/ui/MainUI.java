@@ -1,11 +1,20 @@
 package client.ui;
 
 import javax.swing.*;
+import client.ui.LibraryUI;
+import client.ui.StuUI;
 
 public class MainUI {
     private JFrame mainFrame;
+    private String username;
+    private String password;
 
-    public void display(String username, String password) {
+    public MainUI(String username,String password){
+        this.username=username;
+        this.password=password;
+    }
+
+    public void display() {
         mainFrame = new JFrame("主界面");
         mainFrame.setSize(500, 500);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -20,17 +29,21 @@ public class MainUI {
         mainPanel.add(welcomeLabel);
 
         // 添加按钮
-        JButton button1 = new JButton("图书馆");
-        button1.setBounds(10, 60, 100, 25);
-        mainPanel.add(button1);
+        JButton libButton = new JButton("图书馆");
+        libButton.setBounds(10, 60, 100, 25);
+        mainPanel.add(libButton);
+
+        libButton.addActionListener(e -> handleLibrary());
 
         JButton button2 = new JButton("选课系统");
         button2.setBounds(120, 60, 100, 25);
         mainPanel.add(button2);
 
-        JButton button3 = new JButton("学籍管理");
-        button3.setBounds(10, 100, 100, 25);
-        mainPanel.add(button3);
+        JButton stubutton = new JButton("学籍管理");
+        stubutton.setBounds(10, 100, 100, 25);
+        mainPanel.add(stubutton);
+
+        stubutton.addActionListener(e -> handleStudent(username));
 
         JButton button4 = new JButton("银行");
         button4.setBounds(120, 100, 100, 25);
@@ -60,4 +73,24 @@ public class MainUI {
         mainFrame.setVisible(true);
     }
 
+    private void handleLibrary(){
+        LibraryUI libUI=new LibraryUI(username,password);
+        libUI.display();
+        mainFrame.dispose();
+    }
+
+    private void handleStudent(String username){
+
+        char identity = username.charAt(0);
+        int identityValue = Character.getNumericValue(identity);
+
+        if (identityValue == 0) {
+            StuUI stuUI = new StuUI(username,password);
+            stuUI.displaystu();
+        } else if (identityValue == 1) {
+            StuUI teaUI = new StuUI(username,password);
+            teaUI.displaytea();
+        }
+        mainFrame.dispose();
+    }
 }
