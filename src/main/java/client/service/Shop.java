@@ -79,7 +79,7 @@ public class Shop {
         parameters.put("cartId", cartId);
         return sendRequestReceiveResponse("createOrder", parameters);
     }
-
+    //获取用户订单
     public String getOrderHistory() {
         return sendRequestReceiveResponse("getOrderHistory", new JSONObject());
     }

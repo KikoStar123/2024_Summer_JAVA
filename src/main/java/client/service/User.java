@@ -6,17 +6,19 @@ public class User {
     private Role role;//用户角色：老师/学生/管理员
     private String pwd;//password
     private int age;
+    private Gender gender;
 
     public String getId() {
         return id;
     }
     // 构造函数（可选，根据需要实现）
-    public User(String id, String username, Role role, String pwd, int age) {
+    public User(String id, String username, Role role, String pwd, int age,Gender gender) {
         this.id = id;
         this.username = username;
         this.role = role;
         this.pwd = pwd;
         this.age = age;
+        this.gender = gender;
     }
 
     // Getter 和 Setter 方法
@@ -46,6 +48,15 @@ public class User {
         this.role = role;
     }
 
+    // 获取用户角色
+    public Gender getgender() {
+        return gender;
+    }
+
+    // 设置用户角色
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
     // 获取密码
     public String getPwd() {
         return pwd;

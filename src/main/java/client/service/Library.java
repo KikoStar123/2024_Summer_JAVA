@@ -32,16 +32,16 @@ public class Library {
         }
         return false; // 还书失败
     }
-
-    public List<Book> searchBooks(String query) {
-        List<Book> result = new ArrayList<>();
-        for (Book book : books) {
-            if (book.getTitle().contains(query) || book.getAuthor().contains(query)) {
-                result.add(book);
+//按照查询字符串来执行
+        public List<Book> searchBooks(String query) {
+            List<Book> result = new ArrayList<>();
+            for (Book book : books) {
+                if (book.getTitle().contains(query) || book.getAuthor().contains(query)||book.getId().equals(query)) {
+                    result.add(book);//前两种是包含，后两种是判断相等。
+                }
             }
+            return result; // 返回符合条件的书籍列表
         }
-        return result; // 返回符合条件的书籍列表
-    }
 
     private User findUserById(String userId) {
         // 查找用户的逻辑
@@ -51,7 +51,8 @@ public class Library {
                 .findFirst()
                 .orElse(null); // 如果没有找到，返回null
     }
-
+//按照书的id来执行，适合查找一本书的情况
+//辅助完成上述方法
     private Book findBookById(String bookId) {
         // 查找书籍的逻辑
         // 使用Java 8的流式编程查找书籍
