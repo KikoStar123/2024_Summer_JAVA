@@ -58,13 +58,19 @@ public class StudentInformation {
             // 读取响应
             // 从 JSON 对象中获取特定属性的值
             JSONObject studentData = jsonResponse.getJSONObject("data");
-            String name = jsonResponse.getString("name");
-            //int id = jsonResponse.getInt("id");
-            String gender = jsonResponse.getString("gender");
-            String origin = jsonResponse.getString("origin");
-            String birthday = jsonResponse.getString("birthday");
-            String academy = jsonResponse.getString("academy");
+            String name = studentData.getString("name");
+            // String id = studentData.getString("id");
+            String gender = studentData.getString("gender");
+            String origin = studentData.getString("origin");
+            String birthday = studentData.getString("birthday");
+            String academy = studentData.getString("academy");
 
+            System.out.println("Name: " + name);
+            System.out.println("ID: " + id);
+            System.out.println("Gender: " + gender);
+            System.out.println("Origin: " + origin);
+            System.out.println("Birthday: " + birthday);
+            System.out.println("Academy: " + academy);
             // 对获取的数据进行处理
             // 展示... 不需要请求
             //System.out.println("Name: " + name);
@@ -97,7 +103,7 @@ public class StudentInformation {
     public boolean modifyStudentInfo(Role role, String id) {
         //确认是教师或管理员身份
         try {
-            if (role != Role.teacher || role != Role.manager) {
+            if (role != Role.teacher && role != Role.manager) {
                 throw new Exception("The role should be a teacher or a manager.");
             }
         } catch (Exception e) {
@@ -113,6 +119,9 @@ public class StudentInformation {
             //构建请求JSON
             JSONObject request = new JSONObject();//创建了一个新的 JSON对象request，用于存储整个请求的内容
             request.put("requestType", "checkStudentInfo");//查看所有学生信息
+
+            JSONObject parameters = new JSONObject();
+            request.put("parameters", parameters);
 
             // 发送请求
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
@@ -135,6 +144,8 @@ public class StudentInformation {
             int index = 0;
             for (String key : data.keySet()) {
                 JSONObject student = data.getJSONObject(key);
+
+                studentArray[index] = new oneStudentInformation();
 
                 studentArray[index].name = student.getString("name");
                 studentArray[index].id = student.getString("id");
