@@ -1,10 +1,9 @@
 package server.service;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.sql.SQLException;
 
 public class StudentInformationService {
@@ -13,10 +12,15 @@ public class StudentInformationService {
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
 
+        if (conn == null) {
+            System.out.println("Failed to connect to the database.");
+            return studentInfo;
+        }
+
         try {
-            Statement stmt = conn.createStatement();
             String query = "SELECT * FROM studentInfo";
-            ResultSet rs = stmt.executeQuery(query);
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
 
             int index = 1;
             while (rs.next()) {
@@ -51,10 +55,16 @@ public class StudentInformationService {
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
 
+        if (conn == null) {
+            System.out.println("Failed to connect to the database.");
+            return student;
+        }
+
         try {
-            Statement stmt = conn.createStatement();
-            String query = "SELECT * FROM studentInfo WHERE id = " + id;
-            ResultSet rs = stmt.executeQuery(query);
+            String query = "SELECT * FROM studentInfo WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, id);
+            ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
                 student.put("id", rs.getString("id"));
@@ -83,17 +93,22 @@ public class StudentInformationService {
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
 
+        if (conn == null) {
+            System.out.println("Failed to connect to the database.");
+            return false;
+        }
+
         try {
-            Statement stmt = conn.createStatement();
+            String query = "UPDATE studentInfo SET name = ?, gender = ?, origin = ?, birthday = ?, academy = ? WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
             JSONObject studentData = studentInfo.getJSONObject("data");
-            String query = "UPDATE studentInfo SET " +
-                    "name = '" + studentData.getString("name") + "', " +
-                    "gender = '" + studentData.getString("gender") + "', " +
-                    "origin = '" + studentData.getString("origin") + "', " +
-                    "birthday = '" + studentData.getString("birthday") + "', " +
-                    "academy = '" + studentData.getString("academy") + "' " +
-                    "WHERE id = " + studentData.getString("id");
-            int rowsAffected = stmt.executeUpdate(query);
+            pstmt.setString(1, studentData.getString("name"));
+            pstmt.setString(2, studentData.getString("gender"));
+            pstmt.setString(3, studentData.getString("origin"));
+            pstmt.setString(4, studentData.getString("birthday"));
+            pstmt.setString(5, studentData.getString("academy"));
+            pstmt.setString(6, studentData.getString("id"));
+            int rowsAffected = pstmt.executeUpdate();
 
             return rowsAffected > 0;
         } catch (Exception e) {
@@ -109,5 +124,4 @@ public class StudentInformationService {
             }
         }
     }
-
 }
