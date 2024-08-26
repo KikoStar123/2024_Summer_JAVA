@@ -1,13 +1,11 @@
 package server.handler;
 
-import server.service.UserService;
-import server.service.StudentInformationService;
 import org.json.JSONObject;
-import org.json.JSONArray;
 import org.json.JSONException;
-
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;
@@ -33,51 +31,27 @@ public class ClientHandler implements Runnable {
             String requestType = jsonRequest.getString("requestType");
             JSONObject parameters = jsonRequest.getJSONObject("parameters");
 
-            String response;
-            if ("login".equals(requestType)) {
-                UserService userService = new UserService();
-                boolean success = userService.login(parameters.getString("username"), parameters.getString("password"));
+            // 获取路由映射表
+            Map<String, RequestHandler> routeMap = initializeRoutes();
 
-                JSONObject jsonResponse = new JSONObject();
-                if (success) {
-                    jsonResponse.put("status", "success").put("message", "Login successful");
-                } else {
-                    jsonResponse.put("status", "fail").put("message", "Invalid credentials");
-                }
-                response = jsonResponse.toString();
-            } else if ("checkStudentInfo".equals(requestType)) {
-                StudentInformationService studentService = new StudentInformationService();
-                JSONObject studentInfo = studentService.checkStudentInfo();
+            // 获取对应的处理器
+            RequestHandler handler = routeMap.getOrDefault(requestType, new UnknownRequestHandler());
 
-                JSONObject jsonResponse = new JSONObject();
-                jsonResponse.put("status", "success").put("data", studentInfo);
-                response = jsonResponse.toString();
-            } else if ("viewStudentInfo".equals(requestType)) {
-                StudentInformationService studentService = new StudentInformationService();
-                JSONObject studentInfo = studentService.viewStudentInfo(parameters.getString("id"));
-
-                JSONObject jsonResponse = new JSONObject();
-                jsonResponse.put("status", "success").put("data", studentInfo);
-                response = jsonResponse.toString();
-            } else if ("modifyStudentInfo".equals(requestType)) {
-                StudentInformationService studentService = new StudentInformationService();
-                boolean success = studentService.modifyStudentInfo(parameters);
-
-                JSONObject jsonResponse = new JSONObject();
-                if (success) {
-                    jsonResponse.put("status", "success").put("message", "Student information updated successfully");
-                } else {
-                    jsonResponse.put("status", "fail").put("message", "Failed to update student information");
-                }
-                response = jsonResponse.toString();
-            } else {
-                response = new JSONObject().put("status", "error").put("message", "Unknown request").toString();
-            }
-
+            // 执行处理器逻辑
+            String response = handler.handle(parameters);
             out.println(response);
 
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private Map<String, RequestHandler> initializeRoutes() {
+        Map<String, RequestHandler> routeMap = new HashMap<>();
+        routeMap.put("login", new LoginRequestHandler());
+        routeMap.put("checkStudentInfo", new CheckStudentInfoRequestHandler());
+        routeMap.put("viewStudentInfo", new ViewStudentInfoRequestHandler());
+        routeMap.put("modifyStudentInfo", new ModifyStudentInfoRequestHandler());
+        return routeMap;
     }
 }
