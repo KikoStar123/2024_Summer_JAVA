@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class StudentInformation {
     private final String SERVER_ADDRESS = "localhost";//服务器的地址 即本地服务器
@@ -16,13 +19,14 @@ public class StudentInformation {
 
     /**
      * 查看学生信息
+     *
      * @param id 学生的ID
      * @return 学生信息的JSONObject，如果出错则返回null
      */
     public boolean viewStudentInfo(Role role, String id) {
         //确认是学生身份
         try {
-            if(role != Role.student) {
+            if (role != Role.student) {
                 throw new Exception("The role should be a student.");
             }
         } catch (Exception e) {
@@ -56,9 +60,10 @@ public class StudentInformation {
 
             // 读取响应
             // 从 JSON 对象中获取特定属性的值
+            JSONObject studentData = jsonResponse.getJSONObject("data");
             String name = jsonResponse.getString("name");
             //int id = jsonResponse.getInt("id");
-            int gender = jsonResponse.getInt("gender");
+            String gender = jsonResponse.getString("gender");
             String origin = jsonResponse.getString("origin");
             String birthday = jsonResponse.getString("birthday");
             String academy = jsonResponse.getString("academy");
@@ -78,8 +83,8 @@ public class StudentInformation {
     //内部类，表示单个学生学籍
     class oneStudentInformation {
         String name;
-        int id;
-        int gender;
+        String id;
+        String gender;
         String origin;
         String birthday;
         String academy;
@@ -89,12 +94,13 @@ public class StudentInformation {
      * 修改学生信息
      * //@param studentId 学生的ID
      * //@param newInfo 要更新的新信息的JSONObject
+     *
      * @return 如果更新成功返回true，否则返回false
      */
     public boolean modifyStudentInfo(Role role, String id) {
         //确认是教师或管理员身份
         try {
-            if(role != Role.teacher||role != Role.manager) {
+            if (role != Role.teacher || role != Role.manager) {
                 throw new Exception("The role should be a teacher or a manager.");
             }
         } catch (Exception e) {
@@ -120,59 +126,65 @@ public class StudentInformation {
             String response = in.readLine();//从输入流中读取一行数据，并将其存储在字符串response中（假设按行发送）
             JSONObject jsonResponse = new JSONObject(response);//将字符串response解析为一个JSON对象jsonResponse
 
-            JSONArray pre_studentsArray = jsonResponse.getJSONArray("students");//转化为数组形式
+            JSONObject data = jsonResponse.getJSONObject("data");//取名为 "data" 的子对象
 
             // 获取学生数量
-            int numStudents = pre_studentsArray.length();
+            int numStudents = data.length();
 
             // 创建一个数组来存储学生信息
             oneStudentInformation[] studentArray = new oneStudentInformation[numStudents];
 
             // 遍历学生信息
-            for (int i = 0; i < numStudents; i++) {
-                JSONObject student = pre_studentsArray.getJSONObject(i);
+            int index = 0;
+            for (String key : data.keySet()) {
+                JSONObject student = data.getJSONObject(key);
 
-                studentArray[i].name=student.getString("name");
-                studentArray[i].id=student.getInt("id");
-                studentArray[i].gender=student.getInt("gender");
-                studentArray[i].origin=student.getString("origin");
-                studentArray[i].birthday=student.getString("birthday");
-                studentArray[i].academy=student.getString("academy");
+                studentArray[index].name = student.name;
+                studentArray[index].id = student.getString("id");
+                studentArray[index].gender = student.getString("gender");
+                studentArray[index].origin = student.getString("origin");
+                studentArray[index].birthday = student.getString("birthday");
+                studentArray[index].academy = student.getString("academy");
 
                 // 对每个学生信息进行处理
+                // 打印学生信息
+                System.out.println("Name: " + studentArray[index].name);
+                System.out.println("ID: " + studentArray[index].id);
+                System.out.println("Gender: " + studentArray[index].gender);
+                System.out.println("Origin: " + studentArray[index].origin);
+                System.out.println("Birthday: " + studentArray[index].birthday);
+                System.out.println("Academy: " + studentArray[index].academy);
 
-
+                index++;
             }
+
+
             // 对每个学生信息进行处理
 
             // 点击修改
 
             // 将修改传回数据库
-            // 创建一个空的 JSON 数组，用于存储学生信息
-            JSONArray post_studentsArray = new JSONArray();
-            // 遍历学生信息数组，将每个学生信息转换为 JSON 对象并添加到 JSON 数组中
-            for (oneStudentInformation student : studentArray) {
-                JSONObject studentObject = new JSONObject();
-                studentObject.put("name", student.name);
-                studentObject.put("id", student.id);
-                studentObject.put("gender", student.gender);
-                studentObject.put("origin", student.origin);
-                studentObject.put("birthday", student.birthday);
-                studentObject.put("academy", student.academy);
-                post_studentsArray.put(studentObject);
-            }
-            // 将 JSON 数组转换为字符串
-            String jsonOutput = post_studentsArray.toString();
+            index = 0;//发生修改的
+            // 创建一个空的 JSON 对象
+            JSONObject studentObject = new JSONObject();
+            studentObject.put("name", studentArray[index].name);
+            studentObject.put("id", studentArray[index].id);
+            studentObject.put("gender", studentArray[index].gender);
+            studentObject.put("origin", studentArray[index].origin);
+            studentObject.put("birthday", studentArray[index].birthday);
+            studentObject.put("academy", studentArray[index].academy);
+
+            JSONObject modifiyData = new JSONObject();
+            modifiyData.put("data", studentObject);
 
             //构建请求JSON
             request = new JSONObject();//创建了一个新的 JSON对象request，用于存储整个请求的内容
             request.put("requestType", "modifyStudentInfo");//修改所有学生信息
-            request.put("parameters", jsonOutput);//查看所有学生信息
+            request.put("parameters", modifiyData);//查看所有学生信息
 
             // 发送请求
             out = new PrintWriter(socket.getOutputStream(), true);//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
             out.println(request.toString());//将请求request转换为字符串形式，并使用println方法将其写入输出流中，发送到服务器端
-
 
             return jsonResponse.getString("status").equals("success");
         } catch (IOException e) {
@@ -180,3 +192,4 @@ public class StudentInformation {
             return false;
         }
     }
+}
