@@ -14,10 +14,10 @@ public class UserServiceImpl implements IUserService {
     private UserRepository userRepository;
 
     @Override
-    public User login(User user) {
-        Optional<User> foundUser = userRepository.findById(user.getId());
-        if (foundUser.isPresent() && foundUser.get().getPwd().equals(user.getPwd())) {
-            return foundUser.get(); // 返回已找到的用户
+    public User login(String id, String pwd) {
+        Optional<User> foundUser = userRepository.findById(id);
+        if (foundUser.isPresent() && foundUser.get().getPwd().equals(pwd)) {
+            return foundUser.get(); // 返回找到的用户
         }
         return null; // 如果未找到用户或密码不匹配，返回null
     }
@@ -25,18 +25,18 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User register(User user) {
         if (userRepository.existsById(user.getId())) {
-            return null; // 如果用户已存在，返回null
+            return null; // 用户已存在
         }
         return userRepository.save(user); // 保存新用户
     }
 
     @Override
-    public User logout(User user) {
-        Optional<User> foundUser = userRepository.findById(user.getId());
+    public User logout(String id) {
+        Optional<User> foundUser = userRepository.findById(id);
         if (foundUser.isPresent()) {
-            User existingUser = foundUser.get();
-            existingUser.setStatus("Off");
-            return userRepository.save(existingUser);
+            User user = foundUser.get();
+            user.setStatus("Off");
+            return userRepository.save(user); // 更新用户状态为 Off
         }
         return null;
     }

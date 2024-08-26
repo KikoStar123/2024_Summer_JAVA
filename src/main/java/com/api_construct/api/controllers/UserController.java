@@ -16,7 +16,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<User> login(@RequestBody User user) {
-        User loggedInUser = userService.login(user);
+        User loggedInUser = userService.login(user.getId(), user.getPwd());
         if (loggedInUser != null) {
             return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
         } else {
@@ -36,7 +36,7 @@ public class UserController {
 
     @PostMapping("/logout")
     public ResponseEntity<User> logout(@RequestBody User user) {
-        User loggedOutUser = userService.logout(user);
+        User loggedOutUser = userService.logout(user.getId());
         if (loggedOutUser != null) {
             return new ResponseEntity<>(loggedOutUser, HttpStatus.OK);
         } else {

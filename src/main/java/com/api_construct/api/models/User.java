@@ -8,13 +8,13 @@ import javax.persistence.Table;
 @Table(name = "users")
 public class User {
     @Id
-    private String id; // 登录名
-    private String pwd; // 密码
-    private Integer age; // 年龄
+    private String id; // 用户登录名
+    private String pwd; // 用户密码
+    private Integer age; // 用户年龄
     private String status; // 在校状态 (On/Off)
     private String role; // 角色 (ST, TC, AD)
 
-    // Getters and setters
+    // Getters and Setters
     public String getId() {
         return id;
     }
