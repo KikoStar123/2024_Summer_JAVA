@@ -1,6 +1,5 @@
 package client.service;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -8,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class StudentInformation {
@@ -139,7 +136,7 @@ public class StudentInformation {
             for (String key : data.keySet()) {
                 JSONObject student = data.getJSONObject(key);
 
-                studentArray[index].name = student.name;
+                studentArray[index].name = student.getString("name");
                 studentArray[index].id = student.getString("id");
                 studentArray[index].gender = student.getString("gender");
                 studentArray[index].origin = student.getString("origin");
