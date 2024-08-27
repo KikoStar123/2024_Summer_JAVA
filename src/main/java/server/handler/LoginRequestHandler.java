@@ -4,6 +4,7 @@ import server.service.UserService;
 import org.json.JSONObject;
 
 public class LoginRequestHandler implements RequestHandler {
+
     @Override
     public String handle(JSONObject parameters) {
         UserService userService = new UserService();
