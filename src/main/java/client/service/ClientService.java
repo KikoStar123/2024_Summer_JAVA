@@ -21,6 +21,11 @@ public class ClientService {
 
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response = in.readLine();
+            if (response == null || response.isEmpty()) {
+                System.err.println("Received null or empty response from server.");
+                return false;
+            }
+
             JSONObject jsonResponse = new JSONObject(response);
 
             return jsonResponse.getString("status").equals("success");
