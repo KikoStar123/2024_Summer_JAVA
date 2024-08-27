@@ -8,6 +8,14 @@ public class User {
     private int age;
     private Gender gender;
 
+    public User(String userName, Role role, int age, Gender gender,String pwd) {
+        this.username = userName;
+        this.role = role;
+        this.age = age;
+        this.gender = gender;
+        this.pwd = pwd;
+    }
+
     public String getId() {
         return id;
     }

@@ -28,7 +28,42 @@ public class ClientService {
             e.printStackTrace();
             return false;
         }
+
     }
+    //再写一个返回用户信息的方法
+    public User login_return(String username, String password) {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "login");
+            request.put("parameters", new JSONObject()
+                    .put("username", username)
+                    .put("password", password));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            if (jsonResponse.getString("status").equals("success")) {
+                // 假设服务器返回一个User对象的JSON表示
+                JSONObject userJson = jsonResponse.getJSONObject("user"); // 获取用户信息
+                String userName = userJson.getString("username");
+             //   String userEmail = userJson.getString("email"); // 示例属性
+               // String userName = userJson.getString("username");
+                Gender gender = Gender.valueOf(userJson.getString("gender").toLowerCase()); // 性别
+                Role role = Role.valueOf(userJson.getString("role").toLowerCase()); // 角色
+                int age = userJson.getInt("age"); // 年龄
+                // 假设User类有一个构造函数接受用户名和电子邮件
+                return new User(userName,role, age, gender,password); // 返回User对象
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null; // 登录失败，返回null
+    }
+
     public boolean logout(String username, String password) {//登出请求
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
@@ -50,14 +85,21 @@ public class ClientService {
             return false;
         }
     }
-    public boolean register(String username, String password) {//定义注册功能
+    //第一个返回学籍信息
+    //第二个要返回用户信息
+    public boolean register(String username,Gender gender,String origin,String birthday,String academy) {//定义注册功能
+        //六个
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             // 创建请求
             JSONObject request = new JSONObject();
             request.put("requestType", "register");//main difference
             request.put("parameters", new JSONObject()
                     .put("username", username)
-                    .put("password", password));
+                    .put("gender",gender)
+                    .put("birthday", birthday)
+                    .put("academy", academy)
+                    .put("origin", origin)
+            );
 
             // 发送请求
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -74,6 +116,38 @@ public class ClientService {
             e.printStackTrace();
             return false;
         }
+    }
+    public User register_user(String username, String password) {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "login");
+            request.put("parameters", new JSONObject()
+                    .put("username", username)
+                    .put("password", password));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            if (jsonResponse.getString("status").equals("success")) {
+                // 假设服务器返回一个User对象的JSON表示
+                JSONObject userJson = jsonResponse.getJSONObject("user"); // 获取用户信息
+                String userName = userJson.getString("username");
+                //   String userEmail = userJson.getString("email"); // 示例属性
+                // String userName = userJson.getString("username");
+                Gender gender = Gender.valueOf(userJson.getString("gender").toLowerCase()); // 性别
+                Role role = Role.valueOf(userJson.getString("role").toLowerCase()); // 角色
+                int age = userJson.getInt("age"); // 年龄
+                // 假设User类有一个构造函数接受用户名和电子邮件
+                return new User(userName,role, age, gender,password); // 返回User对象
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null; // 登录失败，返回null
     }
     public boolean register_out(String username, String password) {//定义注销功能
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
