@@ -35,7 +35,6 @@ public class CourseService {
                 System.out.println("Course added successfully.");
             }
         } catch (SQLException e) {
-            System.err.println("SQL Exception: " + e.getMessage());
             e.printStackTrace();
         } finally {
             try {
@@ -43,7 +42,7 @@ public class CourseService {
                     conn.close();
                 }
             } catch (SQLException ex) {
-                System.out.println("Error closing connection: " + ex.getMessage());
+                System.out.println(ex.getMessage());
             }
         }
 
@@ -51,14 +50,15 @@ public class CourseService {
     }
 
     // 选课
-    public boolean enrollInCourse(String username, String courseID) {
-        boolean isEnrolled = false;
+    public JSONObject enrollInCourse(String username, String courseID) {
+        JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
 
         if (conn == null) {
-            System.out.println("Failed to connect to the database.");
-            return isEnrolled;
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
         }
 
         try {
@@ -72,12 +72,14 @@ public class CourseService {
                         int selectedCount = rs.getInt("selectedCount");
                         int courseCapacity = rs.getInt("courseCapacity");
                         if (selectedCount >= courseCapacity) {
-                            System.out.println("Course is full. SelectedCount: " + selectedCount + ", Capacity: " + courseCapacity);
-                            return isEnrolled;
+                            response.put("status", "error");
+                            response.put("message", "Course is full.");
+                            return response;
                         }
                     } else {
-                        System.out.println("Course not found.");
-                        return isEnrolled;
+                        response.put("status", "error");
+                        response.put("message", "Course not found.");
+                        return response;
                     }
                 }
             }
@@ -94,14 +96,16 @@ public class CourseService {
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
-                    isEnrolled = true;
-                    System.out.println("Student enrolled in course successfully.");
+                    response.put("status", "success");
+                    response.put("message", "Student enrolled in course successfully.");
                 } else {
-                    System.out.println("Failed to enroll student in course.");
+                    response.put("status", "error");
+                    response.put("message", "Failed to enroll student in course.");
+                    return response;
                 }
             }
 
-            if (isEnrolled) {
+            if (response.getString("status").equals("success")) {
                 // 更新课程的已选人数
                 String updateCountQuery = "UPDATE tblCourse SET selectedCount = selectedCount + 1 WHERE courseID = ?";
                 try (PreparedStatement preparedStatement = conn.prepareStatement(updateCountQuery)) {
@@ -114,37 +118,38 @@ public class CourseService {
             conn.commit();
             System.out.println("Transaction committed successfully.");
         } catch (SQLException e) {
-            System.err.println("SQL Exception during enrollment: " + e.getMessage());
             e.printStackTrace();
             try {
                 conn.rollback();  // 如果有错误则回滚
                 System.out.println("Transaction rolled back.");
             } catch (SQLException ex) {
-                System.err.println("SQL Exception during rollback: " + ex.getMessage());
                 ex.printStackTrace();
             }
+            response.put("status", "error");
+            response.put("message", "SQL Exception during enrollment.");
         } finally {
             try {
                 if (conn != null) {
                     conn.close();
                 }
             } catch (SQLException ex) {
-                System.out.println("Error closing connection: " + ex.getMessage());
+                System.out.println(ex.getMessage());
             }
         }
 
-        return isEnrolled;
+        return response;
     }
 
     // 退课
-    public boolean dropCourse(String username, String courseID) {
-        boolean isDropped = false;
+    public JSONObject dropCourse(String username, String courseID) {
+        JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
 
         if (conn == null) {
-            System.out.println("Failed to connect to the database.");
-            return isDropped;
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
         }
 
         try {
@@ -159,14 +164,16 @@ public class CourseService {
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
-                    isDropped = true;
-                    System.out.println("Student dropped course successfully.");
+                    response.put("status", "success");
+                    response.put("message", "Student dropped course successfully.");
                 } else {
-                    System.out.println("Failed to drop course.");
+                    response.put("status", "error");
+                    response.put("message", "Failed to drop course.");
+                    return response;
                 }
             }
 
-            if (isDropped) {
+            if (response.getString("status").equals("success")) {
                 // 更新课程的已选人数
                 String updateCountQuery = "UPDATE tblCourse SET selectedCount = selectedCount - 1 WHERE courseID = ?";
                 try (PreparedStatement preparedStatement = conn.prepareStatement(updateCountQuery)) {
@@ -177,28 +184,27 @@ public class CourseService {
 
             // 提交事务
             conn.commit();
-            System.out.println("Transaction committed successfully.");
         } catch (SQLException e) {
-            System.err.println("SQL Exception during drop: " + e.getMessage());
             e.printStackTrace();
             try {
                 conn.rollback();  // 如果有错误则回滚
                 System.out.println("Transaction rolled back.");
             } catch (SQLException ex) {
-                System.err.println("SQL Exception during rollback: " + ex.getMessage());
                 ex.printStackTrace();
             }
+            response.put("status", "error");
+            response.put("message", "SQL Exception during course drop.");
         } finally {
             try {
                 if (conn != null) {
                     conn.close();
                 }
             } catch (SQLException ex) {
-                System.out.println("Error closing connection: " + ex.getMessage());
+                System.out.println(ex.getMessage());
             }
         }
 
-        return isDropped;
+        return response;
     }
 
     // 查询课程信息
@@ -227,12 +233,9 @@ public class CourseService {
                     courseJson.put("courseTime", resultSet.getString("courseTime"));  // 获取课程时间
                     courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
                     courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
-                } else {
-                    System.out.println("Course not found for courseID: " + courseID);
                 }
             }
         } catch (SQLException e) {
-            System.err.println("SQL Exception during course info retrieval: " + e.getMessage());
             e.printStackTrace();
         } finally {
             try {
@@ -240,7 +243,7 @@ public class CourseService {
                     conn.close();
                 }
             } catch (SQLException ex) {
-                System.out.println("Error closing connection: " + ex.getMessage());
+                System.out.println(ex.getMessage());
             }
         }
 

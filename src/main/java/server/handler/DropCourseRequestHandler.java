@@ -10,7 +10,10 @@ public class DropCourseRequestHandler implements RequestHandler {
         String username = parameters.getString("username");
         String courseID = parameters.getString("courseID");
 
-        boolean success = courseService.dropCourse(username, courseID);
+        //boolean success = courseService.dropCourse(username, courseID);
+        JSONObject result = courseService.dropCourse(username, courseID);
+        boolean success = "success".equals(result.getString("status"));
+
 
         JSONObject jsonResponse = new JSONObject();
         if (success) {
