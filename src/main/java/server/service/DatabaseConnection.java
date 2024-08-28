@@ -11,8 +11,8 @@ public class DatabaseConnection {
 
     static {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:h2:file:./testdb");
-        //config.setJdbcUrl("jdbc:h2:tcp://47.101.210.178:9092//data/h2_database/testdb");
+        //config.setJdbcUrl("jdbc:h2:file:./testdb");
+        config.setJdbcUrl("jdbc:h2:tcp://47.101.210.178:9092//data/h2_database/testdb");
         config.setUsername("sa");
         config.setPassword("");
         dataSource = new HikariDataSource(config);
