@@ -7,9 +7,9 @@ public class ViewEnrolledCoursesRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {
         CourseService courseService = new CourseService();
-        String studentId = parameters.getString("studentId");
+        String username = parameters.getString("username");
 
-        JSONObject coursesJson = courseService.viewEnrolledCourses(studentId);
+        JSONObject coursesJson = courseService.getCourseInfo(username);
 
         JSONObject jsonResponse = new JSONObject();
         if (coursesJson != null) {

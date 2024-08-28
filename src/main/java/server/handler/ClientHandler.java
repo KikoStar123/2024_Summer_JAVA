@@ -48,11 +48,20 @@ public class ClientHandler implements Runnable {
 
     private Map<String, RequestHandler> initializeRoutes() {
         Map<String, RequestHandler> routeMap = new HashMap<>();
+
+        // 用户相关请求
         routeMap.put("login", new LoginRequestHandler());
         routeMap.put("checkStudentInfo", new CheckStudentInfoRequestHandler());
         routeMap.put("login_return", new Login_returnRequestHandler());
         routeMap.put("viewStudentInfo", new ViewStudentInfoRequestHandler());
         routeMap.put("modifyStudentInfo", new ModifyStudentInfoRequestHandler());
+
+        // 课程相关请求
+        routeMap.put("enrollInCourse", new EnrollInCourseRequestHandler());
+        routeMap.put("dropCourse", new DropCourseRequestHandler());
+        routeMap.put("viewEnrolledCourses", new ViewEnrolledCoursesRequestHandler());
+        routeMap.put("addCourse", new AddCourseRequestHandler()); // 新增课程
+
         return routeMap;
     }
 }

@@ -7,10 +7,10 @@ public class EnrollInCourseRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {
         CourseService courseService = new CourseService();
-        String studentId = parameters.getString("studentId");
-        String courseId = parameters.getString("courseId");
+        String username = parameters.getString("username");
+        String courseID = parameters.getString("courseID");
 
-        boolean success = courseService.enrollInCourse(studentId, courseId);
+        boolean success = courseService.enrollInCourse(username, courseID);
 
         JSONObject jsonResponse = new JSONObject();
         if (success) {
