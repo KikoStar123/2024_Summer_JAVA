@@ -158,7 +158,6 @@ public class CourseService {
 
 
     // 退课
-    // 退课
     public JSONObject dropCourse(String username, String courseID) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
