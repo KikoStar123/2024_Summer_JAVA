@@ -1,25 +1,26 @@
 package server.service;
 
+import org.json.JSONObject;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import org.json.JSONObject;
+import java.sql.SQLException;
 
 public class UserService {
 
-    private static final String JDBC_URL = "http://localhost:8082/h2-console";  // 修改为你实际的H2数据库路径
-    private static final String JDBC_USER = "sa";
-    private static final String JDBC_PASSWORD = "";
-
     public boolean login(String username, String password) {
         boolean isAuthenticated = false;
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            System.out.println("Failed to connect to the database.");
+            return isAuthenticated;
+        }
 
         String query = "SELECT COUNT(*) FROM USERS WHERE USERNAME = ? AND PASSWORD = ?";
 
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, password);
 
@@ -30,6 +31,14 @@ public class UserService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
         }
 
         return isAuthenticated;
