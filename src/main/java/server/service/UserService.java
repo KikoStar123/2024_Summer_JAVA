@@ -18,7 +18,7 @@ public class UserService {
             return isAuthenticated;
         }
 
-        String query = "SELECT COUNT(*) FROM USERS WHERE USERNAME = ? AND PASSWORD = ?";
+        String query = "SELECT COUNT(*) FROM USERS WHERE USERNAME = ? AND PWD = ?";
 
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             // 输出接收到的用户名和密码
@@ -59,7 +59,7 @@ public class UserService {
             return null;
         }
 
-        String query = "SELECT * FROM USERS WHERE USERNAME = ? AND PASSWORD = ?";
+        String query = "SELECT * FROM USERS WHERE USERNAME = ? AND PWD = ?";
 
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             // 输出接收到的用户名和密码
@@ -76,10 +76,11 @@ public class UserService {
                     userJson = new JSONObject();
                     userJson.put("id", resultSet.getInt("id"));
                     userJson.put("username", resultSet.getString("username"));
-                    userJson.put("password", resultSet.getString("password"));
+                    userJson.put("password", resultSet.getString("pwd"));
                     userJson.put("age", resultSet.getInt("age"));
                     userJson.put("role", resultSet.getString("role"));
-                    System.out.println("test");
+                    userJson.put("gender", resultSet.getString("gender"));
+                    // System.out.println("test");
                 } else {
                     System.out.println("Authentication failed.");
                 }
@@ -95,7 +96,7 @@ public class UserService {
                 System.out.println(ex.getMessage());
             }
         }
-      System.out.println("testoutput: " + userJson.toString());
+      // System.out.println("testoutput: " + userJson.toString());
         return userJson;
     }
 
