@@ -50,6 +50,7 @@ public class ClientHandler implements Runnable {
         Map<String, RequestHandler> routeMap = new HashMap<>();
         routeMap.put("login", new LoginRequestHandler());
         routeMap.put("checkStudentInfo", new CheckStudentInfoRequestHandler());
+        routeMap.put("login_return", new Login_returnRequestHandler());
         routeMap.put("viewStudentInfo", new ViewStudentInfoRequestHandler());
         routeMap.put("modifyStudentInfo", new ModifyStudentInfoRequestHandler());
         return routeMap;
