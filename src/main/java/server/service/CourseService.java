@@ -84,6 +84,20 @@ public class CourseService {
                 }
             }
 
+            // 检查学生是否已经选了该课程
+            String checkEnrollmentQuery = "SELECT * FROM tblEnrollment WHERE username = ? AND courseID = ?";
+            try (PreparedStatement checkEnrollmentStmt = conn.prepareStatement(checkEnrollmentQuery)) {
+                checkEnrollmentStmt.setString(1, username);
+                checkEnrollmentStmt.setString(2, courseID);
+                try (ResultSet rs = checkEnrollmentStmt.executeQuery()) {
+                    if (rs.next()) {
+                        response.put("status", "error");
+                        response.put("message", "Student is already enrolled in this course.");
+                        return response;
+                    }
+                }
+            }
+
             // 开始事务
             System.out.println("Starting transaction for enrolling student: " + username);
             conn.setAutoCommit(false);
@@ -101,6 +115,7 @@ public class CourseService {
                 } else {
                     response.put("status", "error");
                     response.put("message", "Failed to enroll student in course.");
+                    conn.rollback(); // 在失败时回滚
                     return response;
                 }
             }
@@ -140,6 +155,9 @@ public class CourseService {
         return response;
     }
 
+
+
+    // 退课
     // 退课
     public JSONObject dropCourse(String username, String courseID) {
         JSONObject response = new JSONObject();
@@ -153,6 +171,19 @@ public class CourseService {
         }
 
         try {
+            // 检查学生是否已经选了该课程
+            String checkEnrollmentQuery = "SELECT * FROM tblEnrollment WHERE username = ? AND courseID = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkEnrollmentQuery)) {
+                checkStmt.setString(1, username);
+                checkStmt.setString(2, courseID);
+                ResultSet rs = checkStmt.executeQuery();
+                if (!rs.next()) {
+                    response.put("status", "error");
+                    response.put("message", "Student is not enrolled in this course.");
+                    return response;
+                }
+            }
+
             // 开始事务
             conn.setAutoCommit(false);
 
@@ -169,16 +200,21 @@ public class CourseService {
                 } else {
                     response.put("status", "error");
                     response.put("message", "Failed to drop course.");
+                    conn.rollback();
                     return response;
                 }
             }
 
-            if (response.getString("status").equals("success")) {
-                // 更新课程的已选人数
-                String updateCountQuery = "UPDATE tblCourse SET selectedCount = selectedCount - 1 WHERE courseID = ?";
-                try (PreparedStatement preparedStatement = conn.prepareStatement(updateCountQuery)) {
-                    preparedStatement.setString(1, courseID);
-                    preparedStatement.executeUpdate();
+            // 更新课程的已选人数
+            String updateCountQuery = "UPDATE tblCourse SET selectedCount = selectedCount - 1 WHERE courseID = ?";
+            try (PreparedStatement preparedStatement = conn.prepareStatement(updateCountQuery)) {
+                preparedStatement.setString(1, courseID);
+                int updateResult = preparedStatement.executeUpdate();
+                if (updateResult == 0) {
+                    response.put("status", "error");
+                    response.put("message", "Failed to update selected count.");
+                    conn.rollback();
+                    return response;
                 }
             }
 
@@ -206,6 +242,8 @@ public class CourseService {
 
         return response;
     }
+
+
 
     // 查询课程信息
     public JSONObject getCourseInfo(String courseID) {
@@ -249,4 +287,50 @@ public class CourseService {
 
         return courseJson;
     }
+
+//查询已经选的课程
+    public JSONObject getEnrolledCourses(String username) {
+        JSONObject coursesJson = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            System.out.println("Failed to connect to the database.");
+            return null;
+        }
+
+        String query = "SELECT * FROM tblCourse WHERE courseID IN (SELECT courseID FROM tblEnrollment WHERE username = ?)";
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    JSONObject courseJson = new JSONObject();
+                    courseJson.put("courseID", resultSet.getString("courseID"));
+                    courseJson.put("courseName", resultSet.getString("courseName"));
+                    courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
+                    courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
+                    courseJson.put("courseTime", resultSet.getString("courseTime"));
+                    courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
+                    courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+
+                    coursesJson.append("courses", courseJson); // 使用 append 将多个课程对象添加到 JSON 数组中
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+        return coursesJson;
+    }
+
 }
