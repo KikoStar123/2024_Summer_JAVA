@@ -1,0 +1,10 @@
+文件说明
+com.api_construct.models：
+User.java：定义用户实体类，映射到数据库表。
+com.api_construct.repositories：
+UserRepository.java：定义用户数据仓库接口，继承 JpaRepository，提供基本的数据库操作（如增删改查）。
+com.api_construct.services：
+IUserService.java：定义用户服务接口。
+UserServiceImpl.java：实现用户服务接口，调用数据仓库进行数据库操作。
+src/main/resources/application.properties：
+配置数据库连接和 JPA 设置。
