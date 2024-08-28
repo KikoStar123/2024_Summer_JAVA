@@ -13,9 +13,12 @@ public class CourseTest {
         try {
             sendEnrollRequest("student4", "CS101");
             Thread.sleep(500); // 延时，确保服务器有时间处理
-            sendDropRequest("student4", "CS101");
-            Thread.sleep(500); // 再次延时
+
             sendViewEnrolledCoursesRequest("student4");
+            Thread.sleep(500); // 再次延时
+
+            sendDropRequest("student4", "CS101");
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
