@@ -8,7 +8,7 @@ public class StudentInformationTest {
 
         // 测试查看学生信息
         System.out.println("Testing viewStudentInfo method:");
-        boolean viewResult = studentInfoService.viewStudentInfo(Role.student, "1");
+        boolean viewResult = studentInfoService.viewStudentInfo(Role.student, "09022301");
         System.out.println("View Student Info Result: " + viewResult);
 
 
