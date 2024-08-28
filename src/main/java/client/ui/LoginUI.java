@@ -67,20 +67,20 @@ public class LoginUI {
 
         if (success) {
             JOptionPane.showMessageDialog(frame, "Login successful!");
-            //User user=clientService.login_return(username,password);
+            User user=clientService.login_return(username,password);
             //User user=new User("xiix", Role.student,12,Gender.male,"123");
-//            MainUI mainUI = new MainUI(user);
-//            mainUI.display();
-//            frame.dispose();
+            MainUI mainUI = new MainUI(user);
+            mainUI.display();
+            frame.dispose();
 
         } else {
             JOptionPane.showMessageDialog(frame, "Login failed. Please try again.");
 
 
-            User user=new User("xiix", Role.student,12,Gender.male,"123");
-            MainUI mainUI = new MainUI(user);
-            mainUI.display();
-            frame.dispose();
+//            User user=new User("xiix", Role.student,12,Gender.male,"123");
+//            MainUI mainUI = new MainUI(user);
+//            mainUI.display();
+//            frame.dispose();
         }
     }
     private void handleRegister(){

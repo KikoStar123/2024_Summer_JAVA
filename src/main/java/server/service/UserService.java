@@ -79,7 +79,7 @@ public class UserService {
                     userJson.put("password", resultSet.getString("password"));
                     userJson.put("age", resultSet.getInt("age"));
                     userJson.put("role", resultSet.getString("role"));
-                    userJson.put("gender", resultSet.getString("gender"));
+                    System.out.println("test");
                 } else {
                     System.out.println("Authentication failed.");
                 }
@@ -95,7 +95,7 @@ public class UserService {
                 System.out.println(ex.getMessage());
             }
         }
-
+      System.out.println("testoutput: " + userJson.toString());
         return userJson;
     }
 
