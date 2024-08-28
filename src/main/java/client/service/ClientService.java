@@ -39,7 +39,7 @@ public class ClientService {
     public User login_return(String username, String password) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
-            request.put("requestType", "login");
+            request.put("requestType", "login_return");
             request.put("parameters", new JSONObject()
                     .put("username", username)
                     .put("password", password));
@@ -125,7 +125,7 @@ public class ClientService {
     public User register_user(String username, String password) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
-            request.put("requestType", "login");
+            request.put("requestType", "register_user");
             request.put("parameters", new JSONObject()
                     .put("username", username)
                     .put("password", password));
