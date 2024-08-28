@@ -65,7 +65,7 @@ public class LoginUI {
         boolean success = clientService.login(username, password);
 
 
-        if (success) {
+        if (success) {//数据库包含用户，可以直接登录
             JOptionPane.showMessageDialog(frame, "Login successful!");
             User user=clientService.login_return(username,password);
             //User user=new User("xiix", Role.student,12,Gender.male,"123");
@@ -73,7 +73,7 @@ public class LoginUI {
             mainUI.display();
             frame.dispose();
 
-        } else {
+        } else {//登陆失败，返回报错信息
             JOptionPane.showMessageDialog(frame, "Login failed. Please try again.");
 
 
