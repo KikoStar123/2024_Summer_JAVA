@@ -18,7 +18,7 @@ public class UserService {
             return isAuthenticated;
         }
 
-        String query = "SELECT COUNT(*) FROM USERS WHERE USERNAME = ? AND PWD = ?";
+        String query = "SELECT COUNT(*) FROM tblUser WHERE USERNAME = ? AND PWD = ?";
 
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             // 输出接收到的用户名和密码
@@ -59,7 +59,7 @@ public class UserService {
             return null;
         }
 
-        String query = "SELECT * FROM USERS WHERE USERNAME = ? AND PWD = ?";
+        String query = "SELECT * FROM tblUser WHERE username = ? AND pwd = ?";
 
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             // 输出接收到的用户名和密码
@@ -74,8 +74,8 @@ public class UserService {
 
                     // 构建用户信息的JSON对象
                     userJson = new JSONObject();
-                    userJson.put("id", resultSet.getInt("id"));
-                    userJson.put("username", resultSet.getString("username"));
+                    userJson.put("id", resultSet.getString("username"));
+                    userJson.put("username", resultSet.getString("truename"));
                     userJson.put("password", resultSet.getString("pwd"));
                     userJson.put("age", resultSet.getInt("age"));
                     userJson.put("role", resultSet.getString("role"));

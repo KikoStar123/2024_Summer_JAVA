@@ -18,15 +18,15 @@ public class StudentInformationService {
         }
 
         try {
-            String query = "SELECT * FROM studentInfo";
+            String query = "SELECT * FROM tblStudent s INNER JOIN tblUser u ON s.username = u.username";
             PreparedStatement pstmt = conn.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
 
             int index = 1;
             while (rs.next()) {
                 JSONObject student = new JSONObject();
-                student.put("id", rs.getString("id"));
-                student.put("name", rs.getString("name"));
+                student.put("id", rs.getString("studentId"));
+                student.put("name", rs.getString("truename"));
                 student.put("gender", rs.getString("gender"));
                 student.put("origin", rs.getString("origin"));
                 student.put("birthday", rs.getString("birthday"));
@@ -61,14 +61,14 @@ public class StudentInformationService {
         }
 
         try {
-            String query = "SELECT * FROM studentInfo WHERE id = ?";
+            String query = "SELECT * FROM tblStudent s INNER JOIN tblUser u ON s.username = u.username WHERE s.studentid = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
-
+            System.out.println(rs.toString());
             if (rs.next()) {
-                student.put("id", rs.getString("id"));
-                student.put("name", rs.getString("name"));
+                student.put("id", rs.getString("studentid"));
+                student.put("name", rs.getString("truename"));
                 student.put("gender", rs.getString("gender"));
                 student.put("origin", rs.getString("origin"));
                 student.put("birthday", rs.getString("birthday"));
@@ -85,7 +85,7 @@ public class StudentInformationService {
                 System.out.println(ex.getMessage());
             }
         }
-
+        System.out.println(student.toString());
         return student;
     }
 
@@ -99,7 +99,7 @@ public class StudentInformationService {
         }
 
         try {
-            String query = "UPDATE studentInfo SET name = ?, gender = ?, origin = ?, birthday = ?, academy = ? WHERE id = ?";
+            String query = "UPDATE tblStudent s INNER JOIN tblUser u ON s.username = u.username SET truename = ?, gender = ?, origin = ?, birthday = ?, academy = ? WHERE s.studentId = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
             JSONObject studentData = studentInfo.getJSONObject("data");
             pstmt.setString(1, studentData.getString("name"));
