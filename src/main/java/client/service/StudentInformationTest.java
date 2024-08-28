@@ -1,6 +1,5 @@
 package client.service;
 
-import client.service.StudentInformation;
 import org.json.JSONObject;
 
 public class StudentInformationTest {

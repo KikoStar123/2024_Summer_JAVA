@@ -39,7 +39,7 @@ public class ClientService {
     public User login_return(String username, String password) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
-            request.put("requestType", "login");
+            request.put("requestType", "login_return");
             request.put("parameters", new JSONObject()
                     .put("username", username)
                     .put("password", password));
@@ -51,9 +51,12 @@ public class ClientService {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
+            //System.out.println("client receive: " + jsonResponse.toString());
+
             if (jsonResponse.getString("status").equals("success")) {
                 // 假设服务器返回一个User对象的JSON表示
                 JSONObject userJson = jsonResponse.getJSONObject("user"); // 获取用户信息
+
                 String userName = userJson.getString("username");
              //   String userEmail = userJson.getString("email"); // 示例属性
                // String userName = userJson.getString("username");

@@ -13,7 +13,6 @@ public class User {
         this.role = role;
         this.age = age;
         this.gender = gender;
-        this.pwd = pwd;
     }
 
     public String getId() {
