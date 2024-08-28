@@ -202,10 +202,11 @@ public class StudentInformation {
             out = new PrintWriter(socket.getOutputStream(), true);//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
             out.println(request.toString());//将请求request转换为字符串形式，并使用println方法将其写入输出流中，发送到服务器端
 
-            return jsonResponse.getString("status").equals("success");
+            return studentArray;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            System.exit(1);
         }
+        return null;
     }
 }
