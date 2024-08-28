@@ -14,13 +14,23 @@ public class StudentInformation {
     private final int SERVER_PORT = 8080;//定义服务器的端口号
     private final int TIMEOUT = 5000; // 连接的超时时间：5秒超时
 
+    //内部类，表示单个学生学籍
+    class oneStudentInformation {
+        String name;
+        String id;
+        String gender;
+        String origin;
+        String birthday;
+        String academy;
+    }
+
     /**
      * 查看学生信息
      *
      * @param id 学生的ID
      * @return 学生信息的JSONObject，如果出错则返回null
      */
-    public boolean viewStudentInfo(Role role, String id) {
+    public oneStudentInformation viewStudentInfo(Role role, String id) {
         //确认是学生身份
         try {
             if (role != Role.student) {
@@ -28,7 +38,7 @@ public class StudentInformation {
             }
         } catch (Exception e) {
             System.out.println("Caught an exception: " + e.getMessage());
-            return false;
+            System.exit(1);
         }
 
         //进行正常操作
@@ -55,42 +65,40 @@ public class StudentInformation {
             String response = in.readLine();//从输入流中读取一行数据，并将其存储在字符串response中（假设按行发送）
             JSONObject jsonResponse = new JSONObject(response);//将字符串response解析为一个JSON对象jsonResponse
 
+            if(!jsonResponse.getString("status").equals("success"))
+            {
+                throw new RuntimeException("An error occurred.");
+            }
+
             // 读取响应
             // 从 JSON 对象中获取特定属性的值
             JSONObject studentData = jsonResponse.getJSONObject("data");
-            String name = studentData.getString("name");
-            // String id = studentData.getString("id");
-            String gender = studentData.getString("gender");
-            String origin = studentData.getString("origin");
-            String birthday = studentData.getString("birthday");
-            String academy = studentData.getString("academy");
 
-            System.out.println("Name: " + name);
-            System.out.println("ID: " + id);
-            System.out.println("Gender: " + gender);
-            System.out.println("Origin: " + origin);
-            System.out.println("Birthday: " + birthday);
-            System.out.println("Academy: " + academy);
+            oneStudentInformation theStudent = new oneStudentInformation();
+            theStudent.name = studentData.getString("name");
+            theStudent.id = studentData.getString("id");
+            theStudent.gender = studentData.getString("gender");
+            theStudent.origin = studentData.getString("origin");
+            theStudent.birthday = studentData.getString("birthday");
+            theStudent.academy = studentData.getString("academy");
+
+            System.out.println("Name: " + theStudent.name);
+            System.out.println("ID: " + theStudent.id);
+            System.out.println("Gender: " + theStudent.gender);
+            System.out.println("Origin: " + theStudent.origin);
+            System.out.println("Birthday: " + theStudent.birthday);
+            System.out.println("Academy: " + theStudent.academy);
             // 对获取的数据进行处理
             // 展示... 不需要请求
             //System.out.println("Name: " + name);
             //System.out.println("Age: " + age);
 
-            return jsonResponse.getString("status").equals("success");
+            return theStudent;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            System.exit(1);
         }
-    }
-
-    //内部类，表示单个学生学籍
-    class oneStudentInformation {
-        String name;
-        String id;
-        String gender;
-        String origin;
-        String birthday;
-        String academy;
+        return null;
     }
 
     /**
@@ -100,7 +108,7 @@ public class StudentInformation {
      *
      * @return 如果更新成功返回true，否则返回false
      */
-    public boolean modifyStudentInfo(Role role, String id) {
+    public oneStudentInformation[] modifyStudentInfo(Role role, String id) {
         //确认是教师或管理员身份
         try {
             if (role != Role.teacher && role != Role.manager) {
@@ -108,7 +116,7 @@ public class StudentInformation {
             }
         } catch (Exception e) {
             System.out.println("Caught an exception: " + e.getMessage());
-            return false;
+            System.exit(1);
         }
 
         //进行正常操作

@@ -1,6 +1,5 @@
 package client.service;
 
-import client.service.StudentInformation;
 import org.json.JSONObject;
 
 public class StudentInformationTest {
@@ -9,8 +8,8 @@ public class StudentInformationTest {
 
         // 测试查看学生信息
         System.out.println("Testing viewStudentInfo method:");
-        boolean viewResult = studentInfoService.viewStudentInfo(Role.student, "1");
-        System.out.println("View Student Info Result: " + viewResult);
+        //boolean viewResult = studentInfoService.viewStudentInfo(Role.student, "1");
+        //System.out.println("View Student Info Result: " + viewResult);
 
 
         // 测试查看所有学生信息与修改学生信息
