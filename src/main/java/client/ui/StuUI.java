@@ -1,5 +1,8 @@
 package client.ui;
 
+import client.service.StudentInformation;
+import client.service.User;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
@@ -14,16 +17,17 @@ public class StuUI {
     private JTextField birthday;
     private JTextField academy;
 
-    private String username;
-    private String password;
+    private User user;
 
-    public StuUI(String username,String password){
-        this.username=username;
-        this.password=password;
+    public StuUI(User user){
+        this.user=user;
     }
 
-
     public void displaystu(){
+
+        StudentInformation student=new StudentInformation();
+        //StudentInformation.oneStudentInformation onestudent=student.viewStudentInfo(user.getRole(),user.getId());
+
         StuFrame=new JFrame("学生学籍管理");
         StuFrame.setSize(300, 350);
         StuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -104,7 +108,7 @@ public class StuUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 StuFrame.dispose(); // 关闭当前界面
-                MainUI mainUI = new MainUI(username, password); // 传入用户名和密码
+                MainUI mainUI = new MainUI(user); // 传入用户名和密码
                 mainUI.display(); // 显示主界面
             }
         });

@@ -1,9 +1,13 @@
 package client.ui;
 
 import client.service.ClientService;
+import client.service.Role;
+import client.service.User;
 import client.ui.MainUI;
 import client.ui.RegisterUI;
 import javax.swing.*;
+
+import client.service.Gender;
 
 public class LoginUI {
     private JFrame frame;
@@ -60,12 +64,21 @@ public class LoginUI {
         ClientService clientService = new ClientService();
         boolean success = clientService.login(username, password);
 
+
         if (success) {
             JOptionPane.showMessageDialog(frame, "Login successful!");
+            //User user=clientService.login_return(username,password);
+            //User user=new User("xiix", Role.student,12,Gender.male,"123");
+//            MainUI mainUI = new MainUI(user);
+//            mainUI.display();
+//            frame.dispose();
 
         } else {
             JOptionPane.showMessageDialog(frame, "Login failed. Please try again.");
-            MainUI mainUI = new MainUI(username,password);
+
+
+            User user=new User("xiix", Role.student,12,Gender.male,"123");
+            MainUI mainUI = new MainUI(user);
             mainUI.display();
             frame.dispose();
         }

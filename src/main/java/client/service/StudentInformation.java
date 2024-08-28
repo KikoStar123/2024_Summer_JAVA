@@ -84,7 +84,7 @@ public class StudentInformation {
     }
 
     //内部类，表示单个学生学籍
-    class oneStudentInformation {
+    public static class oneStudentInformation {
         String name;
         String id;
         String gender;

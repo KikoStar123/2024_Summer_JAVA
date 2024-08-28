@@ -3,18 +3,20 @@ package client.ui;
 import javax.swing.*;
 import client.ui.LibraryUI;
 import client.ui.StuUI;
+import client.service.User;
 
 public class MainUI {
     private JFrame mainFrame;
-    private String username;
-    private String password;
+    private User user;
 
-    public MainUI(String username,String password){
-        this.username=username;
-        this.password=password;
+    public MainUI(User user){
+       this.user=user;
     }
 
+
     public void display() {
+
+
         mainFrame = new JFrame("主界面");
         mainFrame.setSize(500, 500);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -24,7 +26,7 @@ public class MainUI {
         mainPanel.setLayout(null); // 使用绝对布局
 
         // 添加标签
-        JLabel welcomeLabel = new JLabel("用户名:"+'\t'+username+'\t'+"身份:"+'\t'+"年龄:"+'\t');
+        JLabel welcomeLabel = new JLabel("用户名:"+'\t'+user.getUsername()+'\t'+"身份:"+'\t'+"年龄:"+'\t');
         welcomeLabel.setBounds(10, 20, 200, 25);
         mainPanel.add(welcomeLabel);
 
@@ -43,7 +45,7 @@ public class MainUI {
         stubutton.setBounds(10, 100, 100, 25);
         mainPanel.add(stubutton);
 
-        stubutton.addActionListener(e -> handleStudent(username));
+        stubutton.addActionListener(e -> handleStudent(user.getUsername()));
 
         JButton button4 = new JButton("银行");
         button4.setBounds(120, 100, 100, 25);
@@ -74,7 +76,7 @@ public class MainUI {
     }
 
     private void handleLibrary(){
-        LibraryUI libUI=new LibraryUI(username,password);
+        LibraryUI libUI=new LibraryUI(user);
         libUI.display();
         mainFrame.dispose();
     }
@@ -85,10 +87,10 @@ public class MainUI {
         int identityValue = Character.getNumericValue(identity);
 
         if (identityValue == 0) {
-            StuUI stuUI = new StuUI(username,password);
+            StuUI stuUI = new StuUI(user);
             stuUI.displaystu();
         } else if (identityValue == 1) {
-            StuUI teaUI = new StuUI(username,password);
+            StuUI teaUI = new StuUI(user);
             teaUI.displaytea();
         }
         mainFrame.dispose();
