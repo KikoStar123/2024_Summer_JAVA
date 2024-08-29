@@ -12,23 +12,42 @@ public class CourseTest {
 
             sendAddCourseRequest("CS102", "Data Structures", "Prof. Brown", 4, "1-10|Tue|2-4", 50); //添加一门课程
             Thread.sleep(500); // 延时，确保服务器有时间处理
+            System.out.println('\n');
 
             sendEnrollRequest("student4", "CS101");//选课 学生-选课编号
             Thread.sleep(500); // 延时，确保服务器有时间处理
+            System.out.println('\n');
 
             sendViewEnrolledCoursesRequest("student4");//查看某个学生的选课信息（全部课程）
             Thread.sleep(500); // 再次延时
+            System.out.println('\n');
 
             sendDropRequest("student4", "CS101");//退课
             Thread.sleep(500); // 再次延时
+            System.out.println('\n');
 
-            sendSearchCoursesRequest("Computer Science");//根据课程名称或者教师名称检索（两个一起检索都可以）
+            System.out.println("课程名单参数：");
+            sendSearchCoursesRequest("Computer Science",null);//根据课程名称或者教师名称检索（两个一起检索都可以）
             Thread.sleep(500); // 再次延时
+            System.out.println('\n');
+
+            System.out.println("教师名单参数：");
+            sendSearchCoursesRequest(null,"Dr. Smith");//根据课程名称或者教师名称检索（两个一起检索都可以）
+            Thread.sleep(500); // 再次延时
+            System.out.println('\n');
+
+            System.out.println("双参数：");
+            sendSearchCoursesRequest("Computer Science","Dr. Smith");//根据课程名称或者教师名称检索（两个一起检索都可以）
+            Thread.sleep(500); // 再次延时
+            System.out.println('\n');
 
             sendViewCourseInfoRequest("CS101");// 查看课程信息功能
             Thread.sleep(500); // 再次延时
+            System.out.println('\n');
 
             sendGetAllCoursesRequest();// 获取所有课程信息功能
+            Thread.sleep(500); // 再次延时
+            System.out.println('\n');
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -74,12 +93,12 @@ public class CourseTest {
         }
     }
 
-    private static void sendSearchCoursesRequest(String keyword) throws IOException {
+    private static void sendSearchCoursesRequest(String courseName, String courseTeacher) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-            String searchRequest = createSearchCoursesRequest(keyword);
+            String searchRequest = createSearchCoursesRequest(courseName, courseTeacher);
             System.out.println("Sending search request: " + searchRequest);
             out.println(searchRequest);
             String searchResponse = in.readLine();
@@ -139,8 +158,24 @@ public class CourseTest {
         return String.format("{\"requestType\": \"viewEnrolledCourses\", \"parameters\": {\"username\": \"%s\"}}", username);
     }
 
-    private static String createSearchCoursesRequest(String keyword) {
-        return String.format("{\"requestType\": \"searchCourses\", \"parameters\": {\"keyword\": \"%s\"}}", keyword);
+    private static String createSearchCoursesRequest(String courseName, String courseTeacher) {
+        // 构建JSON请求，根据是否传入了courseName和courseTeacher进行构建
+        StringBuilder request = new StringBuilder("{\"requestType\": \"searchCourses\", \"parameters\": {");
+
+        if (courseName != null && !courseName.isEmpty()) {
+            request.append("\"courseName\": \"").append(courseName).append("\", ");
+        }
+        if (courseTeacher != null && !courseTeacher.isEmpty()) {
+            request.append("\"courseTeacher\": \"").append(courseTeacher).append("\", ");
+        }
+
+        // 删除最后一个多余的逗号和空格
+        if (request.charAt(request.length() - 2) == ',') {
+            request.delete(request.length() - 2, request.length());
+        }
+
+        request.append("}}");
+        return request.toString();
     }
 
     private static String createViewCourseInfoRequest(String courseID) {
