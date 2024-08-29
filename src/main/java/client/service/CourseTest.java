@@ -9,16 +9,22 @@ public class CourseTest {
 
     public static void main(String[] args) {
         try {
-            sendEnrollRequest("student4", "CS101");
+            sendEnrollRequest("student4", "CS101");//选课 学生-选课编号
             Thread.sleep(500); // 延时，确保服务器有时间处理
 
-            sendViewEnrolledCoursesRequest("student4");
+            sendViewEnrolledCoursesRequest("student4");//查看某个学生的选课信息（全部课程）
             Thread.sleep(500); // 再次延时
 
-            sendDropRequest("student4", "CS101");
+            sendDropRequest("student4", "CS101");//退课
             Thread.sleep(500); // 再次延时
 
-            sendSearchCoursesRequest("Computer Science");
+            sendSearchCoursesRequest("Computer Science");//根据课程名称或者教师名称检索（两个一起检索都可以）
+            Thread.sleep(500); // 再次延时
+
+            sendViewCourseInfoRequest("CS101");// 查看课程信息功能
+            Thread.sleep(500); // 再次延时
+
+            sendGetAllCoursesRequest();// 获取所有课程信息功能
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -77,6 +83,33 @@ public class CourseTest {
         }
     }
 
+    private static void sendViewCourseInfoRequest(String courseID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+            String viewCourseInfoRequest = createViewCourseInfoRequest(courseID);
+            System.out.println("Sending view course info request: " + viewCourseInfoRequest);
+            out.println(viewCourseInfoRequest);
+            String viewCourseInfoResponse = in.readLine();
+            System.out.println("Server response: " + viewCourseInfoResponse);
+        }
+    }
+
+    private static void sendGetAllCoursesRequest() throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+            String getAllCoursesRequest = createGetAllCoursesRequest();
+            System.out.println("Sending get all courses request: " + getAllCoursesRequest);
+            out.println(getAllCoursesRequest);
+            String getAllCoursesResponse = in.readLine();
+            System.out.println("Server response: " + getAllCoursesResponse);
+        }
+    }
+
+
     private static String createEnrollRequest(String username, String courseID) {
         return String.format("{\"requestType\": \"enrollInCourse\", \"parameters\": {\"username\": \"%s\", \"courseID\": \"%s\"}}", username, courseID);
     }
@@ -92,4 +125,14 @@ public class CourseTest {
     private static String createSearchCoursesRequest(String keyword) {
         return String.format("{\"requestType\": \"searchCourses\", \"parameters\": {\"keyword\": \"%s\"}}", keyword);
     }
+
+    private static String createViewCourseInfoRequest(String courseID) {
+        return String.format("{\"requestType\": \"viewCourseInfo\", \"parameters\": {\"courseID\": \"%s\"}}", courseID);
+    }
+
+    private static String createGetAllCoursesRequest() {
+        return "{\"requestType\": \"getAllCourses\", \"parameters\": {}}";
+    }
+
 }
+

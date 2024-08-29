@@ -391,5 +391,49 @@ public class CourseService {
         return coursesJson;
     }
 
+//查看所有课程信息
+    public JSONObject getAllCourses() {
+        JSONObject coursesJson = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            System.out.println("Failed to connect to the database.");
+            return null;
+        }
+
+        String query = "SELECT * FROM tblCourse";
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+
+            while (resultSet.next()) {
+                JSONObject courseJson = new JSONObject();
+                courseJson.put("courseID", resultSet.getString("courseID"));
+                courseJson.put("courseName", resultSet.getString("courseName"));
+                courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
+                courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
+                courseJson.put("courseTime", resultSet.getString("courseTime"));
+                courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
+                courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+
+                coursesJson.append("courses", courseJson); // 将每门课程添加到 "courses" 数组中
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+        return coursesJson;
+    }
+
+
 
 }
