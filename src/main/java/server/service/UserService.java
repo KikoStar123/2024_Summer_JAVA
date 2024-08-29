@@ -100,6 +100,108 @@ public class UserService {
         return userJson;
     }
 
+    public JSONObject register(JSONObject parameters){
+        String truename = parameters.getString("truename");
+        String gender = parameters.getString("gender");
+        String birthday = parameters.getString("birthday");
+        String origin = parameters.getString("origin");
+        String pwd = parameters.getString("pwd");
+        String academy = parameters.getString("academy");
+        String studentId = parameters.getString("id");
+        int age = parameters.getInt("age");
+
+        String allocatedId = null;
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            System.out.println("Failed to connect to the database.");
+            return null;
+        }
+
+        String query = "SELECT MAX(CAST(username AS INT)) AS max_username FROM tblUser";
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
+            if (resultSet.next()) {
+                int maxUsername = resultSet.getInt("max_username");
+                int newUsername = maxUsername + 1;
+
+                // Padding with zeros to ensure 9 digits
+                allocatedId = String.format("%09d", newUsername);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+        boolean newUser = createUser(allocatedId, truename, "student", age, pwd, gender);
+
+        StudentInformationService studentInformationService = new StudentInformationService();
+        boolean newStudent = studentInformationService.createStudent(studentId, origin, birthday, academy, allocatedId);
+
+        JSONObject userJson = new JSONObject();
+
+        if(newUser && newStudent){
+            userJson.put("id", allocatedId);
+            userJson.put("username", truename);
+            userJson.put("role", "student");
+            userJson.put("gender", gender);
+            userJson.put("pwd", pwd);
+            userJson.put("age", pwd);
+        }
+
+        return userJson;
+    }
+
+    private boolean createUser(String username, String truename, String role, int age, String pwd, String gender) {
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            System.out.println("Failed to connect to the database.");
+            return false;
+        }
+
+        String query = "INSERT INTO tblUser (username, truename, role, age, pwd, gender) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, truename);
+            preparedStatement.setString(3, role);
+            preparedStatement.setInt(4, age);
+            preparedStatement.setString(5, pwd);
+            preparedStatement.setString(6, gender);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("User created successfully.");
+                return true;
+            } else {
+                System.out.println("Failed to create user.");
+                return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
     public String logout(JSONObject parameters) {
         JSONObject jsonResponse = new JSONObject();
 

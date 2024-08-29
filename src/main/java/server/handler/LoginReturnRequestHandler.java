@@ -3,11 +3,11 @@ package server.handler;
 import org.json.JSONObject;
 import server.service.UserService;
 
-public class Login_returnRequestHandler implements RequestHandler {
+public class LoginReturnRequestHandler implements RequestHandler {
 
     private final UserService userService;
 
-    public Login_returnRequestHandler() {
+    public LoginReturnRequestHandler() {
         this.userService = new UserService(); // 实例化 UserService
     }
 

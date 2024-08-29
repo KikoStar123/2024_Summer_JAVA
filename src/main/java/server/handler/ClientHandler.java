@@ -37,6 +37,8 @@ public class ClientHandler implements Runnable {
             // 获取对应的处理器
             RequestHandler handler = routeMap.getOrDefault(requestType, new UnknownRequestHandler());
 
+
+
             // 执行处理器逻辑
             String response = handler.handle(parameters);
             out.println(response);
@@ -50,9 +52,10 @@ public class ClientHandler implements Runnable {
         Map<String, RequestHandler> routeMap = new HashMap<>();
         routeMap.put("login", new LoginRequestHandler());
         routeMap.put("checkStudentInfo", new CheckStudentInfoRequestHandler());
-        routeMap.put("login_return", new Login_returnRequestHandler());
+        routeMap.put("login_return", new LoginReturnRequestHandler());
         routeMap.put("viewStudentInfo", new ViewStudentInfoRequestHandler());
         routeMap.put("modifyStudentInfo", new ModifyStudentInfoRequestHandler());
+        routeMap.put("register", new RegisterRequestHandler());
         return routeMap;
     }
 }
