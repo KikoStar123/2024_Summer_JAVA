@@ -243,6 +243,50 @@ public class CourseService {
     }
 
 
+
+    // 查询课程信息
+    public JSONObject getCourseInfo(String courseID) {
+        JSONObject courseJson = null;
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            System.out.println("Failed to connect to the database.");
+            return null;
+        }
+
+        String query = "SELECT * FROM tblCourse WHERE courseID = ?";
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, courseID);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    courseJson = new JSONObject();
+                    courseJson.put("courseID", resultSet.getString("courseID"));
+                    courseJson.put("courseName", resultSet.getString("courseName"));
+                    courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
+                    courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
+                    courseJson.put("courseTime", resultSet.getString("courseTime"));  // 获取课程时间
+                    courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
+                    courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+        return courseJson;
+    }
+
 //查询已经选的课程
     public JSONObject getEnrolledCourses(String username) {
         JSONObject coursesJson = new JSONObject();
@@ -287,5 +331,65 @@ public class CourseService {
 
         return coursesJson;
     }
+
+    // 检索课程
+    public JSONObject searchCourses(String courseName, String courseTeacher) {
+        JSONObject coursesJson = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            System.out.println("Failed to connect to the database.");
+            return null;
+        }
+
+        StringBuilder query = new StringBuilder("SELECT * FROM tblCourse WHERE 1=1");
+
+        if (courseName != null && !courseName.isEmpty()) {
+            query.append(" AND courseName LIKE ?");
+        }
+
+        if (courseTeacher != null && !courseTeacher.isEmpty()) {
+            query.append(" AND courseTeacher LIKE ?");
+        }
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query.toString())) {
+            int paramIndex = 1;
+            if (courseName != null && !courseName.isEmpty()) {
+                preparedStatement.setString(paramIndex++, "%" + courseName + "%");
+            }
+            if (courseTeacher != null && !courseTeacher.isEmpty()) {
+                preparedStatement.setString(paramIndex, "%" + courseTeacher + "%");
+            }
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    JSONObject courseJson = new JSONObject();
+                    courseJson.put("courseID", resultSet.getString("courseID"));
+                    courseJson.put("courseName", resultSet.getString("courseName"));
+                    courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
+                    courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
+                    courseJson.put("courseTime", resultSet.getString("courseTime"));
+                    courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
+                    courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+
+                    coursesJson.append("courses", courseJson);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+        return coursesJson;
+    }
+
 
 }

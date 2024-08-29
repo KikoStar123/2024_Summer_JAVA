@@ -61,6 +61,8 @@ public class ClientHandler implements Runnable {
         routeMap.put("dropCourse", new DropCourseRequestHandler());
         routeMap.put("viewEnrolledCourses", new ViewEnrolledCoursesRequestHandler());
         routeMap.put("addCourse", new AddCourseRequestHandler()); // 新增课程
+        routeMap.put("searchCourses", new SearchCoursesRequestHandler());//检索课程
+
 
         return routeMap;
     }

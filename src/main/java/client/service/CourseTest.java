@@ -7,8 +7,6 @@ public class CourseTest {
     private static final String SERVER_ADDRESS = "localhost"; // 服务器地址
     private static final int SERVER_PORT = 8080; // 服务器端口
 
-
-
     public static void main(String[] args) {
         try {
             sendEnrollRequest("student4", "CS101");
@@ -18,13 +16,14 @@ public class CourseTest {
             Thread.sleep(500); // 再次延时
 
             sendDropRequest("student4", "CS101");
+            Thread.sleep(500); // 再次延时
+
+            sendSearchCoursesRequest("Computer Science");
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
-
-    //每个请求独立发送避免数据库死锁
 
     private static void sendEnrollRequest(String username, String courseID) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
@@ -65,6 +64,19 @@ public class CourseTest {
         }
     }
 
+    private static void sendSearchCoursesRequest(String keyword) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+            String searchRequest = createSearchCoursesRequest(keyword);
+            System.out.println("Sending search request: " + searchRequest);
+            out.println(searchRequest);
+            String searchResponse = in.readLine();
+            System.out.println("Server response: " + searchResponse);
+        }
+    }
+
     private static String createEnrollRequest(String username, String courseID) {
         return String.format("{\"requestType\": \"enrollInCourse\", \"parameters\": {\"username\": \"%s\", \"courseID\": \"%s\"}}", username, courseID);
     }
@@ -75,5 +87,9 @@ public class CourseTest {
 
     private static String createViewEnrolledCoursesRequest(String username) {
         return String.format("{\"requestType\": \"viewEnrolledCourses\", \"parameters\": {\"username\": \"%s\"}}", username);
+    }
+
+    private static String createSearchCoursesRequest(String keyword) {
+        return String.format("{\"requestType\": \"searchCourses\", \"parameters\": {\"keyword\": \"%s\"}}", keyword);
     }
 }
