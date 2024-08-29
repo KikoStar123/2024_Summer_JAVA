@@ -6,7 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class UserService {
+
+    private final Lock lock = new ReentrantLock();
 
     public boolean login(String username, String password) {
         boolean isAuthenticated = false;
@@ -20,6 +25,7 @@ public class UserService {
 
         String query = "SELECT COUNT(*) FROM tblUser WHERE USERNAME = ? AND PWD = ?";
 
+        lock.lock();
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             // 输出接收到的用户名和密码
             System.out.println("Checking login for username: " + username + " with password: " + password);
@@ -45,6 +51,7 @@ public class UserService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock();
         }
 
         return isAuthenticated;
@@ -61,8 +68,9 @@ public class UserService {
 
         String query = "SELECT * FROM tblUser WHERE username = ? AND pwd = ?";
 
+        lock.lock();
+
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            // 输出接收到的用户名和密码
             System.out.println("Checking login for username: " + username + " with password: " + password);
 
             preparedStatement.setString(1, username);
@@ -72,7 +80,6 @@ public class UserService {
                 if (resultSet.next()) {
                     System.out.println("User authenticated successfully.");
 
-                    // 构建用户信息的JSON对象
                     userJson = new JSONObject();
                     userJson.put("id", resultSet.getString("username"));
                     userJson.put("username", resultSet.getString("truename"));
@@ -80,7 +87,6 @@ public class UserService {
                     userJson.put("age", resultSet.getInt("age"));
                     userJson.put("role", resultSet.getString("role"));
                     userJson.put("gender", resultSet.getString("gender"));
-                    // System.out.println("test");
                 } else {
                     System.out.println("Authentication failed.");
                 }
@@ -95,8 +101,8 @@ public class UserService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock();
         }
-      // System.out.println("testoutput: " + userJson.toString());
         return userJson;
     }
 
@@ -119,6 +125,8 @@ public class UserService {
             return null;
         }
 
+        lock.lock();
+
         String query = "SELECT MAX(CAST(username AS INT)) AS max_username FROM tblUser";
 
         try (PreparedStatement preparedStatement = conn.prepareStatement(query);
@@ -140,6 +148,7 @@ public class UserService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock();
         }
 
         boolean newUser = createUser(allocatedId, truename, "student", age, pwd, gender);
@@ -172,6 +181,8 @@ public class UserService {
 
         String query = "INSERT INTO tblUser (username, truename, role, age, pwd, gender) VALUES (?, ?, ?, ?, ?, ?)";
 
+        lock.lock();
+
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, truename);
@@ -199,6 +210,7 @@ public class UserService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock();
         }
     }
 

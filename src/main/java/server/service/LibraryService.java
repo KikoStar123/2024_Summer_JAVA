@@ -7,7 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class LibraryService {
+
+    private final Lock lock = new ReentrantLock();
 
     public JSONObject searchBooksByName(String bookName) {
         JSONObject response = new JSONObject();
@@ -20,6 +25,8 @@ public class LibraryService {
             response.put("message", "Failed to connect to the database.");
             return response;
         }
+
+        lock.lock();
 
         try {
             String query = "SELECT * FROM tblBook WHERE name LIKE ?";
@@ -56,6 +63,7 @@ public class LibraryService {
                 response.put("status", "error");
                 response.put("message", ex.getMessage());
             }
+            lock.unlock();
         }
 
         return response;
@@ -71,6 +79,8 @@ public class LibraryService {
             response.put("message", "Failed to connect to the database.");
             return response;
         }
+
+        lock.lock();
 
         try {
             String query = "SELECT * FROM tblBook WHERE bookId = ?";
@@ -108,6 +118,7 @@ public class LibraryService {
                 response.put("status", "error");
                 response.put("message", ex.getMessage());
             }
+            lock.unlock();
         }
 
         return response;

@@ -23,7 +23,7 @@ public class TestModifyStudentInfo {
             newStudentInfo.put("name", "杨锦波");
             newStudentInfo.put("id", "09022301");
             newStudentInfo.put("gender", "male");
-            newStudentInfo.put("birthday", "2000-01-02");
+            newStudentInfo.put("birthday", "2000-01-01");
             newStudentInfo.put("academy", "计算机科学与工程学院");
             newStudentInfo.put("origin", "xx省xx市");
             parameters.put("data", newStudentInfo);
