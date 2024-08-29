@@ -9,6 +9,10 @@ public class CourseTest {
 
     public static void main(String[] args) {
         try {
+
+            sendAddCourseRequest("CS102", "Data Structures", "Prof. Brown", 4, "1-10|Tue|2-4", 50); //添加一门课程
+            Thread.sleep(500); // 延时，确保服务器有时间处理
+
             sendEnrollRequest("student4", "CS101");//选课 学生-选课编号
             Thread.sleep(500); // 延时，确保服务器有时间处理
 
@@ -109,6 +113,19 @@ public class CourseTest {
         }
     }
 
+    private static void sendAddCourseRequest(String courseID, String courseName, String courseTeacher, int courseCredits, String courseTime, int courseCapacity) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+            String addCourseRequest = createAddCourseRequest(courseID, courseName, courseTeacher, courseCredits, courseTime, courseCapacity);
+            System.out.println("Sending add course request: " + addCourseRequest);
+            out.println(addCourseRequest);
+            String addCourseResponse = in.readLine();
+            System.out.println("Server response: " + addCourseResponse);
+        }
+    }
+
 
     private static String createEnrollRequest(String username, String courseID) {
         return String.format("{\"requestType\": \"enrollInCourse\", \"parameters\": {\"username\": \"%s\", \"courseID\": \"%s\"}}", username, courseID);
@@ -132,6 +149,11 @@ public class CourseTest {
 
     private static String createGetAllCoursesRequest() {
         return "{\"requestType\": \"getAllCourses\", \"parameters\": {}}";
+    }
+
+    private static String createAddCourseRequest(String courseID, String courseName, String courseTeacher, int courseCredits, String courseTime, int courseCapacity) {
+        return String.format("{\"requestType\": \"addCourse\", \"parameters\": {\"courseID\": \"%s\", \"courseName\": \"%s\", \"courseTeacher\": \"%s\", \"courseCredits\": %d, \"courseTime\": \"%s\", \"courseCapacity\": %d}}",
+                courseID, courseName, courseTeacher, courseCredits, courseTime, courseCapacity);
     }
 
 }
