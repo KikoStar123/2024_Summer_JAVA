@@ -117,6 +117,20 @@ public class StudentInformationService {
             updateStudentStmt.setString(4, studentData.getString("id"));
             int studentRowsAffected = updateStudentStmt.executeUpdate();
 
+            // Print the entire student table
+            String selectAllStudentsQuery = "SELECT * FROM tblStudent";
+            PreparedStatement selectAllStudentsStmt = conn.prepareStatement(selectAllStudentsQuery);
+            ResultSet rs = selectAllStudentsStmt.executeQuery();
+
+            System.out.println("Thread ID: " + Thread.currentThread().getId() + " - Current state of tblStudent:");
+            while (rs.next()) {
+                System.out.println("Student ID: " + rs.getString("studentId") +
+                        ", Origin: " + rs.getString("origin") +
+                        ", Birthday: " + rs.getString("birthday") +
+                        ", Academy: " + rs.getString("academy") +
+                        ", Username: " + rs.getString("username"));
+            }
+
             return userRowsAffected > 0 && studentRowsAffected > 0;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -131,6 +145,8 @@ public class StudentInformationService {
             }
         }
     }
+
+
 
     boolean createStudent(String studentId, String origin, String birthday, String academy, String username) {
         DatabaseConnection dbConnection = new DatabaseConnection();
