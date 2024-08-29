@@ -11,38 +11,38 @@ public class CourseTest {
         try {
 
             sendAddCourseRequest("CS102", "Data Structures", "Prof. Brown", 4, "1-10|Tue|2-4", 50); //添加一门课程
-            Thread.sleep(500); // 延时，确保服务器有时间处理
+//            Thread.sleep(500); // 延时，确保服务器有时间处理
             System.out.println('\n');
 
             sendEnrollRequest("student4", "CS101");//选课 学生-选课编号
-            Thread.sleep(500); // 延时，确保服务器有时间处理
+//            Thread.sleep(500); // 延时，确保服务器有时间处理
             System.out.println('\n');
 
             sendViewEnrolledCoursesRequest("student4");//查看某个学生的选课信息（全部课程）
-            Thread.sleep(500); // 再次延时
+//            Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             sendDropRequest("student4", "CS101");//退课
-            Thread.sleep(500); // 再次延时
+//            Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             System.out.println("课程名单参数：");
             sendSearchCoursesRequest("Computer Science",null);//根据课程名称或者教师名称检索（两个一起检索都可以）
-            Thread.sleep(500); // 再次延时
+//            Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             System.out.println("教师名单参数：");
             sendSearchCoursesRequest(null,"Dr. Smith");//根据课程名称或者教师名称检索（两个一起检索都可以）
-            Thread.sleep(500); // 再次延时
+//            Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             System.out.println("双参数：");
             sendSearchCoursesRequest("Computer Science","Dr. Smith");//根据课程名称或者教师名称检索（两个一起检索都可以）
-            Thread.sleep(500); // 再次延时
+//            Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             sendViewCourseInfoRequest("CS101");// 查看课程信息功能
-            Thread.sleep(500); // 再次延时
+//            Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             sendGetAllCoursesRequest();// 获取所有课程信息功能
