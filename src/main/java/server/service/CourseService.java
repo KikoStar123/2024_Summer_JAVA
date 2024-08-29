@@ -287,7 +287,7 @@ public class CourseService {
         return courseJson;
     }
 
-//查询已经选的课程
+    //查询已经选的课程
     public JSONObject getEnrolledCourses(String username) {
         JSONObject coursesJson = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
