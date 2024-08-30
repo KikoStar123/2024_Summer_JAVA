@@ -9,11 +9,11 @@ public class BookBorrowRequestHandler implements RequestHandler {
         LibraryService libraryService = new LibraryService();
         String username = parameters.getString("username");
         String bookId = parameters.getString("bookId");
-        //JSONObject result = libraryService.borrowBook(username, bookId);
+        JSONObject result = libraryService.borrowBook(username, bookId);
 
         JSONObject jsonResponse = new JSONObject();
-        //jsonResponse.put("status", result.getString("status"));
-        //jsonResponse.put("message", result.getString("message"));
+        jsonResponse.put("status", result.getString("status"));
+        jsonResponse.put("message", result.getString("message"));
         return jsonResponse.toString();
     }
 }

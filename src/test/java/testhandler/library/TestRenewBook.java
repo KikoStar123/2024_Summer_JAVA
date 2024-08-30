@@ -6,10 +6,10 @@ import java.net.Socket;
 import org.json.JSONObject;
 import org.junit.Test;
 
-public class TestBookReturn {
+public class TestRenewBook {
 
     @Test
-    public void testBookReturn() {
+    public void testRenewBook() {
         String hostname = "localhost";
         int port = 8080;
 
@@ -18,9 +18,9 @@ public class TestBookReturn {
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
             JSONObject request = new JSONObject();
-            request.put("requestType", "bookReturn");
+            request.put("requestType", "renewBook");
             JSONObject parameters = new JSONObject();
-            parameters.put("borrowID", 4); // 假设借阅ID为1
+            parameters.put("borrowID", 5); // 假设借阅ID为1
             request.put("parameters", parameters);
 
             out.println(request.toString());
@@ -31,7 +31,7 @@ public class TestBookReturn {
             JSONObject response = new JSONObject(responseString);
 
             assertEquals("success", response.getString("status"));
-            assertEquals("Book returned successfully.", response.getString("message"));
+            assertEquals("Book renewed successfully.", response.getString("message"));
 
         } catch (IOException e) {
             e.printStackTrace();

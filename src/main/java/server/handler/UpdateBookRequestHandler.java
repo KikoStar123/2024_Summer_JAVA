@@ -3,12 +3,13 @@ package server.handler;
 import server.service.LibraryService;
 import org.json.JSONObject;
 
-public class BookReturnRequestHandler implements RequestHandler {
+public class UpdateBookRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {
         LibraryService libraryService = new LibraryService();
-        int bookId = parameters.getInt("borrowID");
-        JSONObject result = libraryService.returnBook(bookId);
+        String bookID = parameters.getString("bookID");
+        int finalLibNumber = parameters.getInt("finallibNumber");
+        JSONObject result = libraryService.updateBook(bookID, finalLibNumber);
 
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("status", result.getString("status"));

@@ -236,7 +236,9 @@ public class Library {
             JSONObject request = new JSONObject();
             request.put("requestType", "bookReturn");
             request.put("parameters", new JSONObject()
-                    .put("borrowID",borrowID)); // 传递请求类型和用户名以及书名
+                    //.put("username", username)
+                    //.put("bookID", bookID)); // 传递请求类型和用户名以及书名
+                    .put("borrowID", borrowID));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
