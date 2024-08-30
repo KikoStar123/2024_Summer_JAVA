@@ -8,7 +8,7 @@ public class BookBorrowRequestHandler implements RequestHandler {
     public String handle(JSONObject parameters) {
         LibraryService libraryService = new LibraryService();
         String username = parameters.getString("username");
-        String bookId = parameters.getString("bookId");
+        String bookId = parameters.getString("bookID");
         JSONObject result = libraryService.borrowBook(username, bookId);
 
         JSONObject jsonResponse = new JSONObject();

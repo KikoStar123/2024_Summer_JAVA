@@ -214,10 +214,9 @@ public class LibraryService {
 
         try {
             // 获取书籍ID
-            String getBookIdQuery = "SELECT bookID FROM tblLibRecord WHERE borrowId = ? AND isReturn = ?";
+            String getBookIdQuery = "SELECT bookID FROM tblLibRecord WHERE borrowId = ?";
             PreparedStatement getBookIdStmt = conn.prepareStatement(getBookIdQuery);
             getBookIdStmt.setInt(1, borrowId);
-            getBookIdStmt.setBoolean(2, false);
             ResultSet rs = getBookIdStmt.executeQuery();
 
             if (rs.next()) {
@@ -480,10 +479,9 @@ public class LibraryService {
 
         try {
             // 检查借阅记录是否存在且可续借
-            String checkQuery = "SELECT returnDate, renewable FROM tblLibRecord WHERE borrowId = ? AND isReturn = ?";
+            String checkQuery = "SELECT returnDate, renewable FROM tblLibRecord WHERE borrowId = ?";
             PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
             checkStmt.setInt(1, borrowID);
-            checkStmt.setBoolean(2, false);
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next()) {

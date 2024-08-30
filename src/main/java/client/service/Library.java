@@ -219,7 +219,7 @@ public class Library {
             if (jsonResponse.getString("status").equals("success")) {
                 // 假设服务器响应中包含借阅操作的结果
                 System.out.println("Success!");
-                return jsonResponse.getBoolean("borrowed");
+                return true;
 
             } else {
                 // 如果服务器返回失败，打印错误信息
@@ -251,7 +251,7 @@ public class Library {
             // 检查服务器响应的状态
             if (jsonResponse.getString("status").equals("success")) {
                 // 假设服务器响应中包含借阅操作的结果
-                return jsonResponse.getBoolean("Returned");
+                return true;
             } else {
                 // 如果服务器返回失败，打印错误信息
                 System.out.println("Failed to return book: " + jsonResponse.getString("message"));
@@ -294,6 +294,8 @@ public class Library {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "getAllLibRecords"); // 请求类型为获取所有借阅记录
+            JSONObject parameters = new JSONObject();
+            request.put("parameters", parameters);
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -301,6 +303,7 @@ public class Library {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
+
 
             if (jsonResponse.getString("status").equals("success")) {
                 JSONArray recordsArray = jsonResponse.getJSONArray("libRecords");
