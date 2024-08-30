@@ -6,7 +6,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class CourseService {
+
+    private final Lock lock = new ReentrantLock();
 
     // 添加课程
     public boolean addCourse(String courseID, String courseName, String courseTeacher, int courseCredits, String courseTime, int courseCapacity) {
@@ -19,31 +24,36 @@ public class CourseService {
             return isAdded;
         }
 
-        String insertQuery = "INSERT INTO tblCourse (courseID, courseName, courseTeacher, courseCredits, courseTime, courseCapacity, selectedCount) VALUES (?, ?, ?, ?, ?, ?, 0)";
+        lock.lock(); // 获取锁
+        try {
+            String insertQuery = "INSERT INTO tblCourse (courseID, courseName, courseTeacher, courseCredits, courseTime, courseCapacity, selectedCount) VALUES (?, ?, ?, ?, ?, ?, 0)";
 
-        try (PreparedStatement preparedStatement = conn.prepareStatement(insertQuery)) {
-            preparedStatement.setString(1, courseID);
-            preparedStatement.setString(2, courseName);
-            preparedStatement.setString(3, courseTeacher);
-            preparedStatement.setInt(4, courseCredits);
-            preparedStatement.setString(5, courseTime);
-            preparedStatement.setInt(6, courseCapacity);
+            try (PreparedStatement preparedStatement = conn.prepareStatement(insertQuery)) {
+                preparedStatement.setString(1, courseID);
+                preparedStatement.setString(2, courseName);
+                preparedStatement.setString(3, courseTeacher);
+                preparedStatement.setInt(4, courseCredits);
+                preparedStatement.setString(5, courseTime);
+                preparedStatement.setInt(6, courseCapacity);
 
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                isAdded = true;
-                System.out.println("Course added successfully.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
+                int rowsAffected = preparedStatement.executeUpdate();
+                if (rowsAffected > 0) {
+                    isAdded = true;
+                    System.out.println("Course added successfully.");
                 }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
+        } finally {
+            lock.unlock(); // 释放锁
         }
 
         return isAdded;
@@ -61,6 +71,7 @@ public class CourseService {
             return response;
         }
 
+        lock.lock(); // 获取锁
         try {
             // 检查课程是否存在及其容量是否已满
             System.out.println("Checking course capacity for courseID: " + courseID);
@@ -150,12 +161,11 @@ public class CourseService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock(); // 释放锁
         }
 
         return response;
     }
-
-
 
     // 退课
     public JSONObject dropCourse(String username, String courseID) {
@@ -169,6 +179,7 @@ public class CourseService {
             return response;
         }
 
+        lock.lock(); // 获取锁
         try {
             // 检查学生是否已经选了该课程
             String checkEnrollmentQuery = "SELECT * FROM tblEnrollment WHERE username = ? AND courseID = ?";
@@ -237,12 +248,11 @@ public class CourseService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock(); // 释放锁
         }
 
         return response;
     }
-
-
 
     // 查询课程信息
     public JSONObject getCourseInfo(String courseID) {
@@ -255,21 +265,24 @@ public class CourseService {
             return null;
         }
 
-        String query = "SELECT * FROM tblCourse WHERE courseID = ?";
+        lock.lock(); // 获取锁
+        try {
+            String query = "SELECT * FROM tblCourse WHERE courseID = ?";
 
-        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setString(1, courseID);
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, courseID);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    courseJson = new JSONObject();
-                    courseJson.put("courseID", resultSet.getString("courseID"));
-                    courseJson.put("courseName", resultSet.getString("courseName"));
-                    courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
-                    courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
-                    courseJson.put("courseTime", resultSet.getString("courseTime"));  // 获取课程时间
-                    courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
-                    courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    if (resultSet.next()) {
+                        courseJson = new JSONObject();
+                        courseJson.put("courseID", resultSet.getString("courseID"));
+                        courseJson.put("courseName", resultSet.getString("courseName"));
+                        courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
+                        courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
+                        courseJson.put("courseTime", resultSet.getString("courseTime"));  // 获取课程时间
+                        courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
+                        courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -282,12 +295,13 @@ public class CourseService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock(); // 释放锁
         }
 
         return courseJson;
     }
 
-    //查询已经选的课程
+    // 查询已经选的课程
     public JSONObject getEnrolledCourses(String username) {
         JSONObject coursesJson = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -298,23 +312,26 @@ public class CourseService {
             return null;
         }
 
-        String query = "SELECT * FROM tblCourse WHERE courseID IN (SELECT courseID FROM tblEnrollment WHERE username = ?)";
+        lock.lock(); // 获取锁
+        try {
+            String query = "SELECT * FROM tblCourse WHERE courseID IN (SELECT courseID FROM tblEnrollment WHERE username = ?)";
 
-        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, username);
 
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    JSONObject courseJson = new JSONObject();
-                    courseJson.put("courseID", resultSet.getString("courseID"));
-                    courseJson.put("courseName", resultSet.getString("courseName"));
-                    courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
-                    courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
-                    courseJson.put("courseTime", resultSet.getString("courseTime"));
-                    courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
-                    courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        JSONObject courseJson = new JSONObject();
+                        courseJson.put("courseID", resultSet.getString("courseID"));
+                        courseJson.put("courseName", resultSet.getString("courseName"));
+                        courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
+                        courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
+                        courseJson.put("courseTime", resultSet.getString("courseTime"));
+                        courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
+                        courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
 
-                    coursesJson.append("courses", courseJson); // 使用 append 将多个课程对象添加到 JSON 数组中
+                        coursesJson.append("courses", courseJson); // 使用 append 将多个课程对象添加到 JSON 数组中
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -327,6 +344,7 @@ public class CourseService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock(); // 释放锁
         }
 
         return coursesJson;
@@ -343,37 +361,40 @@ public class CourseService {
             return null;
         }
 
-        StringBuilder query = new StringBuilder("SELECT * FROM tblCourse WHERE 1=1");
+        lock.lock(); // 获取锁
+        try {
+            StringBuilder query = new StringBuilder("SELECT * FROM tblCourse WHERE 1=1");
 
-        if (courseName != null && !courseName.isEmpty()) {
-            query.append(" AND courseName LIKE ?");
-        }
-
-        if (courseTeacher != null && !courseTeacher.isEmpty()) {
-            query.append(" AND courseTeacher LIKE ?");
-        }
-
-        try (PreparedStatement preparedStatement = conn.prepareStatement(query.toString())) {
-            int paramIndex = 1;
             if (courseName != null && !courseName.isEmpty()) {
-                preparedStatement.setString(paramIndex++, "%" + courseName + "%");
+                query.append(" AND courseName LIKE ?");
             }
+
             if (courseTeacher != null && !courseTeacher.isEmpty()) {
-                preparedStatement.setString(paramIndex, "%" + courseTeacher + "%");
+                query.append(" AND courseTeacher LIKE ?");
             }
 
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    JSONObject courseJson = new JSONObject();
-                    courseJson.put("courseID", resultSet.getString("courseID"));
-                    courseJson.put("courseName", resultSet.getString("courseName"));
-                    courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
-                    courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
-                    courseJson.put("courseTime", resultSet.getString("courseTime"));
-                    courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
-                    courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query.toString())) {
+                int paramIndex = 1;
+                if (courseName != null && !courseName.isEmpty()) {
+                    preparedStatement.setString(paramIndex++, "%" + courseName + "%");
+                }
+                if (courseTeacher != null && !courseTeacher.isEmpty()) {
+                    preparedStatement.setString(paramIndex, "%" + courseTeacher + "%");
+                }
 
-                    coursesJson.append("courses", courseJson);
+                try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                    while (resultSet.next()) {
+                        JSONObject courseJson = new JSONObject();
+                        courseJson.put("courseID", resultSet.getString("courseID"));
+                        courseJson.put("courseName", resultSet.getString("courseName"));
+                        courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
+                        courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
+                        courseJson.put("courseTime", resultSet.getString("courseTime"));
+                        courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
+                        courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+
+                        coursesJson.append("courses", courseJson);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -386,12 +407,13 @@ public class CourseService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock(); // 释放锁
         }
 
         return coursesJson;
     }
 
-//查看所有课程信息
+    // 查看所有课程信息
     public JSONObject getAllCourses() {
         JSONObject coursesJson = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -402,22 +424,25 @@ public class CourseService {
             return null;
         }
 
-        String query = "SELECT * FROM tblCourse";
+        lock.lock(); // 获取锁
+        try {
+            String query = "SELECT * FROM tblCourse";
 
-        try (PreparedStatement preparedStatement = conn.prepareStatement(query);
-             ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query);
+                 ResultSet resultSet = preparedStatement.executeQuery()) {
 
-            while (resultSet.next()) {
-                JSONObject courseJson = new JSONObject();
-                courseJson.put("courseID", resultSet.getString("courseID"));
-                courseJson.put("courseName", resultSet.getString("courseName"));
-                courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
-                courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
-                courseJson.put("courseTime", resultSet.getString("courseTime"));
-                courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
-                courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+                while (resultSet.next()) {
+                    JSONObject courseJson = new JSONObject();
+                    courseJson.put("courseID", resultSet.getString("courseID"));
+                    courseJson.put("courseName", resultSet.getString("courseName"));
+                    courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
+                    courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
+                    courseJson.put("courseTime", resultSet.getString("courseTime"));
+                    courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
+                    courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
 
-                coursesJson.append("courses", courseJson); // 将每门课程添加到 "courses" 数组中
+                    coursesJson.append("courses", courseJson); // 将每门课程添加到 "courses" 数组中
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -429,11 +454,9 @@ public class CourseService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock(); // 释放锁
         }
 
         return coursesJson;
     }
-
-
-
 }

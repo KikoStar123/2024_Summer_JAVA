@@ -6,7 +6,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class StudentInformationService {
+
+    private final Lock lock = new ReentrantLock();
+
     public JSONObject checkStudentInfo() {
         JSONObject studentInfo = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -17,6 +23,7 @@ public class StudentInformationService {
             return studentInfo;
         }
 
+        lock.lock(); // 获取锁
         try {
             String query = "SELECT * FROM tblStudent s INNER JOIN tblUser u ON s.username = u.username";
             PreparedStatement pstmt = conn.prepareStatement(query);
@@ -45,6 +52,7 @@ public class StudentInformationService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock(); // 释放锁
         }
 
         return studentInfo;
@@ -60,6 +68,7 @@ public class StudentInformationService {
             return student;
         }
 
+        lock.lock(); // 获取锁
         try {
             String query = "SELECT * FROM tblStudent s INNER JOIN tblUser u ON s.username = u.username WHERE s.studentid = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
@@ -84,6 +93,7 @@ public class StudentInformationService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock(); // 释放锁
         }
         System.out.println(student.toString());
         return student;
@@ -98,6 +108,7 @@ public class StudentInformationService {
             return false;
         }
 
+        lock.lock(); // 获取锁
         try {
             String query = "UPDATE tblStudent s INNER JOIN tblUser u ON s.username = u.username SET truename = ?, gender = ?, origin = ?, birthday = ?, academy = ? WHERE s.studentId = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
@@ -122,6 +133,7 @@ public class StudentInformationService {
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
             }
+            lock.unlock(); // 释放锁
         }
     }
 }
