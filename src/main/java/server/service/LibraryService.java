@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -246,4 +247,80 @@ public class LibraryService {
 
         return response;
     }
+
+    public JSONObject borrowBook(String username, String bookId) {
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            // 检查书籍是否可借
+            String checkQuery = "SELECT curNumber FROM tblBook WHERE bookId = ?";
+            PreparedStatement checkStmt = conn.prepareStatement(checkQuery);
+            checkStmt.setString(1, bookId);
+            ResultSet checkRs = checkStmt.executeQuery();
+
+            if (checkRs.next()) {
+                int curNumber = checkRs.getInt("curNumber");
+                if (curNumber <= 0) {
+                    response.put("status", "error");
+                    response.put("message", "No available copies for borrowing.");
+                    return response;
+                }
+            } else {
+                response.put("status", "error");
+                response.put("message", "Book not found.");
+                return response;
+            }
+
+            // 更新书籍数量
+            String updateBookQuery = "UPDATE tblBook SET curNumber = curNumber - 1 WHERE bookId = ?";
+            PreparedStatement updateBookStmt = conn.prepareStatement(updateBookQuery);
+            updateBookStmt.setString(1, bookId);
+            updateBookStmt.executeUpdate();
+
+            // 计算初始归还日期为当前日期起后一个月
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MONTH, 1);
+            java.sql.Date returnDate = new java.sql.Date(calendar.getTimeInMillis());
+
+            // 插入借阅记录
+            String insertRecordQuery = "INSERT INTO tblLibRecord (username, bookID, borrowDate, returnDate, isReturn, renewable) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement insertRecordStmt = conn.prepareStatement(insertRecordQuery);
+            insertRecordStmt.setString(1, username);
+            insertRecordStmt.setString(2, bookId);
+            insertRecordStmt.setString(3, new java.sql.Date(System.currentTimeMillis()).toString());
+            insertRecordStmt.setString(4, returnDate.toString());
+            insertRecordStmt.setBoolean(5, false); // 初始未归还
+            insertRecordStmt.setBoolean(6, true); // 初始可续借
+            insertRecordStmt.executeUpdate();
+
+            response.put("status", "success");
+            response.put("message", "Book borrowed successfully.");
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
+
 }

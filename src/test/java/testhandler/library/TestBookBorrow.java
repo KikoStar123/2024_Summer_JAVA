@@ -1,15 +1,15 @@
 package testhandler.library;
 
-import org.json.JSONObject;
-import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import java.io.*;
 import java.net.Socket;
+import org.json.JSONObject;
+import org.junit.Test;
 
-public class TestSearchBooksByName {
+public class TestBookBorrow {
 
     @Test
-    public void testSearchBooksByName() {
+    public void testBookBorrow() {
         String hostname = "localhost";
         int port = 8080;
 
@@ -18,9 +18,10 @@ public class TestSearchBooksByName {
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
             JSONObject request = new JSONObject();
-            request.put("requestType", "searchBooksByName");
+            request.put("requestType", "bookBorrow");
             JSONObject parameters = new JSONObject();
-            parameters.put("bookName", "明朝那些事儿");
+            parameters.put("username", "200000001");
+            parameters.put("bookId", "978-7-121-33462-7");
             request.put("parameters", parameters);
 
             out.println(request.toString());
@@ -31,6 +32,7 @@ public class TestSearchBooksByName {
             JSONObject response = new JSONObject(responseString);
 
             assertEquals("success", response.getString("status"));
+            assertEquals("Book borrowed successfully.", response.getString("message"));
 
         } catch (IOException e) {
             e.printStackTrace();
