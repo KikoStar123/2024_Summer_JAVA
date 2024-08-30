@@ -63,14 +63,6 @@ public class LoginUI extends Application {
             alert.setContentText("Login successful!");
             alert.showAndWait();
 
-
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Login");
-            alert.setHeaderText(null);
-            alert.setContentText("Login failed. Please try again.");
-            alert.showAndWait();
-
             // 关闭当前窗口
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.close();
@@ -85,6 +77,14 @@ public class LoginUI extends Application {
                     e.printStackTrace();
                 }
             });
+
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Login");
+            alert.setHeaderText(null);
+            alert.setContentText("Login failed. Please try again.");
+            alert.showAndWait();
         }
     }
     private void handleRegister() {
