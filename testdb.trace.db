@@ -2136,3 +2136,6 @@ ADD COLUMN isReturn BOOLEAN DEFAULT FALSE [42121-214]
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:842)
+2024-08-30 16:25:26 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ENROLLMENT" not found; SQL statement:
+SELECT * FROM Enrollment [42102-214]

@@ -61,6 +61,9 @@ public class ClientHandler implements Runnable {
         routeMap.put("getLibRecordsByUsername", new GetLibRecordsByUsernameRequestHandler());
         routeMap.put("bookReturn", new BookReturnRequestHandler());
         routeMap.put("bookBorrow", new BookBorrowRequestHandler());
+        routeMap.put("updateBook", new UpdateBookRequestHandler());
+        routeMap.put("addBook", new AddBookRequestHandler());
+        routeMap.put("renewBook", new RenewBookRequestHandler());
         return routeMap;
     }
 

@@ -225,13 +225,14 @@ public class Library {
         }
     }
     //归还书籍的请求
-    public boolean bookReturn(String username, String bookID) {
+    public boolean bookReturn(int borrowID) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "bookReturn");
             request.put("parameters", new JSONObject()
-                    .put("username", username)
-                    .put("bookID", bookID)); // 传递请求类型和用户名以及书名
+                    //.put("username", username)
+                    //.put("bookID", bookID)); // 传递请求类型和用户名以及书名
+                    .put("borrowID", borrowID));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
