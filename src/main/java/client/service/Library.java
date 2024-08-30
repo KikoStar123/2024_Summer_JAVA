@@ -54,13 +54,13 @@ public class Library {
         return foundBooks; // 返回找到的书籍列表
     }
     // 根据书的ID获取书籍详细信息
-    public Book getBookDetailsById(String name) {
+    public Book getBookDetailsById(String bookID) {
         Book foundBook = null;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "getBookDetailsById");
             request.put("parameters", new JSONObject()
-                    .put("name", name)); // 传递请求类型和书的ID
+                    .put("bookID", bookID)); // 传递请求类型和书的ID
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -68,9 +68,10 @@ public class Library {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
-
+            System.out.println(jsonResponse.toString());
             if (jsonResponse.getString("status").equals("success")) {
                 // 假设响应中只包含一本书的信息
+
                 JSONObject bookJson = jsonResponse.getJSONObject("book");
                 foundBook = new Book(
                         bookJson.getString("bookID"),
@@ -89,35 +90,7 @@ public class Library {
         }
         return foundBook; // 返回找到的书籍对象
     }
-    //借阅书籍的请求
-    public boolean bookBorrow(String username, String bookID) {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
-            JSONObject request = new JSONObject();
-            request.put("requestType", "bookBorrow");
-            request.put("parameters", new JSONObject()
-                    .put("username", username)
-                    .put("bookID", bookID)); // 传递请求类型和用户名以及书名
 
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(request.toString());
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String response = in.readLine();
-            JSONObject jsonResponse = new JSONObject(response);
-
-            // 检查服务器响应的状态
-            if (jsonResponse.getString("status").equals("success")) {
-                // 假设服务器响应中包含借阅操作的结果
-                return jsonResponse.getBoolean("borrowed");
-            } else {
-                // 如果服务器返回失败，打印错误信息
-                System.out.println("Failed to borrow book: " + jsonResponse.getString("message"));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false; // 如果发生异常或服务器返回失败，返回false
-    }
     //查看借阅记录的函数（返回recordstatus：中文）以及已还和为还数量
     public List<LibRecord> getLibRecordsByUsername(String username) {
         List<LibRecord> libRecords = new ArrayList<>();
@@ -224,14 +197,45 @@ public class Library {
             return false;
         }
     }
+    //借阅书籍的请求
+    public boolean bookBorrow(String username, String bookID) {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "bookBorrow");
+            request.put("parameters", new JSONObject()
+                    .put("username", username)
+                    .put("bookID", bookID)); // 传递请求类型和用户名以及书名
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            // 检查服务器响应的状态
+            if (jsonResponse.getString("status").equals("success")) {
+                // 假设服务器响应中包含借阅操作的结果
+                System.out.println("Success!");
+                return jsonResponse.getBoolean("borrowed");
+
+            } else {
+                // 如果服务器返回失败，打印错误信息
+                System.out.println("Failed to borrow book: " + jsonResponse.getString("message"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false; // 如果发生异常或服务器返回失败，返回false
+    }
     //归还书籍的请求
-    public boolean bookReturn(String username, String bookID) {
+    //多传上去一个参数
+    public boolean bookReturn(int borrowID) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "bookReturn");
             request.put("parameters", new JSONObject()
-                    .put("username", username)
-                    .put("bookID", bookID)); // 传递请求类型和用户名以及书名
+                    .put("borrowID",borrowID)); // 传递请求类型和用户名以及书名
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -278,6 +282,43 @@ public class Library {
             e.printStackTrace();
             return false;
         }
+    }
+    //更新全部信息，对于管理员或学生来说都可以用。
+
+    public List<LibRecord> getAllLibRecords() {
+        List<LibRecord> libRecords = new ArrayList<>();
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "getAllLibRecords"); // 请求类型为获取所有借阅记录
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            if (jsonResponse.getString("status").equals("success")) {
+                JSONArray recordsArray = jsonResponse.getJSONArray("libRecords");
+                for (int i = 0; i < recordsArray.length(); i++) {
+                    JSONObject recordJson = recordsArray.getJSONObject(i);
+                    LibRecord libRecord = new LibRecord(
+                            recordJson.getInt("borrowId"),
+                            recordJson.getString("username"),
+                            recordJson.getString("bookID"),
+                            recordJson.getString("borrowDate"),
+                            recordJson.getString("returnDate"),
+                            recordJson.getString("renewable"),
+                            recordJson.getBoolean("isReturn"),
+                            recordJson.getString("recordStatus")
+                    );
+                    libRecords.add(libRecord);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return libRecords; // 返回借阅记录列表，即使为空也会返回
     }
 
 }
