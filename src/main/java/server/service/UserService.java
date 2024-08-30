@@ -81,8 +81,8 @@ public class UserService {
                     System.out.println("User authenticated successfully.");
 
                     userJson = new JSONObject();
-                    userJson.put("id", resultSet.getString("username"));
-                    userJson.put("username", resultSet.getString("truename"));
+                    userJson.put("username", resultSet.getString("username"));
+                    userJson.put("truename", resultSet.getString("truename"));
                     userJson.put("password", resultSet.getString("pwd"));
                     userJson.put("age", resultSet.getInt("age"));
                     userJson.put("role", resultSet.getString("role"));
@@ -159,8 +159,8 @@ public class UserService {
         JSONObject userJson = new JSONObject();
 
         if(newUser && newStudent){
-            userJson.put("id", allocatedId);
-            userJson.put("username", truename);
+            userJson.put("username", allocatedId);
+            userJson.put("truename", truename);
             userJson.put("role", "student");
             userJson.put("gender", gender);
             userJson.put("pwd", pwd);
