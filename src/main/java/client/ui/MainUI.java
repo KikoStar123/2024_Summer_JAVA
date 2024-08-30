@@ -46,7 +46,11 @@ public class MainUI extends Application {
     }
 
     private void handleLibrary() {
-        // 图书馆处理逻辑
+
+    }
+
+    private void handleStudent(String username) {
+        // 学籍管理处理逻辑
         Platform.runLater(() -> {
             StuUI stuUI = new StuUI(user);
             try {
@@ -55,11 +59,6 @@ public class MainUI extends Application {
                 e.printStackTrace();
             }
         });
-    }
-
-    private void handleStudent(String username) {
-        // 学籍管理处理逻辑
-
     }
 
     public void display() {

@@ -4,11 +4,15 @@ import client.service.StudentInformation;
 import client.service.User;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.net.URL;
 
 public class StuUI extends Application {
     private User user;
@@ -18,29 +22,23 @@ public class StuUI extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
-//        StudentInformation student = new StudentInformation();
-//        StudentInformation.oneStudentInformation onestudent = student.viewStudentInfo(user.getRole(), user.getId());
+    public void start(Stage primaryStage) throws Exception {
+
+        //StudentInformation student = new StudentInformation();
+        //StudentInformation.oneStudentInformation onestudent = student.viewStudentInfo(user.getRole(), user.getId());
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Studentui.fxml"));
+        Parent root = loader.load();
+
+        Studentuicontroller controller = loader.getController();
+        controller.setUser(user);
 
         primaryStage.setTitle("学生学籍管理");
-
-        VBox vbox = new VBox();
-        vbox.setSpacing(10);
-
-        Label nameLabel = new Label("name: " );
-        Button backButton = new Button("返回");
-
-        backButton.setOnAction(e -> {
-            primaryStage.close();
-            MainUI mainUI = new MainUI(user);
-            mainUI.display();
-        });
-
-        vbox.getChildren().addAll(nameLabel, backButton);
-
-        Scene scene = new Scene(vbox, 300, 350);
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(root, 300, 500));
         primaryStage.show();
+    }
+    public static void main(String[]args){
+        launch(args);
     }
 
 }
