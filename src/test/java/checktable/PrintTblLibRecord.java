@@ -18,22 +18,23 @@ public class PrintTblLibRecord {
                 ResultSet rs = pstmt.executeQuery();
 
                 System.out.println("Printing tblLibRecord table...");
-                System.out.println("---------------------------------------------------------------------------------------------------------");
-                System.out.println("|  borrowId  |  username  |  bookId  |  borrowDate  |  returnDate  |  renewable  |");
-                System.out.println("---------------------------------------------------------------------------------------------------------");
+                System.out.println("------------------------------------------------------------------------------------------------------");
+                System.out.println("|  borrowId  |  username  |  bookID  |  borrowDate  |  returnDate  |  isReturn  |  renewable  |");
+                System.out.println("------------------------------------------------------------------------------------------------------");
 
                 while (rs.next()) {
                     int borrowId = rs.getInt("borrowId");
                     String username = rs.getString("username");
-                    String bookId = rs.getString("bookId");
+                    String bookID = rs.getString("bookID");
                     String borrowDate = rs.getString("borrowDate");
                     String returnDate = rs.getString("returnDate");
+                    boolean isReturn = rs.getBoolean("isReturn");
                     String renewable = rs.getString("renewable");
 
-                    System.out.println("|   " + borrowId + "   |   " + username + "   |   " + bookId + "   |   " + borrowDate + "   |   " + returnDate + "   |   " + renewable + "   |");
+                    System.out.println("|   " + borrowId + "   |   " + username + "   |   " + bookID + "   |   " + borrowDate + "   |   " + returnDate + "   |   " + isReturn + "   |   " + renewable + "   |");
                 }
 
-                System.out.println("---------------------------------------------------------------------------------------------------------");
+                System.out.println("------------------------------------------------------------------------------------------------------");
 
                 conn.close();
             } catch (Exception e) {
