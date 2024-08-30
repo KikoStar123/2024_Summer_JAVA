@@ -191,6 +191,7 @@ public class Library {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
+            System.out.println(jsonResponse.toString());
             // 检查服务器响应的状态
             return jsonResponse.getString("status").equals("success");
         } catch (IOException e) {
