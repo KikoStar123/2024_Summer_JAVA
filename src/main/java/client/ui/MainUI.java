@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+import client.ui.LibraryUI;
 import javafx.scene.control.Button;
 
 public class MainUI extends Application {
@@ -30,7 +30,7 @@ public class MainUI extends Application {
 
         // 添加按钮
         Button libButton = new Button("图书馆");
-        libButton.setOnAction(e -> handleLibrary());
+        libButton.setOnAction(e -> handleLibrary(user.getUsername()));
         vbox.getChildren().add(libButton);
 
         Button button2 = new Button("选课系统");
@@ -45,9 +45,17 @@ public class MainUI extends Application {
         primaryStage.show();
     }
 
-    private void handleLibrary() {
-
+    private void handleLibrary(String username) {
+        Platform.runLater(() -> {
+            LibraryUI libraryUI = new LibraryUI(user);
+            try {
+                libraryUI.start(new Stage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
+
 
     private void handleStudent(String username) {
         // 学籍管理处理逻辑
