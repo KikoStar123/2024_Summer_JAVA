@@ -6,7 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -122,4 +123,79 @@ public class LibraryService {
 
         return response;
     }
+
+    public JSONObject getLibRecordsByUsername(String username) {
+        JSONObject response = new JSONObject();
+        JSONArray recordArray = new JSONArray();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "SELECT * FROM tblLibRecord WHERE username = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            int retNumber = 0;
+            int noretNumber = 0;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date currentDate = new Date();
+
+            while (rs.next()) {
+                JSONObject record = new JSONObject();
+                record.put("borrowId", rs.getInt("borrowId"));
+                record.put("username", rs.getString("username"));
+                record.put("bookID", rs.getString("bookID"));
+                record.put("borrowDate", rs.getString("borrowDate"));
+                record.put("returnDate", rs.getString("returnDate"));
+                record.put("isReturn", rs.getBoolean("isReturn"));
+                record.put("renewable", rs.getBoolean("renewable"));
+
+                String recordStatus;
+                if (rs.getBoolean("isReturn")) {
+                    recordStatus = "已还";
+                    retNumber++;
+                } else {
+                    Date returnDate = sdf.parse(rs.getString("returnDate"));
+                    if (currentDate.before(returnDate) || currentDate.equals(returnDate)) {
+                        recordStatus = "未还";
+                    } else {
+                        recordStatus = "超期";
+                    }
+                    noretNumber++;
+                }
+                record.put("recordStatus", recordStatus);
+
+                recordArray.put(record);
+            }
+
+            response.put("recordArray", recordArray);
+            response.put("retNumber", retNumber);
+            response.put("noretNumber", noretNumber);
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
+
 }
