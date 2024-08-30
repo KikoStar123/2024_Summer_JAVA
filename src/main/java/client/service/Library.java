@@ -114,15 +114,16 @@ public class Library {
                 JSONArray recordsArray = data.getJSONArray("recordArray");
 
                 for (int i = 0; i < recordsArray.length(); i++) {
-                    JSONObject recordJson = recordsArray.getJSONObject(i);
-                    boolean isReturn = "已归还".equals(recordJson.getString("isReturn")); // 根据实际情况调整
+                    JSONObject recordJson = recordsArray.getJSONObject(i);//***yjb
+                    boolean isReturn = recordJson.getBoolean("isReturn"); // 根据实际情况调整
+                    boolean renewable = recordJson.getBoolean("renewable");
                     LibRecord libRecord = new LibRecord(
                             recordJson.getInt("borrowId"),
                             recordJson.getString("username"),
                             recordJson.getString("bookID"),
                             recordJson.getString("borrowDate"),
                             recordJson.getString("returnDate"),
-                            recordJson.getString("renewable"),
+                            renewable,
                             isReturn,
                             recordJson.getString("recordStatus")
                     );
@@ -308,7 +309,7 @@ public class Library {
                             recordJson.getString("bookID"),
                             recordJson.getString("borrowDate"),
                             recordJson.getString("returnDate"),
-                            recordJson.getString("renewable"),
+                            recordJson.getBoolean("renewable"),
                             recordJson.getBoolean("isReturn"),
                             recordJson.getString("recordStatus")
                     );
