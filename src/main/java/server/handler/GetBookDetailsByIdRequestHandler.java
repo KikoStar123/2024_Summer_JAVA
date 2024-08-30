@@ -7,7 +7,7 @@ public class GetBookDetailsByIdRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {
         LibraryService libraryService = new LibraryService();
-        JSONObject bookDetails = libraryService.getBookDetailsById(parameters.getString("bookId"));
+        JSONObject bookDetails = libraryService.getBookDetailsById(parameters.getString("bookID"));//first error
 
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("status", bookDetails.getString("status"));
