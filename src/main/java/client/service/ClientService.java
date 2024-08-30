@@ -58,12 +58,12 @@ public class ClientService {
             if (jsonResponse.getString("status").equals("success")) {
                 // 假设服务器返回一个User对象的JSON表示
                 JSONObject userJson = jsonResponse.getJSONObject("user"); // 获取用户信息
-                String userName = userJson.getString("username");
+                String userName = userJson.getString("username");//***
              //   String userEmail = userJson.getString("email"); // 示例属性
                // String userName = userJson.getString("username");
-                Gender gender = Gender.valueOf(userJson.getString("gender").toLowerCase()); // 性别
-                Role role = Role.valueOf(userJson.getString("role").toLowerCase()); // 角色
-                int age = userJson.getInt("age"); // 年龄
+                Gender gender = Gender.valueOf(userJson.getString("gender").toLowerCase()); // 性别***
+                Role role = Role.valueOf(userJson.getString("role").toLowerCase()); // 角色***
+                int age = userJson.getInt("age"); // 年龄***
                 // 假设User类有一个构造函数接受用户名和电子邮件
                 return new User(userName,role, age, gender,password); // 返回User对象
             }
@@ -139,6 +139,7 @@ public class ClientService {
                     .put("origin", origin)
                     .put("pwd", pwd) // 密码字段
                     .put("id", id) // 添加学号字段
+                    .put("age",calculateAge(birthday))//添加年龄字段
             );
 
             // 发送请求和接收响应的代码保持不变...
@@ -159,7 +160,6 @@ public class ClientService {
                 user.setGender(Gender.valueOf(jsonResponse.getString("gender")));
                 user.setRole(Role.valueOf(jsonResponse.getString("role")));
                 user.setPwd(jsonResponse.getString("pwd"));
-                //user.setId(jsonResponse.getString("id")); // 设置学号
                 int age = calculateAge(birthday);
                 user.setAge(age);
                 return user;

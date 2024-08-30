@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Library {
 
-    private static final String SERVER_ADDRESS = "your.server.address";
+    private static final String SERVER_ADDRESS = "localhost";
     private static final int SERVER_PORT = 8080; // 替换为服务器端口号
 
     // 假设有一个方法用于查询书籍
@@ -87,5 +87,34 @@ public class Library {
             e.printStackTrace();
         }
         return foundBook; // 返回找到的书籍对象
+    }
+    //借阅书籍的请求
+    public boolean bookBorrow(String username, String bookID) {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "bookBorrow");
+            request.put("parameters", new JSONObject()
+                    .put("username", username)
+                    .put("bookName", bookID)); // 传递请求类型和用户名以及书名
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            // 检查服务器响应的状态
+            if (jsonResponse.getString("status").equals("success")) {
+                // 假设服务器响应中包含借阅操作的结果
+                return jsonResponse.getBoolean("borrowed");
+            } else {
+                // 如果服务器返回失败，打印错误信息
+                System.out.println("Failed to borrow book: " + jsonResponse.getString("message"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false; // 如果发生异常或服务器返回失败，返回false
     }
 }
