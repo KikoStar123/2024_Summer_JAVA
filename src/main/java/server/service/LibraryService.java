@@ -49,7 +49,6 @@ public class LibraryService {
                 booksArray.put(book);
             }
 
-            response.put("status", "success");
             response.put("books", booksArray);
         } catch (Exception e) {
             response.put("status", "error");
