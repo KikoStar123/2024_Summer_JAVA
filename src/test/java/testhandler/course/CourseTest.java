@@ -13,15 +13,15 @@ public class CourseTest {
             //Thread.sleep(500); // 延时，确保服务器有时间处理
             System.out.println('\n');
 
-            sendEnrollRequest("student4", "CS101");//选课 学生-选课编号
+            sendEnrollRequest("200000001", "CS101");//选课 学生-选课编号
             //Thread.sleep(500); // 延时，确保服务器有时间处理
             System.out.println('\n');
 
-            sendViewEnrolledCoursesRequest("student4");//查看某个学生的已选课程信息
+            sendViewEnrolledCoursesRequest("200000001");//查看某个学生的已选课程信息
             //Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
-            sendDropRequest("student4", "CS101");//退课
+            sendDropRequest("200000001", "CS101");//退课
             //Thread.sleep(500); // 再次延时
             System.out.println('\n');
 

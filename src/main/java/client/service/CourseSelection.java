@@ -263,6 +263,8 @@ public class CourseSelection {
             String response = in.readLine();//从输入流中读取一行数据，并将其存储在字符串response中（假设按行发送）
             JSONObject jsonResponse = new JSONObject(response);//将字符串解析为一个JSON对象
 
+            System.out.println(jsonResponse.toString());
+
             JSONArray data = jsonResponse.getJSONArray("courses");//获取JSON数组
 
             // 获取课程数量
@@ -314,9 +316,12 @@ public class CourseSelection {
             // 读取响应
             //创建了一个BufferedReader对象in，用于从网络连接的输入流读取数据
             String response = in.readLine();//从输入流中读取一行数据，并将其存储在字符串response中（假设按行发送）
-            JSONObject data = new JSONObject(response);//将字符串解析为一个JSON对象
+            JSONObject jsonResponse = new JSONObject(response);//将字符串解析为一个JSON对象
+            JSONObject data = jsonResponse.getJSONObject("courseInfo");
+
 
             oneCourseinfo thecourse = new CourseSelection.oneCourseinfo();
+
             thecourse.courseID = data.getString("courseID");
             thecourse.courseName = data.getString("courseName");
             thecourse.courseTeacher = data.getString("courseTeacher");

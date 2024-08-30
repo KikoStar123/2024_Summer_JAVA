@@ -7,16 +7,16 @@ public class CourseSelectionTest {
     public static void main(String[] args) {
         CourseSelection courseSelection = new CourseSelection();
 
-//        // 测试获取所有课程
-//        System.out.println("测试获取所有课程：");
-//        CourseSelection.oneCourseinfo[] courses = courseSelection.GetAllCourses();
-//        if (courses != null) {
-//            for (CourseSelection.oneCourseinfo course : courses) {
-//                System.out.println("课程ID: " + course.getCourseID() + ", 课程名称: " + course.getCourseName());
-//            }
-//        } else {
-//            System.out.println("获取课程失败");
-//        }
+        // 测试获取所有课程
+        System.out.println("测试获取所有课程：");
+        CourseSelection.oneCourseinfo[] courses = courseSelection.GetAllCourses();
+        if (courses != null) {
+            for (CourseSelection.oneCourseinfo course : courses) {
+                System.out.println("课程ID: " + course.getCourseID() + ", 课程名称: " + course.getCourseName());
+            }
+        } else {
+            System.out.println("获取课程失败");
+        }
 
         // 测试选课功能
         System.out.println("\n测试选课功能：");
@@ -25,10 +25,7 @@ public class CourseSelectionTest {
         boolean enrollSuccess = courseSelection.enrollInCourse(username, courseID);
         System.out.println("选课 " + courseID + " 结果: " + (enrollSuccess ? "成功" : "失败"));
 
-        // 测试退课功能
-        System.out.println("\n测试退课功能：");
-        boolean dropSuccess = courseSelection.dropCourse(username, courseID);
-        System.out.println("退课 " + courseID + " 结果: " + (dropSuccess ? "成功" : "失败"));
+
 
         // 测试查看已选课程
         System.out.println("\n测试查看已选课程：");
@@ -73,5 +70,10 @@ public class CourseSelectionTest {
         } else {
             System.out.println("搜索课程失败");
         }
+
+        // 测试退课功能
+        System.out.println("\n测试退课功能：");
+        boolean dropSuccess = courseSelection.dropCourse(username, courseID);
+        System.out.println("退课 " + courseID + " 结果: " + (dropSuccess ? "成功" : "失败"));
     }
 }
