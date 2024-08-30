@@ -95,7 +95,7 @@ public class Library {
             request.put("requestType", "bookBorrow");
             request.put("parameters", new JSONObject()
                     .put("username", username)
-                    .put("bookName", bookID)); // 传递请求类型和用户名以及书名
+                    .put("bookID", bookID)); // 传递请求类型和用户名以及书名
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -207,6 +207,61 @@ public class Library {
             request.put("requestType", "renew_book"); // 请求类型为续借
             JSONObject parameters = new JSONObject();
             parameters.put("borrowID", borrowID); // 传递需要续借的书籍的借阅号
+            request.put("parameters", parameters);
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            // 检查服务器响应的状态
+            return jsonResponse.getString("status").equals("success");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    //归还书籍的请求
+    public boolean bookReturn(String username, String bookID) {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "bookReturn");
+            request.put("parameters", new JSONObject()
+                    .put("username", username)
+                    .put("bookID", bookID)); // 传递请求类型和用户名以及书名
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            // 检查服务器响应的状态
+            if (jsonResponse.getString("status").equals("success")) {
+                // 假设服务器响应中包含借阅操作的结果
+                return jsonResponse.getBoolean("Returned");
+            } else {
+                // 如果服务器返回失败，打印错误信息
+                System.out.println("Failed to return book: " + jsonResponse.getString("message"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false; // 如果发生异常或服务器返回失败，返回false
+    }
+    //bookID按照ISBN来区分，所以同名不同版本也是不同的id。
+    public boolean updateBook(String bookID, int finalLibNumber) {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "updateBook"); // 请求类型为更新书籍信息
+
+            JSONObject parameters = new JSONObject();
+            parameters.put("bookID", bookID); // 传递书籍ID
+            parameters.put("finallibNumber", finalLibNumber); // 传递要更改的数量
+// libnumber和curnumber都要改变。
             request.put("parameters", parameters);
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
