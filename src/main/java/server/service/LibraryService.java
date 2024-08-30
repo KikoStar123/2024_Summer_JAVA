@@ -533,4 +533,72 @@ public class LibraryService {
         return response;
     }
 
+    public JSONObject getAllLibRecords() {
+        JSONObject response = new JSONObject();
+        JSONArray recordsArray = new JSONArray();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "SELECT * FROM tblLibRecord";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            ResultSet rs = pstmt.executeQuery();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date currentDate = new Date();
+
+            while (rs.next()) {
+                JSONObject record = new JSONObject();
+                record.put("borrowId", rs.getInt("borrowId"));
+                record.put("username", rs.getString("username"));
+                record.put("bookID", rs.getString("bookID"));
+                record.put("borrowDate", rs.getString("borrowDate"));
+                record.put("returnDate", rs.getString("returnDate"));
+                record.put("isReturn", rs.getBoolean("isReturn"));
+                record.put("renewable", rs.getBoolean("renewable"));
+
+                String recordStatus;
+                if (rs.getBoolean("isReturn")) {
+                    recordStatus = "已还";
+                } else {
+                    Date returnDate = sdf.parse(rs.getString("returnDate"));
+                    if (currentDate.before(returnDate) || currentDate.equals(returnDate)) {
+                        recordStatus = "未还";
+                    } else {
+                        recordStatus = "超期";
+                    }
+                }
+                record.put("recordStatus", recordStatus);
+
+                recordsArray.put(record);
+            }
+
+            response.put("status", "success");
+            response.put("libRecords", recordsArray);
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
+
 }
