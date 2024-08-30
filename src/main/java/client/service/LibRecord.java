@@ -6,12 +6,12 @@ package client.service;
         private String bookID;       // 书籍号，外键关联 tblBook 表
         private String borrowDate;   // 借阅日期
         private String returnDate;   // 归还日期
-        private String renewable;    // 可否续借，字符串表示 true 或 false
+        private boolean renewable;    // 可否续借，字符串表示 true 或 false
         private boolean isReturn;    //是否已经归还
         private String recordStatus;  //借阅状态
         // 构造函数
     public LibRecord(int borrowId, String username, String bookID,
-                     String borrowDate, String returnDate, String renewable
+                     String borrowDate, String returnDate, boolean renewable
     , boolean isReturn, String recordStatus) {
         this.borrowId = borrowId;
         this.username = username;
@@ -76,11 +76,11 @@ package client.service;
         this.returnDate = returnDate;
     }
 
-    public String getRenewable() {
+    public boolean getRenewable() {
         return renewable;
     }
 
-    public void setRenewable(String renewable) {
+    public void setRenewable(boolean renewable) {
         this.renewable = renewable;
     }
 
