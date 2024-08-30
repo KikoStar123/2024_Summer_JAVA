@@ -29,8 +29,9 @@ public class Library {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
+            JSONObject data = jsonResponse.getJSONObject("data");
             if (jsonResponse.getString("status").equals("success")) {
-                JSONArray booksArray = jsonResponse.getJSONArray("books");
+                JSONArray booksArray = data.getJSONArray("books");
                 for (int i = 0; i < booksArray.length(); i++) {
                     JSONObject bookJson = booksArray.getJSONObject(i);
                     Book book = new Book(
