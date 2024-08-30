@@ -11,6 +11,7 @@ import java.util.Date;
 
 public class ShoppingOrderService {
 
+    //创建订单
     public boolean createOrder(String username, String productID, int productNumber, float paidMoney) {
         boolean isSuccess = false;
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -52,6 +53,7 @@ public class ShoppingOrderService {
         return isSuccess;
     }
 
+    //生成订单ID
     private String generateOrderID() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
         String datePart = sdf.format(new Date());
@@ -60,6 +62,7 @@ public class ShoppingOrderService {
         return datePart + uniquePart;
     }
 
+    //获取订单详情
     public JSONObject getOrderDetails(String orderID) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -103,6 +106,7 @@ public class ShoppingOrderService {
         return response;
     }
 
+    //更新订单评论状态
     public boolean updateOrderCommentStatus(String orderID, boolean whetherComment) {
         boolean isSuccess = false;
         DatabaseConnection dbConnection = new DatabaseConnection();

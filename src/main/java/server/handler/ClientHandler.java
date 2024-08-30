@@ -37,8 +37,6 @@ public class ClientHandler implements Runnable {
             // 获取对应的处理器
             RequestHandler handler = routeMap.getOrDefault(requestType, new UnknownRequestHandler());
 
-
-
             // 执行处理器逻辑
             String response = handler.handle(parameters);
             out.println(response);
@@ -77,11 +75,29 @@ public class ClientHandler implements Runnable {
         routeMap.put("viewCourseInfo", new ViewCourseInfoRequestHandler());  // 课程信息查看处理
         routeMap.put("getAllCourses", new GetAllCoursesRequestHandler());//查看所有课程信息
 
-        // 商店相关请求
-//        routeMap.put("getAllProducts", new GetAllProductsRequestHandler());
-//        routeMap.put("getProductDetails", new GetProductDetailsRequestHandler());
-//        routeMap.put("addToCart", new AddToCartRequestHandler());
-//        routeMap.put("createOrder", new CreateOrderRequestHandler());
+        // 商店相关请求 - 通过相应的处理器根据 action字段 处理
+        /*
+        * e.g.
+        * const request = {
+            requestType: "product",
+            parameters: {
+                action: "add",//<-此处action字段规定请求类型
+                productID: "12345",
+                productName: "New Product",
+                productDetail: "This is a new product",
+                productImage: "base64encodedImageString",
+                productOriginalPrice: 99.99,
+                productCurrentPrice: 89.99,
+                productInventory: 100,
+                productAddress: "Warehouse A",
+                productCommentRate: 4.5,
+                productStatus: true
+        }
+        };
+        * */
+        routeMap.put("product", new ProductRequestHandler());  // 处理与商品相关的请求
+        routeMap.put("cart", new CartRequestHandler());        // 处理与购物车相关的请求
+        routeMap.put("order", new OrderRequestHandler());      // 处理与订单相关的请求
 
         return routeMap;
     }

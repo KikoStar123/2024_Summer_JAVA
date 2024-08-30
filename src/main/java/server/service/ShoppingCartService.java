@@ -63,14 +63,19 @@ public class ShoppingCartService {
             return false;
         }
 
-        String query = "INSERT INTO tblShoppingCart (username, productID, productNumber) VALUES (?, ?, ?) " +
-                "ON DUPLICATE KEY UPDATE productNumber = productNumber + ?";
+        // 使用 MERGE INTO 语法来实现类似的功能
+        String query = "MERGE INTO tblShoppingCart AS target " +
+                "USING (VALUES (?, ?, ?)) AS source (username, productID, productNumber) " +
+                "ON target.username = source.username AND target.productID = source.productID " +
+                "WHEN MATCHED THEN " +
+                "  UPDATE SET target.productNumber = target.productNumber + source.productNumber " +
+                "WHEN NOT MATCHED THEN " +
+                "  INSERT (username, productID, productNumber) VALUES (source.username, source.productID, source.productNumber)";
 
         try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, productID);
             preparedStatement.setInt(3, quantity);
-            preparedStatement.setInt(4, quantity);
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
@@ -91,7 +96,8 @@ public class ShoppingCartService {
         return isSuccess;
     }
 
-    //添加购物车某个商品的数量
+
+    //更改购物车某个商品的数量
     public boolean updateCart(String username, String productID, int quantity) {
         boolean isSuccess = false;
         DatabaseConnection dbConnection = new DatabaseConnection();
