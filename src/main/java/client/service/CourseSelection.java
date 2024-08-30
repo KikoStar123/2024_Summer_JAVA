@@ -23,6 +23,26 @@ public class CourseSelection {
         int Day;//周几
         int stasection;//起始节次
         int endsection;//结束节次
+
+        public int getStaWeek() {
+            return staWeek;
+        }
+
+        public int getEndWeek() {
+            return endWeek;
+        }
+
+        public int getDay() {
+            return Day;
+        }
+
+        public int getStasection() {
+            return stasection;
+        }
+
+        public int getEndsection() {
+            return endsection;
+        }
     }
 
     public class oneCourseinfo
@@ -34,6 +54,34 @@ public class CourseSelection {
         onePeriod[] courseTime=new onePeriod[0];//课程时间（周次、周几、节次）
         int courseCapacity;//课程最大容量
         int selectedCount;//已选人数
+
+        public String getCourseID() {
+            return courseID;
+        }
+
+        public String getCourseName() {
+            return courseName;
+        }
+
+        public String getCourseTeacher() {
+            return courseTeacher;
+        }
+
+        public int getCourseCredits() {
+            return courseCredits;
+        }
+
+        public onePeriod[] getCourseTime() {
+            return courseTime;
+        }
+
+        public int getCourseCapacity() {
+            return courseCapacity;
+        }
+
+        public int getSelectedCount() {
+            return selectedCount;
+        }
     }
 
     /**
