@@ -1,7 +1,6 @@
 package client.ui;
 
 import client.service.ClientService;
-import client.service.Gender;
 import client.service.Role;
 import client.service.User;
 import javafx.application.Application;
@@ -90,4 +89,5 @@ public class LoginUI extends Application {
     private void handleRegister() {
         // 注册处理逻辑
     }
+
 }
