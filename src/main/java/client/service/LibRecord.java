@@ -1,21 +1,26 @@
 package client.service;
 
-public class LibRecord {
-    private int borrowId;       // 借阅号，主键，自增
-    private String username;     // 用户账号，外键关联 tblUser 表
-    private String bookID;       // 书籍号，外键关联 tblBook 表
-    private String borrowDate;   // 借阅日期
-    private String returnDate;   // 归还日期
-    private String renewable;    // 可否续借，字符串表示 true 或 false
-
-    // 构造函数
-    public LibRecord(int borrowId, String username, String bookID, String borrowDate, String returnDate, String renewable) {
+    public class LibRecord {
+        private int borrowId;       // 借阅号，主键，自增
+        private String username;     // 用户账号，外键关联 tblUser 表
+        private String bookID;       // 书籍号，外键关联 tblBook 表
+        private String borrowDate;   // 借阅日期
+        private String returnDate;   // 归还日期
+        private String renewable;    // 可否续借，字符串表示 true 或 false
+        private boolean isReturn;    //是否已经归还
+        private String recordStatus;  //借阅状态
+        // 构造函数
+    public LibRecord(int borrowId, String username, String bookID,
+                     String borrowDate, String returnDate, String renewable
+    , boolean isReturn, String recordStatus) {
         this.borrowId = borrowId;
         this.username = username;
         this.bookID = bookID;
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
         this.renewable = renewable;
+        this.isReturn = isReturn;
+        this.recordStatus = recordStatus;
     }
 
     // Getter 和 Setter 方法
@@ -27,6 +32,18 @@ public class LibRecord {
         this.borrowId = borrowId;
     }
 
+    public boolean getisReturn() {
+        return isReturn;
+    }
+    public void setisReturn(boolean isReturn) {
+        this.isReturn = isReturn;
+    }
+    public String getRecordStatus() {
+        return recordStatus;
+    }
+    public void setRecordStatus(String recordStatus) {
+        this.recordStatus = recordStatus;
+    }
     public String getUsername() {
         return username;
     }

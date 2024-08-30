@@ -265,29 +265,30 @@ public class ClientService {
 //        }
 //    }
     //修改密码的前端请求
-    public boolean update(String username, String password) {//定义更改（更新）用户信息功能
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
-            // 创建请求
-            JSONObject request = new JSONObject();
-            request.put("requestType", "update");//main difference
-            request.put("parameters", new JSONObject()
-                    .put("username", username)
-                    .put("password", password));
-            //应该还要更新学籍信息，图书馆借阅，用户账号信息等等。
-            // 发送请求
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(request.toString());
+public boolean updatePassword(String username, String oldPassword, String newPassword) {
+    try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+        // 创建请求
+        JSONObject request = new JSONObject();
+        request.put("requestType", "update_password"); // 明确请求类型为更新密码
+        request.put("parameters", new JSONObject()
+                .put("username", username)
+                .put("oldPassword", oldPassword) // 添加旧密码参数
+                .put("newPassword", newPassword)); // 添加新密码参数
 
-            // 接收响应
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String response = in.readLine();
-            JSONObject jsonResponse = new JSONObject(response);
+        // 发送请求
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        out.println(request.toString());
 
-            // 返回注册结果
-            return jsonResponse.getString("status").equals("success");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        // 接收响应
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        String response = in.readLine();
+        JSONObject jsonResponse = new JSONObject(response);
+
+        // 返回密码更新结果
+        return jsonResponse.getString("status").equals("success");
+    } catch (IOException e) {
+        e.printStackTrace();
+        return false;
     }
+}
 }
