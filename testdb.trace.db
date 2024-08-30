@@ -2136,138 +2136,164 @@ ADD COLUMN isReturn BOOLEAN DEFAULT FALSE [42121-214]
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:842)
-2024-08-30 15:01:27 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "USERNAME" not found; SQL statement:
-SELECT COUNT(*) FROM USERS WHERE USERNAME = ? AND PASSWORD = ? [42122-214]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:502)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.expression.ExpressionColumn.getColumnException(ExpressionColumn.java:244)
-	at org.h2.expression.ExpressionColumn.optimizeOther(ExpressionColumn.java:226)
-	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:213)
-	at org.h2.expression.condition.Comparison.optimize(Comparison.java:139)
-	at org.h2.expression.condition.ConditionAndOr.optimize(ConditionAndOr.java:136)
-	at org.h2.expression.Expression.optimizeCondition(Expression.java:148)
-	at org.h2.command.query.Select.prepareExpressions(Select.java:1177)
-	at org.h2.command.query.Query.prepare(Query.java:218)
-	at org.h2.command.Parser.prepareCommand(Parser.java:575)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:631)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:554)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1116)
-	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:92)
-	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:288)
-	at com.zaxxer.hikari.pool.ProxyConnection.prepareStatement(ProxyConnection.java:327)
-	at com.zaxxer.hikari.pool.HikariProxyConnection.prepareStatement(HikariProxyConnection.java)
-	at server.service.UserService.login(UserService.java:23)
-	at server.handler.LoginRequestHandler.handle(LoginRequestHandler.java:24)
+<<<<<<< HEAD
+2024-08-30 16:30:15 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "-- 创建订单表\000d\000aCREATE TABLE tblShoppingOrder (\000d\000a    orderID VARCHAR(255) PRIMARY KEY,\000d\000a    username VARCHAR(255),\000d\000a    productID [*]ARRAY VARCHAR(255) ARRAY, -- 数组类型\000d\000a    productNumber ARRAY INT ARRAY, -- 数组类型\000d\000a    paidMoney FLOAT,\000d\000a    FOREIGN KEY (username) REFERENCES tblShoppingUser(username)\000d\000a)"; expected "IDENTITY, BIGSERIAL, SERIAL, data type"; SQL statement:
+-- 创建订单表
+CREATE TABLE tblShoppingOrder (
+    orderID VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255),
+    productID ARRAY VARCHAR(255) ARRAY, -- 数组类型
+    productNumber ARRAY INT ARRAY, -- 数组类型
+    paidMoney FLOAT,
+    FOREIGN KEY (username) REFERENCES tblShoppingUser(username)
+) [42001-214]
+2024-08-30 16:35:54 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE tblShoppingOrder (\000d\000a    orderID VARCHAR(255) PRIMARY KEY,\000d\000a    username VARCHAR(255),\000d\000a    productID [*]ARRAY VARCHAR(255) ARRAY, -- 数组类型\000d\000a    productNumber ARRAY INT ARRAY, -- 数组类型\000d\000a    paidMoney FLOAT,\000d\000a    FOREIGN KEY (username) REFERENCES tblShoppingUser(username)\000d\000a)"; expected "IDENTITY, BIGSERIAL, SERIAL, data type"; SQL statement:
+CREATE TABLE tblShoppingOrder (
+    orderID VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255),
+    productID ARRAY VARCHAR(255) ARRAY, -- 数组类型
+    productNumber ARRAY INT ARRAY, -- 数组类型
+    paidMoney FLOAT,
+    FOREIGN KEY (username) REFERENCES tblShoppingUser(username)
+) [42001-214]
+2024-08-30 16:36:01 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE tblShoppingOrder (\000d\000a    orderID VARCHAR(255) PRIMARY KEY,\000d\000a    username VARCHAR(255),\000d\000a    productID [*]ARRAY VARCHAR(255) ARRAY, -- 数组类型\000d\000a    productNumber ARRAY INT ARRAY, -- 数组类型\000d\000a    paidMoney FLOAT,\000d\000a    FOREIGN KEY (username) REFERENCES tblShoppingUser(username)\000d\000a)"; expected "IDENTITY, BIGSERIAL, SERIAL, data type"; SQL statement:
+CREATE TABLE tblShoppingOrder (
+    orderID VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255),
+    productID ARRAY VARCHAR(255) ARRAY, -- 数组类型
+    productNumber ARRAY INT ARRAY, -- 数组类型
+    paidMoney FLOAT,
+    FOREIGN KEY (username) REFERENCES tblShoppingUser(username)
+) [42001-214]
+2024-08-30 16:36:03 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE tblShoppingOrder (\000d\000a    orderID VARCHAR(255) PRIMARY KEY,\000d\000a    username VARCHAR(255),\000d\000a    productID [*]ARRAY VARCHAR(255) ARRAY, -- 数组类型\000d\000a    productNumber ARRAY INT ARRAY, -- 数组类型\000d\000a    paidMoney FLOAT,\000d\000a    FOREIGN KEY (username) REFERENCES tblShoppingUser(username)\000d\000a)"; expected "IDENTITY, BIGSERIAL, SERIAL, data type"; SQL statement:
+CREATE TABLE tblShoppingOrder (
+    orderID VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255),
+    productID ARRAY VARCHAR(255) ARRAY, -- 数组类型
+    productNumber ARRAY INT ARRAY, -- 数组类型
+    paidMoney FLOAT,
+    FOREIGN KEY (username) REFERENCES tblShoppingUser(username)
+) [42001-214]
+2024-08-30 16:36:52 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "SHOPPINGORDER" not found; SQL statement:
+SELECT * FROM SHOPPINGORDER [42102-214]
+2024-08-30 16:37:11 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "SHOPPINGORDER" not found; SQL statement:
+SELECT * FROM SHOPPINGORDER [42102-214]
+2024-08-30 16:37:15 jdbc[14]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "CREATE TABLE tblShoppingOrder (\000d\000a    orderID VARCHAR(255) PRIMARY KEY,\000d\000a    username VARCHAR(255),\000d\000a    productID [*]ARRAY VARCHAR(255) ARRAY, -- 数组类型\000d\000a    productNumber ARRAY INT ARRAY, -- 数组类型\000d\000a    paidMoney FLOAT,\000d\000a    FOREIGN KEY (username) REFERENCES tblShoppingUser(username)\000d\000a)"; expected "IDENTITY, BIGSERIAL, SERIAL, data type"; SQL statement:
+CREATE TABLE tblShoppingOrder (
+    orderID VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255),
+    productID ARRAY VARCHAR(255) ARRAY, -- 数组类型
+    productNumber ARRAY INT ARRAY, -- 数组类型
+    paidMoney FLOAT,
+    FOREIGN KEY (username) REFERENCES tblShoppingUser(username)
+) [42001-214]
+2024-08-30 17:28:04 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBLSHOPPINGUSER" already exists; SQL statement:
+-- 创建用户附加信息表
+CREATE TABLE tblShoppingUser (
+    username VARCHAR(255) PRIMARY KEY,
+    address VARCHAR(255),
+    telephone VARCHAR(50),
+    FOREIGN KEY (username) REFERENCES TBLUSER(username) ON DEL [42101-214]
+2024-08-30 17:28:04 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBLSHOPPINGPRODUCT" already exists; SQL statement:
+-- 创建商品表
+CREATE TABLE tblShoppingProduct (
+    productID VARCHAR(255) PRIMARY KEY,
+    productName VARCHAR(255),
+    productDetail VARCHAR(255),
+    productImage BLOB,
+    productOriginalPrice FLOAT,
+    productCurrentPrice FLOAT,
+    productInventory INT,
+    productAddress VARCHAR(255),
+    productCommentRate FLOAT,
+    productStatus  [42101-214]
+2024-08-30 17:28:04 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBLSHOPPINGCOMMENT" already exists; SQL statement:
+-- 创建评论表
+CREATE TABLE tblShoppingComment (
+    commentID VARCHAR(255) PRIMARY KEY,
+    productID VARCHAR(255),
+    commentAttitude INT,
+    commentContent VARCHAR(255),
+    FOREIGN KEY (productID) REFERENCES tblShoppingProduct(pro [42101-214]
+2024-08-30 17:28:04 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBLSHOPPINGCART" already exists; SQL statement:
+-- 创建购物车表
+CREATE TABLE tblShoppingCart (
+    username VARCHAR(255),
+    productID VARCHAR(255),
+    productNumber INT,
+    PRIMARY KEY (username, productID),
+    FOREIGN KEY (username) REFERENCES TBLUSER(username) ON DELETE CASCADE,
+    FOREIGN KEY (productID) REFERENCES tblShoppingProduct(productID) ON DELETE [42101-214]
+2024-08-30 17:28:04 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBLSHOPPINGORDER" already exists; SQL statement:
+-- 创建订单表
+CREATE TABLE tblShoppingOrder (
+    orderID VARCHAR(255) PRIMARY KEY,
+    username VARCHAR(255),
+    productID VARCHAR(255),
+    productNumber INT,
+    whetherComment BOOLEAN DEFAULT FALSE,
+    paidMoney FLOAT,
+    FOREIGN KEY (username) REFERENCES TBLUSER(username) ON DELETE CASCADE,
+    FOREIGN KEY (productID) REFERENCES tblShoppingProduct(productID) ON DELETE  [42101-214]
+=======
+2024-08-30 16:25:26 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "ENROLLMENT" not found; SQL statement:
+SELECT * FROM Enrollment [42102-214]
+>>>>>>> api-v1.1-Lib
+2024-08-30 20:25:54 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO tblShoppingCart (username, productID, productNumber) VALUES (?, ?, ?) [*]ON DUPLICATE KEY UPDATE productNumber = productNumber + ?"; SQL statement:
+INSERT INTO tblShoppingCart (username, productID, productNumber) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE productNumber = productNumber + ? [42000-214]
+2024-08-30 20:33:36 database: flush
+org.h2.message.DbException: General error: "org.h2.mvstore.MVStoreException: The file is locked: D:/iCloud/iCloudDrive/Documents/code/JAVA/Summer_2024/testdb.mv.db [2.1.214/7]" [50000-214]
+	at org.h2.message.DbException.get(DbException.java:212)
+	at org.h2.message.DbException.convert(DbException.java:395)
+	at org.h2.mvstore.db.Store.lambda$new$0(Store.java:125)
+	at org.h2.mvstore.MVStore.handleException(MVStore.java:3318)
+	at org.h2.mvstore.MVStore.panic(MVStore.java:593)
+	at org.h2.mvstore.MVStore.<init>(MVStore.java:469)
+	at org.h2.mvstore.MVStore$Builder.open(MVStore.java:4082)
+	at org.h2.mvstore.db.Store.<init>(Store.java:136)
+	at org.h2.engine.Database.<init>(Database.java:324)
+	at org.h2.engine.Engine.openSession(Engine.java:92)
+	at org.h2.engine.Engine.openSession(Engine.java:222)
+	at org.h2.engine.Engine.createSession(Engine.java:201)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:338)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:122)
+	at org.h2.Driver.connect(Driver.java:59)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:359)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:201)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:470)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:100)
+	at com.zaxxer.hikari.HikariDataSource.<init>(HikariDataSource.java:81)
+	at server.service.DatabaseConnection.<clinit>(DatabaseConnection.java:18)
+	at server.service.ShoppingProductService.addProduct(ShoppingProductService.java:197)
+	at server.handler.ProductRequestHandler.addProduct(ProductRequestHandler.java:62)
+	at server.handler.ProductRequestHandler.handle(ProductRequestHandler.java:27)
 	at server.handler.ClientHandler.run(ClientHandler.java:41)
-	at java.base/java.lang.Thread.run(Thread.java:842)
-2024-08-30 15:01:29 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "USERNAME" not found; SQL statement:
-SELECT COUNT(*) FROM USERS WHERE USERNAME = ? AND PASSWORD = ? [42122-214]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:502)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: org.h2.jdbc.JdbcSQLNonTransientException: General error: "org.h2.mvstore.MVStoreException: The file is locked: D:/iCloud/iCloudDrive/Documents/code/JAVA/Summer_2024/testdb.mv.db [2.1.214/7]" [50000-214]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:554)
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.expression.ExpressionColumn.getColumnException(ExpressionColumn.java:244)
-	at org.h2.expression.ExpressionColumn.optimizeOther(ExpressionColumn.java:226)
-	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:213)
-	at org.h2.expression.condition.Comparison.optimize(Comparison.java:139)
-	at org.h2.expression.condition.ConditionAndOr.optimize(ConditionAndOr.java:136)
-	at org.h2.expression.Expression.optimizeCondition(Expression.java:148)
-	at org.h2.command.query.Select.prepareExpressions(Select.java:1177)
-	at org.h2.command.query.Query.prepare(Query.java:218)
-	at org.h2.command.Parser.prepareCommand(Parser.java:575)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:631)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:554)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1116)
-	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:92)
-	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:288)
-	at com.zaxxer.hikari.pool.ProxyConnection.prepareStatement(ProxyConnection.java:327)
-	at com.zaxxer.hikari.pool.HikariProxyConnection.prepareStatement(HikariProxyConnection.java)
-	at server.service.UserService.login(UserService.java:23)
-	at server.handler.LoginRequestHandler.handle(LoginRequestHandler.java:24)
-	at server.handler.ClientHandler.run(ClientHandler.java:41)
-	at java.base/java.lang.Thread.run(Thread.java:842)
-2024-08-30 15:01:31 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "USERNAME" not found; SQL statement:
-SELECT COUNT(*) FROM USERS WHERE USERNAME = ? AND PASSWORD = ? [42122-214]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:502)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.expression.ExpressionColumn.getColumnException(ExpressionColumn.java:244)
-	at org.h2.expression.ExpressionColumn.optimizeOther(ExpressionColumn.java:226)
-	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:213)
-	at org.h2.expression.condition.Comparison.optimize(Comparison.java:139)
-	at org.h2.expression.condition.ConditionAndOr.optimize(ConditionAndOr.java:136)
-	at org.h2.expression.Expression.optimizeCondition(Expression.java:148)
-	at org.h2.command.query.Select.prepareExpressions(Select.java:1177)
-	at org.h2.command.query.Query.prepare(Query.java:218)
-	at org.h2.command.Parser.prepareCommand(Parser.java:575)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:631)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:554)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1116)
-	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:92)
-	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:288)
-	at com.zaxxer.hikari.pool.ProxyConnection.prepareStatement(ProxyConnection.java:327)
-	at com.zaxxer.hikari.pool.HikariProxyConnection.prepareStatement(HikariProxyConnection.java)
-	at server.service.UserService.login(UserService.java:23)
-	at server.handler.LoginRequestHandler.handle(LoginRequestHandler.java:24)
-	at server.handler.ClientHandler.run(ClientHandler.java:41)
-	at java.base/java.lang.Thread.run(Thread.java:842)
-2024-08-30 15:01:32 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "USERNAME" not found; SQL statement:
-SELECT COUNT(*) FROM USERS WHERE USERNAME = ? AND PASSWORD = ? [42122-214]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:502)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.expression.ExpressionColumn.getColumnException(ExpressionColumn.java:244)
-	at org.h2.expression.ExpressionColumn.optimizeOther(ExpressionColumn.java:226)
-	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:213)
-	at org.h2.expression.condition.Comparison.optimize(Comparison.java:139)
-	at org.h2.expression.condition.ConditionAndOr.optimize(ConditionAndOr.java:136)
-	at org.h2.expression.Expression.optimizeCondition(Expression.java:148)
-	at org.h2.command.query.Select.prepareExpressions(Select.java:1177)
-	at org.h2.command.query.Query.prepare(Query.java:218)
-	at org.h2.command.Parser.prepareCommand(Parser.java:575)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:631)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:554)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1116)
-	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:92)
-	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:288)
-	at com.zaxxer.hikari.pool.ProxyConnection.prepareStatement(ProxyConnection.java:327)
-	at com.zaxxer.hikari.pool.HikariProxyConnection.prepareStatement(HikariProxyConnection.java)
-	at server.service.UserService.login(UserService.java:23)
-	at server.handler.LoginRequestHandler.handle(LoginRequestHandler.java:24)
-	at server.handler.ClientHandler.run(ClientHandler.java:41)
-	at java.base/java.lang.Thread.run(Thread.java:842)
-2024-08-30 15:01:57 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLSyntaxErrorException: Column "USERNAME" not found; SQL statement:
-SELECT COUNT(*) FROM USERS WHERE USERNAME = ? AND PASSWORD = ? [42122-214]
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:502)
-	at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
-	at org.h2.message.DbException.get(DbException.java:223)
-	at org.h2.message.DbException.get(DbException.java:199)
-	at org.h2.expression.ExpressionColumn.getColumnException(ExpressionColumn.java:244)
-	at org.h2.expression.ExpressionColumn.optimizeOther(ExpressionColumn.java:226)
-	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:213)
-	at org.h2.expression.condition.Comparison.optimize(Comparison.java:139)
-	at org.h2.expression.condition.ConditionAndOr.optimize(ConditionAndOr.java:136)
-	at org.h2.expression.Expression.optimizeCondition(Expression.java:148)
-	at org.h2.command.query.Select.prepareExpressions(Select.java:1177)
-	at org.h2.command.query.Query.prepare(Query.java:218)
-	at org.h2.command.Parser.prepareCommand(Parser.java:575)
-	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:631)
-	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:554)
-	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1116)
-	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:92)
-	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:288)
-	at com.zaxxer.hikari.pool.ProxyConnection.prepareStatement(ProxyConnection.java:327)
-	at com.zaxxer.hikari.pool.HikariProxyConnection.prepareStatement(HikariProxyConnection.java)
-	at server.service.UserService.login(UserService.java:23)
-	at server.handler.LoginRequestHandler.handle(LoginRequestHandler.java:24)
-	at server.handler.ClientHandler.run(ClientHandler.java:41)
-	at java.base/java.lang.Thread.run(Thread.java:842)
+	... 30 more
+Caused by: org.h2.mvstore.MVStoreException: The file is locked: D:/iCloud/iCloudDrive/Documents/code/JAVA/Summer_2024/testdb.mv.db [2.1.214/7]
+	at org.h2.mvstore.DataUtils.newMVStoreException(DataUtils.java:1004)
+	at org.h2.mvstore.FileStore.open(FileStore.java:178)
+	at org.h2.mvstore.FileStore.open(FileStore.java:128)
+	at org.h2.mvstore.MVStore.<init>(MVStore.java:452)
+	... 24 more
