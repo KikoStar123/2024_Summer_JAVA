@@ -18,7 +18,7 @@ public class Library {
         List<Book> foundBooks = new ArrayList<>();
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
-            request.put("requestType", "search_books_by_name");
+            request.put("requestType", "searchBooksByName");
             request.put("parameters", new JSONObject()
                     .put("bookName", bookName));//传递请求类型和书名；
 
@@ -58,7 +58,7 @@ public class Library {
         Book foundBook = null;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
-            request.put("requestType", "get_book_by_id");
+            request.put("requestType", "getBookDetailsById");
             request.put("parameters", new JSONObject()
                     .put("name", name)); // 传递请求类型和书的ID
 
@@ -126,7 +126,7 @@ public class Library {
 
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
-            request.put("requestType", "get_lib_records_by_username");
+            request.put("requestType", "getLibRecordsByUsername");
             request.put("parameters", new JSONObject().put("username", username));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -205,7 +205,7 @@ public class Library {
     public boolean renewBook(int borrowID) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
-            request.put("requestType", "renew_book"); // 请求类型为续借
+            request.put("requestType", "renewBook"); // 请求类型为续借
             JSONObject parameters = new JSONObject();
             parameters.put("borrowID", borrowID); // 传递需要续借的书籍的借阅号
             request.put("parameters", parameters);
