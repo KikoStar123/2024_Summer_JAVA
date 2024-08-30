@@ -1,6 +1,7 @@
 package client.ui;
 
 import client.service.ClientService;
+import client.service.Gender;
 import client.service.Role;
 import client.service.User;
 import javafx.application.Application;
