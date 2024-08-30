@@ -11,38 +11,38 @@ public class CourseTest {
         try {
 
             sendAddCourseRequest("CS102", "Data Structures", "Prof. Brown", 4, "1-10|Tue|2-4", 50); //添加一门课程
-//            Thread.sleep(500); // 延时，确保服务器有时间处理
+            //Thread.sleep(500); // 延时，确保服务器有时间处理
             System.out.println('\n');
 
             sendEnrollRequest("student4", "CS101");//选课 学生-选课编号
-//            Thread.sleep(500); // 延时，确保服务器有时间处理
+            //Thread.sleep(500); // 延时，确保服务器有时间处理
             System.out.println('\n');
 
-            sendViewEnrolledCoursesRequest("student4");//查看某个学生的选课信息（全部课程）
-//            Thread.sleep(500); // 再次延时
+            sendViewEnrolledCoursesRequest("student4");//查看某个学生的已选课程信息
+            //Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             sendDropRequest("student4", "CS101");//退课
-//            Thread.sleep(500); // 再次延时
+            //Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             System.out.println("课程名单参数：");
             sendSearchCoursesRequest("Computer Science",null);//根据课程名称或者教师名称检索（两个一起检索都可以）
-//            Thread.sleep(500); // 再次延时
+            //Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             System.out.println("教师名单参数：");
             sendSearchCoursesRequest(null,"Dr. Smith");//根据课程名称或者教师名称检索（两个一起检索都可以）
-//            Thread.sleep(500); // 再次延时
+            //Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             System.out.println("双参数：");
             sendSearchCoursesRequest("Computer Science","Dr. Smith");//根据课程名称或者教师名称检索（两个一起检索都可以）
-//            Thread.sleep(500); // 再次延时
+            //Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             sendViewCourseInfoRequest("CS101");// 查看课程信息功能
-//            Thread.sleep(500); // 再次延时
+            //Thread.sleep(500); // 再次延时
             System.out.println('\n');
 
             sendGetAllCoursesRequest();// 获取所有课程信息功能
@@ -53,7 +53,7 @@ public class CourseTest {
             e.printStackTrace();
         }
     }
-
+    //选课 学生-选课编号
     private static void sendEnrollRequest(String username, String courseID) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -66,7 +66,7 @@ public class CourseTest {
             System.out.println("Server response: " + enrollResponse);
         }
     }
-
+    //退课
     private static void sendDropRequest(String username, String courseID) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -79,7 +79,7 @@ public class CourseTest {
             System.out.println("Server response: " + dropResponse);
         }
     }
-
+    //查看某个学生的已选课程信息
     private static void sendViewEnrolledCoursesRequest(String username) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -92,7 +92,7 @@ public class CourseTest {
             System.out.println("Server response: " + viewResponse);
         }
     }
-
+    //根据课程名称或者教师名称检索（两个一起检索都可以）
     private static void sendSearchCoursesRequest(String courseName, String courseTeacher) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -105,7 +105,7 @@ public class CourseTest {
             System.out.println("Server response: " + searchResponse);
         }
     }
-
+    // 查看课程信息功能
     private static void sendViewCourseInfoRequest(String courseID) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -118,7 +118,7 @@ public class CourseTest {
             System.out.println("Server response: " + viewCourseInfoResponse);
         }
     }
-
+    // 获取所有课程信息功能
     private static void sendGetAllCoursesRequest() throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -131,12 +131,13 @@ public class CourseTest {
             System.out.println("Server response: " + getAllCoursesResponse);
         }
     }
-
+    //添加一门课程
     private static void sendAddCourseRequest(String courseID, String courseName, String courseTeacher, int courseCredits, String courseTime, int courseCapacity) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
+            //将课程信息整合为String
             String addCourseRequest = createAddCourseRequest(courseID, courseName, courseTeacher, courseCredits, courseTime, courseCapacity);
             System.out.println("Sending add course request: " + addCourseRequest);
             out.println(addCourseRequest);
