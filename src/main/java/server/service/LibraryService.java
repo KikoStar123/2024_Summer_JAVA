@@ -198,4 +198,52 @@ public class LibraryService {
         return response;
     }
 
+    public JSONObject returnBook(String username, String bookId) {
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "UPDATE tblLibRecord SET isReturn = ?, returnDate = ? WHERE username = ? AND bookID = ? AND isReturn = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setBoolean(1, true);
+            pstmt.setString(2, new java.sql.Date(System.currentTimeMillis()).toString());
+            pstmt.setString(3, username);
+            pstmt.setString(4, bookId);
+            pstmt.setBoolean(5, false);
+
+            int rowsUpdated = pstmt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                response.put("status", "success");
+                response.put("message", "Book returned successfully.");
+            } else {
+                response.put("status", "error");
+                response.put("message", "No matching record found or book already returned.");
+            }
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
 }
