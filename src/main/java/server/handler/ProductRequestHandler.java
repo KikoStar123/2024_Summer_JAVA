@@ -38,6 +38,11 @@ public class ProductRequestHandler implements RequestHandler {
                 response.put("status", productService.updateProductStatus(productID, status) ? "success" : "fail");
                 break;
 
+            case "getSameCategory":
+                productID = parameters.getString("productID");
+                response = productService.getSameCategoryProducts(productID);
+                break;
+
             default:
                 response.put("status", "fail").put("message", "Unknown action");
                 break;

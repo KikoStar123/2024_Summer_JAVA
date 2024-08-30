@@ -10,8 +10,8 @@ import java.sql.SQLException;
 
 public class ShoppingCartService {
 
-    //获取一个用户的购物车
-    public JSONObject getShoppingCart(String username) {
+    // 获取一个用户的购物车
+    public synchronized JSONObject getShoppingCart(String username) {
         JSONObject response = new JSONObject();
         JSONArray cartItems = new JSONArray();
 
@@ -53,8 +53,8 @@ public class ShoppingCartService {
         return response;
     }
 
-    //添加一个商品到购物车
-    public boolean addToCart(String username, String productID, int quantity) {
+    // 添加一个商品到购物车
+    public synchronized boolean addToCart(String username, String productID, int quantity) {
         boolean isSuccess = false;
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
@@ -63,7 +63,6 @@ public class ShoppingCartService {
             return false;
         }
 
-        // 使用 MERGE INTO 语法来实现类似的功能
         String query = "MERGE INTO tblShoppingCart AS target " +
                 "USING (VALUES (?, ?, ?)) AS source (username, productID, productNumber) " +
                 "ON target.username = source.username AND target.productID = source.productID " +
@@ -96,9 +95,8 @@ public class ShoppingCartService {
         return isSuccess;
     }
 
-
-    //更改购物车某个商品的数量
-    public boolean updateCart(String username, String productID, int quantity) {
+    // 更改购物车某个商品的数量
+    public synchronized boolean updateCart(String username, String productID, int quantity) {
         boolean isSuccess = false;
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
@@ -133,8 +131,8 @@ public class ShoppingCartService {
         return isSuccess;
     }
 
-    //从购物车上面删除某个商品
-    public boolean removeFromCart(String username, String productID) {
+    // 从购物车上面删除某个商品
+    public synchronized boolean removeFromCart(String username, String productID) {
         boolean isSuccess = false;
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();

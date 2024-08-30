@@ -7,14 +7,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShoppingProductService {
 
-
-    //获取所有的商品
-    public JSONObject getAllProducts() {
+    // 获取所有的商品
+    public synchronized JSONObject getAllProducts() {
         JSONObject response = new JSONObject();
         JSONArray productsArray = new JSONArray();
 
@@ -63,8 +60,8 @@ public class ShoppingProductService {
         return response;
     }
 
-    //根据商品ID查询商品详情
-    public JSONObject getProductDetails(String productID) {
+    // 根据商品ID查询商品详情
+    public synchronized JSONObject getProductDetails(String productID) {
         JSONObject response = new JSONObject();
 
         String query = "SELECT * FROM tblShoppingProduct WHERE productID = ?";
@@ -113,8 +110,8 @@ public class ShoppingProductService {
         return response;
     }
 
-    //检索商品
-    public JSONObject searchProducts(String searchKeyword, String category, String specification) {
+    // 检索商品
+    public synchronized JSONObject searchProducts(String searchKeyword, String category, String specification) {
         JSONObject response = new JSONObject();
         JSONArray productsArray = new JSONArray();
 
@@ -189,10 +186,10 @@ public class ShoppingProductService {
         return response;
     }
 
-    //添加商品
-    public boolean addProduct(String productID, String productName, String productDetail, byte[] productImage,
-                              float productOriginalPrice, float productCurrentPrice, int productInventory,
-                              String productAddress, float productCommentRate, boolean productStatus) {
+    // 添加商品
+    public synchronized boolean addProduct(String productID, String productName, String productDetail, byte[] productImage,
+                                           float productOriginalPrice, float productCurrentPrice, int productInventory,
+                                           String productAddress, float productCommentRate, boolean productStatus) {
         boolean isSuccess = false;
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
@@ -237,8 +234,8 @@ public class ShoppingProductService {
         return isSuccess;
     }
 
-    //删除商品
-    public boolean deleteProduct(String productID) {
+    // 删除商品
+    public synchronized boolean deleteProduct(String productID) {
         boolean isSuccess = false;
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
@@ -271,9 +268,8 @@ public class ShoppingProductService {
         return isSuccess;
     }
 
-
-    //上架或者下架商品
-    public boolean updateProductStatus(String productID, boolean status) {
+    // 上架或者下架商品
+    public synchronized boolean updateProductStatus(String productID, boolean status) {
         boolean isSuccess = false;
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
@@ -307,4 +303,55 @@ public class ShoppingProductService {
         return isSuccess;
     }
 
+    // 获取同品类的商品
+    public synchronized JSONObject getSameCategoryProducts(String productID) {
+        JSONObject response = new JSONObject();
+        JSONArray productsArray = new JSONArray();
+
+        // 获取商品ID的前四位作为品类
+        String categoryID = productID.substring(0, 4);
+
+        String query = "SELECT productID, productName, productImage, productOriginalPrice, productCurrentPrice, productInventory " +
+                "FROM tblShoppingProduct WHERE productID LIKE ?";
+
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "fail").put("message", "Database connection failed");
+            return response;
+        }
+
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, categoryID + "%");
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                JSONObject product = new JSONObject();
+                product.put("productID", resultSet.getString("productID"));
+                product.put("productName", resultSet.getString("productName"));
+                product.put("productImage", resultSet.getBytes("productImage")); // Assuming image is stored as a BLOB
+                product.put("productOriginalPrice", resultSet.getFloat("productOriginalPrice"));
+                product.put("productCurrentPrice", resultSet.getFloat("productCurrentPrice"));
+                product.put("productInventory", resultSet.getInt("productInventory"));
+
+                productsArray.put(product);
+            }
+
+            response.put("status", "success").put("products", productsArray);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+
+        return response;
+    }
 }
