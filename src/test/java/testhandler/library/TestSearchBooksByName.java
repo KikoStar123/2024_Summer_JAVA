@@ -18,7 +18,7 @@ public class TestSearchBooksByName {
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
             JSONObject request = new JSONObject();
-            request.put("requestType", "search_books_by_name");
+            request.put("requestType", "searchBooksByName");
             JSONObject parameters = new JSONObject();
             parameters.put("bookName", "明朝那些事儿");
             request.put("parameters", parameters);

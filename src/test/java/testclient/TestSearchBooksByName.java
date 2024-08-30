@@ -1,6 +1,8 @@
 package testclient;
 
 import java.util.List;
+
+import client.service.LibRecord;
 import client.service.Library;
 import client.service.Book;
 public class TestSearchBooksByName {

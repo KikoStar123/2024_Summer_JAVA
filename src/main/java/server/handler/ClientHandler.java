@@ -59,9 +59,14 @@ public class ClientHandler implements Runnable {
 
         //图书馆相关请求
         routeMap.put("searchBooksByName", new SearchBooksByNameRequestHandler());
-        routeMap.put("getBookById", new GetBookDetailsByIdRequestHandler());
+        routeMap.put("getBookDetailsById", new GetBookDetailsByIdRequestHandler());
         routeMap.put("getLibRecordsByUsername", new GetLibRecordsByUsernameRequestHandler());
         routeMap.put("bookReturn", new BookReturnRequestHandler());
+        routeMap.put("bookBorrow", new BookBorrowRequestHandler());
+        routeMap.put("updateBook", new UpdateBookRequestHandler());
+        routeMap.put("addBook", new AddBookRequestHandler());
+        routeMap.put("renewBook", new RenewBookRequestHandler());
+        routeMap.put("getAllLibRecords", new GetAllLibRecordsRequestHandler());
 
         // 课程相关请求
         routeMap.put("enrollInCourse", new EnrollInCourseRequestHandler());
