@@ -37,6 +37,8 @@ public class ClientHandler implements Runnable {
             // 获取对应的处理器
             RequestHandler handler = routeMap.getOrDefault(requestType, new UnknownRequestHandler());
 
+
+
             // 执行处理器逻辑
             String response = handler.handle(parameters);
             out.println(response);
@@ -50,9 +52,34 @@ public class ClientHandler implements Runnable {
         Map<String, RequestHandler> routeMap = new HashMap<>();
         routeMap.put("login", new LoginRequestHandler());
         routeMap.put("checkStudentInfo", new CheckStudentInfoRequestHandler());
-        routeMap.put("login_return", new Login_returnRequestHandler());
+        routeMap.put("login_return", new LoginReturnRequestHandler());
         routeMap.put("viewStudentInfo", new ViewStudentInfoRequestHandler());
         routeMap.put("modifyStudentInfo", new ModifyStudentInfoRequestHandler());
+        routeMap.put("register", new RegisterRequestHandler());
+
+        //图书馆相关请求
+        routeMap.put("searchBooksByName", new SearchBooksByNameRequestHandler());
+        routeMap.put("getBookById", new GetBookDetailsByIdRequestHandler());
+        routeMap.put("getLibRecordsByUsername", new GetLibRecordsByUsernameRequestHandler());
+        routeMap.put("bookReturn", new BookReturnRequestHandler());
+
+        // 课程相关请求
+        routeMap.put("enrollInCourse", new EnrollInCourseRequestHandler());
+        routeMap.put("dropCourse", new DropCourseRequestHandler());
+        routeMap.put("viewEnrolledCourses", new ViewEnrolledCoursesRequestHandler());
+        routeMap.put("addCourse", new AddCourseRequestHandler()); // 新增课程
+        routeMap.put("searchCourses", new SearchCoursesRequestHandler());//检索课程
+        routeMap.put("viewCourseInfo", new ViewCourseInfoRequestHandler());  // 课程信息查看处理
+        routeMap.put("getAllCourses", new GetAllCoursesRequestHandler());//查看所有课程信息
+
+        // 商店相关请求
+//        routeMap.put("getAllProducts", new GetAllProductsRequestHandler());
+//        routeMap.put("getProductDetails", new GetProductDetailsRequestHandler());
+//        routeMap.put("addToCart", new AddToCartRequestHandler());
+//        routeMap.put("createOrder", new CreateOrderRequestHandler());
+
         return routeMap;
     }
+
+
 }
