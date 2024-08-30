@@ -8,49 +8,60 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ShoppingOrderService {
 
+    private final Lock createOrderLock = new ReentrantLock();
+    private final Lock getOrderDetailsLock = new ReentrantLock();
+    private final Lock updateOrderCommentStatusLock = new ReentrantLock();
+
     // 创建订单
-    public synchronized boolean createOrder(String username, String productID, int productNumber, float paidMoney) {
-        boolean isSuccess = false;
-        DatabaseConnection dbConnection = new DatabaseConnection();
-        Connection conn = dbConnection.connect();
+    public boolean createOrder(String username, String productID, int productNumber, float paidMoney) {
+        createOrderLock.lock();
+        try {
+            boolean isSuccess = false;
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
 
-        if (conn == null) {
-            return false;
-        }
-
-        String orderID = generateOrderID();
-
-        String query = "INSERT INTO tblShoppingOrder (orderID, username, productID, productNumber, whetherComment, paidMoney) " +
-                "VALUES (?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setString(1, orderID);
-            preparedStatement.setString(2, username);
-            preparedStatement.setString(3, productID);
-            preparedStatement.setInt(4, productNumber);
-            preparedStatement.setBoolean(5, false); // whetherComment 默认为 false (0)
-            preparedStatement.setFloat(6, paidMoney);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                isSuccess = true;
+            if (conn == null) {
+                return false;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
+
+            String orderID = generateOrderID();
+
+            String query = "INSERT INTO tblShoppingOrder (orderID, username, productID, productNumber, whetherComment, paidMoney) " +
+                    "VALUES (?, ?, ?, ?, ?, ?)";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, orderID);
+                preparedStatement.setString(2, username);
+                preparedStatement.setString(3, productID);
+                preparedStatement.setInt(4, productNumber);
+                preparedStatement.setBoolean(5, false); // whetherComment 默认为 false (0)
+                preparedStatement.setFloat(6, paidMoney);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+                if (rowsAffected > 0) {
+                    isSuccess = true;
                 }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
-        }
 
-        return isSuccess;
+            return isSuccess;
+        } finally {
+            createOrderLock.unlock();
+        }
     }
 
     // 生成订单ID
@@ -63,81 +74,91 @@ public class ShoppingOrderService {
     }
 
     // 获取订单详情
-    public synchronized JSONObject getOrderDetails(String orderID) {
-        JSONObject response = new JSONObject();
-        DatabaseConnection dbConnection = new DatabaseConnection();
-        Connection conn = dbConnection.connect();
+    public JSONObject getOrderDetails(String orderID) {
+        getOrderDetailsLock.lock();
+        try {
+            JSONObject response = new JSONObject();
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
 
-        if (conn == null) {
-            response.put("status", "fail").put("message", "Database connection failed");
-            return response;
-        }
-
-        String query = "SELECT * FROM tblShoppingOrder WHERE orderID = ?";
-
-        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setString(1, orderID);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                response.put("orderID", resultSet.getString("orderID"));
-                response.put("username", resultSet.getString("username"));
-                response.put("productID", resultSet.getString("productID"));
-                response.put("productNumber", resultSet.getInt("productNumber"));
-                response.put("whetherComment", resultSet.getBoolean("whetherComment"));
-                response.put("paidMoney", resultSet.getFloat("paidMoney"));
-                response.put("status", "success");
-            } else {
-                response.put("status", "fail").put("message", "Order not found");
+            if (conn == null) {
+                response.put("status", "fail").put("message", "Database connection failed");
+                return response;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
+
+            String query = "SELECT * FROM tblShoppingOrder WHERE orderID = ?";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, orderID);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    response.put("orderID", resultSet.getString("orderID"));
+                    response.put("username", resultSet.getString("username"));
+                    response.put("productID", resultSet.getString("productID"));
+                    response.put("productNumber", resultSet.getInt("productNumber"));
+                    response.put("whetherComment", resultSet.getBoolean("whetherComment"));
+                    response.put("paidMoney", resultSet.getFloat("paidMoney"));
+                    response.put("status", "success");
+                } else {
+                    response.put("status", "fail").put("message", "Order not found");
                 }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
-        }
 
-        return response;
+            return response;
+        } finally {
+            getOrderDetailsLock.unlock();
+        }
     }
 
     // 更新订单评论状态
-    public synchronized boolean updateOrderCommentStatus(String orderID, boolean whetherComment) {
-        boolean isSuccess = false;
-        DatabaseConnection dbConnection = new DatabaseConnection();
-        Connection conn = dbConnection.connect();
+    public boolean updateOrderCommentStatus(String orderID, boolean whetherComment) {
+        updateOrderCommentStatusLock.lock();
+        try {
+            boolean isSuccess = false;
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
 
-        if (conn == null) {
-            return false;
-        }
-
-        String query = "UPDATE tblShoppingOrder SET whetherComment = ? WHERE orderID = ?";
-
-        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setBoolean(1, whetherComment);
-            preparedStatement.setString(2, orderID);
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            if (rowsAffected > 0) {
-                isSuccess = true;
+            if (conn == null) {
+                return false;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
+
+            String query = "UPDATE tblShoppingOrder SET whetherComment = ? WHERE orderID = ?";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setBoolean(1, whetherComment);
+                preparedStatement.setString(2, orderID);
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    isSuccess = true;
                 }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
-        }
 
-        return isSuccess;
+            return isSuccess;
+        } finally {
+            updateOrderCommentStatusLock.unlock();
+        }
     }
 }
