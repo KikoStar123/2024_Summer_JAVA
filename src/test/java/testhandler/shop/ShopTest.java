@@ -1,46 +1,17 @@
 package testhandler.shop;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ShopTest {
     private static final String SERVER_ADDRESS = "localhost"; // 服务器地址
     private static final int SERVER_PORT = 8080; // 服务器端口
 
-    public static void main(String[] args) {
-        try {
-            // 添加商品
-            sendAddProductRequest("P12345", "Laptop", "High performance laptop", "base64encodedImageString", 1200.99f, 999.99f, 100, "Warehouse A", 4.7f, true);
-
-            System.out.println('\n');
-
-            // 获取商品详情
-            sendGetProductDetailsRequest("P12345");
-
-            System.out.println('\n');
-
-            // 获取所有商品
-            sendGetAllProductsRequest();
-
-            System.out.println('\n');
-
-            // 添加商品到购物车
-            sendAddToCartRequest("200000001", "P12345", 2);
-
-            System.out.println('\n');
-
-            // 创建订单
-            sendCreateOrderRequest("200000001", "P12345", 2, 1999.98f);
-
-            System.out.println('\n');
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     // 添加商品
-    private static void sendAddProductRequest(String productID, String productName, String productDetail, String productImage, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, float productCommentRate, boolean productStatus) throws IOException {
+    public static void sendAddProductRequest(String productID, String productName, String productDetail, String productImage, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, float productCommentRate, boolean productStatus) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
@@ -54,7 +25,7 @@ public class ShopTest {
     }
 
     // 获取商品详情
-    private static void sendGetProductDetailsRequest(String productID) throws IOException {
+    public static void sendGetProductDetailsRequest(String productID) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
@@ -68,7 +39,7 @@ public class ShopTest {
     }
 
     // 获取所有商品
-    private static void sendGetAllProductsRequest() throws IOException {
+    public static void sendGetAllProductsRequest() throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
@@ -82,7 +53,7 @@ public class ShopTest {
     }
 
     // 添加商品到购物车
-    private static void sendAddToCartRequest(String username, String productID, int quantity) throws IOException {
+    public static void sendAddToCartRequest(String username, String productID, int quantity) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
@@ -96,7 +67,7 @@ public class ShopTest {
     }
 
     // 创建订单
-    private static void sendCreateOrderRequest(String username, String productID, int productNumber, float paidMoney) throws IOException {
+    public static void sendCreateOrderRequest(String username, String productID, int productNumber, float paidMoney) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
