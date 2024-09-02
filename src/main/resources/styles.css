@@ -1,0 +1,106 @@
+/* 主色调和辅助色定义 */
+.PrimaryPurple {
+    -fx-background-color: #6A0DAD;
+}
+
+.AccentPink {
+    -fx-background-color: #FF69B4;
+}
+
+.BackgroundWhite {
+    -fx-background-color: #FFFFFF;
+}
+
+.LightPurple {
+    -fx-background-color: #D8BFD8;
+}
+
+.LightPink {
+    -fx-background-color: #FFC0CB;
+}
+
+.Gray {
+    -fx-text-fill: #B0B0B0;
+    -fx-border-color: #B0B0B0;
+}
+
+.root {
+    -fx-background-color: #FFFFFF; /* 设置背景颜色为白色 */
+}
+
+.gray-border {
+    -fx-border-color: #808080; /* 灰色边框 */
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+    -fx-border-radius: 10px; /* 边框圆角 */
+    -fx-padding: 10px; /* 内边距 */
+}
+
+/* 字体规范 */
+.title-font {
+    -fx-font-family: 'Segoe UI', 'Roboto';
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6A0DAD;
+}
+
+.body-font {
+    -fx-font-family: 'Segoe UI', 'Roboto';
+    -fx-font-size: 14px;
+    -fx-text-fill: #4B0082;
+}
+
+.button-font {
+    -fx-font-family: 'Segoe UI', 'Roboto';
+    -fx-font-size: 16px;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: medium;
+}
+
+/* 按钮规范 */
+.main-button {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #6A0DAD;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.main-button:hover {
+    -fx-background-color: #FFC0CB;
+}
+
+.main-button:pressed {
+    -fx-background-color: #FF69B4;
+    -fx-border-color: #6A0DAD;
+}
+/*.input-field:focus {*/
+/*    -fx-border-color: #D8BFD8;*/
+/*    -fx-border-width: 2px;*/
+/*}*/
+
+/* 输入框规范 */
+.input-field {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #B0B0B0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0.0, 2, 2);
+}
+
+
+/* 面板和卡片规范 */
+.panel {
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0.0, 2, 2);
+    -fx-border-radius: 10px;
+}
+
+/* 悬浮提示规范 */
+.tooltip {
+    -fx-background-color: #6A0DAD;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-radius: 4px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 1, 0.0, 1, 1);
+}
+

@@ -1,40 +1,41 @@
 package client.ui;
 import client.service.User;
 
-import java.awt.CardLayout;
-
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class LibraryUI {
 
     private JFrame LibFrame;
-    private JTextField name;
-    private JPanel mainPanel;
+    private JTextField searchField;
+    private JTextArea resultArea;
+    private JPanel mainPanel; // 声明 mainPanel
     private CardLayout cardLayout;
-    private JPanel resultPanel;
+    private JPanel searchPanel, resultPanel;
 
     private User user;
 
     public LibraryUI(User user){
-        this.user=user;
+        this.user = user;
     }
 
     public void display(){
-        LibFrame=new JFrame("图书馆");
-        LibFrame.setSize(300, 350);
+        LibFrame = new JFrame("图书馆");
+        LibFrame.setSize(400, 500);
         LibFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         LibFrame.setLocationRelativeTo(null);
 
         cardLayout = new CardLayout();
-        mainPanel = new JPanel(cardLayout);
+        mainPanel = new JPanel(cardLayout); // 初始化 mainPanel
 
-        JPanel searchPanel = new JPanel();
+        searchPanel = new JPanel();
         placeComponents(searchPanel);
 
-        resultPanel = new JPanel();
-        resultPanel.setLayout(null);
+        resultPanel = new JPanel(new BorderLayout());
+        resultArea = new JTextArea(10, 30);
+        resultPanel.add(new JScrollPane(resultArea), BorderLayout.CENTER);
 
         mainPanel.add(searchPanel, "Search Panel");
         mainPanel.add(resultPanel, "Result Panel");
@@ -42,97 +43,99 @@ public class LibraryUI {
         LibFrame.add(mainPanel);
         LibFrame.setVisible(true);
     }
+
     private void placeComponents(JPanel panel){
         panel.setLayout(null);
 
-        JLabel userLabel=new JLabel("用户名:"+user.getUsername());
-        userLabel.setBounds(10,20,80,25);
+        JLabel userLabel = new JLabel("用户名: " + user.getUsername());
+        userLabel.setBounds(10, 20, 100, 25);
         panel.add(userLabel);
 
-        JLabel roleLabel=new JLabel("身份:"+user.getRole());
-        roleLabel.setBounds(100,20,80,25);
+        JLabel roleLabel = new JLabel("身份: " + user.getRole());
+        roleLabel.setBounds(10, 50, 100, 25);
         panel.add(roleLabel);
 
-        JButton searchButton = new JButton("查询");
-        searchButton.setBounds(10, 90, 100, 25);
-        panel.add(searchButton);
+        searchField = new JTextField(20);
+        searchField.setBounds(10, 80, 165, 25);
+        panel.add(searchField);
 
+        JButton searchButton = new JButton("查询");
+        searchButton.setBounds(10, 110, 100, 25);
+        panel.add(searchButton);
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 调用查询方法，返回查询结果
                 displayBookInfo();
                 cardLayout.show(mainPanel, "Result Panel");
             }
         });
 
         JButton myinfoButton = new JButton("我的借阅");
-        myinfoButton.setBounds(130, 90, 100, 25);
+        myinfoButton.setBounds(130, 110, 100, 25);
         panel.add(myinfoButton);
-
-        JButton backButton =new JButton("返回");
-        backButton.setBounds(10,130,80,25);
-        panel.add(backButton);
-
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LibFrame.dispose(); // 关闭当前界面
-                MainUI mainUI = new MainUI(user); // 传入用户名和密码
-                mainUI.display(); // 显示主界面
-            }
+        myinfoButton.addActionListener(e -> {
+            // 显示借阅历史
+            displayBorrowHistory();
         });
-
-
-    }
-    private void displayBookInfo() {
-        resultPanel.removeAll(); // 清除之前的查询结果
-
-        JLabel nameLabel = new JLabel("查询:");
-        nameLabel.setBounds(10, 50, 80, 25);
-        resultPanel.add(nameLabel);
-
-        name = new JTextField(20);
-        name.setBounds(100, 50, 165, 25);
-        resultPanel.add(name);
-
-        // 假设查询到的图书信息
-        JLabel titleLabel = new JLabel("书名: " );
-        titleLabel.setBounds(10, 90, 200, 25);
-        resultPanel.add(titleLabel);
-
-//        JLabel idLabel = new JLabel("编号: " );
-//        idLabel.setBounds(10, 50, 200, 25);
-//        resultPanel.add(idLabel);
-//
-//        JLabel authorLabel = new JLabel("作者: " );
-//        authorLabel.setBounds(10, 80, 200, 25);
-//        resultPanel.add(authorLabel);
-//
-//        JLabel numLabel = new JLabel("剩余数量: " );
-//        numLabel.setBounds(10, 110, 200, 25);
-//        resultPanel.add(numLabel);
-
-//        JButton borrowButton= new JButton("借阅");
-//        borrowButton.setBounds(10, 150, 80, 25);
-//        resultPanel.add(borrowButton);
-//
-//        JButton returnButton=new JButton("归还");
-//        returnButton.setBounds(100,150,80,25);
-//        resultPanel.add(returnButton);
 
         JButton backButton = new JButton("返回");
-        backButton.setBounds(190,150,80,25);
+        backButton.setBounds(250, 110, 100, 25);
+        panel.add(backButton);
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "Search Panel");
+                LibFrame.dispose();
+                MainUI mainUI = new MainUI(user);
+                mainUI.display();
             }
         });
-        resultPanel.add(backButton);
+    }
 
-        // 重新绘制结果面板
+    private void displayBookInfo() {
+        resultPanel.removeAll();
+        resultArea = new JTextArea(10, 30);
+        resultPanel.add(new JScrollPane(resultArea), BorderLayout.CENTER);
+
+        // 假设查询到的图书信息
+        String bookInfo = "书名: 示例书籍\n作者: 作者A\n出版社: 出版社B\n出版日期: 2024年\nISBN: 1234567890";
+        resultArea.setText(bookInfo);
+
+        JButton borrowButton = new JButton("借阅");
+        borrowButton.setBounds(10, 10, 80, 25);
+        resultPanel.add(borrowButton, BorderLayout.NORTH);
+        borrowButton.addActionListener(e -> {
+            // 调用借阅方法
+            borrowBook();
+        });
+
+        JButton returnButton = new JButton("归还");
+        returnButton.setBounds(100, 10, 80, 25);
+        resultPanel.add(returnButton, BorderLayout.NORTH);
+        returnButton.addActionListener(e -> {
+            // 调用归还方法
+            returnBook();
+        });
+
+        JButton backButton = new JButton("返回");
+        backButton.setBounds(290, 10, 80, 25);
+        resultPanel.add(backButton, BorderLayout.NORTH);
+        backButton.addActionListener(e -> {
+            cardLayout.show(mainPanel, "Search Panel");
+        });
+
         resultPanel.revalidate();
         resultPanel.repaint();
     }
-};
+
+    private void displayBorrowHistory() {
+        // 显示借阅历史记录
+    }
+
+    private void borrowBook() {
+        // 调用服务层方法借阅图书
+    }
+
+    private void returnBook() {
+        // 调用服务层方法归还图书
+    }
+}
