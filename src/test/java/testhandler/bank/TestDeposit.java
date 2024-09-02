@@ -21,7 +21,7 @@ public class TestDeposit {
             request.put("requestType", "deposit");
             JSONObject parameters = new JSONObject();
             parameters.put("username", "200000001");
-            parameters.put("amount", 100.0);
+            parameters.put("amount", 1000.0);
             request.put("parameters", parameters);
 
             out.println(request.toString());

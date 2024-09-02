@@ -1,15 +1,15 @@
 package server.handler;
 
-import server.service.BankService;
 import org.json.JSONObject;
+import server.service.BankService;
 
-public class WithdrawRequestHandler implements RequestHandler {
+public class WaitRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {
         BankService bankService = BankService.getInstance();
-        String username = parameters.getString("username");
+        String orderID = parameters.getString("orderID");
         double amount = parameters.getDouble("amount");
-        JSONObject result = bankService.withdraw(username, amount);
+        JSONObject result = bankService.waitForPayment(orderID, amount);
 
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("status", result.getString("status"));

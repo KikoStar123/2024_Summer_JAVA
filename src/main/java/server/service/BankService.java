@@ -5,13 +5,225 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-
 public class BankService {
 
+    private static BankService instance;
+    private final Map<String, PaymentInfo> paymentRequests = new HashMap<>();
     private final Lock lock = new ReentrantLock();
+
+    private BankService() {}
+
+    public static synchronized BankService getInstance() {
+        if (instance == null) {
+            instance = new BankService();
+        }
+        return instance;
+    }
+
+    public class PaymentInfo {
+        private double amount;
+        private boolean processed;
+        private JSONObject paymentResult;
+        private int passwordErrorCount;
+
+        public PaymentInfo(double amount) {
+            this.amount = amount;
+            this.processed = false;
+            this.passwordErrorCount = 0;
+        }
+
+        public double getAmount() {
+            return amount;
+        }
+
+        public boolean isProcessed() {
+            return processed;
+        }
+
+        public void setProcessed(boolean processed) {
+            this.processed = processed;
+        }
+
+        public JSONObject getPaymentResult() {
+            return paymentResult;
+        }
+
+        public void setPaymentResult(JSONObject paymentResult) {
+            this.paymentResult = paymentResult;
+        }
+
+        public int getPasswordErrorCount() {
+            return passwordErrorCount;
+        }
+
+        public void incrementPasswordErrorCount() {
+            this.passwordErrorCount++;
+        }
+    }
+
+
+
+
+        public JSONObject processPayment(String orderID, String username, String bankpwd, double amount) {
+            lock.lock();
+            try {
+                System.out.println("Processing payment for orderID: " + orderID);
+                System.out.println("Current paymentRequests: " + paymentRequests);
+
+                PaymentInfo paymentInfo = paymentRequests.get(orderID);
+                if (paymentInfo != null && paymentInfo.getAmount() == amount) {
+                    // 检查用户名和密码
+                    DatabaseConnection dbConnection = new DatabaseConnection();
+                    Connection conn = dbConnection.connect();
+
+                    if (conn == null) {
+                        JSONObject result = new JSONObject().put("status", "error").put("message", "Failed to connect to the database.");
+                        synchronized (paymentInfo) {
+                            paymentInfo.setPaymentResult(result);
+                            paymentInfo.setProcessed(true);
+                            paymentInfo.notifyAll();
+                        }
+                        return result;
+                    }
+
+                    try {
+                        String checkUserQuery = "SELECT * FROM tblBankUser WHERE username = ? AND bankpwd = ?";
+                        PreparedStatement checkUserStmt = conn.prepareStatement(checkUserQuery);
+                        checkUserStmt.setString(1, username);
+                        checkUserStmt.setString(2, bankpwd);
+                        ResultSet userRs = checkUserStmt.executeQuery();
+
+                        if (userRs.next()) {
+                            double currentBalance = userRs.getDouble("balance");
+                            if (currentBalance < amount) {
+                                JSONObject result = new JSONObject().put("status", "error").put("message", "Insufficient balance");
+                                synchronized (paymentInfo) {
+                                    paymentInfo.setPaymentResult(result);
+                                    paymentInfo.setProcessed(true);
+                                    paymentInfo.notifyAll();
+                                }
+                                return result;
+                            }
+
+                            // 用户名和密码正确，更新余额
+                            String updateBalanceQuery = "UPDATE tblBankUser SET balance = balance - ? WHERE username = ?";
+                            PreparedStatement updateBalanceStmt = conn.prepareStatement(updateBalanceQuery);
+                            updateBalanceStmt.setDouble(1, amount);
+                            updateBalanceStmt.setString(2, username);
+                            updateBalanceStmt.executeUpdate();
+
+                            // 插入收支记录
+                            String insertRecordQuery = "INSERT INTO tblBankRecord (username, balanceChange, balanceReason) VALUES (?, ?, ?)";
+                            PreparedStatement insertRecordStmt = conn.prepareStatement(insertRecordQuery);
+                            insertRecordStmt.setString(1, username);
+                            insertRecordStmt.setDouble(2, -amount);
+                            insertRecordStmt.setString(3, "支付" + orderID);
+                            insertRecordStmt.executeUpdate();
+
+                            System.out.println("Payment matched and processed for orderID: " + orderID);
+                            paymentInfo.setProcessed(true);
+                            JSONObject result = new JSONObject().put("status", "success").put("message", "Payment processed successfully");
+                            synchronized (paymentInfo) {
+                                paymentInfo.setPaymentResult(result);
+                                paymentInfo.setProcessed(true);
+                                paymentInfo.notifyAll();
+                            }
+                            return result;
+                        } else {
+                            System.out.println("Invalid username or password for orderID: " + orderID);
+                            paymentInfo.incrementPasswordErrorCount();
+                            if (paymentInfo.getPasswordErrorCount() >= 3) {
+                                JSONObject result = new JSONObject().put("status", "error").put("message", "Invalid username or password");
+                                synchronized (paymentInfo) {
+                                    paymentInfo.setPaymentResult(result);
+                                    paymentInfo.setProcessed(true);
+                                    paymentInfo.notifyAll();
+                                }
+                                return result;
+                            } else {
+                                return new JSONObject().put("status", "error").put("message", "Invalid username or password. Attempt " + paymentInfo.getPasswordErrorCount());
+                            }
+                        }
+                    } catch (SQLException e) {
+                        JSONObject result = new JSONObject().put("status", "error").put("message", e.getMessage());
+                        synchronized (paymentInfo) {
+                            paymentInfo.setPaymentResult(result);
+                            paymentInfo.setProcessed(true);
+                            paymentInfo.notifyAll();
+                        }
+                        return result;
+                    } finally {
+                        try {
+                            if (conn != null) {
+                                conn.close();
+                            }
+                        } catch (SQLException ex) {
+                            JSONObject result = new JSONObject().put("status", "error").put("message", ex.getMessage());
+                            synchronized (paymentInfo) {
+                                paymentInfo.setPaymentResult(result);
+                                paymentInfo.setProcessed(true);
+                                paymentInfo.notifyAll();
+                            }
+                            return result;
+                        }
+                    }
+                } else {
+                    System.out.println("No matching wait request found for orderID: " + orderID);
+                    return new JSONObject().put("status", "error").put("message", "No matching wait request found");
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+
+
+
+        public JSONObject waitForPayment(String orderID, double amount) {
+            lock.lock();
+            try {
+                System.out.println("Waiting for payment for orderID: " + orderID);
+                PaymentInfo paymentInfo = new PaymentInfo(amount);
+                paymentRequests.put(orderID, paymentInfo);
+                System.out.println("Added wait request for orderID: " + orderID);
+
+                long startTime = System.currentTimeMillis();
+                long timeout = 5 * 60 * 1000; // 5分钟
+
+                synchronized (paymentInfo) {
+                    try {
+                        while (!paymentInfo.isProcessed()) {
+                            long elapsedTime = System.currentTimeMillis() - startTime;
+                            if (elapsedTime >= timeout) {
+                                System.out.println("Timeout waiting for payment for orderID: " + orderID);
+                                return new JSONObject().put("status", "error").put("message", "Timeout waiting for payment");
+                            }
+                            lock.unlock();
+                            paymentInfo.wait(timeout - elapsedTime);
+                            lock.lock();
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        System.out.println("Thread interrupted while waiting for payment for orderID: " + orderID);
+                        return new JSONObject().put("status", "error").put("message", "Thread interrupted");
+                    }
+                }
+
+                System.out.println("Payment received for orderID: " + orderID);
+                return paymentInfo.getPaymentResult();
+            } finally {
+                paymentRequests.remove(orderID);
+                System.out.println("Removed wait request for orderID: " + orderID);
+                lock.unlock();
+            }
+        }
+
+
+
 
     public JSONObject deposit(String username, double amount) {
         JSONObject response = new JSONObject();
@@ -229,5 +441,4 @@ public class BankService {
 
         return response;
     }
-
 }

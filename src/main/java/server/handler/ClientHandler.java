@@ -104,6 +104,9 @@ public class ClientHandler implements Runnable {
         routeMap.put("withdraw", new WithdrawRequestHandler());
         routeMap.put("bankLogin", new BankLoginRequestHandler());
         routeMap.put("bankRegister", new BankRegisterRequestHandler());
+        routeMap.put("payment", new PaymentRequestHandler());
+        routeMap.put("wait", new WaitRequestHandler());
+
 
         return routeMap;
     }

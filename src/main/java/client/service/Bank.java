@@ -97,6 +97,7 @@ public class Bank {
                     .put("username", username)
                     .put("bankpwd", bankpwd));
 
+
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
 
@@ -110,7 +111,7 @@ public class Bank {
             return false;
         }
     }
-    public boolean payment(String username, String bankpwd, String orderID) {
+    public boolean payment(String username, String bankpwd, String orderID, float amount) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
@@ -118,7 +119,8 @@ public class Bank {
             request.put("parameters", new JSONObject()
                     .put("username", username)
                     .put("bankpwd", bankpwd)
-                    .put("orderID", orderID));
+                    .put("orderID", orderID)
+                    .put("amount", amount));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
