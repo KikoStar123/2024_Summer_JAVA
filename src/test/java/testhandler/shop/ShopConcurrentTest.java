@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ShopConcurrentTest {
 
-    private static final int THREAD_COUNT = 10; // 并发线程数
+    private static final int THREAD_COUNT = 1; // 并发线程数
     private static final int REQUEST_PER_THREAD = 5; // 每个线程发送的请求数
 
     public static void main(String[] args) {
