@@ -9,7 +9,7 @@ public class TestRenewBook {
 
     public static void main(String[] args) {
         Library client = new Library();
-        boolean success = client.renewBook(1); // 假设借阅ID为1
+        boolean success = client.renewBook(4); // 假设借阅ID为1
 
         if (success) {
             System.out.println("Book renewed successfully.");

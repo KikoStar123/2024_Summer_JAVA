@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+//import java.util.*;
 
 public class Library {
 
@@ -191,7 +192,6 @@ public class Library {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            System.out.println(jsonResponse.toString());
             // 检查服务器响应的状态
             return jsonResponse.getString("status").equals("success");
         } catch (IOException e) {
@@ -232,14 +232,14 @@ public class Library {
     }
     //归还书籍的请求
     //多传上去一个参数
-    public boolean bookReturn(int borrowID) {
+    public boolean bookReturn(String username, String bookID) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "bookReturn");
             request.put("parameters", new JSONObject()
-                    //.put("username", username)
-                    //.put("bookID", bookID)); // 传递请求类型和用户名以及书名
-                    .put("borrowID", borrowID));
+                    .put("username", username)
+                    .put("bookID", bookID)); // 传递请求类型和用户名以及书名
+                    //.put("borrowID", borrowID));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -287,15 +287,13 @@ public class Library {
             return false;
         }
     }
-    //更新全部信息，对于管理员或学生来说都可以用。
+    //更新全部信息，对于管理员****来说都可以用。
 
     public List<LibRecord> getAllLibRecords() {
         List<LibRecord> libRecords = new ArrayList<>();
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "getAllLibRecords"); // 请求类型为获取所有借阅记录
-            JSONObject parameters = new JSONObject();
-            request.put("parameters", parameters);
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -303,7 +301,6 @@ public class Library {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
-
 
             if (jsonResponse.getString("status").equals("success")) {
                 JSONArray recordsArray = jsonResponse.getJSONArray("libRecords");
@@ -326,6 +323,50 @@ public class Library {
             e.printStackTrace();
         }
         return libRecords; // 返回借阅记录列表，即使为空也会返回
+    }
+    public List<LibRecord> getAllLibRecords(List<String> bookNameList) {
+        List<LibRecord> libRecords = new ArrayList<>();
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "getAllLibRecords");
+            request.put("parameters", new JSONObject());
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            if (jsonResponse.getString("status").equals("success")) {
+                JSONArray recordsArray = jsonResponse.getJSONArray("libRecords");
+                for (int i = 0; i < recordsArray.length(); i++) {
+                    JSONObject recordJson = recordsArray.getJSONObject(i);
+                    LibRecord libRecord = new LibRecord(
+                            recordJson.getInt("borrowId"),
+                            recordJson.getString("username"),
+                            recordJson.getString("bookID"),
+                            recordJson.getString("borrowDate"),
+                            recordJson.getString("returnDate"),
+                            recordJson.getBoolean("renewable"),
+                            recordJson.getBoolean("isReturn"),
+                            recordJson.getString("recordStatus")
+                    );
+                    libRecords.add(libRecord);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 填充书名
+        for (LibRecord record : libRecords) {
+            Book book = getBookDetailsById(record.getBookID());
+            String bookName = book.getName();
+            bookNameList.add(bookName);//直接添加一个书名到书名的列表里
+        }
+
+        return libRecords; // 返回借阅记录列表
     }
 
 }

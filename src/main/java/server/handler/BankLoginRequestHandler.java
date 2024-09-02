@@ -1,15 +1,15 @@
 package server.handler;
 
-import server.service.LibraryService;
+import server.service.BankService;
 import org.json.JSONObject;
 
-public class BookReturnRequestHandler implements RequestHandler {
+public class BankLoginRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {
-        LibraryService libraryService = new LibraryService();
-        String bookID = parameters.getString("bookID");
+        BankService bankService = new BankService();
         String username = parameters.getString("username");
-        JSONObject result = libraryService.returnBook(username, bookID);
+        String bankpwd = parameters.getString("bankpwd");
+        JSONObject result = bankService.bankLogin(username, bankpwd);
 
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("status", result.getString("status"));

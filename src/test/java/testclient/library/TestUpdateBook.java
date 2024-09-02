@@ -10,7 +10,7 @@ public class TestUpdateBook {
 
     public static void main(String[] args) {
         Library client = new Library();
-        boolean success = client.updateBook("book1", 11); // 假设书籍ID为book1，新的馆藏数量为10
+        boolean success = client.updateBook("book1", 12);
 
         if (success) {
             System.out.println("Book updated successfully.");

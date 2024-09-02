@@ -10,7 +10,7 @@ public class TestAddBook {
 
     public static void main(String[] args) {
         Library client = new Library();
-        Book book = new Book("book1", "Test Book", "Test Author", "Test Publish House", "2023", "Test Classification", 10, 10, "Test Location");
+        Book book = new Book("book2", "Test Book2", "Test Author2", "Test Publish House2", "2023", "Test Classification", 10, 10, "Test Location");
         boolean success = client.addBook(book);
 
         if (success) {
