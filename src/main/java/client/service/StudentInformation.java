@@ -159,7 +159,7 @@ public class StudentInformation {
 
     /**
      * 修改一个学生信息
-     * @param id 学生的ID
+     * @param id 学生的学号
      * @param theinfo 要更新的新信息的JSONObject
      *
      * @return 如果更新成功返回true，否则返回false

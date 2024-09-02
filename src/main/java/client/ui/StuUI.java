@@ -24,8 +24,8 @@ public class StuUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        //StudentInformation student = new StudentInformation();
-        //StudentInformation.oneStudentInformation onestudent = student.viewStudentInfo(user.getRole(), user.getId());
+        StudentInformation student = new StudentInformation();
+        StudentInformation.oneStudentInformation onestudent = student.viewOneStudentInfo(user.getUsername());
 
         if(user.getUsername().charAt(0)=='0'){
 
