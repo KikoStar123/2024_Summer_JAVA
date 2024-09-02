@@ -139,9 +139,6 @@ public class Library {
             e.printStackTrace();
         }
 
-        // 这里可以添加额外的逻辑来处理 totalReturnedBooks 和 totalNotReturnedBooks
-        // 例如，打印它们或将它们存储在某个地方供以后使用
-
         return libRecords; // 返回借阅记录列表
     }
     //添加书籍条目，由管理员实现（管理员写ISBN）

@@ -10,9 +10,9 @@ import java.net.Socket;
 
 
 public class StudentInformation {
-    private final String SERVER_ADDRESS = "localhost";//服务器的地址 即本地服务器
-    private final int SERVER_PORT = 8080;//定义服务器的端口号
-    private final int TIMEOUT = 5000; // 连接的超时时间：5秒超时
+    private static final String SERVER_ADDRESS = "localhost";//服务器的地址 即本地服务器
+    private static final int SERVER_PORT = 8080;//定义服务器的端口号
+    private static final int TIMEOUT = 5000; // 连接的超时时间：5秒超时
 
     //内部类，表示单个学生学籍
     public static class oneStudentInformation {
@@ -22,6 +22,24 @@ public class StudentInformation {
         String origin;
         String birthday;
         String academy;
+        public String getName(){
+            return name;
+        }
+        public String getId(){
+            return id;
+        }
+        public String getGender(){
+            return  gender;
+        }
+        public String getOrigin(){
+            return  origin;
+        }
+        public String getBirthday(){
+            return birthday;
+        }
+        public String getAcademy(){
+            return academy;
+        }
     }
 
     /**
@@ -30,7 +48,7 @@ public class StudentInformation {
      * @param id 学生的ID
      * @return 学生信息的JSONObject，如果出错则返回null
      */
-    public oneStudentInformation viewOneStudentInfo(String id) {
+    public static oneStudentInformation viewOneStudentInfo(String id) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT))//创建一个Socket对象，并连接到指定的服务器地址和端口号
         {
             socket.setSoTimeout(TIMEOUT);//设置socket的超时时间

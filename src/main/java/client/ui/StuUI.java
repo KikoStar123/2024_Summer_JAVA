@@ -27,15 +27,20 @@ public class StuUI extends Application {
         //StudentInformation student = new StudentInformation();
         //StudentInformation.oneStudentInformation onestudent = student.viewStudentInfo(user.getRole(), user.getId());
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/Studentui.fxml"));
-        Parent root = loader.load();
+        if(user.getUsername().charAt(0)=='0'){
 
-        Studentuicontroller controller = loader.getController();
-        controller.setUser(user);
 
-        primaryStage.setTitle("学生学籍管理");
-        primaryStage.setScene(new Scene(root, 300, 500));
-        primaryStage.show();
+        }else {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Studentui.fxml"));
+            Parent root = loader.load();
+
+            Studentuicontroller controller = loader.getController();
+            controller.setUser(user);
+
+            primaryStage.setTitle("学生学籍管理");
+            primaryStage.setScene(new Scene(root, 300, 500));
+            primaryStage.show();
+        }
     }
     public static void main(String[]args){
         launch(args);
