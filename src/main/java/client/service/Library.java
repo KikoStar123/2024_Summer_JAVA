@@ -297,6 +297,8 @@ public class Library {
             JSONObject request = new JSONObject();
             request.put("requestType", "getAllLibRecords"); // 请求类型为获取所有借阅记录
 
+            request.put("parameters", new JSONObject());
+
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
 
