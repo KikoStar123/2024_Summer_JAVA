@@ -1,5 +1,10 @@
 package client.service;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
     public class LibRecord {
         private int borrowId;       // 借阅号，主键，自增
         private String username;     // 用户账号，外键关联 tblUser 表
