@@ -95,18 +95,19 @@ public class ClientService {
     }
     //第一个返回学籍信息
     //第二个要返回用户信息
-    public boolean register(String username,Gender gender,String origin,String birthday,String academy) {//定义注册功能
-        //六个
+    public boolean register(String truename, Gender gender, String stuid, String origin, String birthday, String academy, String password) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             // 创建请求
             JSONObject request = new JSONObject();
-            request.put("requestType", "register");//main difference
+            request.put("requestType", "register");
             request.put("parameters", new JSONObject()
-                    .put("username", username)
-                    .put("gender",gender)
-                    .put("birthday", birthday)
-                    .put("academy", academy)
-                    .put("origin", origin)
+                    .put("truename", truename) // 用户的真实姓名
+                    .put("gender", gender.toString()) // 用户的性别
+                    .put("stuid", stuid) // 学生的ID
+                    .put("origin", origin) // 用户的籍贯
+                    .put("birthday", birthday) // 用户的生日
+                    .put("academy", academy) // 用户所在的学院
+                    .put("password", password) // 用户的密码
             );
 
             // 发送请求
