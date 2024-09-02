@@ -25,7 +25,7 @@ import javafx.scene.control.Alert;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LibraryUI extends Application {
+public class LibraryUI {
 
     private TableView<Book> resultTable;
     private User user;
@@ -36,10 +36,8 @@ public class LibraryUI extends Application {
         this.library = new Library(); // 初始化 Library 实例
     }
 
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("图书馆");
 
+    public BorderPane createLibraryView() {
 
         // 搜索栏和按钮
         TextField nameField = new TextField();
@@ -51,11 +49,11 @@ public class LibraryUI extends Application {
         searchButton.setFont(Font.font("Segoe UI", 14));
         searchButton.setStyle("-fx-text-fill: #4B0082;");
 
-        Button borrowButton=new Button("借阅记录");
+        Button borrowButton = new Button("借阅记录");
         borrowButton.setFont(Font.font("Segoe UI", 14));
         borrowButton.setStyle("-fx-text-fill: #4B0082;");
 
-        HBox searchBox = new HBox(10, new Label("书名或作者:"), nameField, searchButton,borrowButton);
+        HBox searchBox = new HBox(10, new Label("书名或作者:"), nameField, searchButton, borrowButton);
         searchBox.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-text-fill: #4B0082;");
         // 设置按钮样式
         String buttonStyle = "-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);";
@@ -75,8 +73,8 @@ public class LibraryUI extends Application {
 
         if (user.getUsername().charAt(0) == '0') {
             Button addButton = new Button("借阅/归还");
-            Button addbButton=new Button("添加新书");
-            Button updateButton=new Button("更新数目");
+            Button addbButton = new Button("添加新书");
+            Button updateButton = new Button("更新数目");
             addButton.setStyle(buttonStyle);
             addbButton.setStyle(buttonStyle);
             updateButton.setStyle(buttonStyle);
@@ -95,10 +93,12 @@ public class LibraryUI extends Application {
             updateButton.setOnMouseExited(e -> updateButton.setStyle(buttonStyle));
             updateButton.setOnMousePressed(e -> updateButton.setStyle(buttonPressedStyle));
             updateButton.setOnMouseReleased(e -> updateButton.setStyle(buttonHoverStyle));
-            searchBox.getChildren().addAll(addButton,addbButton,updateButton);
+
+
+            searchBox.getChildren().addAll(addButton, addbButton, updateButton);
             addButton.setOnAction(e -> showAddDeleteWindow());
-            addbButton.setOnAction(e->showAddbWindow());
-            updateButton.setOnAction(e->showUpdateWindow());
+            addbButton.setOnAction(e -> showAddbWindow());
+            updateButton.setOnAction(e -> showUpdateWindow());
         }
 
         // 结果显示区域
@@ -112,7 +112,7 @@ public class LibraryUI extends Application {
         TableColumn<Book, String> curnumColumn = new TableColumn<>("剩余数");
         curnumColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCurNumber())));
 
-        resultTable.getColumns().addAll(titleColumn, authorColumn,libnumColumn, curnumColumn);
+        resultTable.getColumns().addAll(titleColumn, authorColumn, libnumColumn, curnumColumn);
 
         VBox resultBox = new VBox(10, resultTable);
 
@@ -120,10 +120,6 @@ public class LibraryUI extends Application {
         BorderPane mainLayout = new BorderPane();
         mainLayout.setTop(searchBox);
         mainLayout.setCenter(resultBox);
-
-        Scene scene = new Scene(mainLayout, 600, 400);
-        primaryStage.setScene(scene);
-        primaryStage.show();
 
         // 查询按钮事件
         searchButton.setOnAction(e -> {
@@ -144,6 +140,7 @@ public class LibraryUI extends Application {
                 }
             }
         });
+        return mainLayout;
     }
 
     private void showUpdateWindow() {
@@ -404,4 +401,5 @@ public class LibraryUI extends Application {
         addDeleteStage.setScene(scene);
         addDeleteStage.show();
     }
+
 }

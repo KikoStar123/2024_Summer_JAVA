@@ -29,26 +29,9 @@ public class MainUI extends Application {
         // 创建 BorderPane 作为主布局
         borderPane = new BorderPane();
 
-        // 创建顶部的布局
-        HBox topBox = new HBox(10); // 设置间距
-        topBox.setPadding(new Insets(10)); // 设置内边距
-        // 创建搜索按钮
-        Button searchButton = new Button("搜索");
-        searchButton.setOnAction(e -> {
-            // 这里添加搜索的代码
-        });
-        // 创建顶部的输入栏
-        TextField searchField = new TextField();
-        searchField.setPromptText("搜索...");
-        topBox.getChildren().addAll(searchField, searchButton);
-
         // 创建左侧的按钮栏
         VBox leftBox = new VBox(0); // 设置间距
         leftBox.setPadding(new Insets(10)); // 设置内边距
-
-        // 添加标签
-        Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
-        leftBox.getChildren().add(welcomeLabel);
 
         // 添加功能按钮
         Button libButton = new Button("图书馆");
@@ -86,12 +69,15 @@ public class MainUI extends Application {
         registerButton.setOnAction(e -> handleShop(user.getUsername()));
         leftBox.getChildren().add(registerButton);
 
+        // 添加标签
+        Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
+
 
         // 将左侧按钮栏添加到 BorderPane 的左侧
         borderPane.setLeft(leftBox);
 
         // 将搜索栏添加到 BorderPane 的顶部
-        borderPane.setTop(topBox);
+        borderPane.setBottom(welcomeLabel);
         // 添加分割线
         Separator separator = new Separator();
         separator.setOrientation(javafx.geometry.Orientation.HORIZONTAL);
@@ -116,14 +102,10 @@ public class MainUI extends Application {
     private void handleLibrary(String username) {
         Platform.runLater(() -> {
             LibraryUI libraryUI = new LibraryUI(user);
-            try {
-                libraryUI.start(new Stage());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+           BorderPane library=libraryUI.createLibraryView();
+           borderPane.setCenter(library);
         });
     }
-
 
     private void handleStudent(String username) {
         Platform.runLater(() -> {
@@ -132,17 +114,6 @@ public class MainUI extends Application {
             borderPane.setCenter(studentInfoView); // 假设 borderPane 是 MainUI 的一部分
         });
     }
-//    private void handleStudent(String username) {
-//        // 学籍管理处理逻辑
-//        Platform.runLater(() -> {
-//            StuUI stuUI = new StuUI(user);
-//            try {
-//                stuUI.start(new Stage());
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
-//    }
 
     public void display() {
         launch();
