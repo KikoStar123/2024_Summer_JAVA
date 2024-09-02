@@ -110,4 +110,32 @@ public class Bank {
             return false;
         }
     }
+    public boolean payment(String username, String bankpwd, String orderID) {
+        boolean isSuccess = false;
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "payment");
+            request.put("parameters", new JSONObject()
+                    .put("username", username)
+                    .put("bankpwd", bankpwd)
+                    .put("orderID", orderID));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            isSuccess = jsonResponse.getString("status").equals("success");
+            if (isSuccess) {
+                System.out.println("支付成功！");
+            } else {
+                System.out.println("支付失败：" + jsonResponse.getString("message"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return isSuccess;
+    }
 }
