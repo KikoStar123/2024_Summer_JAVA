@@ -274,10 +274,10 @@ public class ShoppingProduct {
     }
 
 
-    // 检索商品（未实现）
-    // 输入 无
+    // 检索商品
+    // 输入 检索关键词 searchTerm
     // 返回 商品数组
-    private oneProduct[] searchProducts(String searchKeyword, String category, String specification) throws IOException
+    private oneProduct[] searchProducts(String searchTerm) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -287,7 +287,8 @@ public class ShoppingProduct {
             JSONObject request = new JSONObject();
             request.put("requestType", "product");
             request.put("parameters", new JSONObject()
-                    .put("action", "getAll"));
+                    .put("action", "search")
+                    .put("searchTerm", searchTerm));
 
             // 发送请求
             out.println(request);

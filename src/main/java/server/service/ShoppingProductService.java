@@ -140,7 +140,7 @@ public class ShoppingProductService {
             String query = "SELECT * FROM tblShoppingProduct WHERE productStatus = true " +
                     "AND (productName LIKE ? OR productID LIKE ? OR productDetail LIKE ?)";
 
-            DatabaseConnection dbConnection = new DatabaseConnection();
+             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
 
             if (conn == null) {
