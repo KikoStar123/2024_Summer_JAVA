@@ -43,6 +43,11 @@ public class ProductRequestHandler implements RequestHandler {
                 response = productService.getSameCategoryProducts(productID);
                 break;
 
+            case "search":
+                String searchTerm = parameters.optString("searchTerm");
+                response = productService.searchProducts(searchTerm);
+                break;
+
             default:
                 response.put("status", "fail").put("message", "Unknown action");
                 break;

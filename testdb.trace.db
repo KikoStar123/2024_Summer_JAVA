@@ -2297,3 +2297,11 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: D:/iCloud/iCloud
 	at org.h2.mvstore.FileStore.open(FileStore.java:128)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:452)
 	... 24 more
+2024-09-02 15:23:10 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "ALTER TABLE tblCourse\000d\000aADD COLUMN courseRoom VARCHAR(255)[*], -- 添加课程教室字段\000d\000aADD COLUMN courseType VARCHAR(100)"; SQL statement:
+ALTER TABLE tblCourse
+ADD COLUMN courseRoom VARCHAR(255), -- 添加课程教室字段
+ADD COLUMN courseType VARCHAR(100) [42000-214]
+2024-09-02 17:40:33 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBL" not found; SQL statement:
+select * from tbl course [42102-214]

@@ -5,29 +5,77 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.List;
+import java.util.ArrayList;
 
 public class CourseService {
 
     private final Lock lock = new ReentrantLock();
 
     // 添加课程
-    public boolean addCourse(String courseID, String courseName, String courseTeacher, int courseCredits, String courseTime, int courseCapacity) {
-        boolean isAdded = false;
+    public JSONObject addCourse(String courseID, String courseName, String courseTeacher, int courseCredits, String courseTime, int courseCapacity, String courseRoom, String courseType) {
+        JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
 
         if (conn == null) {
-            System.out.println("Failed to connect to the database.");
-            return isAdded;
+            response.put("status", "fail").put("message", "Failed to connect to the database.");
+            return response;
         }
 
         lock.lock(); // 获取锁
         try {
-            String insertQuery = "INSERT INTO tblCourse (courseID, courseName, courseTeacher, courseCredits, courseTime, courseCapacity, selectedCount) VALUES (?, ?, ?, ?, ?, ?, 0)";
+            // 解析新课程时间
+            onePeriod[] newCoursePeriods = parseCourseTime(courseTime);
 
+            boolean timeConflict = false;
+            boolean teacherConflict = false;
+            boolean roomConflict = false;
+            String conflictingCourseID = null;
+
+            // 检查必修课程时间冲突
+            if (courseType.equalsIgnoreCase("required")) {
+                String conflictCheckQuery = "SELECT courseID, courseTime, courseTeacher, courseRoom FROM tblCourse WHERE courseType = 'required'";
+                try (PreparedStatement checkStmt = conn.prepareStatement(conflictCheckQuery);
+                     ResultSet rs = checkStmt.executeQuery()) {
+
+                    while (rs.next()) {
+                        String existingCourseID = rs.getString("courseID");
+                        String existingCourseTime = rs.getString("courseTime");
+                        String existingCourseTeacher = rs.getString("courseTeacher");
+                        String existingCourseRoom = rs.getString("courseRoom");
+
+                        onePeriod[] existingPeriods = parseCourseTime(existingCourseTime);
+                        if (isTimeConflict(newCoursePeriods, existingPeriods)) {
+                            timeConflict = true;
+                            conflictingCourseID = existingCourseID;
+                            if (existingCourseTeacher.equals(courseTeacher)) {
+                                teacherConflict = true;
+                            }
+                            if (existingCourseRoom.equals(courseRoom)) {
+                                roomConflict = true;
+                            }
+                        }
+
+                        // 如果时间冲突且教师冲突，或者时间冲突且教室冲突，返回失败
+                        if (timeConflict && (teacherConflict || roomConflict)) {
+                            response.put("status", "fail")
+                                    .put("message", "Time conflict with course: " + conflictingCourseID)
+                                    .put("conflictType", teacherConflict ? "Teacher conflict" : "Room conflict");
+                            return response;
+                        }
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    response.put("status", "fail").put("message", "SQL Exception during conflict check: " + e.getMessage());
+                    return response;
+                }
+            }
+
+            // 如果没有时间和教室冲突或教师冲突，插入课程
+            String insertQuery = "INSERT INTO tblCourse (courseID, courseName, courseTeacher, courseCredits, courseTime, courseCapacity, courseRoom, courseType, selectedCount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)";
             try (PreparedStatement preparedStatement = conn.prepareStatement(insertQuery)) {
                 preparedStatement.setString(1, courseID);
                 preparedStatement.setString(2, courseName);
@@ -35,28 +83,77 @@ public class CourseService {
                 preparedStatement.setInt(4, courseCredits);
                 preparedStatement.setString(5, courseTime);
                 preparedStatement.setInt(6, courseCapacity);
+                preparedStatement.setString(7, courseRoom);
+                preparedStatement.setString(8, courseType);
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
-                    isAdded = true;
-                    System.out.println("Course added successfully.");
+                    response.put("status", "success").put("message", "Course added successfully.");
+                } else {
+                    response.put("status", "fail").put("message", "Failed to add course.");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    if (conn != null) {
-                        conn.close();
-                    }
-                } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
-                }
+                response.put("status", "fail").put("message", "SQL Exception during course insertion: " + e.getMessage());
             }
         } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             lock.unlock(); // 释放锁
         }
 
-        return isAdded;
+        return response;
+    }
+
+    // 解析课程时间字符串为 onePeriod 对象数组
+    private onePeriod[] parseCourseTime(String timeString) {
+        List<onePeriod> thePeriods = new ArrayList<>();
+        String[] timeSegments = timeString.split(";");
+        for (String segment : timeSegments) {
+            String[] parts = segment.split("\\|");
+            String weeks = parts[0];
+            String day = parts[1];
+            String periods = parts[2];
+
+            onePeriod thePeriod = new onePeriod();
+            thePeriod.staWeek = Integer.parseInt(weeks.split("-")[0]);
+            thePeriod.endWeek = Integer.parseInt(weeks.split("-")[1]);
+            thePeriod.Day = Integer.parseInt(day);
+            thePeriod.stasection = Integer.parseInt(periods.split("-")[0]);
+            thePeriod.endsection = Integer.parseInt(periods.split("-")[1]);
+
+            thePeriods.add(thePeriod);
+        }
+        return thePeriods.toArray(new onePeriod[0]);
+    }
+
+    // 检查时间冲突
+    private boolean isTimeConflict(onePeriod[] periods1, onePeriod[] periods2) {
+        for (onePeriod p1 : periods1) {
+            for (onePeriod p2 : periods2) {
+                if (p1.Day == p2.Day) {
+                    if ((p1.staWeek <= p2.endWeek && p1.endWeek >= p2.staWeek) &&
+                            (p1.stasection <= p2.endsection && p1.endsection >= p2.stasection)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    // 定义课程时间段的内部类
+    private class onePeriod {
+        int staWeek;
+        int endWeek;
+        int Day;
+        int stasection;
+        int endsection;
     }
 
     // 选课
@@ -279,9 +376,11 @@ public class CourseService {
                         courseJson.put("courseName", resultSet.getString("courseName"));
                         courseJson.put("courseTeacher", resultSet.getString("courseTeacher"));
                         courseJson.put("courseCredits", resultSet.getInt("courseCredits"));
-                        courseJson.put("courseTime", resultSet.getString("courseTime"));  // 获取课程时间
+                        courseJson.put("courseTime", resultSet.getString("courseTime"));
                         courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
                         courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+                        courseJson.put("courseRoom", resultSet.getString("courseRoom"));  // 添加课程教室
+                        courseJson.put("courseType", resultSet.getString("courseType"));  // 添加课程类型
                     }
                 }
             }
@@ -329,6 +428,8 @@ public class CourseService {
                         courseJson.put("courseTime", resultSet.getString("courseTime"));
                         courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
                         courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+                        courseJson.put("courseRoom", resultSet.getString("courseRoom"));  // 添加课程教室
+                        courseJson.put("courseType", resultSet.getString("courseType"));  // 添加课程类型
 
                         coursesJson.append("courses", courseJson); // 使用 append 将多个课程对象添加到 JSON 数组中
                     }
@@ -392,6 +493,8 @@ public class CourseService {
                         courseJson.put("courseTime", resultSet.getString("courseTime"));
                         courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
                         courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+                        courseJson.put("courseRoom", resultSet.getString("courseRoom"));  // 添加课程教室
+                        courseJson.put("courseType", resultSet.getString("courseType"));  // 添加课程类型
 
                         coursesJson.append("courses", courseJson);
                     }
@@ -440,6 +543,8 @@ public class CourseService {
                     courseJson.put("courseTime", resultSet.getString("courseTime"));
                     courseJson.put("courseCapacity", resultSet.getInt("courseCapacity"));
                     courseJson.put("selectedCount", resultSet.getInt("selectedCount"));
+                    courseJson.put("courseRoom", resultSet.getString("courseRoom"));  // 添加课程教室
+                    courseJson.put("courseType", resultSet.getString("courseType"));  // 添加课程类型
 
                     coursesJson.append("courses", courseJson); // 将每门课程添加到 "courses" 数组中
                 }
