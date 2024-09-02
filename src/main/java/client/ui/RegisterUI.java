@@ -7,12 +7,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import client.service.Gender;
 
 public class RegisterUI {
     private JFrame regFrame;
     private JTextField name;
     private JTextField id;
-    private JTextField gender;
+    private JComboBox<String> genderComboBox;
     private JTextField origin;
     private JTextField birthday;
     private JTextField academy;
@@ -50,19 +51,25 @@ public class RegisterUI {
         panel.add(id);
 
         JLabel genderLabel = new JLabel("Gender:");
-        genderLabel.setBounds(10, 100, 80, 25);
+        genderLabel.setBounds(10, 100, 80, 25); // 调整 y 坐标到 100
         panel.add(genderLabel);
 
-        gender = new JTextField(20);
-        gender.setBounds(100, 100, 165, 25);
-        panel.add(gender);
+// 创建下拉框并添加选项
+        String[] genders = new String[Gender.values().length];
+        int i = 0;
+        for (Gender gender : Gender.values()) {
+            genders[i++] = gender.toString().toLowerCase();
+        }
+        genderComboBox = new JComboBox<>(genders);
+        genderComboBox.setBounds(100, 100, 165, 25); // 调整 y 坐标到 140
+        panel.add(genderComboBox);
 
         JLabel originLabel = new JLabel("Origin:");
-        originLabel.setBounds(10, 140, 80, 25);
+        originLabel.setBounds(10, 140, 80, 25); // 调整 y 坐标到 180
         panel.add(originLabel);
 
         origin = new JTextField(20);
-        origin.setBounds(100, 140, 165, 25);
+        origin.setBounds(100, 140, 165, 25); // 调整 y 坐标到 180
         panel.add(origin);
 
         JLabel birthdayLabel = new JLabel("Birthday:");
@@ -104,25 +111,36 @@ public class RegisterUI {
     private void handleRegister() {
         String nameText = name.getText();
         String idText = id.getText();
-        String genderText = gender.getText();
+        String genderText = (String) genderComboBox.getSelectedItem();
+
+        // 将字符串转换为 Gender 枚举
+        Gender genderEnum;
+        if ("male".equalsIgnoreCase(genderText)) {
+            genderEnum = Gender.male;
+        } else if ("female".equalsIgnoreCase(genderText)) {
+            genderEnum = Gender.female;
+        } else {
+            // 处理未知性别或提供默认值
+            genderEnum = Gender.male; // 例如，可以设置为 male 作为默认值
+        }
         String originText = origin.getText();
         String birthdayText = birthday.getText();
         String academyText = academy.getText();
         String passwordText = new String(passwordField.getPassword());
-
-        User user = new User();
-        user.setTruename(nameText);
-        user.setId(idText);
-        user.setGender(Gender.valueOf(genderText));
-        user.setOrigin(originText);
-        user.setBirthday(birthdayText);
-        user.setAcademy(academyText);
-        user.setPwd(passwordText);
-        user.setRole(Role.Student); // 默认角色为学生
-
+//
+//        User user = new User();
+//        user.setTruename(nameText);
+//        user.setId(idText);
+//        user.setGender(Gender.valueOf(genderText));
+//        user.setOrigin(originText);
+//        user.setBirthday(birthdayText);
+//        user.setAcademy(academyText);
+//        user.setPwd(passwordText);
+//        user.setRole(Role.Student); // 默认角色为学生
+//
         ClientService clientService = new ClientService();
-        boolean success = clientService.register(user);
-
+        boolean success = clientService.register(nameText,genderEnum,idText,originText,birthdayText,academyText,passwordText);
+//
         if (success) {
             JOptionPane.showMessageDialog(regFrame, "Registration successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
             regFrame.dispose();
