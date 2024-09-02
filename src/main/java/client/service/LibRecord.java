@@ -8,7 +8,7 @@ package client.service;
         private String returnDate;   // 归还日期
         private boolean renewable;    // 可否续借，字符串表示 true 或 false
         private boolean isReturn;    //是否已经归还
-        private String recordStatus;  //借阅状态
+        private String recordStatus;  //借阅状态  “已归还，超期未还，借阅中”
         // 构造函数
     public LibRecord(int borrowId, String username, String bookID,
                      String borrowDate, String returnDate, boolean renewable
