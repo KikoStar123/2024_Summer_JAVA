@@ -89,7 +89,7 @@ public class MainUI extends Application {
         borderPane.setCenter(centerBox);
 
         // 设置场景
-        Scene scene = new Scene(borderPane, 800, 600); // 调整尺寸以适应新布局
+        Scene scene = new Scene(borderPane, 1000, 500); // 调整尺寸以适应新布局
         primaryStage.setScene(scene);
         primaryStage.show();
     }
