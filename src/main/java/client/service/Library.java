@@ -192,7 +192,6 @@ public class Library {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            System.out.println(jsonResponse.toString());
             // 检查服务器响应的状态
             return jsonResponse.getString("status").equals("success");
         } catch (IOException e) {
@@ -233,14 +232,14 @@ public class Library {
     }
     //归还书籍的请求
     //多传上去一个参数
-    public boolean bookReturn(int borrowID) {
+    public boolean bookReturn(String username, String bookID) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "bookReturn");
             request.put("parameters", new JSONObject()
-                    //.put("username", username)
-                    //.put("bookID", bookID)); // 传递请求类型和用户名以及书名
-                    .put("borrowID", borrowID));
+                    .put("username", username)
+                    .put("bookID", bookID)); // 传递请求类型和用户名以及书名
+                    //.put("borrowID", borrowID));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -295,8 +294,6 @@ public class Library {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "getAllLibRecords"); // 请求类型为获取所有借阅记录
-            JSONObject parameters = new JSONObject();
-            request.put("parameters", parameters);
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -304,7 +301,6 @@ public class Library {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
-
 
             if (jsonResponse.getString("status").equals("success")) {
                 JSONArray recordsArray = jsonResponse.getJSONArray("libRecords");
@@ -333,6 +329,7 @@ public class Library {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "getAllLibRecords");
+            request.put("parameters", new JSONObject());
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -364,36 +361,12 @@ public class Library {
 
         // 填充书名
         for (LibRecord record : libRecords) {
-            String bookName = getNameByBookID(record.getBookID());
-            //BookName bookNameObj = new BookName(record.getBookID(), bookName);
+            Book book = getBookDetailsById(record.getBookID());
+            String bookName = book.getName();
             bookNameList.add(bookName);//直接添加一个书名到书名的列表里
         }
 
         return libRecords; // 返回借阅记录列表
-    }
-    //专门处理bookid到bookname的转换的，
-    public String getNameByBookID(String bookID) {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
-            JSONObject request = new JSONObject();
-            request.put("requestType", "getNameByBookID");
-            request.put("bookID", bookID); // 添加书籍ID到请求中
-
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(request.toString());
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String response = in.readLine();
-            JSONObject jsonResponse = new JSONObject(response);
-
-            if (jsonResponse.getString("status").equals("success")) {
-                return jsonResponse.getString("bookName"); // 返回书名
-            } else {
-                return "书名获取失败"; // 处理错误情况
-            }
-        } catch (IOException  e) {
-            e.printStackTrace();
-            return "书名获取异常"; // 处理异常情况
-        }
     }
 
 }

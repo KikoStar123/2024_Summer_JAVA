@@ -199,7 +199,7 @@ public class LibraryService {
         return response;
     }
 
-    public JSONObject returnBook(int borrowId) {
+    public JSONObject returnBook(String username, String bookID) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
@@ -213,22 +213,22 @@ public class LibraryService {
         lock.lock();
 
         try {
-            // 获取书籍ID
-            String getBookIdQuery = "SELECT bookID FROM tblLibRecord WHERE borrowId = ?";
-            PreparedStatement getBookIdStmt = conn.prepareStatement(getBookIdQuery);
-            getBookIdStmt.setInt(1, borrowId);
-            ResultSet rs = getBookIdStmt.executeQuery();
+            // 获取未归还且归还日期最早的借阅记录
+            String getRecordQuery = "SELECT borrowId FROM tblLibRecord WHERE username = ? AND bookID = ? AND isReturn = false ORDER BY returnDate ASC LIMIT 1";
+            PreparedStatement getRecordStmt = conn.prepareStatement(getRecordQuery);
+            getRecordStmt.setString(1, username);
+            getRecordStmt.setString(2, bookID);
+            ResultSet rs = getRecordStmt.executeQuery();
 
             if (rs.next()) {
-                String bookId = rs.getString("bookID");
+                int borrowId = rs.getInt("borrowId");
 
                 // 更新借阅记录
-                String updateRecordQuery = "UPDATE tblLibRecord SET isReturn = ?, returnDate = ? WHERE borrowId = ? AND isReturn = ?";
+                String updateRecordQuery = "UPDATE tblLibRecord SET isReturn = ?, returnDate = ? WHERE borrowId = ? AND isReturn = false";
                 PreparedStatement updateRecordStmt = conn.prepareStatement(updateRecordQuery);
                 updateRecordStmt.setBoolean(1, true);
                 updateRecordStmt.setString(2, new java.sql.Date(System.currentTimeMillis()).toString());
                 updateRecordStmt.setInt(3, borrowId);
-                updateRecordStmt.setBoolean(4, false);
 
                 int rowsUpdated = updateRecordStmt.executeUpdate();
 
@@ -236,22 +236,26 @@ public class LibraryService {
                     // 更新书籍数量
                     String updateBookQuery = "UPDATE tblBook SET curNumber = curNumber + 1 WHERE bookId = ?";
                     PreparedStatement updateBookStmt = conn.prepareStatement(updateBookQuery);
-                    updateBookStmt.setString(1, bookId);
+                    updateBookStmt.setString(1, bookID);
                     updateBookStmt.executeUpdate();
 
                     response.put("status", "success");
                     response.put("message", "Book returned successfully.");
+                    response.put("Returned", true);
                 } else {
                     response.put("status", "error");
                     response.put("message", "No matching record found or book already returned.");
+                    response.put("Returned", false);
                 }
             } else {
                 response.put("status", "error");
                 response.put("message", "No matching record found or book already returned.");
+                response.put("Returned", false);
             }
         } catch (Exception e) {
             response.put("status", "error");
             response.put("message", e.getMessage());
+            response.put("Returned", false);
         } finally {
             try {
                 if (conn != null) {

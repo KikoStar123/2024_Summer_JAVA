@@ -10,7 +10,7 @@ public class TestBookReturn {
 
     public static void main(String[] args) {
         Library client = new Library();
-        boolean success = client.bookReturn(4); // 假设借阅ID为1
+        boolean success = client.bookReturn("200000001", "978-7-121-33462-7"); // 假设借阅ID为1
 
         if (success) {
             System.out.println("Book returned successfully.");
