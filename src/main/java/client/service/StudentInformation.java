@@ -17,7 +17,7 @@ public class StudentInformation {
     //内部类，表示单个学生学籍
     public static class oneStudentInformation {
         String name;
-        String id;
+        String id;//学号
         String gender;
         String origin;
         String birthday;
@@ -45,7 +45,7 @@ public class StudentInformation {
     /**
      * 查看单个学生信息
      *
-     * @param id 学生的ID
+     * @param id 学生的username
      * @return 学生信息的JSONObject，如果出错则返回null
      */
     public static oneStudentInformation viewOneStudentInfo(String id) {

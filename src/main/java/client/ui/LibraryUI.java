@@ -22,6 +22,7 @@ import javafx.stage.Modality;
 import javafx.scene.control.Alert;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LibraryUI extends Application {
@@ -131,7 +132,7 @@ public class LibraryUI extends Application {
             updateTableData(books);
         });
 
-        //借/还按钮事件
+        //借阅记录按钮事件
         borrowButton.setOnAction(e -> showBorrowWindow());
 
         // 表格行点击事件
@@ -217,6 +218,8 @@ public class LibraryUI extends Application {
 
         Label userLabel = new Label("用户: " + user.getUsername());
         TableView<LibRecord> borrowedBooksTable = new TableView<>();
+
+// 设置 titleColumn 的单元格值工厂
         TableColumn<LibRecord, String> titleColumn = new TableColumn<>("书名");
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBookID()));
         TableColumn<LibRecord, String> isbnColumn = new TableColumn<>("ISBN");
@@ -379,11 +382,9 @@ public class LibraryUI extends Application {
 
         returnButton.setOnAction(e -> {
             String username = usernameField.getText();
-
-
             String bookId = bookIdField.getText();
             //可能有问题
-            boolean success = library.bookReturn();
+            boolean success = library.bookReturn(username,bookId);
             Alert alert;
             if (success) {
                 alert = new Alert(Alert.AlertType.INFORMATION);

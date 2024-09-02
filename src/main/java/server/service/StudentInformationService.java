@@ -69,7 +69,7 @@ public class StudentInformationService {
 
         lock.lock(); // 获取锁
         try {
-            String query = "SELECT * FROM tblStudent s INNER JOIN tblUser u ON s.username = u.username WHERE s.studentid = ?";
+            String query = "SELECT * FROM tblStudent s INNER JOIN tblUser u ON s.username = u.username WHERE u.username = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, id);
             ResultSet rs = pstmt.executeQuery();
