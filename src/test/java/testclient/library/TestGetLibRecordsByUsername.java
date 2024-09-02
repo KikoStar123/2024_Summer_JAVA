@@ -16,6 +16,8 @@ public class TestGetLibRecordsByUsername {
         for (LibRecord record : records) {
             System.out.println("Borrow ID: " + record.getBorrowId());
             System.out.println("Username: " + record.getUsername());
+            System.out.println("Truename: " + record.getTruename());
+            System.out.println("Book Name: " + record.getName());
             System.out.println("Book ID: " + record.getBookID());
             System.out.println("Borrow Date: " + record.getBorrowDate());
             System.out.println("Return Date: " + record.getReturnDate());
