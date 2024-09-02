@@ -14,31 +14,33 @@ public class ProductRequestHandler implements RequestHandler {
         String action = parameters.optString("action");
 
         switch (action) {
-            case "getDetails":
+            case "getDetails"://已实现
                 String productID = parameters.getString("productID");
                 response = productService.getProductDetails(productID);
                 break;
 
-            case "getAll":
+            case "getAll"://已实现
                 response = productService.getAllProducts();
                 break;
 
-            case "add":
+            case "add"://已实现
                 response.put("status", addProduct(parameters, productService) ? "success" : "fail");
                 break;
 
-            case "delete":
+            case "delete"://已实现
                 productID = parameters.getString("productID");
                 response.put("status", productService.deleteProduct(productID) ? "success" : "fail");
                 break;
 
-            case "updateStatus":
+            case "updateStatus"://已实现
                 productID = parameters.getString("productID");
                 boolean status = parameters.getBoolean("status");
                 response.put("status", productService.updateProductStatus(productID, status) ? "success" : "fail");
                 break;
 
-            case "getSameCategory":
+
+
+            case "getSameCategory"://得到大类所有商品//已实现
                 productID = parameters.getString("productID");
                 response = productService.getSameCategoryProducts(productID);
                 break;
