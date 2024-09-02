@@ -131,25 +131,14 @@ public class ShoppingProductService {
     }
 
     // 检索商品
-    public JSONObject searchProducts(String searchKeyword, String category, String specification) {
+    public JSONObject searchProducts(String searchTerm) {
         searchProductsLock.lock();
         try {
             JSONObject response = new JSONObject();
             JSONArray productsArray = new JSONArray();
 
-            StringBuilder query = new StringBuilder("SELECT * FROM tblShoppingProduct WHERE productStatus = true");
-
-            if (searchKeyword != null && !searchKeyword.isEmpty()) {
-                query.append(" AND productName LIKE ?");
-            }
-
-            if (category != null && !category.isEmpty()) {
-                query.append(" AND productID LIKE ?");
-            }
-
-            if (specification != null && !specification.isEmpty()) {
-                query.append(" AND productDetail LIKE ?");
-            }
+            String query = "SELECT * FROM tblShoppingProduct WHERE productStatus = true " +
+                    "AND (productName LIKE ? OR productID LIKE ? OR productDetail LIKE ?)";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -159,20 +148,11 @@ public class ShoppingProductService {
                 return response;
             }
 
-            try (PreparedStatement preparedStatement = conn.prepareStatement(query.toString())) {
-                int index = 1;
-
-                if (searchKeyword != null && !searchKeyword.isEmpty()) {
-                    preparedStatement.setString(index++, "%" + searchKeyword + "%");
-                }
-
-                if (category != null && !category.isEmpty()) {
-                    preparedStatement.setString(index++, category + "%");
-                }
-
-                if (specification != null && !specification.isEmpty()) {
-                    preparedStatement.setString(index++, "%" + specification + "%");
-                }
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                String searchPattern = "%" + searchTerm + "%";
+                preparedStatement.setString(1, searchPattern);
+                preparedStatement.setString(2, searchPattern + "%");
+                preparedStatement.setString(3, searchPattern);
 
                 ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -210,6 +190,7 @@ public class ShoppingProductService {
             searchProductsLock.unlock();
         }
     }
+
 
     // 添加商品
     public boolean addProduct(String productID, String productName, String productDetail, byte[] productImage,
