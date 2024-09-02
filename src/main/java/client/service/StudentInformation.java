@@ -95,7 +95,7 @@ public class StudentInformation {
      *
      * @return 如果更新成功返回true，否则返回false
      */
-    public oneStudentInformation[] viewAllStudentInfo() {
+    public static oneStudentInformation[] viewAllStudentInfo() {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT))//创建一个Socket对象，并连接到指定的服务器地址和端口号
         {
             socket.setSoTimeout(TIMEOUT);//设置socket的超时时间

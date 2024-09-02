@@ -894,3 +894,137 @@ java.net.BindException: Address already in use: bind
 信息: Accepted new client connection from /127.0.0.1
 9月 02, 2024 3:28:03 下午 main.java.server.MainServer main
 信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 3:48:51 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 3:48:51 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 3:49:09 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 3:49:13 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 3:49:13 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 3:49:18 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 3:49:20 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 3:49:44 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 3:50:10 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 3:50:22 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 3:51:08 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 3:51:09 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:06:13 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 4:06:13 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 4:06:28 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:06:42 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:06:46 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:08:35 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 4:08:35 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 4:08:58 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:09:00 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:20:17 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 4:20:17 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 4:20:42 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:27:53 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:29:52 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 4:29:52 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 4:30:07 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:30:12 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:30:15 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:34:56 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 4:34:56 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 4:35:14 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:36:55 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:37:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:37:13 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:42:08 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 4:42:08 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 4:42:27 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:42:53 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 4:42:53 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 4:43:09 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:43:32 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 4:43:32 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 4:43:47 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:43:56 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:44:00 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:44:02 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:44:13 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:44:22 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:44:24 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:44:40 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:47:24 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 4:47:24 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 4:47:43 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:52:12 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 4:52:12 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 4:52:25 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:53:27 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:56:36 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:58:04 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 4:58:15 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 5:13:00 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 02, 2024 5:13:00 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 02, 2024 5:13:16 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 5:13:20 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 02, 2024 5:13:27 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
