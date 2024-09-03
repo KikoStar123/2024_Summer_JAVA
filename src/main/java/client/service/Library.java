@@ -328,49 +328,5 @@ public class Library {
         }
         return libRecords; // 返回借阅记录列表，即使为空也会返回
     }
-//    public List<LibRecord> getAllLibRecords(List<String> bookNameList) {
-//        List<LibRecord> libRecords = new ArrayList<>();
-//        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
-//            JSONObject request = new JSONObject();
-//            request.put("requestType", "getAllLibRecords");
-//            request.put("parameters", new JSONObject());
-//
-//            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-//            out.println(request.toString());
-//
-//            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//            String response = in.readLine();
-//            JSONObject jsonResponse = new JSONObject(response);
-//
-//            if (jsonResponse.getString("status").equals("success")) {
-//                JSONArray recordsArray = jsonResponse.getJSONArray("libRecords");
-//                for (int i = 0; i < recordsArray.length(); i++) {
-//                    JSONObject recordJson = recordsArray.getJSONObject(i);
-//                    LibRecord libRecord = new LibRecord(
-//                            recordJson.getInt("borrowId"),
-//                            recordJson.getString("username"),
-//                            recordJson.getString("bookID"),
-//                            recordJson.getString("borrowDate"),
-//                            recordJson.getString("returnDate"),
-//                            recordJson.getBoolean("renewable"),
-//                            recordJson.getBoolean("isReturn"),
-//                            recordJson.getString("recordStatus")
-//                    );
-//                    libRecords.add(libRecord);
-//                }
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        // 填充书名
-//        for (LibRecord record : libRecords) {
-//            Book book = getBookDetailsById(record.getBookID());
-//            String bookName = book.getName();
-//            bookNameList.add(bookName);//直接添加一个书名到书名的列表里
-//        }
-//
-//        return libRecords; // 返回借阅记录列表
-//    }
 
 }
