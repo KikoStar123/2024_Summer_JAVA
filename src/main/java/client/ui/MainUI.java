@@ -63,7 +63,7 @@ public class MainUI extends Application {
         bankButton.setOnAction(e -> handleShop(user.getUsername()));
         leftBox.getChildren().add(bankButton);
 
-        Button registerButton = new Button("注册");
+        Button registerButton = new Button("修改密码");
         registerButton.setPrefSize(150, 40);
         registerButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
         registerButton.setOnAction(e -> handleShop(user.getUsername()));

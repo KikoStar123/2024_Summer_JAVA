@@ -25,21 +25,27 @@ public class StudentInformation {
         public String getName(){
             return name;
         }
+        public void setName(String name){this.name=name;}
         public String getId(){
             return id;
         }
+        public void setId(String id){this.id=id;}
         public String getGender(){
             return  gender;
         }
+        public void setGender(String gender){this.gender=gender;}
         public String getOrigin(){
             return  origin;
         }
+        public void setOrigin(String origin){this.origin=origin;}
         public String getBirthday(){
             return birthday;
         }
+        public void setBirthday(String birthday){this.birthday=birthday;}
         public String getAcademy(){
             return academy;
         }
+        public void setAcademy(String academy){this.academy=academy;}
     }
 
     /**
@@ -164,7 +170,7 @@ public class StudentInformation {
      *
      * @return 如果更新成功返回true，否则返回false
      */
-    public boolean modifyOneStudentInfo(String id,oneStudentInformation theinfo){
+    public static boolean modifyOneStudentInfo(String id, oneStudentInformation theinfo){
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT))//创建一个Socket对象，并连接到指定的服务器地址和端口号
         {
             socket.setSoTimeout(TIMEOUT);//设置socket的超时时间
