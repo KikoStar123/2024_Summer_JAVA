@@ -18,7 +18,7 @@ public class OrderRequestHandler implements RequestHandler {
                 response = handleCreateOrder(parameters, orderService);
                 break;
 
-            case "getDetails":
+            case "getDetails"://用订单ID获取订单详情
                 String orderID = parameters.optString("orderID");
                 if (orderID != null && !orderID.isEmpty()) {
                     response = orderService.getOrderDetails(orderID);
@@ -27,8 +27,33 @@ public class OrderRequestHandler implements RequestHandler {
                 }
                 break;
 
-            case "updateCommentStatus":
+            case "getAllOrdersByUser":// 查询特定用户的所有订单
+                String username = parameters.getString("username");
+                response = orderService.getAllOrdersByUser(username);
+                break;
+
+            case "searchOrdersByUser"://按照关键词搜索特定用户的订单
+                username = parameters.getString("username");
+                String searchTerm = parameters.optString("searchTerm");
+                response = orderService.searchOrdersByUser(username, searchTerm);
+                break;
+
+            case "searchOrdersByKeyword"://在所有订单中搜索关键词
+                searchTerm = parameters.optString("searchTerm");
+                response = orderService.searchOrdersByKeyword(searchTerm);
+                break;
+
+            case "getAllOrders"://获取所有用户的所有订单
+                response = orderService.getAllOrders();
+                break;
+
+            case "updateCommentStatus"://更新是否评论状态
                 response = handleUpdateCommentStatus(parameters, orderService);
+                break;
+
+            case "getOrderCommentStatus": // 获取订单是否评论的状态
+                orderID = parameters.getString("orderID");
+                response = orderService.getOrderCommentStatus(orderID);
                 break;
 
             default:

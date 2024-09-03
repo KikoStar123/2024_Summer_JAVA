@@ -1,5 +1,6 @@
 package server.service;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.sql.Connection;
@@ -16,6 +17,8 @@ public class ShoppingOrderService {
     private final Lock createOrderLock = new ReentrantLock();
     private final Lock getOrderDetailsLock = new ReentrantLock();
     private final Lock updateOrderCommentStatusLock = new ReentrantLock();
+    private final Lock getOrderCommentStatusLock = new ReentrantLock();
+
 
     // 创建订单
     public boolean createOrder(String username, String productID, int productNumber, float paidMoney) {
@@ -73,7 +76,104 @@ public class ShoppingOrderService {
         return datePart + uniquePart;
     }
 
-    // 获取订单详情
+
+    //---------------------------------------------------------------------------------------------------
+
+    //查询所有用户订单
+    public JSONObject getAllOrdersByUser(String username) {
+        return searchOrders(username, null);
+    }
+
+    //搜索用户订单
+    public JSONObject searchOrdersByUser(String username, String searchTerm) {
+        return searchOrders(username, searchTerm);
+    }
+
+    //在所有订单中用关键词搜索
+    public JSONObject searchOrdersByKeyword(String searchTerm) {
+        return searchOrders(null, searchTerm);
+    }
+
+    //查看所有用户的订单
+    public JSONObject getAllOrders() {
+        return searchOrders(null, null);
+    }
+
+    //通用搜索方法
+    private JSONObject searchOrders(String username, String searchTerm) {
+        getOrderDetailsLock.lock();
+        try {
+            JSONObject response = new JSONObject();
+            JSONArray ordersArray = new JSONArray();
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                response.put("status", "fail").put("message", "Database connection failed");
+                return response;
+            }
+
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM tblShoppingOrder WHERE 1=1");
+
+            if (username != null && !username.isEmpty()) {
+                queryBuilder.append(" AND username = ?");
+            }
+            if (searchTerm != null && !searchTerm.isEmpty()) {
+                queryBuilder.append(" AND (productID LIKE ? OR orderID LIKE ?)");
+            }
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(queryBuilder.toString())) {
+                int paramIndex = 1;
+
+                if (username != null && !username.isEmpty()) {
+                    preparedStatement.setString(paramIndex++, username);
+                }
+                if (searchTerm != null && !searchTerm.isEmpty()) {
+                    String searchPattern = "%" + searchTerm + "%";
+                    preparedStatement.setString(paramIndex++, searchPattern);
+                    preparedStatement.setString(paramIndex++, searchPattern);
+                }
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    JSONObject order = new JSONObject();
+                    order.put("orderID", resultSet.getString("orderID"));
+                    order.put("username", resultSet.getString("username"));
+                    order.put("productID", resultSet.getString("productID"));
+                    order.put("productNumber", resultSet.getInt("productNumber"));
+                    order.put("whetherComment", resultSet.getBoolean("whetherComment"));
+                    order.put("paidMoney", resultSet.getFloat("paidMoney"));
+                    ordersArray.put(order);
+                }
+
+                response.put("status", "success").put("orders", ordersArray);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            return response;
+        } finally {
+            getOrderDetailsLock.unlock();
+        }
+    }
+
+
+
+    //---------------------------------------------------------------------------------------------------
+
+
+    // 用订单编号获取订单详情
+
     public JSONObject getOrderDetails(String orderID) {
         getOrderDetailsLock.lock();
         try {
@@ -161,4 +261,52 @@ public class ShoppingOrderService {
             updateOrderCommentStatusLock.unlock();
         }
     }
+    //显示是否评论
+    public JSONObject getOrderCommentStatus(String orderID) {
+        getOrderCommentStatusLock.lock();
+        try {
+            JSONObject response = new JSONObject();
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                response.put("status", "fail").put("message", "Database connection failed");
+                return response;
+            }
+
+            String query = "SELECT whetherComment FROM tblShoppingOrder WHERE orderID = ?";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, orderID);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    boolean whetherComment = resultSet.getBoolean("whetherComment");
+                    response.put("status", "success");
+                    response.put("orderID", orderID);
+                    response.put("whetherComment", whetherComment);
+                } else {
+                    response.put("status", "fail").put("message", "Order not found");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            return response;
+        } finally {
+            getOrderCommentStatusLock.unlock();
+        }
+    }
 }
+
+
+

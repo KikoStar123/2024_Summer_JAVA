@@ -1246,3 +1246,31 @@ java.net.BindException: Address already in use: bind
 信息: Accepted new client connection from /127.0.0.1
 9月 03, 2024 1:18:51 上午 main.java.server.MainServer main
 信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:18:56 下午 main.java.server.MainServer main
+信息: Server is starting...
+9月 03, 2024 1:18:57 下午 main.java.server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 03, 2024 1:19:05 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 03, 2024 1:19:06 下午 main.java.server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
