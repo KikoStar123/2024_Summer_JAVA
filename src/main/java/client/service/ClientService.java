@@ -3,9 +3,7 @@ package client.service;
 import java.io.*;
 import java.net.Socket;
 import org.json.JSONObject;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
+
 public class ClientService {
     private final String SERVER_ADDRESS = "localhost";
     private final int SERVER_PORT = 8080;
@@ -97,26 +95,19 @@ public class ClientService {
     }
     //第一个返回学籍信息
     //第二个要返回用户信息
-    public int calculateAge(String birthday) {
-        LocalDate birthDate = LocalDate.parse(birthday);
-        LocalDate today = LocalDate.now();
-        return Period.between(birthDate, today).getYears();
-    }
     public boolean register(String truename, Gender gender, String stuid, String origin, String birthday, String academy, String password) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             // 创建请求
-            int age = calculateAge(birthday);
             JSONObject request = new JSONObject();
             request.put("requestType", "register");
             request.put("parameters", new JSONObject()
                     .put("truename", truename) // 用户的真实姓名
                     .put("gender", gender.toString()) // 用户的性别
-                    .put("id", stuid) // 学生的ID
+                    .put("stuid", stuid) // 学生的ID
                     .put("origin", origin) // 用户的籍贯
                     .put("birthday", birthday) // 用户的生日
                     .put("academy", academy) // 用户所在的学院
-                    .put("pwd", password) // 用户的密码
-                    .put("age", age)//压垮骆驼的最后一根稻草
+                    .put("password", password) // 用户的密码
             );
 
             // 发送请求
@@ -135,7 +126,6 @@ public class ClientService {
             return false;
         }
     }
-
     public User register_user(String username, String password) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
