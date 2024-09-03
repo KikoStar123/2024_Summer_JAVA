@@ -1,11 +1,6 @@
 package client.service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-    public class LibRecord {
+public class LibRecord {
         private int borrowId;       // 借阅号，主键，自增
         private String username;     // 用户账号，外键关联 tblUser 表
         private String bookID;       // 书籍号，外键关联 tblBook 表
@@ -103,6 +98,7 @@ import java.sql.SQLException;
     public void setRenewable(boolean renewable) {
         this.renewable = renewable;
     }
+
 
     // toString 方法，用于打印借阅记录的详细信息
     @Override

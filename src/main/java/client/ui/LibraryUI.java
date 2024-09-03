@@ -218,7 +218,7 @@ public class LibraryUI {
 
 // 设置 titleColumn 的单元格值工厂
         TableColumn<LibRecord, String> titleColumn = new TableColumn<>("书名");
-        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBookID()));
+        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         TableColumn<LibRecord, String> isbnColumn = new TableColumn<>("ISBN");
         isbnColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBookID()));
         TableColumn<LibRecord, String> borrowdataColumn = new TableColumn<>("借阅时间");
