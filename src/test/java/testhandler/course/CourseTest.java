@@ -13,8 +13,10 @@ public class CourseTest {
             System.out.println('\n');
 
             sendAddCourseRequest("CS104", "数据结构", "Prof. Brown", 4, "1-16|2|2-4", 50, "Room 103", "required"); // 添加一门课程
+            System.out.println('\n');
 
             sendAddCourseRequest("CS105", "计算机网络", "Prof. Bob", 4, "1-16|2|2-4", 50, "Room 103", "required"); // 时间冲突&教室冲突
+            System.out.println('\n');
 
             sendAddCourseRequest("CS106", "数据结构2", "Prof. Brown", 4, "1-16|2|2-4", 50, "Room 106", "required"); // 时间冲突&老师冲突
             System.out.println('\n');
