@@ -14,14 +14,12 @@ public class ProductRequestHandler implements RequestHandler {
         String action = parameters.optString("action");
 
         switch (action) {
-            case "getDetails"://已实现
+            case "getDetails"://查看单个商品详细信息，已实现
                 String productID = parameters.getString("productID");
                 response = productService.getProductDetails(productID);
                 break;
 
-            //case "getAll"://原先，徐修改
-                //response = productService.getAllProducts();
-            case "getAll"://更新，需修改
+            case "getAll"://查看所有商品详细信息，已实现
                 // 获取排序参数
                 String sortBy = parameters.optString("sortBy", "price");  // 默认按价格排序，price-价格排序，rate-好评率排序
                 String sortOrder = parameters.optString("sortOrder", "ASC");  // 默认升序排序，ASC-升序，DESC-降序
@@ -37,18 +35,12 @@ public class ProductRequestHandler implements RequestHandler {
                 response.put("status", productService.deleteProduct(productID) ? "success" : "fail");
                 break;
 
-            //case "updateStatus"://原先的上架＋下架
-                //productID = parameters.getString("productID");
-                //boolean status = parameters.getBoolean("status");
-                //response.put("status", productService.updateProductStatus(productID, status) ? "success" : "fail");
-                //break;
-
-            case "enableProduct"://上架商品，原先和下架写在一起的，需要分离
+            case "enableProduct"://上架商品，已实现
                 productID = parameters.getString("productID");
                 response.put("status", productService.enableProduct(productID) ? "success" : "fail");
                 break;
 
-            case "disableProduct"://下架商品，原先和上架写在一起的，需要分离
+            case "disableProduct"://下架商品，已实现
                 productID = parameters.getString("productID");
                 response.put("status", productService.disableProduct(productID) ? "success" : "fail");
                 break;
@@ -59,54 +51,54 @@ public class ProductRequestHandler implements RequestHandler {
                 response = productService.getSameCategoryProducts(productID);
                 break;
 
-            case "search"://支持带排序的搜索，以下的全部需要新增
+            case "search"://支持带排序的搜索，已实现
                 String searchTerm = parameters.optString("searchTerm");
                 sortBy = parameters.optString("sortBy", "price");  // 默认按价格排序，price-价格排序，rate-好评率排序
                 sortOrder = parameters.optString("sortOrder", "ASC");  // 默认升序排序，ASC-升序，DESC-降序
                 response = productService.searchProducts(searchTerm, sortBy, sortOrder);
                 break;
 
-            case "updateOriginalPrice":// 更新商品原价
+            case "updateOriginalPrice":// 更新商品原价，已实现
                 productID = parameters.getString("productID");
                 float newOriginalPrice = (float) parameters.getDouble("newOriginalPrice");
                 response.put("status", productService.updateProductOriginalPrice(productID, newOriginalPrice) ? "success" : "fail");
                 break;
 
-            case "updateCurrentPrice":// 更新商品现价
+            case "updateCurrentPrice":// 更新商品现价，已实现
                 productID = parameters.getString("productID");
                 float newCurrentPrice = (float) parameters.getDouble("newCurrentPrice");
                 response.put("status", productService.updateProductCurrentPrice(productID, newCurrentPrice) ? "success" : "fail");
                 break;
 
-            case "increaseInventory"://增加库存
+            case "increaseInventory"://增加库存，已实现
                 productID = parameters.getString("productID");
                 int increaseAmount = parameters.getInt("amount");
                 response.put("status", productService.increaseProductInventory(productID, increaseAmount) ? "success" : "fail");
                 break;
 
-            case "decreaseInventory"://减少库存
+            case "decreaseInventory"://减少库存，已实现
                 productID = parameters.getString("productID");
                 int decreaseAmount = parameters.getInt("amount");
                 response.put("status", productService.decreaseProductInventory(productID, decreaseAmount) ? "success" : "fail");
                 break;
 
-            case "getProductComments"://查询商品的评论（商品详情页）---态度参数可以为null
+            case "getProductComments"://查询商品的评论（商品详情页）---态度参数可以为null，需添加
                 productID = parameters.getString("productID");
                 Integer commentAttitude = parameters.has("commentAttitude") ? parameters.getInt("commentAttitude") : null;
                 response = productService.getProductComments(productID, commentAttitude);//id+评论态度
                 break;
 
-            case "getAllProductComments": //查看所有商品的评论（管理员）
+            case "getAllProductComments": //查看所有商品的评论（管理员），已实现
                 response = productService.getAllProductComments();
                 break;
 
-            case "searchProductComments"://查询某个用户对某个商品的评论
+            case "searchProductComments"://查询某个用户对某个商品的评论，需添加
                 String username = parameters.optString("username");
                 productID = parameters.optString("productID");
                 response = productService.searchProductComments(username, productID);
                 break;
 
-            case "addComment"://添加评论
+            case "addComment"://添加评论，需添加
                 username = parameters.getString("username");
                 productID = parameters.getString("productID");
                 commentAttitude = parameters.getInt("commentAttitude");

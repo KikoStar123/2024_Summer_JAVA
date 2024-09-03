@@ -70,9 +70,10 @@ public class ShoppingProduct {
     }
 
     // 查看所有商品详细信息
-    // 输入 无
+    // 输入 排序关键词 sortBy 取值为 price（按价格）或 rate（按好评率）
+    //     排序顺序 sortOrder 取值为 ASC（升序） 或 DESC（降序）
     // 返回 商品数组
-    private oneProduct[] getAllProducts() throws IOException
+    private oneProduct[] getAllProducts(String sortBy, String sortOrder) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -82,7 +83,9 @@ public class ShoppingProduct {
             JSONObject request = new JSONObject();
             request.put("requestType", "product");
             request.put("parameters", new JSONObject()
-                    .put("action", "getAll"));
+                    .put("action", "getAll")
+                    .put("sortBy", sortBy)
+                    .put("sortOrder", sortOrder));
 
             // 发送请求
             out.println(request);
@@ -100,19 +103,19 @@ public class ShoppingProduct {
 
             for (int i = 0; i < numProducts; i++) {
 
-                JSONObject course = data.getJSONObject(i);
+                JSONObject theproduct = data.getJSONObject(i);
 
-                productsArray[i] = getProductDetails(course.getString("productID"));
-                productsArray[i].productID = course.getString("productID");
-                productsArray[i].productName = course.getString("productName");
-                productsArray[i].productDetail = course.getString("productDetail");
-                productsArray[i].productImage = course.getString("productImage");
-                productsArray[i].productOriginalPrice = course.getFloat("productOriginalPrice");
-                productsArray[i].productCurrentPrice = course.getFloat("productCurrentPrice");
-                productsArray[i].productInventory = course.getInt("productInventory");
-                productsArray[i].productAddress = course.getString("productAddress");
-                productsArray[i].productCommentRate = course.getFloat("productCommentRate");
-                productsArray[i].productStatus = course.getBoolean("productStatus");
+                productsArray[i] = new oneProduct();
+                productsArray[i].productID = theproduct.getString("productID");
+                productsArray[i].productName = theproduct.getString("productName");
+                productsArray[i].productDetail = theproduct.getString("productDetail");
+                productsArray[i].productImage = theproduct.getString("productImage");
+                productsArray[i].productOriginalPrice = theproduct.getFloat("productOriginalPrice");
+                productsArray[i].productCurrentPrice = theproduct.getFloat("productCurrentPrice");
+                productsArray[i].productInventory = theproduct.getInt("productInventory");
+                productsArray[i].productAddress = theproduct.getString("productAddress");
+                productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
+                productsArray[i].productStatus = theproduct.getBoolean("productStatus");
             }
 
             return productsArray;
@@ -189,10 +192,10 @@ public class ShoppingProduct {
         }
     }
 
-    // 上架/下架商品
-    // 输入 商品id productID; 商品状态 productStatus
+    // 上架商品
+    // 输入 商品id productID
     // 返回 状态
-    private boolean updateProductStatus(String productID,boolean status) throws IOException
+    private boolean enableProduct(String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -202,9 +205,8 @@ public class ShoppingProduct {
             JSONObject request = new JSONObject();
             request.put("requestType", "product");
             request.put("parameters", new JSONObject()
-                    .put("action", "updateStatus")
-                    .put("productID", productID)
-                    .put("status", status));
+                    .put("action", "enableProduct")
+                    .put("productID", productID));
 
             // 发送请求
             out.println(request);
@@ -219,7 +221,36 @@ public class ShoppingProduct {
         }
     }
 
-    // 查看同类商品详细信息
+    // 下架商品
+    // 输入 商品id productID
+    // 返回 状态
+    private boolean disableProduct(String productID) throws IOException
+    {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+
+            // 构建请求
+            JSONObject request = new JSONObject();
+            request.put("requestType", "product");
+            request.put("parameters", new JSONObject()
+                    .put("action", "disableProduct")
+                    .put("productID", productID));
+
+            // 发送请求
+            out.println(request);
+
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 获取所有同类商品
     // 输入 商品id productID
     // 返回 商品数组
     private oneProduct[] getSameCategoryProducts(String productID) throws IOException
@@ -250,20 +281,19 @@ public class ShoppingProduct {
             oneProduct[] productsArray = new oneProduct[numProducts];
 
             for (int i = 0; i < numProducts; i++) {
+                JSONObject theproduct = data.getJSONObject(i);
 
-                JSONObject course = data.getJSONObject(i);
-
-                productsArray[i] = getProductDetails(course.getString("productID"));
-                productsArray[i].productID = course.getString("productID");
-                productsArray[i].productName = course.getString("productName");
-                productsArray[i].productDetail = course.getString("productDetail");
-                productsArray[i].productImage = course.getString("productImage");
-                productsArray[i].productOriginalPrice = course.getFloat("productOriginalPrice");
-                productsArray[i].productCurrentPrice = course.getFloat("productCurrentPrice");
-                productsArray[i].productInventory = course.getInt("productInventory");
-                productsArray[i].productAddress = course.getString("productAddress");
-                productsArray[i].productCommentRate = course.getFloat("productCommentRate");
-                productsArray[i].productStatus = course.getBoolean("productStatus");
+                productsArray[i] = new oneProduct();
+                productsArray[i].productID = theproduct.getString("productID");
+                productsArray[i].productName = theproduct.getString("productName");
+                productsArray[i].productDetail = theproduct.getString("productDetail");
+                productsArray[i].productImage = theproduct.getString("productImage");
+                productsArray[i].productOriginalPrice = theproduct.getFloat("productOriginalPrice");
+                productsArray[i].productCurrentPrice = theproduct.getFloat("productCurrentPrice");
+                productsArray[i].productInventory = theproduct.getInt("productInventory");
+                productsArray[i].productAddress = theproduct.getString("productAddress");
+                productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
+                productsArray[i].productStatus = theproduct.getBoolean("productStatus");
             }
 
             return productsArray;
@@ -274,10 +304,12 @@ public class ShoppingProduct {
     }
 
 
-    // 检索商品
+    // 带排序的搜索
     // 输入 检索关键词 searchTerm
+    //     排序关键词 sortBy 取值为 price（按价格）或 rate（按好评率）
+    //     排序顺序 sortOrder 取值为 ASC（升序） 或 DESC（降序）
     // 返回 商品数组
-    private oneProduct[] searchProducts(String searchTerm) throws IOException
+    private oneProduct[] searchProducts(String searchTerm,String sortBy, String sortOrder) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -288,7 +320,9 @@ public class ShoppingProduct {
             request.put("requestType", "product");
             request.put("parameters", new JSONObject()
                     .put("action", "search")
-                    .put("searchTerm", searchTerm));
+                    .put("searchTerm", searchTerm))
+                    .put("sortBy", sortBy)
+                    .put("sortOrder", sortOrder);
 
             // 发送请求
             out.println(request);
@@ -305,20 +339,19 @@ public class ShoppingProduct {
             oneProduct[] productsArray = new oneProduct[numProducts];
 
             for (int i = 0; i < numProducts; i++) {
+                JSONObject theproduct = data.getJSONObject(i);
 
-                JSONObject course = data.getJSONObject(i);
-
-                productsArray[i] = getProductDetails(course.getString("productID"));
-                productsArray[i].productID = course.getString("productID");
-                productsArray[i].productName = course.getString("productName");
-                productsArray[i].productDetail = course.getString("productDetail");
-                productsArray[i].productImage = course.getString("productImage");
-                productsArray[i].productOriginalPrice = course.getFloat("productOriginalPrice");
-                productsArray[i].productCurrentPrice = course.getFloat("productCurrentPrice");
-                productsArray[i].productInventory = course.getInt("productInventory");
-                productsArray[i].productAddress = course.getString("productAddress");
-                productsArray[i].productCommentRate = course.getFloat("productCommentRate");
-                productsArray[i].productStatus = course.getBoolean("productStatus");
+                productsArray[i] = new oneProduct();
+                productsArray[i].productID = theproduct.getString("productID");
+                productsArray[i].productName = theproduct.getString("productName");
+                productsArray[i].productDetail = theproduct.getString("productDetail");
+                productsArray[i].productImage = theproduct.getString("productImage");
+                productsArray[i].productOriginalPrice = theproduct.getFloat("productOriginalPrice");
+                productsArray[i].productCurrentPrice = theproduct.getFloat("productCurrentPrice");
+                productsArray[i].productInventory = theproduct.getInt("productInventory");
+                productsArray[i].productAddress = theproduct.getString("productAddress");
+                productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
+                productsArray[i].productStatus = theproduct.getBoolean("productStatus");
             }
 
             return productsArray;
@@ -326,6 +359,127 @@ public class ShoppingProduct {
             e.printStackTrace();
         }
         return null;
+    }
+
+    // 更新商品原价
+    // 输入 商品id productID； 商品原价更新为 newOriginalPrice
+    // 返回 状态
+    private boolean updateOriginalPrice(String productID,float newOriginalPrice) throws IOException
+    {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+
+            // 构建请求
+            JSONObject request = new JSONObject();
+            request.put("requestType", "product");
+            request.put("parameters", new JSONObject()
+                    .put("action", "updateOriginalPrice")
+                    .put("productID", productID)
+                    .put("newOriginalPrice", newOriginalPrice));
+
+            // 发送请求
+            out.println(request);
+
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 更新商品现价
+    // 输入 商品id productID； 商品现价更新为 newCurrentPrice
+    // 返回 状态
+    private boolean updateCurrentPrice(String productID,float newCurrentPrice) throws IOException
+    {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+
+            // 构建请求
+            JSONObject request = new JSONObject();
+            request.put("requestType", "product");
+            request.put("parameters", new JSONObject()
+                    .put("action", "updateCurrentPrice")
+                    .put("productID", productID)
+                    .put("newCurrentPrice", newCurrentPrice));
+
+            // 发送请求
+            out.println(request);
+
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 增加库存
+    // 输入 商品id productID； 商品库存增加 amount
+    // 返回 状态
+    private boolean increaseInventory(String productID,int amount) throws IOException
+    {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+
+            // 构建请求
+            JSONObject request = new JSONObject();
+            request.put("requestType", "product");
+            request.put("parameters", new JSONObject()
+                    .put("action", "increaseInventory")
+                    .put("productID", productID)
+                    .put("amount", amount));
+
+            // 发送请求
+            out.println(request);
+
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    // 减少库存
+    // 输入 商品id productID； 商品库存减少 amount
+    // 返回 状态
+    private boolean decreaseInventory(String productID,int amount) throws IOException
+    {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+
+            // 构建请求
+            JSONObject request = new JSONObject();
+            request.put("requestType", "product");
+            request.put("parameters", new JSONObject()
+                    .put("action", "decreaseInventory")
+                    .put("productID", productID)
+                    .put("amount", amount));
+
+            // 发送请求
+            out.println(request);
+
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }
