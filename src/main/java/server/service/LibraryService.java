@@ -140,7 +140,11 @@ public class LibraryService {
         lock.lock();
 
         try {
-            String query = "SELECT * FROM tblLibRecord WHERE username = ?";
+            String query = "SELECT lr.borrowId, lr.username, lr.bookID, lr.borrowDate, lr.returnDate, lr.isReturn, lr.renewable, u.truename, b.name AS bookName " +
+                    "FROM tblLibRecord lr " +
+                    "JOIN tblUser u ON lr.username = u.username " +
+                    "JOIN tblBook b ON lr.bookID = b.bookID " +
+                    "WHERE lr.username = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setString(1, username);
             ResultSet rs = pstmt.executeQuery();
@@ -159,6 +163,8 @@ public class LibraryService {
                 record.put("returnDate", rs.getString("returnDate"));
                 record.put("isReturn", rs.getBoolean("isReturn"));
                 record.put("renewable", rs.getBoolean("renewable"));
+                record.put("truename", rs.getString("truename"));
+                record.put("bookName", rs.getString("name"));
 
                 String recordStatus;
                 if (rs.getBoolean("isReturn")) {
@@ -198,6 +204,7 @@ public class LibraryService {
 
         return response;
     }
+
 
     public JSONObject returnBook(String username, String bookID) {
         JSONObject response = new JSONObject();
@@ -550,7 +557,10 @@ public class LibraryService {
         lock.lock();
 
         try {
-            String query = "SELECT * FROM tblLibRecord";
+            String query = "SELECT lr.borrowId, lr.username, lr.bookID, lr.borrowDate, lr.returnDate, lr.isReturn, lr.renewable, u.truename, b.name " +
+                    "FROM tblLibRecord lr " +
+                    "JOIN tblUser u ON lr.username = u.username " +
+                    "JOIN tblBook b ON lr.bookID = b.bookID";
             PreparedStatement pstmt = conn.prepareStatement(query);
             ResultSet rs = pstmt.executeQuery();
 
@@ -566,6 +576,8 @@ public class LibraryService {
                 record.put("returnDate", rs.getString("returnDate"));
                 record.put("isReturn", rs.getBoolean("isReturn"));
                 record.put("renewable", rs.getBoolean("renewable"));
+                record.put("truename", rs.getString("truename"));
+                record.put("bookName", rs.getString("name"));
 
                 String recordStatus;
                 if (rs.getBoolean("isReturn")) {
