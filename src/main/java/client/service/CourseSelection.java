@@ -330,7 +330,6 @@ public class CourseSelection {
             JSONObject jsonResponse = new JSONObject(response);//将字符串解析为一个JSON对象
             JSONObject data = jsonResponse.getJSONObject("courseInfo");
 
-
             oneCourseinfo thecourse = new CourseSelection.oneCourseinfo();
 
             thecourse.courseID = data.getString("courseID");

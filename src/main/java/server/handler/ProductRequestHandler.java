@@ -82,7 +82,7 @@ public class ProductRequestHandler implements RequestHandler {
                 response.put("status", productService.decreaseProductInventory(productID, decreaseAmount) ? "success" : "fail");
                 break;
 
-            case "getProductComments"://查询商品的评论（商品详情页）---态度参数可以为null，需添加
+            case "getProductComments"://查询商品的评论（商品详情页）---态度参数可以为null，已实现
                 productID = parameters.getString("productID");
                 Integer commentAttitude = parameters.has("commentAttitude") ? parameters.getInt("commentAttitude") : null;
                 response = productService.getProductComments(productID, commentAttitude);//id+评论态度
@@ -92,7 +92,7 @@ public class ProductRequestHandler implements RequestHandler {
                 response = productService.getAllProductComments();
                 break;
 
-            case "searchProductComments"://查询某个用户对某个商品的评论，需添加
+            case "searchProductComments"://查询某个用户对某个商品的评论，已实现
                 String username = parameters.optString("username");
                 productID = parameters.optString("productID");
                 response = productService.searchProductComments(username, productID);

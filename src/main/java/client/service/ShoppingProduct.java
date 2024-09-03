@@ -23,12 +23,52 @@ public class ShoppingProduct {
         String productAddress;//商品发货地址
         float productCommentRate;//商品好评率
         boolean productStatus;//商品状态
+
+        public String getProductID() {
+            return productID;
+        }
+
+        public String getProductName() {
+            return productName;
+        }
+
+        public String getProductDetail() {
+            return productDetail;
+        }
+
+        public String getProductImage() {
+            return productImage;
+        }
+
+        public float getProductOriginalPrice() {
+            return productOriginalPrice;
+        }
+
+        public float getProductCurrentPrice() {
+            return productCurrentPrice;
+        }
+
+        public int getProductInventory() {
+            return productInventory;
+        }
+
+        public String getProductAddress() {
+            return productAddress;
+        }
+
+        public float getProductCommentRate() {
+            return productCommentRate;
+        }
+
+        public boolean isProductStatus() {
+            return productStatus;
+        }
     }
 
     // 查看单个商品详细信息
     // 输入 商品id productID
     // 返回 一个商品对象
-    private oneProduct getProductDetails(String productID) throws IOException
+    public oneProduct getProductDetails(String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -73,7 +113,7 @@ public class ShoppingProduct {
     // 输入 排序关键词 sortBy 取值为 price（按价格）或 rate（按好评率）
     //     排序顺序 sortOrder 取值为 ASC（升序） 或 DESC（降序）
     // 返回 商品数组
-    private oneProduct[] getAllProducts(String sortBy, String sortOrder) throws IOException
+    public oneProduct[] getAllProducts(String sortBy, String sortOrder) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -128,7 +168,7 @@ public class ShoppingProduct {
     // 添加商品
     // 输入 商品id productID；商品名称 productName；商品属性 productDetail；商品图片 productImage；商品原价 productOriginalPrice；商品现价 productCurrentPrice；商品库存 productInventory；商品发货地址 productAddress；商品好评率 productCommentRate；商品状态 productStatus
     // 返回 状态
-    private boolean addProduct(String productID, String productName, String productDetail, String productImage, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, float productCommentRate, boolean productStatus) throws IOException
+    public boolean addProduct(String productID, String productName, String productDetail, String productImage, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, float productCommentRate, boolean productStatus) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -166,7 +206,7 @@ public class ShoppingProduct {
     // 删除商品
     // 输入 商品id productID
     // 返回 状态
-    private boolean deleteProduct(String productID) throws IOException
+    public boolean deleteProduct(String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -195,7 +235,7 @@ public class ShoppingProduct {
     // 上架商品
     // 输入 商品id productID
     // 返回 状态
-    private boolean enableProduct(String productID) throws IOException
+    public boolean enableProduct(String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -224,7 +264,7 @@ public class ShoppingProduct {
     // 下架商品
     // 输入 商品id productID
     // 返回 状态
-    private boolean disableProduct(String productID) throws IOException
+    public boolean disableProduct(String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -253,7 +293,7 @@ public class ShoppingProduct {
     // 获取所有同类商品
     // 输入 商品id productID
     // 返回 商品数组
-    private oneProduct[] getSameCategoryProducts(String productID) throws IOException
+    public oneProduct[] getSameCategoryProducts(String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -309,7 +349,7 @@ public class ShoppingProduct {
     //     排序关键词 sortBy 取值为 price（按价格）或 rate（按好评率）
     //     排序顺序 sortOrder 取值为 ASC（升序） 或 DESC（降序）
     // 返回 商品数组
-    private oneProduct[] searchProducts(String searchTerm,String sortBy, String sortOrder) throws IOException
+    public oneProduct[] searchProducts(String searchTerm,String sortBy, String sortOrder) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -364,7 +404,7 @@ public class ShoppingProduct {
     // 更新商品原价
     // 输入 商品id productID； 商品原价更新为 newOriginalPrice
     // 返回 状态
-    private boolean updateOriginalPrice(String productID,float newOriginalPrice) throws IOException
+    public boolean updateOriginalPrice(String productID,float newOriginalPrice) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -394,7 +434,7 @@ public class ShoppingProduct {
     // 更新商品现价
     // 输入 商品id productID； 商品现价更新为 newCurrentPrice
     // 返回 状态
-    private boolean updateCurrentPrice(String productID,float newCurrentPrice) throws IOException
+    public boolean updateCurrentPrice(String productID,float newCurrentPrice) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -424,7 +464,7 @@ public class ShoppingProduct {
     // 增加库存
     // 输入 商品id productID； 商品库存增加 amount
     // 返回 状态
-    private boolean increaseInventory(String productID,int amount) throws IOException
+    public boolean increaseInventory(String productID,int amount) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -455,7 +495,7 @@ public class ShoppingProduct {
     // 减少库存
     // 输入 商品id productID； 商品库存减少 amount
     // 返回 状态
-    private boolean decreaseInventory(String productID,int amount) throws IOException
+    public boolean decreaseInventory(String productID,int amount) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
