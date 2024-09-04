@@ -13,7 +13,7 @@ public class TestUploadBookImage {
     public static void main(String[] args) {
         Library client = new Library();
         File imageFile = new File("toUpload/1.jpg"); // 替换为实际图片文件路径
-        String bookID = "978-7-80165-501-1"; // 替换为实际书籍ID
+        String bookID = "978-7-121-33462-7"; // 替换为实际书籍ID
 
         boolean success = client.uploadBookImage(imageFile, bookID);
 

@@ -34,7 +34,7 @@ public class Bank {
         // 这里使用简单利息计算公式：利息 = 本金 * 利率 * 时间
         return principal * InterestRate * years / 100;
     }
-//存钱
+    //存钱
     public boolean deposit(String username, float amount) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
@@ -111,6 +111,7 @@ public class Bank {
                 for (int i = 0; i < recordsArray.length(); i++) {
                     JSONObject recordJson = recordsArray.getJSONObject(i);
                     BankUser.BankRecord record = new BankUser.BankRecord(
+                            recordJson.getString("username"),
                             recordJson.getFloat("balanceChange"),
                             recordJson.getString("balanceReason"),
                             recordJson.getString("curDate")
@@ -136,8 +137,6 @@ public class Bank {
             out.println(request.toString());
 
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
@@ -146,6 +145,37 @@ public class Bank {
             e.printStackTrace();
             return false;
         }
+    }
+    //登陆同时返回user类
+// 新函数，返回BankUser对象
+    public BankUser getBankUser(String username, String bankpwd) {
+        BankUser user = null;
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "getBankUser");
+            request.put("parameters", new JSONObject()
+                    .put("username", username)
+                    .put("bankpwd", bankpwd));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            if (jsonResponse.getString("status").equals("success")) {
+                JSONObject userJson = jsonResponse.getJSONObject("data");
+                String retrievedUsername = userJson.getString("username");
+                float retrievedBalance = userJson.getFloat("balance");
+                String retrievedBankpwd = userJson.getString("bankpwd");
+
+                user = new BankUser(retrievedUsername, retrievedBalance, retrievedBankpwd);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
     //注册账号
     public boolean bankRegister(String username, String bankpwd) {
@@ -200,7 +230,7 @@ public class Bank {
         return isSuccess;
     }
     //支付功能
-    public boolean payment(String username, String bankpwd, String orderID, double amount) {
+    public boolean payment(String username, String bankpwd, String orderID, float amount) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
@@ -230,37 +260,37 @@ public class Bank {
         return isSuccess;
     }
     public BankUser searchByUsername(String username) {
-            boolean isSuccess = false;
-            BankUser foundUser = null;
-            try (Socket socket = new Socket("localhost", 8080)) { // 假设服务器地址和端口
-                JSONObject request = new JSONObject();
-                request.put("requestType", "searchUser");
-                request.put("parameters", new JSONObject()
-                        .put("username", username));
+        boolean isSuccess = false;
+        BankUser foundUser = null;
+        try (Socket socket = new Socket("localhost", 8080)) { // 假设服务器地址和端口
+            JSONObject request = new JSONObject();
+            request.put("requestType", "searchUser");
+            request.put("parameters", new JSONObject()
+                    .put("username", username));
 
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                out.println(request.toString());
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
 
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String response = in.readLine();
-                JSONObject jsonResponse = new JSONObject(response);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
 
-                isSuccess = jsonResponse.getString("status").equals("success");
-                if (isSuccess) {
-                    // 假设服务器返回的用户信息是JSON格式
-                    JSONObject userJson = jsonResponse.getJSONObject("data");
-                    foundUser = new BankUser(
-                            userJson.getString("username"),
-                            userJson.getFloat("balance"),
-                            userJson.getString("bankpwd")
-                    );
-                    System.out.println("用户查找成功：" + foundUser.getUsername());
-                } else {
-                    System.out.println("用户查找失败：" + jsonResponse.getString("message"));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            isSuccess = jsonResponse.getString("status").equals("success");
+            if (isSuccess) {
+                // 假设服务器返回的用户信息是JSON格式
+                JSONObject userJson = jsonResponse.getJSONObject("data");
+                foundUser = new BankUser(
+                        userJson.getString("username"),
+                        userJson.getFloat("balance"),
+                        userJson.getString("bankpwd")
+                );
+                System.out.println("用户查找成功：" + foundUser.getUsername());
+            } else {
+                System.out.println("用户查找失败：" + jsonResponse.getString("message"));
             }
-            return foundUser;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return foundUser;
     }
 }

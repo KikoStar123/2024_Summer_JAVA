@@ -22,6 +22,8 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.web.WebView;
+import javafx.scene.web.WebEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +115,7 @@ public class LibraryUI {
         TableColumn<Book, String> curnumColumn = new TableColumn<>("剩余数");
         curnumColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCurNumber())));
 
-        // 添加图片列
+// 在表格中显示图片
         TableColumn<Book, String> imageColumn = new TableColumn<>("图片");
         imageColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getImagePath()));
         imageColumn.setCellFactory(new Callback<TableColumn<Book, String>, TableCell<Book, String>>() {
@@ -128,7 +130,9 @@ public class LibraryUI {
                         if (empty || imagePath == null || imagePath.isEmpty()) {
                             setGraphic(null);
                         } else {
-                            Image image = new Image("file:" + imagePath);
+                            // 去掉前缀 "uploads/"
+                            String relativePath = imagePath.replace("uploads/", "");
+                            Image image = new Image("http://localhost:8082/files/" + relativePath);
                             imageView.setImage(image);
                             imageView.setFitWidth(50); // 设置图片宽度
                             imageView.setFitHeight(50); // 设置图片高度
@@ -139,7 +143,6 @@ public class LibraryUI {
                 };
             }
         });
-
         resultTable.getColumns().addAll(imageColumn, titleColumn, authorColumn, libnumColumn, curnumColumn);
 
         VBox resultBox = new VBox(10, resultTable);
@@ -368,14 +371,40 @@ public class LibraryUI {
         ImageView bookImageView = new ImageView();
         String imagePath = book.getImagePath(); // 获取图片路径
         if (imagePath != null && !imagePath.isEmpty()) {
-            Image bookImage = new Image("file:" + imagePath);
+            // 去掉前缀 "uploads/"
+            String relativePath = imagePath.replace("uploads/", "");
+            Image bookImage = new Image("http://localhost:8082/files/" + relativePath);
             bookImageView.setImage(bookImage);
             bookImageView.setFitWidth(200); // 设置图片宽度
             bookImageView.setPreserveRatio(true); // 保持图片比例
         }
         vbox.getChildren().add(bookImageView);
 
-        Scene scene = new Scene(vbox, 300, 400);
+        // 添加按钮来预览 PDF 文件
+        String pdfPath = book.getPdfPath(); // 获取PDF路径
+        if (pdfPath != null && !pdfPath.isEmpty()) {
+            Button previewPdfButton = new Button("预览PDF");
+            previewPdfButton.setOnAction(e -> {
+                Stage pdfStage = new Stage();
+                pdfStage.initModality(Modality.APPLICATION_MODAL);
+                pdfStage.setTitle("PDF预览");
+
+                WebView pdfWebView = new WebView();
+                WebEngine webEngine = pdfWebView.getEngine();
+                // 去掉前缀 "uploads/"
+                String relativePdfPath = pdfPath.replace("uploads/", "");
+                System.out.println("pdfPath: " + "http://localhost:8082/files/" + relativePdfPath);
+                webEngine.load("http://localhost:8082/files/" + relativePdfPath);
+                pdfWebView.setPrefSize(600, 800); // 设置PDF预览窗口大小
+
+                Scene pdfScene = new Scene(pdfWebView);
+                pdfStage.setScene(pdfScene);
+                pdfStage.show();
+            });
+            vbox.getChildren().add(previewPdfButton);
+        }
+
+        Scene scene = new Scene(vbox, 600, 800);
         detailStage.setScene(scene);
         detailStage.show();
     }

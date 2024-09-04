@@ -112,6 +112,7 @@ public class ClientHandler implements Runnable {
         routeMap.put("getAllBankRecords", new GetAllBankRecordsRequestHandler());
         routeMap.put("updatePwd", new UpdatePwdRequestHandler());
         routeMap.put("searchUser", new SearchUserRequestHandler());
+        routeMap.put("getBankUser", new GetBankUserRequestHandler());
 
 
         return routeMap;

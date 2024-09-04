@@ -1,31 +1,63 @@
 package main.java.server;
 
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpExchange;
+
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class FileStorageServer {
 
     private static final int FILE_SERVER_PORT = 8081;
+    private static final int HTTP_SERVER_PORT = 8082;
     private static final String UPLOAD_DIR = "uploads/";
 
     public static void startFileServer() {
         try (ServerSocket serverSocket = new ServerSocket(FILE_SERVER_PORT)) {
             System.out.println("File storage server is running on port " + FILE_SERVER_PORT);
 
+            // 启动HTTP服务器
+            startHttpServer();
+
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                new Thread(new FileHandler(clientSocket)).start();
+                new Thread(new FileUploadHandler(clientSocket)).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static class FileHandler implements Runnable {
+    private static void startHttpServer() throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(HTTP_SERVER_PORT), 0);
+        server.createContext("/files", new HttpFileHandler());
+        server.setExecutor(null);
+        server.start();
+        System.out.println("HTTP server is running on port " + HTTP_SERVER_PORT);
+    }
+
+    private static class HttpFileHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            String filePath = UPLOAD_DIR + exchange.getRequestURI().getPath().substring("/files/".length());
+            FileInputStream fis = new FileInputStream(filePath);
+            byte[] fileBytes = fis.readAllBytes();
+            fis.close();
+
+            exchange.sendResponseHeaders(200, fileBytes.length);
+            OutputStream os = exchange.getResponseBody();
+            os.write(fileBytes);
+            os.close();
+        }
+    }
+
+    private static class FileUploadHandler implements Runnable {
         private final Socket clientSocket;
 
-        public FileHandler(Socket clientSocket) {
+        public FileUploadHandler(Socket clientSocket) {
             this.clientSocket = clientSocket;
         }
 
@@ -70,5 +102,8 @@ public class FileStorageServer {
             }
         }
     }
-}
 
+    public static void main(String[] args) {
+        startFileServer();
+    }
+}

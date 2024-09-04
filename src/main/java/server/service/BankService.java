@@ -592,4 +592,55 @@ public class BankService {
 
         return response;
     }
+
+    public JSONObject getBankUser(String username, String bankpwd) {
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "SELECT username, balance, bankpwd FROM tblBankUser WHERE username = ? AND bankpwd = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, username);
+            stmt.setString(2, bankpwd);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                JSONObject user = new JSONObject();
+                user.put("username", rs.getString("username"));
+                user.put("balance", rs.getFloat("balance"));
+                user.put("bankpwd", rs.getString("bankpwd"));
+
+                response.put("status", "success");
+                response.put("data", user);
+            } else {
+                response.put("status", "error");
+                response.put("message", "Invalid username or password.");
+            }
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
+
 }

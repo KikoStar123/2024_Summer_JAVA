@@ -13,7 +13,7 @@ public class TestUploadBookPDF {
     public static void main(String[] args) {
         Library client = new Library();
         File pdfFile = new File("toUpload/1.pdf"); // 替换为实际PDF文件路径
-        String bookID = "978-7-80165-501-1"; // 替换为实际书籍ID
+        String bookID = "978-7-121-33462-7"; // 替换为实际书籍ID
 
         boolean success = client.uploadBookPDF(pdfFile, bookID);
 
