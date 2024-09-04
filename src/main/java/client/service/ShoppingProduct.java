@@ -8,8 +8,8 @@ import org.json.JSONObject;
 
 
 public class ShoppingProduct {
-    private final String SERVER_ADDRESS = "localhost";//服务器的地址 即本地服务器
-    private final int SERVER_PORT = 8080;//定义服务器的端口号
+    private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
+    private final int SERVER_PORT = IpConfig.SERVER_PORT;
 
     public class oneProduct
     {

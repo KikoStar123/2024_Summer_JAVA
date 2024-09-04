@@ -5,8 +5,8 @@ import java.net.Socket;
 import org.json.JSONObject;
 
 public class ClientService {
-    private final String SERVER_ADDRESS = "localhost";
-    private final int SERVER_PORT = 8080;
+    private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
+    private final int SERVER_PORT = IpConfig.SERVER_PORT;
 
     public boolean login(String username, String password) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {

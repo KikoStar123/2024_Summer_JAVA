@@ -13,8 +13,8 @@ import java.util.List;
 
 public class Library {
 
-    private static final String SERVER_ADDRESS = "localhost";
-    private static final int SERVER_PORT = 8080; // 替换为服务器端口号
+    private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
+    private final int SERVER_PORT = IpConfig.SERVER_PORT;
 
     // 假设有一个方法用于查询书籍
     public List<Book> searchBooksByName(String bookName) {

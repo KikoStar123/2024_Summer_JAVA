@@ -10,8 +10,8 @@ import java.net.Socket;
 
 
 public class StudentInformation {
-    private static final String SERVER_ADDRESS = "localhost";//服务器的地址 即本地服务器
-    private static final int SERVER_PORT = 8080;//定义服务器的端口号
+    private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;//服务器的地址 即本地服务器
+    private static final int SERVER_PORT = IpConfig.SERVER_PORT;//定义服务器的端口号
     private static final int TIMEOUT = 5000; // 连接的超时时间：5秒超时
 
     //内部类，表示单个学生学籍

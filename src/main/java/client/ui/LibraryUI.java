@@ -393,8 +393,8 @@ public class LibraryUI {
                 WebEngine webEngine = pdfWebView.getEngine();
                 // 去掉前缀 "uploads/"
                 String relativePdfPath = pdfPath.replace("uploads/", "");
-                System.out.println("pdfPath: " + "http://localhost:8082/files/" + relativePdfPath);
-                webEngine.load("http://localhost:8082/files/" + relativePdfPath);
+                String pdfViewerUrl = "http://localhost:8082/resources/pdf-viewer.html?file=" + relativePdfPath;
+                webEngine.load(pdfViewerUrl);
                 pdfWebView.setPrefSize(600, 800); // 设置PDF预览窗口大小
 
                 Scene pdfScene = new Scene(pdfWebView);

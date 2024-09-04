@@ -8,12 +8,15 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class FileStorageServer {
 
     private static final int FILE_SERVER_PORT = 8081;
     private static final int HTTP_SERVER_PORT = 8082;
     private static final String UPLOAD_DIR = "uploads/";
+    private static final String RESOURCE_DIR = "src/main/resources/";
 
     public static void startFileServer() {
         try (ServerSocket serverSocket = new ServerSocket(FILE_SERVER_PORT)) {
@@ -34,6 +37,7 @@ public class FileStorageServer {
     private static void startHttpServer() throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(HTTP_SERVER_PORT), 0);
         server.createContext("/files", new HttpFileHandler());
+        server.createContext("/resources", new ResourceHandler());
         server.setExecutor(null);
         server.start();
         System.out.println("HTTP server is running on port " + HTTP_SERVER_PORT);
@@ -43,13 +47,36 @@ public class FileStorageServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             String filePath = UPLOAD_DIR + exchange.getRequestURI().getPath().substring("/files/".length());
-            FileInputStream fis = new FileInputStream(filePath);
-            byte[] fileBytes = fis.readAllBytes();
-            fis.close();
+            File file = new File(filePath);
 
-            exchange.sendResponseHeaders(200, fileBytes.length);
+            if (file.exists()) {
+                FileInputStream fis = new FileInputStream(file);
+                byte[] fileBytes = fis.readAllBytes();
+                fis.close();
+
+                exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                exchange.getResponseHeaders().add("Content-Type", "application/pdf");
+                exchange.sendResponseHeaders(200, fileBytes.length);
+                OutputStream os = exchange.getResponseBody();
+                os.write(fileBytes);
+                os.close();
+            } else {
+                exchange.sendResponseHeaders(404, -1); // 文件未找到
+            }
+        }
+    }
+
+
+    private static class ResourceHandler implements HttpHandler {
+        @Override
+        public void handle(HttpExchange exchange) throws IOException {
+            String resourcePath = RESOURCE_DIR + exchange.getRequestURI().getPath().substring("/resources/".length());
+            byte[] resourceBytes = Files.readAllBytes(Paths.get(resourcePath));
+
+            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            exchange.sendResponseHeaders(200, resourceBytes.length);
             OutputStream os = exchange.getResponseBody();
-            os.write(fileBytes);
+            os.write(resourceBytes);
             os.close();
         }
     }
