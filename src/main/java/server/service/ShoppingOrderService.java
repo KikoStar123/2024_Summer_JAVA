@@ -41,7 +41,6 @@ public class ShoppingOrderService {
 
             String query = "INSERT INTO tblShoppingOrder (orderID, username, productID, productNumber, whetherComment, paidMoney, paidStatus) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, orderID);
                 preparedStatement.setString(2, username);
