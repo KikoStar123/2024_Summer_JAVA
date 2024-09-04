@@ -83,8 +83,20 @@
             <version>21.0.4</version>
         </dependency>
 
-
+        <!-- PDFViewerFX 依赖 -->
+        <dependency>
+            <groupId>com.github.Dansoftowner</groupId>
+            <artifactId>PDFViewerFX</artifactId>
+            <version>0.8</version>
+        </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
@@ -104,8 +116,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
-
         </plugins>
     </build>
 </project>

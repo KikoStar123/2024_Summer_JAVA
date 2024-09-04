@@ -24,7 +24,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
+import com.dansoftware.pdfdisplayer.PDFDisplayer;
 
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -350,6 +354,7 @@ public class LibraryUI {
         resultTable.getItems().addAll(books);
     }
 
+
     private void showBookDetails(Book book) {
         Stage detailStage = new Stage();
         detailStage.initModality(Modality.APPLICATION_MODAL);
@@ -389,15 +394,16 @@ public class LibraryUI {
                 pdfStage.initModality(Modality.APPLICATION_MODAL);
                 pdfStage.setTitle("PDF预览");
 
-                WebView pdfWebView = new WebView();
-                WebEngine webEngine = pdfWebView.getEngine();
+                PDFDisplayer pdfDisplayer = new PDFDisplayer();
                 // 去掉前缀 "uploads/"
                 String relativePdfPath = pdfPath.replace("uploads/", "");
-                String pdfViewerUrl = "http://localhost:8082/resources/pdf-viewer.html?file=" + relativePdfPath;
-                webEngine.load(pdfViewerUrl);
-                pdfWebView.setPrefSize(600, 800); // 设置PDF预览窗口大小
+                try {
+                    pdfDisplayer.loadPDF(new URL("http://localhost:8082/files/" + relativePdfPath));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
 
-                Scene pdfScene = new Scene(pdfWebView);
+                Scene pdfScene = new Scene(pdfDisplayer.toNode());
                 pdfStage.setScene(pdfScene);
                 pdfStage.show();
             });
@@ -408,6 +414,7 @@ public class LibraryUI {
         detailStage.setScene(scene);
         detailStage.show();
     }
+
 
     private void showAddDeleteWindow() {
         Stage addDeleteStage = new Stage();
