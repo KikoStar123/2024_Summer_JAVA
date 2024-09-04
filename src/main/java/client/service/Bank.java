@@ -124,7 +124,7 @@ public class Bank {
         }
         return bankRecords;
     }
-    //登录
+    //登录返回bool值
     public boolean bankLogin(String username, String bankpwd) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
@@ -148,14 +148,15 @@ public class Bank {
     }
 //登陆同时返回user类
 // 新函数，返回BankUser对象
-public BankUser getBankUser(String username, String bankpwd) {
+public BankUser getBankUser(String username) {
     BankUser user = null;
     try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
         JSONObject request = new JSONObject();
         request.put("requestType", "getBankUser");
         request.put("parameters", new JSONObject()
                 .put("username", username)
-                .put("bankpwd", bankpwd));
+               // .put("bankpwd", bankpwd)
+        );
 
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         out.println(request.toString());
@@ -229,7 +230,7 @@ public BankUser getBankUser(String username, String bankpwd) {
         }
         return isSuccess;
     }
-    //支付功能
+    //支付功能--与商店协同
     public boolean payment(String username, String bankpwd, String orderID) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
@@ -258,6 +259,7 @@ public BankUser getBankUser(String username, String bankpwd) {
         }
         return isSuccess;
     }
+    //
     public BankUser searchByUsername(String username) {
             boolean isSuccess = false;
             BankUser foundUser = null;

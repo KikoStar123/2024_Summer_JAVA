@@ -1,5 +1,6 @@
 package client.ui;
 
+import client.service.BankUser;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -8,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import client.service.Bank;
 
 public class Bankui_Manager extends Application {
 
@@ -17,31 +19,48 @@ public class Bankui_Manager extends Application {
         VBox root = new VBox(10);
         root.setSpacing(10);
 
-        // 创建搜索区域
+        Bank bank = new Bank(); // 创建Bank类的实例
+
         HBox searchBox = new HBox(5);
         Label searchLabel = new Label("搜索账号:");
         TextField searchField = new TextField();
         Button searchButton = new Button("搜索");
+        searchButton.setOnAction(e -> {
+            String username = searchField.getText();//符合逻辑
+            BankUser user = bank.getBankUser(username); // 假设这里不需要密码，或者你有其他方式获取密码
+            if (user != null) {
+                // 更新UI显示用户信息
+                Label userLabel = new Label("用户名: " + user.getUsername());
+                Label balanceLabel = new Label("余额: " + user.getBalance());
+                root.getChildren().addAll(userLabel, balanceLabel);
+            } else {
+                // 处理用户未找到的情况
+                Label errorLabel = new Label("用户未找到或登录失败");
+                root.getChildren().add(errorLabel);
+            }
+        });
         searchBox.getChildren().addAll(searchLabel, searchField, searchButton);
+        HBox accountInfoBox = new HBox(5);
+        accountInfoBox.setVisible(false); // 初始时不显示
+        Label userLabel = new Label();
+        Label balanceLabel = new Label();
+        accountInfoBox.getChildren().addAll(userLabel, balanceLabel);
 
-        // 创建存款区域
-        HBox depositBox = new HBox(5);
+        VBox depositBox = new VBox(5);
+        depositBox.setVisible(false); // 初始时不显示
         Label depositLabel = new Label("存款金额:");
         TextField depositField = new TextField();
         Button depositButton = new Button("存款");
-        depositBox.getChildren().addAll(depositLabel, depositField, depositButton);
+       // depositButton.setOnAction(e -> bank.deposit(depositField.getText()));
 
-        // 创建取款区域
-        HBox withdrawBox = new HBox(5);
+        VBox withdrawBox = new VBox(5);
+        withdrawBox.setVisible(false); // 初始时不显示
         Label withdrawLabel = new Label("取款金额:");
         TextField withdrawField = new TextField();
         Button withdrawButton = new Button("取款");
-        withdrawBox.getChildren().addAll(withdrawLabel, withdrawField, withdrawButton);
+       // withdrawButton.setOnAction(e -> bank.withdraw(withdrawField.getText()));
 
-        // 将所有区域添加到根布局
-        root.getChildren().addAll(searchBox, depositBox, withdrawBox);
-
-        // 创建场景并设置舞台
+        root.getChildren().addAll(searchBox, accountInfoBox, depositBox, withdrawBox);
         Scene scene = new Scene(root, 300, 200);
         primaryStage.setTitle("银行管理系统");
         primaryStage.setScene(scene);
