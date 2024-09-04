@@ -14,11 +14,11 @@ public class OrderRequestHandler implements RequestHandler {
         String action = parameters.optString("action");
 
         switch (action) {
-            case "create":
+            case "create"://添加订单，已实现
                 response = handleCreateOrder(parameters, orderService);
                 break;
 
-            case "getDetails"://用订单ID获取订单详情
+            case "getDetails"://用订单ID获取订单详情，已实现
                 String orderID = parameters.optString("orderID");
                 if (orderID != null && !orderID.isEmpty()) {
                     response = orderService.getOrderDetails(orderID);
@@ -27,12 +27,12 @@ public class OrderRequestHandler implements RequestHandler {
                 }
                 break;
 
-            case "getAllOrdersByUser":// 查询特定用户的所有订单
+            case "getAllOrdersByUser":// 查询特定用户的所有订单，已实现
                 String username = parameters.getString("username");
                 response = orderService.getAllOrdersByUser(username);
                 break;
 
-            case "searchOrdersByUser"://按照关键词搜索特定用户的订单
+            case "searchOrdersByUser"://按照关键词搜索特定用户的订单，已实现
                 username = parameters.getString("username");
                 String searchTerm = parameters.optString("searchTerm");
                 response = orderService.searchOrdersByUser(username, searchTerm);

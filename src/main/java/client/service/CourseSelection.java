@@ -55,6 +55,9 @@ public class CourseSelection {
         int courseCapacity;//课程最大容量
         int selectedCount;//已选人数
 
+        String courseRoom;//课程教室
+        String courseType;//课程类型
+
         public String getCourseID() {
             return courseID;
         }
@@ -79,8 +82,12 @@ public class CourseSelection {
             return courseCapacity;
         }
 
-        public int getSelectedCount() {
-            return selectedCount;
+        public String getCourseRoom() {
+            return courseRoom;
+        }
+
+        public String getCourseType() {
+            return courseType;
         }
     }
 
@@ -166,6 +173,8 @@ public class CourseSelection {
                 coursesArray[i].courseTime=parseCourseTime(pre_courseTime);
                 coursesArray[i].courseCapacity = course.getInt("courseCapacity");
                 coursesArray[i].selectedCount = course.getInt("selectedCount");
+                coursesArray[i].courseRoom = course.getString("courseRoom");
+                coursesArray[i].courseType = course.getString("courseType");
             }
 
             return coursesArray;
@@ -285,6 +294,8 @@ public class CourseSelection {
                 coursesArray[i].courseTime=parseCourseTime(pre_courseTime);
                 coursesArray[i].courseCapacity = course.getInt("courseCapacity");
                 coursesArray[i].selectedCount = course.getInt("selectedCount");
+                coursesArray[i].courseRoom = course.getString("courseRoom");
+                coursesArray[i].courseType = course.getString("courseType");
             }
 
             return coursesArray;
@@ -319,7 +330,6 @@ public class CourseSelection {
             JSONObject jsonResponse = new JSONObject(response);//将字符串解析为一个JSON对象
             JSONObject data = jsonResponse.getJSONObject("courseInfo");
 
-
             oneCourseinfo thecourse = new CourseSelection.oneCourseinfo();
 
             thecourse.courseID = data.getString("courseID");
@@ -330,6 +340,8 @@ public class CourseSelection {
             thecourse.courseTime=parseCourseTime(pre_courseTime);
             thecourse.courseCapacity = data.getInt("courseCapacity");
             thecourse.selectedCount = data.getInt("selectedCount");
+            thecourse.courseRoom = data.getString("courseRoom");
+            thecourse.courseType = data.getString("courseType");
 
             return thecourse;
         } catch (IOException e) {
@@ -344,7 +356,7 @@ public class CourseSelection {
      * @
      * @
      */
-    public boolean addCourse(String courseID, String courseName, String courseTeacher, int courseCredits, String courseTime, int courseCapacity)
+    public boolean addCourse(String courseID, String courseName, String courseTeacher, int courseCredits, String courseTime, int courseCapacity,String courseRoom, String courseType)
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -358,6 +370,8 @@ public class CourseSelection {
             courseObject.put("courseCredits", Integer.toString(courseCredits));
             courseObject.put("courseTime", courseTime);
             courseObject.put("courseCapacity", Integer.toString(courseCapacity));
+            courseObject.put("courseRoom", courseRoom);
+            courseObject.put("courseType", courseType);
 
             //构建请求JSON
             JSONObject request = new JSONObject();//创建了一个新的 JSON对象request，用于存储整个请求的内容
@@ -433,6 +447,8 @@ public class CourseSelection {
                 coursesArray[i].courseTime=parseCourseTime(pre_courseTime);
                 coursesArray[i].courseCapacity = course.getInt("courseCapacity");
                 coursesArray[i].selectedCount = course.getInt("selectedCount");
+                coursesArray[i].courseRoom = course.getString("courseRoom");
+                coursesArray[i].courseType = course.getString("courseType");
             }
 
             return coursesArray;

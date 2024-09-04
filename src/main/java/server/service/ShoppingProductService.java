@@ -185,7 +185,7 @@ public class ShoppingProductService {
                     "AND (productName LIKE ? OR productID LIKE ? OR productDetail LIKE ?) " +
                     "ORDER BY " + orderByColumn + " " + order;
 
-            DatabaseConnection dbConnection = new DatabaseConnection();
+             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
 
             if (conn == null) {
