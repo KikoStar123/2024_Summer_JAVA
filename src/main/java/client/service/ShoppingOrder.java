@@ -55,8 +55,8 @@ public class ShoppingOrder {
 
     // 添加订单
     // 输入 用户账号 username；商品id productID；商品数量 productNumber；支付金额 paidMoney
-    // 返回 状态
-    public boolean createOrder(String username, String productID, int productNumber, float paidMoney) throws IOException
+    // 返回 订单号 orderID
+    public String createOrder(String username, String productID, int productNumber, float paidMoney) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -78,10 +78,12 @@ public class ShoppingOrder {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+            String orderID = jsonResponse.getString("orderID");
+
+            return orderID;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
