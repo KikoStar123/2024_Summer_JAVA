@@ -35,6 +35,9 @@ public class MainServer {
             // 启动 H2 数据库服务器
             startH2Server();
 
+            // 启动文件存储服务
+            new Thread(FileStorageServer::startFileServer).start();
+
             try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT)) {
                 logger.info("Server is running and listening on port " + SERVER_PORT + "...");
 

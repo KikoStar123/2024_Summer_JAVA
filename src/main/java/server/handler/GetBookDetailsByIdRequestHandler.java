@@ -8,7 +8,7 @@ public class GetBookDetailsByIdRequestHandler implements RequestHandler {
     public String handle(JSONObject parameters) {
         LibraryService libraryService = new LibraryService();
 
-        JSONObject bookDetails = libraryService.getBookDetailsById(parameters.getString("bookId"));
+        JSONObject bookDetails = libraryService.getBookDetailsById(parameters.getString("bookID"));
 
 
         JSONObject jsonResponse = new JSONObject();

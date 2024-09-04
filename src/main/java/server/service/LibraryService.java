@@ -47,6 +47,8 @@ public class LibraryService {
                 book.put("curNumber", rs.getInt("curNumber"));
                 book.put("libNumber", rs.getInt("libNumber"));
                 book.put("location", rs.getString("location"));
+                book.put("imagePath", rs.getString("imagePath"));
+                book.put("pdfPath", rs.getString("pdfPath"));
 
                 booksArray.put(book);
             }
@@ -70,7 +72,7 @@ public class LibraryService {
         return response;
     }
 
-    public JSONObject getBookDetailsById(String bookId) {
+    public JSONObject getBookDetailsById(String bookID) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
@@ -86,7 +88,7 @@ public class LibraryService {
         try {
             String query = "SELECT * FROM tblBook WHERE bookId = ?";
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, bookId);
+            pstmt.setString(1, bookID);
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
@@ -100,6 +102,8 @@ public class LibraryService {
                 book.put("curNumber", rs.getInt("curNumber"));
                 book.put("libNumber", rs.getInt("libNumber"));
                 book.put("location", rs.getString("location"));
+                book.put("imagePath", rs.getString("imagePath"));
+                book.put("pdfPath", rs.getString("pdfPath"));
 
                 response.put("status", "success");
                 response.put("book", book);
@@ -124,6 +128,7 @@ public class LibraryService {
 
         return response;
     }
+
 
     public JSONObject getLibRecordsByUsername(String username) {
         JSONObject response = new JSONObject();
@@ -614,5 +619,84 @@ public class LibraryService {
 
         return response;
     }
+
+    public JSONObject updateBookImagePath(String bookID, String imagePath) {
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "UPDATE tblBook SET imagePath = ? WHERE bookId = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, imagePath);
+            pstmt.setString(2, bookID);
+            pstmt.executeUpdate();
+            response.put("status", "success");
+        } catch (SQLException e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
+
+
+
+    public JSONObject updateBookPDFPath(String bookID, String pdfPath) {
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "UPDATE tblBook SET pdfPath = ? WHERE bookId = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, pdfPath);
+            pstmt.setString(2, bookID);
+            pstmt.executeUpdate();
+            response.put("status", "success");
+        } catch (SQLException e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
+
 
 }

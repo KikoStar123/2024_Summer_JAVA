@@ -11,7 +11,7 @@ public class TestPayment {
         int serverPort = 8080;
         String orderID = "order12345"; // 示例订单ID
         String username = "200000001"; // 示例用户名
-        String bankpwd = "password12"; // 示例密码
+        String bankpwd = "password123"; // 示例密码
         double amount = 100.0; // 示例金额
 
         try (Socket socket = new Socket(serverAddress, serverPort)) {

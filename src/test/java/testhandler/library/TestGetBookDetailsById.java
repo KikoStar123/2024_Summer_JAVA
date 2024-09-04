@@ -20,7 +20,7 @@ public class TestGetBookDetailsById {
             JSONObject request = new JSONObject();
             request.put("requestType", "getBookDetailsById");
             JSONObject parameters = new JSONObject();
-            parameters.put("bookId", "978-7-121-33462-7");
+            parameters.put("bookID", "978-7-121-33462-7");
             request.put("parameters", parameters);
 
             out.println(request.toString());

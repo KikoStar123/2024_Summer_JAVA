@@ -4,7 +4,9 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import client.service.Book;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 //import java.util.*;
@@ -20,8 +22,7 @@ public class Library {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "searchBooksByName");
-            request.put("parameters", new JSONObject()
-                    .put("bookName", bookName));//传递请求类型和书名；
+            request.put("parameters", new JSONObject().put("bookName", bookName));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -44,7 +45,9 @@ public class Library {
                             bookJson.getString("classification"),
                             bookJson.getInt("curNumber"),
                             bookJson.getInt("libNumber"),
-                            bookJson.getString("location")
+                            bookJson.getString("location"),
+                            bookJson.optString("imagePath", "uploads/default.jpg"), // 处理 imagePath 字段
+                            bookJson.optString("pdfPath", "null") // 处理 pdfPath 字段
                     );
                     foundBooks.add(book);
                 }
@@ -54,14 +57,14 @@ public class Library {
         }
         return foundBooks; // 返回找到的书籍列表
     }
+
     // 根据书的ID获取书籍详细信息
     public Book getBookDetailsById(String bookID) {
         Book foundBook = null;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "getBookDetailsById");
-            request.put("parameters", new JSONObject()
-                    .put("bookID", bookID)); // 传递请求类型和书的ID
+            request.put("parameters", new JSONObject().put("bookID", bookID));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -71,8 +74,6 @@ public class Library {
             JSONObject jsonResponse = new JSONObject(response);
             System.out.println(jsonResponse.toString());
             if (jsonResponse.getString("status").equals("success")) {
-                // 假设响应中只包含一本书的信息
-
                 JSONObject bookJson = jsonResponse.getJSONObject("book");
                 foundBook = new Book(
                         bookJson.getString("bookID"),
@@ -83,7 +84,9 @@ public class Library {
                         bookJson.getString("classification"),
                         bookJson.getInt("curNumber"),
                         bookJson.getInt("libNumber"),
-                        bookJson.getString("location")
+                        bookJson.getString("location"),
+                        bookJson.optString("imagePath", "uploads/default.jpg"),
+                        bookJson.optString("pdfPath", "null")
                 );
             }
         } catch (IOException e) {
@@ -91,6 +94,7 @@ public class Library {
         }
         return foundBook; // 返回找到的书籍对象
     }
+
 
     //查看借阅记录的函数（返回recordstatus：中文）以及已还和为还数量
     public List<LibRecord> getLibRecordsByUsername(String username) {
@@ -330,6 +334,8 @@ public class Library {
         }
         return libRecords; // 返回借阅记录列表，即使为空也会返回
     }
+
+
 //    public List<LibRecord> getAllLibRecords(List<String> bookNameList) {
 //        List<LibRecord> libRecords = new ArrayList<>();
 //        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
@@ -374,5 +380,113 @@ public class Library {
 //
 //        return libRecords; // 返回借阅记录列表
 //    }
+
+    public boolean uploadBookImage(File imageFile, String bookID) {
+        try (Socket socket = new Socket("localhost", 8081);
+             FileInputStream fis = new FileInputStream(imageFile);
+             OutputStream os = socket.getOutputStream();
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+            out.println("UPLOAD " + bookID + ".jpg");
+
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+
+            os.flush();
+            socket.shutdownOutput();
+
+            String response = in.readLine();
+            if (response.contains("File uploaded successfully")) {
+                // 发送请求到后端更新数据库中的 imagePath 字段
+                return updateBookImagePath(bookID, "uploads/" + bookID + ".jpg");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+    public boolean uploadBookPDF(File pdfFile, String bookID) {
+        try (Socket socket = new Socket("localhost", 8081);
+             FileInputStream fis = new FileInputStream(pdfFile);
+             OutputStream os = socket.getOutputStream();
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+            out.println("UPLOAD " + bookID + ".pdf");
+
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+
+            os.flush();
+            socket.shutdownOutput();
+
+            String response = in.readLine();
+            if (response.contains("File uploaded successfully")) {
+                // 发送请求到后端更新数据库中的 pdfPath 字段
+                return updateBookPDFPath(bookID, "uploads/" + bookID + ".pdf");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+    public boolean updateBookImagePath(String bookID, String imagePath) {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "updateBookImagePath");
+            request.put("parameters", new JSONObject()
+                    .put("bookID", bookID)
+                    .put("imagePath", imagePath));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            return jsonResponse.getString("status").equals("success");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateBookPDFPath(String bookID, String pdfPath) {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "updateBookPDFPath");
+            request.put("parameters", new JSONObject()
+                    .put("bookID", bookID)
+                    .put("pdfPath", pdfPath));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            return jsonResponse.getString("status").equals("success");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 
 }
