@@ -29,6 +29,10 @@ public class MainUI extends Application {
         // 创建 BorderPane 作为主布局
         borderPane = new BorderPane();
 
+        // 设置场景
+        Scene scene = new Scene(borderPane, 1000, 500); // 调整尺寸以适应新布局
+        scene.getStylesheets().add(getClass().getResource("/styles/test.css").toExternalForm());// 加载CSS文件
+
         // 创建左侧的按钮栏
         VBox leftBox = new VBox(0); // 设置间距
         leftBox.setPadding(new Insets(10)); // 设置内边距
@@ -88,8 +92,6 @@ public class MainUI extends Application {
         centerBox.setSpacing(10);
         borderPane.setCenter(centerBox);
 
-        // 设置场景
-        Scene scene = new Scene(borderPane, 1000, 500); // 调整尺寸以适应新布局
         primaryStage.setScene(scene);
         primaryStage.show();
     }

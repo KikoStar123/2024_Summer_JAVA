@@ -1,0 +1,34 @@
+/* styles.css */
+
+/* 按钮样式 */
+.button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-pref-width: 150px;
+    -fx-pref-height: 40px;
+    -fx-alignment: center;
+    -fx-border-radius: 5px;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #45a049;
+}
+
+/* 标签样式 */
+.label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* 分割线样式 */
+.separator {
+    -fx-background-color: #333333;
+}
+
+/* 设置主界面背景颜色 */
+#borderPane {
+    -fx-background-color: #f2f2f2;
+}
