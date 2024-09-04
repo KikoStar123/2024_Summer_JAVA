@@ -22,7 +22,6 @@ public class ShoppingOrderService {
     private final Lock getOrderCommentStatusLock = new ReentrantLock();
     private final Lock payOrderLock = new ReentrantLock();
 
-
     // 创建订单
     public JSONObject createOrder(String username, String productID, int productNumber, float paidMoney) {
         createOrderLock.lock();
