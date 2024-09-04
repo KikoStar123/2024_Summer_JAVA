@@ -62,10 +62,9 @@ package client.service;
         private String balanceReason;
         private String curDate;//添加收支日期；
 
-
         // 构造函数、getter和setter方法
         // BankRecord的构造函数
-        public BankRecord(String usename,float balanceChange, String balanceReason, String curDate) {
+        public BankRecord(String username,float balanceChange, String balanceReason, String curDate) {
             this.username = username;
             this.balanceChange = balanceChange;
             this.balanceReason = balanceReason;

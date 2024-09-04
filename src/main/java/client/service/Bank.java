@@ -147,6 +147,37 @@ public class Bank {
             return false;
         }
     }
+//登陆同时返回user类
+// 新函数，返回BankUser对象
+public BankUser getBankUser(String username, String bankpwd) {
+    BankUser user = null;
+    try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+        JSONObject request = new JSONObject();
+        request.put("requestType", "getBankUser");
+        request.put("parameters", new JSONObject()
+                .put("username", username)
+                .put("bankpwd", bankpwd));
+
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        out.println(request.toString());
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        String response = in.readLine();
+        JSONObject jsonResponse = new JSONObject(response);
+
+        if (jsonResponse.getString("status").equals("success")) {
+            JSONObject userJson = jsonResponse.getJSONObject("data");
+            String retrievedUsername = userJson.getString("username");
+            float retrievedBalance = userJson.getFloat("balance");
+            String retrievedBankpwd = userJson.getString("bankpwd");
+
+            user = new BankUser(retrievedUsername, retrievedBalance, retrievedBankpwd);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return user;
+}
     //注册账号
     public static boolean bankRegister(String username, String bankpwd) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
