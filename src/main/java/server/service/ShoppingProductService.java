@@ -577,18 +577,29 @@ public class ShoppingProductService {
                 return response;
             }
 
-            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM tblShoppingComment WHERE productID = ?");
+            // 构建 SQL 查询，根据参数是否为空决定添加条件
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM tblShoppingComment WHERE 1=1");
+            if (productID != null) {
+                queryBuilder.append(" AND productID = ?");
+            }
             if (commentAttitude != null) {
                 queryBuilder.append(" AND commentAttitude = ?");
             }
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(queryBuilder.toString())) {
-                preparedStatement.setString(1, productID);
-                if (commentAttitude != null) {
-                    preparedStatement.setInt(2, commentAttitude);
+                int parameterIndex = 1; // 用于设置 PreparedStatement 的参数索引
+
+                // 根据条件设置参数
+                if (productID != null) {
+                    preparedStatement.setString(parameterIndex++, productID);
                 }
+                if (commentAttitude != null) {
+                    preparedStatement.setInt(parameterIndex++, commentAttitude);
+                }
+
                 ResultSet resultSet = preparedStatement.executeQuery();
 
+                // 处理查询结果
                 while (resultSet.next()) {
                     JSONObject comment = new JSONObject();
                     comment.put("username", resultSet.getString("username"));
@@ -618,6 +629,7 @@ public class ShoppingProductService {
             getProductCommentsLock.unlock();
         }
     }
+
 
 
 
