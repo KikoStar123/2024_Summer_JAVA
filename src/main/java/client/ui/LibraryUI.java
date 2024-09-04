@@ -25,6 +25,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 import com.dansoftware.pdfdisplayer.PDFDisplayer;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 import java.io.IOException;
@@ -354,7 +358,6 @@ public class LibraryUI {
         resultTable.getItems().addAll(books);
     }
 
-
     private void showBookDetails(Book book) {
         Stage detailStage = new Stage();
         detailStage.initModality(Modality.APPLICATION_MODAL);
@@ -390,22 +393,9 @@ public class LibraryUI {
         if (pdfPath != null && !pdfPath.isEmpty()) {
             Button previewPdfButton = new Button("预览PDF");
             previewPdfButton.setOnAction(e -> {
-                Stage pdfStage = new Stage();
-                pdfStage.initModality(Modality.APPLICATION_MODAL);
-                pdfStage.setTitle("PDF预览");
-
-                PDFDisplayer pdfDisplayer = new PDFDisplayer();
-                // 去掉前缀 "uploads/"
-                String relativePdfPath = pdfPath.replace("uploads/", "");
-                try {
-                    pdfDisplayer.loadPDF(new URL("http://localhost:8082/files/" + relativePdfPath));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-
-                Scene pdfScene = new Scene(pdfDisplayer.toNode());
-                pdfStage.setScene(pdfScene);
-                pdfStage.show();
+                // 调用系统默认的PDF阅读器
+                String relativePath = pdfPath.replace("uploads/", "");
+                openPDFWithDefaultViewer("http://localhost:8082/files/" + relativePath);
             });
             vbox.getChildren().add(previewPdfButton);
         }
@@ -477,4 +467,16 @@ public class LibraryUI {
         addDeleteStage.show();
     }
 
+    private void openPDFWithDefaultViewer(String pdfUrl) {
+        if (Desktop.isDesktopSupported()) {
+            try {
+                URI pdfUri = new URI(pdfUrl);
+                Desktop.getDesktop().browse(pdfUri);
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Desktop类不支持此操作");
+        }
+    }
 }
