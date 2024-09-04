@@ -107,6 +107,8 @@ public class Bank {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
+            System.out.println(jsonResponse.toString());
+
             if (jsonResponse.getString("status").equals("success")) {
                 JSONArray recordsArray = jsonResponse.getJSONArray("records");
                 for (int i = 0; i < recordsArray.length(); i++) {
@@ -202,7 +204,7 @@ public BankUser getBankUser(String username, String bankpwd) {
     }
     //修改密码
     // 修改密码功能
-    public boolean updatePwd(String username, String oldPwd, String newPwd) {
+    public static boolean updatePwd(String username, String oldPwd, String newPwd) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();

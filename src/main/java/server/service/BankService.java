@@ -19,7 +19,7 @@ public class BankService {
     private final Map<String, PaymentInfo> paymentRequests = new HashMap<>();
     private final Lock lock = new ReentrantLock();
 
-    private BankService() {}
+    public BankService() {}
 
     public static synchronized BankService getInstance() {
         if (instance == null) {
@@ -464,13 +464,14 @@ public class BankService {
         lock.lock();
 
         try {
-            String query = "SELECT balanceChange, balanceReason, curDate FROM tblBankRecord WHERE username = ?";
+            String query = "SELECT username, balanceChange, balanceReason, curDate FROM tblBankRecord WHERE username = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 JSONObject record = new JSONObject();
+                record.put("username",rs.getString("username"));
                 record.put("balanceChange", rs.getFloat("balanceChange"));
                 record.put("balanceReason", rs.getString("balanceReason"));
                 record.put("curDate", rs.getString("curDate"));
@@ -479,6 +480,7 @@ public class BankService {
 
             response.put("status", "success");
             response.put("records", new JSONArray(records));
+
         } catch (Exception e) {
             response.put("status", "error");
             response.put("message", e.getMessage());

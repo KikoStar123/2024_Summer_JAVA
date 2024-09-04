@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import client.service.Bank;
@@ -193,8 +194,63 @@ public class Bankui_stu {
         Label rateLabel=new Label("当前利率: ");
         bankMainView.getChildren().addAll(usernameLabel,welcomeLabel,balanceLabel,bankrecord,pwdchange,rateLabel);
         bankrecord.setOnAction(e -> showBankRecord(user));
+        pwdchange.setOnAction(e->showChangepwd(user));
         return bankMainView;
     }
+
+    private static void showChangepwd(User user) {
+        Stage stage = new Stage();
+        stage.setTitle("修改密码");
+
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.setVgap(8);
+        grid.setHgap(10);
+
+        Label oldPwdLabel = new Label("旧密码:");
+        GridPane.setConstraints(oldPwdLabel, 0, 0);
+
+        PasswordField oldPwdField = new PasswordField();
+        GridPane.setConstraints(oldPwdField, 1, 0);
+
+        Label newPwdLabel = new Label("新密码:");
+        GridPane.setConstraints(newPwdLabel, 0, 1);
+
+        PasswordField newPwdField = new PasswordField();
+        GridPane.setConstraints(newPwdField, 1, 1);
+
+        Button confirmButton = new Button("确定");
+        GridPane.setConstraints(confirmButton, 1, 2);
+
+        confirmButton.setOnAction(e -> {
+            String oldPwd = oldPwdField.getText();
+            String newPwd = newPwdField.getText();
+            boolean isSuccess = Bank.updatePwd(user.getUsername(), oldPwd, newPwd);
+            if (isSuccess) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("提示");
+                alert.setHeaderText(null);
+                alert.setContentText("密码修改成功！");
+                alert.showAndWait().ifPresent(response -> {
+                    stage.close();
+                    showLoginForm();
+                });
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("提示");
+                alert.setHeaderText(null);
+                alert.setContentText("原密码输入错误，密码修改失败！");
+                alert.showAndWait();
+            }
+        });
+
+        grid.getChildren().addAll(oldPwdLabel, oldPwdField, newPwdLabel, newPwdField, confirmButton);
+
+        Scene scene = new Scene(grid, 300, 200);
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
     private static void showBankRecord(User user) {
 
