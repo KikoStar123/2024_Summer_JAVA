@@ -136,6 +136,8 @@ public class Bank {
             out.println(request.toString());
 
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 

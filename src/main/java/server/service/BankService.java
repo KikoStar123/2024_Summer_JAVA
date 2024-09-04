@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import java.util.List;
+import java.util.ArrayList;
+import org.json.JSONArray;
 public class BankService {
 
     private static BankService instance;
@@ -118,12 +121,14 @@ public class BankService {
                             updateBalanceStmt.executeUpdate();
 
                             // 插入收支记录
-                            String insertRecordQuery = "INSERT INTO tblBankRecord (username, balanceChange, balanceReason) VALUES (?, ?, ?)";
+                            String insertRecordQuery = "INSERT INTO tblBankRecord (username, balanceChange, balanceReason, curDate) VALUES (?, ?, ?, ?)";
                             PreparedStatement insertRecordStmt = conn.prepareStatement(insertRecordQuery);
                             insertRecordStmt.setString(1, username);
                             insertRecordStmt.setDouble(2, -amount);
                             insertRecordStmt.setString(3, "支付" + orderID);
+                            insertRecordStmt.setDate(4, new java.sql.Date(System.currentTimeMillis()));
                             insertRecordStmt.executeUpdate();
+
 
                             System.out.println("Payment matched and processed for orderID: " + orderID);
                             paymentInfo.setProcessed(true);
@@ -246,11 +251,12 @@ public class BankService {
             updateBalanceStmt.executeUpdate();
 
             // 插入收支记录
-            String insertRecordQuery = "INSERT INTO tblBankRecord (username, balanceChange, balanceReason) VALUES (?, ?, ?)";
+            String insertRecordQuery = "INSERT INTO tblBankRecord (username, balanceChange, balanceReason, curDate) VALUES (?, ?, ?, ?)";
             PreparedStatement insertRecordStmt = conn.prepareStatement(insertRecordQuery);
             insertRecordStmt.setString(1, username);
             insertRecordStmt.setDouble(2, amount);
             insertRecordStmt.setString(3, "存款");
+            insertRecordStmt.setDate(4, new java.sql.Date(System.currentTimeMillis()));
             insertRecordStmt.executeUpdate();
 
             response.put("status", "success");
@@ -308,11 +314,12 @@ public class BankService {
                 updateBalanceStmt.executeUpdate();
 
                 // 插入收支记录
-                String insertRecordQuery = "INSERT INTO tblBankRecord (username, balanceChange, balanceReason) VALUES (?, ?, ?)";
+                String insertRecordQuery = "INSERT INTO tblBankRecord (username, balanceChange, balanceReason, curDate) VALUES (?, ?, ?, ?)";
                 PreparedStatement insertRecordStmt = conn.prepareStatement(insertRecordQuery);
                 insertRecordStmt.setString(1, username);
                 insertRecordStmt.setDouble(2, -amount);
-                insertRecordStmt.setString(3, "取款");
+                insertRecordStmt.setString(3, "存款");
+                insertRecordStmt.setDate(4, new java.sql.Date(System.currentTimeMillis()));
                 insertRecordStmt.executeUpdate();
 
                 response.put("status", "success");
@@ -423,6 +430,150 @@ public class BankService {
 
                 response.put("status", "success");
                 response.put("message", "Registration successful.");
+            }
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
+
+    public JSONObject getAllBankRecords(String username) {
+        JSONObject response = new JSONObject();
+        List<JSONObject> records = new ArrayList<>();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "SELECT balanceChange, balanceReason, curDate FROM tblBankRecord WHERE username = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                JSONObject record = new JSONObject();
+                record.put("balanceChange", rs.getFloat("balanceChange"));
+                record.put("balanceReason", rs.getString("balanceReason"));
+                record.put("curDate", rs.getString("curDate"));
+                records.add(record);
+            }
+
+            response.put("status", "success");
+            response.put("records", new JSONArray(records));
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
+
+    public JSONObject updatePwd(String username, String oldPwd, String newPwd) {
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "UPDATE tblBankUser SET bankpwd = ? WHERE username = ? AND bankpwd = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, newPwd);
+            stmt.setString(2, username);
+            stmt.setString(3, oldPwd);
+
+            int rowsUpdated = stmt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                response.put("status", "success");
+                response.put("message", "Password updated successfully.");
+            } else {
+                response.put("status", "error");
+                response.put("message", "Old password is incorrect.");
+            }
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
+
+    public JSONObject searchByUsername(String username) {
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "SELECT username, balance, bankpwd FROM tblBankUser WHERE username = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                JSONObject user = new JSONObject();
+                user.put("username", rs.getString("username"));
+                user.put("balance", rs.getFloat("balance"));
+                user.put("bankpwd", rs.getString("bankpwd"));
+
+                response.put("status", "success");
+                response.put("data", user);
+            } else {
+                response.put("status", "error");
+                response.put("message", "User not found.");
             }
         } catch (Exception e) {
             response.put("status", "error");
