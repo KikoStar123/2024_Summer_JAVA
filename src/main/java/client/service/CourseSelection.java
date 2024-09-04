@@ -55,8 +55,8 @@ public class CourseSelection {
         int courseCapacity;//课程最大容量
         int selectedCount;//已选人数
 
-        String courseRoom;//课程教室
-        String courseType;//课程类型
+        String courseRoom;// 添加课程教室
+        String courseType; // 添加课程类型
 
         public String getCourseID() {
             return courseID;
@@ -82,11 +82,15 @@ public class CourseSelection {
             return courseCapacity;
         }
 
-        public String getCourseRoom() {
+        public int getSelectedCount() {
+            return selectedCount;
+        }
+
+        public String courseRoom() {
             return courseRoom;
         }
 
-        public String getCourseType() {
+        public String courseType() {
             return courseType;
         }
     }
@@ -329,6 +333,7 @@ public class CourseSelection {
             String response = in.readLine();//从输入流中读取一行数据，并将其存储在字符串response中（假设按行发送）
             JSONObject jsonResponse = new JSONObject(response);//将字符串解析为一个JSON对象
             JSONObject data = jsonResponse.getJSONObject("courseInfo");
+
 
             oneCourseinfo thecourse = new CourseSelection.oneCourseinfo();
 
