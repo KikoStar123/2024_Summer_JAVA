@@ -138,6 +138,7 @@ public class ShoppingOrderService {
                     order.put("whetherComment", resultSet.getBoolean("whetherComment"));
                     order.put("paidMoney", resultSet.getFloat("paidMoney"));
                     order.put("paidStatus", resultSet.getBoolean("paidStatus"));
+                    order.put("storeID", resultSet.getBoolean("storeID"));
                     ordersArray.put(order);
                 }
 
@@ -279,6 +280,7 @@ public class ShoppingOrderService {
                     order.put("whetherComment", resultSet.getBoolean("whetherComment"));
                     order.put("paidMoney", resultSet.getFloat("paidMoney"));
                     order.put("paidStatus", resultSet.getBoolean("paidStatus"));
+                    order.put("orderID", resultSet.getString("orderID"));
                     ordersArray.put(order);
                 }
 
@@ -309,7 +311,7 @@ public class ShoppingOrderService {
 
     // 用订单编号获取订单详情
 
-    // 在查询订单详情时返回 paidStatus//
+    // 在查询订单详情时返回 paidStatus
     public JSONObject getOrderDetails(String orderID) {
         getOrderDetailsLock.lock();
         try {
@@ -337,6 +339,7 @@ public class ShoppingOrderService {
                     response.put("whetherComment", resultSet.getBoolean("whetherComment"));
                     response.put("paidMoney", resultSet.getFloat("paidMoney"));
                     response.put("paidStatus", resultSet.getBoolean("paidStatus")); // 返回支付状态
+                    response.put("orderID", resultSet.getString("orderID"));
                     response.put("status", "success");
                 } else {
                     response.put("status", "fail").put("message", "Order not found");
