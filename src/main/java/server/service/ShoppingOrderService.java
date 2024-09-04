@@ -24,15 +24,18 @@ public class ShoppingOrderService {
 
 
     // 创建订单
-    public boolean createOrder(String username, String productID, int productNumber, float paidMoney) {
+    public JSONObject createOrder(String username, String productID, int productNumber, float paidMoney) {
         createOrderLock.lock();
+        JSONObject response = new JSONObject();
         try {
             boolean isSuccess = false;
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
 
             if (conn == null) {
-                return false;
+                response.put("status", "fail");
+                response.put("message", "Database connection failed");
+                return response;
             }
 
             String orderID = generateOrderID();
@@ -51,10 +54,19 @@ public class ShoppingOrderService {
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
-                    isSuccess = true; // 订单创建成功
+                    isSuccess = true;
+                    // 创建成功，返回订单 ID 和成功状态
+                    response.put("status", "success");
+                    response.put("orderID", orderID);
+                } else {
+                    // 如果插入失败，返回失败状态
+                    response.put("status", "fail");
+                    response.put("message", "Order creation failed");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                response.put("status", "fail");
+                response.put("message", "SQL Error: " + e.getMessage());
             } finally {
                 try {
                     if (conn != null) {
@@ -65,11 +77,12 @@ public class ShoppingOrderService {
                 }
             }
 
-            return isSuccess;
+            return response;
         } finally {
             createOrderLock.unlock();
         }
     }
+
 
 
     // 更新订单支付状态
