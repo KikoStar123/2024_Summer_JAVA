@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -22,30 +23,46 @@ public class CourseSelectionUI extends Application {
         primaryStage.setTitle("选课系统");
 
         VBox root = new VBox(10);
-        root.setStyle("-fx-padding: 20; -fx-alignment: center;");
+        //root.setStyle("-fx-padding: 20; -fx-alignment: center;");
+        root.getStyleClass().add("PrimaryPurple"); // 应用面板样式
 
         // 课程列表
         ListView<String> courseList = new ListView<>();
         courseList.setItems(getCourseList());
-        root.getChildren().add(new Label("可选课程:"));
+        root.getChildren().add(new Label("可选课程:"){{
+            getStyleClass().add("body-font");
+        }});
         root.getChildren().add(courseList);
 
         // 已选课程
         ListView<String> selectedCourses = new ListView<>();
         selectedCourses.setItems(getSelectedCourses());
-        root.getChildren().add(new Label("已选课程:"));
+        root.getChildren().add(new Label("已选课程:"){{
+            getStyleClass().add("body-font");
+        }});
         root.getChildren().add(selectedCourses);
 
         // 按钮
+        HBox buttonBox = new HBox(10); // 间距为 10
+        buttonBox.setAlignment(javafx.geometry.Pos.CENTER); // 水平居中
+
+        // 按钮
         Button enrollButton = new Button("选课");
+        enrollButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         enrollButton.setOnAction(e -> enrollCourse(courseList, selectedCourses));
-        root.getChildren().add(enrollButton);
 
         Button dropButton = new Button("退选");
+        dropButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         dropButton.setOnAction(e -> dropCourse(selectedCourses));
-        root.getChildren().add(dropButton);
+
+        // 将按钮添加到 HBox
+        buttonBox.getChildren().addAll(enrollButton, dropButton);
+
+        // 将 HBox 添加到 root
+        root.getChildren().add(buttonBox);
 
         Scene scene = new Scene(root, 400, 600);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

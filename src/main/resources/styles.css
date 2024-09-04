@@ -104,3 +104,16 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 1, 0.0, 1, 1);
 }
 
+/* 列表视图样式 */
+#course-list, #selected-courses {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #B0B0B0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0.0, 2, 2);
+}
+
+/* 按钮间距 */
+.main-button {
+    -fx-margin: 5px;
+}

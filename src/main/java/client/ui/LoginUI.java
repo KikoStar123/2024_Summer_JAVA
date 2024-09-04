@@ -134,10 +134,10 @@ public class LoginUI extends Application {
         }
     }
     private void handleRegister() {
-        Platform.runLater(() -> {
-            RegisterUI registerUI = new RegisterUI();
-            registerUI.display();
-        });
+//        Platform.runLater(() -> {
+//            RegisterUI registerUI = new RegisterUI();
+//            registerUI.display();
+//        });
     }
 
 }
