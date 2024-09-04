@@ -20,6 +20,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -334,6 +336,17 @@ public class LibraryUI {
         vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()));
         vbox.getChildren().add(new Label("馆藏数量: " + book.getLibNumber()));
         vbox.getChildren().add(new Label("位置: " + book.getLocation()));
+
+        // 添加 ImageView 来显示书籍图片
+        ImageView bookImageView = new ImageView();
+        String imagePath = book.getImagePath(); // 获取图片路径
+        if (imagePath != null && !imagePath.isEmpty()) {
+            Image bookImage = new Image("file:" + imagePath);
+            bookImageView.setImage(bookImage);
+            bookImageView.setFitWidth(200); // 设置图片宽度
+            bookImageView.setPreserveRatio(true); // 保持图片比例
+        }
+        vbox.getChildren().add(bookImageView);
 
         Scene scene = new Scene(vbox, 300, 400);
         detailStage.setScene(scene);
