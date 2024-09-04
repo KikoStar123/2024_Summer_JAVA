@@ -37,8 +37,6 @@ public class ClientHandler implements Runnable {
             // 获取对应的处理器
             RequestHandler handler = routeMap.getOrDefault(requestType, new UnknownRequestHandler());
 
-
-
             // 执行处理器逻辑
             String response = handler.handle(parameters);
             out.println(response);
@@ -56,9 +54,60 @@ public class ClientHandler implements Runnable {
         routeMap.put("viewStudentInfo", new ViewStudentInfoRequestHandler());
         routeMap.put("modifyStudentInfo", new ModifyStudentInfoRequestHandler());
         routeMap.put("register", new RegisterRequestHandler());
-        routeMap.put("search_books_by_name", new SearchBooksByNameRequestHandler());
-        routeMap.put("get_book_by_id", new GetBookDetailsByIdRequestHandler());
+
+        //图书馆相关请求
+        routeMap.put("searchBooksByName", new SearchBooksByNameRequestHandler());
+        routeMap.put("getBookDetailsById", new GetBookDetailsByIdRequestHandler());
         routeMap.put("getLibRecordsByUsername", new GetLibRecordsByUsernameRequestHandler());
+        routeMap.put("bookReturn", new BookReturnRequestHandler());
+        routeMap.put("bookBorrow", new BookBorrowRequestHandler());
+        routeMap.put("updateBook", new UpdateBookRequestHandler());
+        routeMap.put("addBook", new AddBookRequestHandler());
+        routeMap.put("renewBook", new RenewBookRequestHandler());
+        routeMap.put("getAllLibRecords", new GetAllLibRecordsRequestHandler());
+
+        // 课程相关请求
+        routeMap.put("enrollInCourse", new EnrollInCourseRequestHandler());
+        routeMap.put("dropCourse", new DropCourseRequestHandler());
+        routeMap.put("viewEnrolledCourses", new ViewEnrolledCoursesRequestHandler());
+        routeMap.put("addCourse", new AddCourseRequestHandler()); // 新增课程
+        routeMap.put("searchCourses", new SearchCoursesRequestHandler());//检索课程
+        routeMap.put("viewCourseInfo", new ViewCourseInfoRequestHandler());  // 课程信息查看处理
+        routeMap.put("getAllCourses", new GetAllCoursesRequestHandler());//查看所有课程信息
+
+        // 商店相关请求 - 通过相应的处理器根据 action字段 处理
+        /*
+        * e.g.
+        * const request = {
+            requestType: "product",
+            parameters: {
+                action: "add",//<-此处action字段规定请求类型
+                productID: "12345",
+                productName: "New Product",
+                productDetail: "This is a new product",
+                productImage: "base64encodedImageString",
+                productOriginalPrice: 99.99,
+                productCurrentPrice: 89.99,
+                productInventory: 100,
+                productAddress: "Warehouse A",
+                productCommentRate: 4.5,
+                productStatus: true
+        }
+        };
+        * */
+        routeMap.put("product", new ProductRequestHandler());  // 处理与商品相关的请求
+        routeMap.put("cart", new CartRequestHandler());        // 处理与购物车相关的请求
+        routeMap.put("order", new OrderRequestHandler());      // 处理与订单相关的请求
+
+        //银行相关请求
+        routeMap.put("deposit", new DepositRequestHandler());
+        routeMap.put("withdraw", new WithdrawRequestHandler());
+        routeMap.put("bankLogin", new BankLoginRequestHandler());
+        routeMap.put("bankRegister", new BankRegisterRequestHandler());
+        routeMap.put("payment", new PaymentRequestHandler());
+        routeMap.put("wait", new WaitRequestHandler());
+
+
         return routeMap;
     }
 
