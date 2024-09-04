@@ -1,9 +1,6 @@
 package client.ui;
 
-import client.service.Book;
-import client.service.LibRecord;
-import client.service.Library;
-import client.service.User;
+import client.service.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -22,8 +19,8 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.web.WebView;
-import javafx.scene.web.WebEngine;
+//import javafx.scene.web.WebView;
+//import javafx.scene.web.WebEngine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +71,7 @@ public class LibraryUI {
         borrowButton.setOnMousePressed(e -> borrowButton.setStyle(buttonPressedStyle));
         borrowButton.setOnMouseReleased(e -> borrowButton.setStyle(buttonHoverStyle));
 
-        if (user.getUsername().charAt(0) == '0') {
+        if (user.getRole() == Role.Librarian) {
             Button addButton = new Button("借阅/归还");
             Button addbButton = new Button("添加新书");
             Button updateButton = new Button("更新数目");
@@ -175,6 +172,7 @@ public class LibraryUI {
     }
 
     private void showUpdateWindow() {
+        VBox vbox = new VBox(10); // 间距为10的 VBox
         Stage updateStage =new Stage();
         updateStage.setTitle("更新书籍");
         Label isbnLabel = new Label("Bookid:");
@@ -182,6 +180,8 @@ public class LibraryUI {
         Label finalLibNumberLabel = new Label("最终数目:");
         TextField finalLibNumberField = new TextField();
         Button confirmButton = new Button("确认");
+        // 将组件添加到布局容器中
+        vbox.getChildren().addAll(isbnLabel, isbnField, finalLibNumberLabel, finalLibNumberField, confirmButton);
         confirmButton.setOnAction(e -> {
             String isbn = isbnField.getText();
             int finalLibNumber = Integer.parseInt(finalLibNumberField.getText());
@@ -189,6 +189,12 @@ public class LibraryUI {
             library.updateBook(isbn,finalLibNumber);
             updateStage.close();
         });
+        // 创建场景并设置到 Stage 上
+        Scene scene = new Scene(vbox, 300, 200); // 宽度300，高度200
+        updateStage.setScene(scene);
+
+        // 显示窗口
+        updateStage.show();
     }
 
     private void showAddbWindow() {
@@ -313,7 +319,7 @@ public class LibraryUI {
             String searchText = searchField.getText();
             // 根据用户名搜索借阅记录的逻辑
             borrowedBooksTable.setItems(FXCollections.observableArrayList(library.getLibRecordsByUsername(searchText)));
-            borrowedBooksTable.setItems(FXCollections.observableArrayList(library.getAllLibRecords()));
+          //yjb-lzy  borrowedBooksTable.setItems(FXCollections.observableArrayList(library.getAllLibRecords()));
         });
 
         refreshButton.setOnAction(e -> {
@@ -363,6 +369,7 @@ public class LibraryUI {
         vbox.getChildren().add(new Label("书名: " + book.getName()));
         vbox.getChildren().add(new Label("作者: " + book.getAuthor()));
         vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()));
+        vbox.getChildren().add(new Label("ISBN: "+book.getBookID()));
         vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()));
         vbox.getChildren().add(new Label("分类: " + book.getClassification()));
         vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()));
@@ -383,28 +390,28 @@ public class LibraryUI {
         vbox.getChildren().add(bookImageView);
 
         // 添加按钮来预览 PDF 文件
-        String pdfPath = book.getPdfPath(); // 获取PDF路径
-        if (pdfPath != null && !pdfPath.isEmpty()) {
-            Button previewPdfButton = new Button("预览PDF");
-            previewPdfButton.setOnAction(e -> {
-                Stage pdfStage = new Stage();
-                pdfStage.initModality(Modality.APPLICATION_MODAL);
-                pdfStage.setTitle("PDF预览");
-
-                WebView pdfWebView = new WebView();
-                WebEngine webEngine = pdfWebView.getEngine();
-                // 去掉前缀 "uploads/"
-                String relativePdfPath = pdfPath.replace("uploads/", "");
-                String pdfViewerUrl = "http://localhost:8082/resources/pdf-viewer.html?file=" + relativePdfPath;
-                webEngine.load(pdfViewerUrl);
-                pdfWebView.setPrefSize(600, 800); // 设置PDF预览窗口大小
-
-                Scene pdfScene = new Scene(pdfWebView);
-                pdfStage.setScene(pdfScene);
-                pdfStage.show();
-            });
-            vbox.getChildren().add(previewPdfButton);
-        }
+//        String pdfPath = book.getPdfPath(); // 获取PDF路径
+//        if (pdfPath != null && !pdfPath.isEmpty()) {
+//            Button previewPdfButton = new Button("预览PDF");
+//            previewPdfButton.setOnAction(e -> {
+//                Stage pdfStage = new Stage();
+//                pdfStage.initModality(Modality.APPLICATION_MODAL);
+//                pdfStage.setTitle("PDF预览");
+//
+//                WebView pdfWebView = new WebView();
+//                WebEngine webEngine = pdfWebView.getEngine();
+//                // 去掉前缀 "uploads/"
+//                String relativePdfPath = pdfPath.replace("uploads/", "");
+//                String pdfViewerUrl = "http://localhost:8082/resources/pdf-viewer.html?file=" + relativePdfPath;
+//                webEngine.load(pdfViewerUrl);
+//                pdfWebView.setPrefSize(600, 800); // 设置PDF预览窗口大小
+//
+//                Scene pdfScene = new Scene(pdfWebView);
+//                pdfStage.setScene(pdfScene);
+//                pdfStage.show();
+//            });
+//            vbox.getChildren().add(previewPdfButton);
+//        }
 
         Scene scene = new Scene(vbox, 600, 800);
         detailStage.setScene(scene);

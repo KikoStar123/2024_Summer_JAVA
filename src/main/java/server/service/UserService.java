@@ -111,9 +111,9 @@ public class UserService {
         String gender = parameters.getString("gender");
         String birthday = parameters.getString("birthday");
         String origin = parameters.getString("origin");
-        String pwd = parameters.getString("pwd");
+        String pwd = parameters.getString("password");
         String academy = parameters.getString("academy");
-        String studentId = parameters.getString("id");
+        String studentId = parameters.getString("stuid");
         int age = parameters.getInt("age");
 
         String allocatedId = null;

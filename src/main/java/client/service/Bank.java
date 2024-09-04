@@ -15,8 +15,8 @@ import java.util.List;
 import client.service.BankUser;
 
 public class Bank {
-    private final String SERVER_ADDRESS = "localhost";
-    private final int SERVER_PORT = 8080;
+    private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
+    private final int SERVER_PORT = IpConfig.SERVER_PORT;
     //利率实现
     private  double InterestRate;
     // 获取利率
