@@ -229,7 +229,7 @@ public class ShoppingOrderService {
 
     // 用订单编号获取订单详情
 
-    // 在查询订单详情时返回 paidStatus
+    // 在查询订单详情时返回 paidStatus//
     public JSONObject getOrderDetails(String orderID) {
         getOrderDetailsLock.lock();
         try {

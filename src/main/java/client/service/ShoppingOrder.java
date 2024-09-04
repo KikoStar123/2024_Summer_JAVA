@@ -18,6 +18,7 @@ public class ShoppingOrder {
         String orderID;//订单号
         String username;//用户账号
         String productID;//商品id
+        String productName;//商品名称
         int productNumber;//商品数量
         boolean whetherComment;//是否评价
         float paidMoney;//支付金额
@@ -34,6 +35,10 @@ public class ShoppingOrder {
 
         public String getProductID() {
             return productID;
+        }
+
+        public String productName() {
+            return productName;
         }
 
         public int getProductNumber() {
@@ -53,10 +58,10 @@ public class ShoppingOrder {
         }
     }
 
-    // 添加订单
-    // 输入 用户账号 username；商品id productID；商品数量 productNumber；支付金额 paidMoney
+    // 创建订单
+    // 输入 用户账号 username；商品id productID；商品名称 productName；商品数量 productNumber；支付金额 paidMoney
     // 返回 订单号 orderID
-    public String createOrder(String username, String productID, int productNumber, float paidMoney) throws IOException
+    public String createOrder(String username, String productID, String productName, int productNumber, float paidMoney) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -67,10 +72,11 @@ public class ShoppingOrder {
             request.put("requestType", "order");
             request.put("parameters", new JSONObject()
                     .put("action", "create")
+                    .put("username", username)
                     .put("productID", productID)
+                    .put("productName", productName)
                     .put("productNumber", productNumber)
-                    .put("paidMoney", paidMoney)
-                    .put("username", username));
+                    .put("paidMoney", paidMoney));
 
             // 发送请求
             out.println(request);
@@ -115,6 +121,7 @@ public class ShoppingOrder {
             theOrder.orderID=jsonResponse.getString("orderID");
             theOrder.username=jsonResponse.getString("username");
             theOrder.productID=jsonResponse.getString("productID");
+            theOrder.productName=jsonResponse.getString("productName");
             theOrder.productNumber=jsonResponse.getInt("productNumber");
             theOrder.whetherComment=jsonResponse.getBoolean("whetherComment");
             theOrder.paidMoney=jsonResponse.getFloat("paidMoney");
@@ -164,6 +171,7 @@ public class ShoppingOrder {
                 ordersArray[i].orderID=theOrder.getString("orderID");
                 ordersArray[i].username = theOrder.getString("username");
                 ordersArray[i].productID=theOrder.getString("productID");
+                ordersArray[i].productName=theOrder.getString("productName");
                 ordersArray[i].productNumber=theOrder.getInt("productNumber");
                 ordersArray[i].whetherComment=theOrder.getBoolean("whetherComment");
                 ordersArray[i].paidMoney=theOrder.getFloat("paidMoney");
@@ -215,6 +223,7 @@ public class ShoppingOrder {
                 ordersArray[i].orderID=theOrder.getString("orderID");
                 ordersArray[i].username = theOrder.getString("username");
                 ordersArray[i].productID=theOrder.getString("productID");
+                ordersArray[i].productName=theOrder.getString("productName");
                 ordersArray[i].productNumber=theOrder.getInt("productNumber");
                 ordersArray[i].whetherComment=theOrder.getBoolean("whetherComment");
                 ordersArray[i].paidMoney=theOrder.getFloat("paidMoney");
@@ -265,6 +274,7 @@ public class ShoppingOrder {
                 ordersArray[i].orderID=theOrder.getString("orderID");
                 ordersArray[i].username = theOrder.getString("username");
                 ordersArray[i].productID=theOrder.getString("productID");
+                ordersArray[i].productName=theOrder.getString("productName");
                 ordersArray[i].productNumber=theOrder.getInt("productNumber");
                 ordersArray[i].whetherComment=theOrder.getBoolean("whetherComment");
                 ordersArray[i].paidMoney=theOrder.getFloat("paidMoney");
@@ -314,6 +324,7 @@ public class ShoppingOrder {
                 ordersArray[i].orderID=theOrder.getString("orderID");
                 ordersArray[i].username = theOrder.getString("username");
                 ordersArray[i].productID=theOrder.getString("productID");
+                ordersArray[i].productName=theOrder.getString("productName");
                 ordersArray[i].productNumber=theOrder.getInt("productNumber");
                 ordersArray[i].whetherComment=theOrder.getBoolean("whetherComment");
                 ordersArray[i].paidMoney=theOrder.getFloat("paidMoney");
