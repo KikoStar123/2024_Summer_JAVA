@@ -23,7 +23,7 @@ public class ShoppingProduct {
         String productAddress;//商品发货地址
         float productCommentRate;//商品好评率
         boolean productStatus;//商品状态
-        String storeID;
+        String storeID;//商店id
 
         public String getProductID() {
             return productID;
@@ -107,7 +107,7 @@ public class ShoppingProduct {
             theproduct.productAddress = data.getString("productAddress");
             theproduct.productCommentRate = data.getFloat("productCommentRate");
             theproduct.productStatus = data.getBoolean("productStatus");
-            theproduct
+            theproduct.storeID = data.getString("storeID");
 
             return theproduct;
         } catch (IOException e) {
@@ -163,6 +163,7 @@ public class ShoppingProduct {
                 productsArray[i].productAddress = theproduct.getString("productAddress");
                 productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
                 productsArray[i].productStatus = theproduct.getBoolean("productStatus");
+                productsArray[i].storeID = theproduct.getString("storeID");
 
                 System.out.println(productsArray[i].productImage);
             }
@@ -175,7 +176,7 @@ public class ShoppingProduct {
     }
 
     // 添加商品
-    // 输入 商品id productID；商品名称 productName；商品属性 productDetail；商品图片 productImage；商品原价 productOriginalPrice；商品现价 productCurrentPrice；商品库存 productInventory；商品发货地址 productAddress；商品好评率 productCommentRate；商品状态 productStatus
+    // 输入 商品id productID；商品名称 productName；商品属性 productDetail；商品图片 productImage；商品原价 productOriginalPrice；商品现价 productCurrentPrice；商品库存 productInventory；商品发货地址 productAddress；商品好评率 productCommentRate；商品状态 productStatus；商店id storeID
     // 返回 状态
     public boolean addProduct(String productID, String productName, String productDetail, String productImage, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, float productCommentRate, boolean productStatus, String storeID) throws IOException
     {
@@ -197,7 +198,8 @@ public class ShoppingProduct {
                     .put("productInventory", productInventory)
                     .put("productAddress", productAddress)
                     .put("productCommentRate", productCommentRate)
-                    .put("productStatus", productStatus));
+                    .put("productStatus", productStatus)
+                    .put("storeID", storeID));
 
             // 发送请求
             out.println(request);
@@ -343,6 +345,7 @@ public class ShoppingProduct {
                 productsArray[i].productAddress = theproduct.getString("productAddress");
                 productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
                 productsArray[i].productStatus = theproduct.getBoolean("productStatus");
+                productsArray[i].storeID = theproduct.getString("storeID");
             }
 
             return productsArray;
@@ -401,6 +404,7 @@ public class ShoppingProduct {
                 productsArray[i].productAddress = theproduct.getString("productAddress");
                 productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
                 productsArray[i].productStatus = theproduct.getBoolean("productStatus");
+                productsArray[i].storeID = theproduct.getString("storeID");
             }
 
             return productsArray;
