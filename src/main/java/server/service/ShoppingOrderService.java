@@ -50,7 +50,6 @@ public class ShoppingOrderService {
                 preparedStatement.setBoolean(5, false); // whetherComment 默认为 false (0)
                 preparedStatement.setFloat(6, paidMoney);
                 preparedStatement.setBoolean(7, false); // paidStatus 默认为 false (未支付)
-
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     isSuccess = true;
