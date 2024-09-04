@@ -148,14 +148,14 @@ public class Bank {
     }
 //登陆同时返回user类
 // 新函数，返回BankUser对象
-public BankUser getBankUser(String username) {
+public BankUser getBankUser(String username,String bankpwd) {
     BankUser user = null;
     try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
         JSONObject request = new JSONObject();
         request.put("requestType", "getBankUser");
         request.put("parameters", new JSONObject()
                 .put("username", username)
-               // .put("bankpwd", bankpwd)
+                .put("bankpwd", bankpwd)
         );
 
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -164,6 +164,8 @@ public BankUser getBankUser(String username) {
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String response = in.readLine();
         JSONObject jsonResponse = new JSONObject(response);
+
+        System.out.println(jsonResponse.toString());//test the outcome of the function
 
         if (jsonResponse.getString("status").equals("success")) {
             JSONObject userJson = jsonResponse.getJSONObject("data");
