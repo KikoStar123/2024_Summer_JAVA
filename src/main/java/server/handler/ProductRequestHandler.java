@@ -26,6 +26,11 @@ public class ProductRequestHandler implements RequestHandler {
                 response = productService.getAllProducts(sortBy, sortOrder);
                 break;
 
+            case "getAllByStore": // 获取商店的所有商品
+                String storeID = parameters.getString("storeID");
+                response = productService.getProductsByStore(storeID); // 假设在 service 层有此方法
+                break;
+
             case "add": // 添加商品，已实现
                 response.put("status", addProduct(parameters, productService) ? "success" : "fail");
                 break;

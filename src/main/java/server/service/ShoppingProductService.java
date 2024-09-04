@@ -26,7 +26,7 @@ public class ShoppingProductService {
     private final Lock updateProductInventoryLock = new ReentrantLock();
     private final Lock getProductCommentsLock = new ReentrantLock();
     private final Lock addCommentLock = new ReentrantLock();
-
+    private final Lock getProductsByStoreLock = new ReentrantLock();
 
 
 
@@ -768,6 +768,66 @@ public class ShoppingProductService {
 
 
     //------------------------------------------------------------------------------------------------------//
+    //根据商店ID获取商店里的所有商品
+    public JSONObject getProductsByStore(String storeID) {
+        getProductsByStoreLock.lock();
+        try {
+            JSONObject response = new JSONObject();
+            JSONArray productsArray = new JSONArray();
+
+            // SQL 查询语句，选择所有属于该商店的商品
+            String query = "SELECT * FROM tblShoppingProduct WHERE storeID = ?";
+
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                response.put("status", "fail").put("message", "Database connection failed");
+                return response;
+            }
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, storeID);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                // 将结果集中的每一项商品信息加入 JSON 数组
+                while (resultSet.next()) {
+                    JSONObject product = new JSONObject();
+                    product.put("productID", resultSet.getString("productID"));
+                    product.put("productName", resultSet.getString("productName"));
+                    product.put("productDetail", resultSet.getString("productDetail"));
+                    product.put("productImage", resultSet.getString("productImage"));
+                    product.put("productOriginalPrice", resultSet.getFloat("productOriginalPrice"));
+                    product.put("productCurrentPrice", resultSet.getFloat("productCurrentPrice"));
+                    product.put("productInventory", resultSet.getInt("productInventory"));
+                    product.put("productAddress", resultSet.getString("productAddress"));
+                    product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
+                    product.put("productStatus", resultSet.getBoolean("productStatus"));
+                    product.put("storeID", resultSet.getString("storeID"));
+
+                    productsArray.put(product);
+                }
+
+                // 构建返回 JSON 响应
+                response.put("status", "success").put("products", productsArray);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            return response;
+        } finally {
+            getProductsByStoreLock.unlock();
+        }
+    }
 
     //------------------------------------------------------------------------------------------------------//
 }
