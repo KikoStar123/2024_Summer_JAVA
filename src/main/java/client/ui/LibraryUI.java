@@ -320,25 +320,42 @@ public class LibraryUI {
     }
 
     private void showBookDetails(Book book) {
-        Stage detailStage = new Stage();
-        detailStage.initModality(Modality.APPLICATION_MODAL);
-        detailStage.setTitle("书籍详情");
+        Stage stage = new Stage();
+        stage.setTitle("书籍详情");
 
-        VBox vbox = new VBox();
-        vbox.setSpacing(10);
+        Label nameLabel = new Label("书名: " + book.getName());
+        Label authorLabel = new Label("作者: " + book.getAuthor());
+        Label publishHouseLabel = new Label("出版社: " + book.getPublishHouse());
+        Label publicationYearLabel = new Label("出版年份: " + book.getPublicationYear());
+        Label classificationLabel = new Label("分类: " + book.getClassification());
+        Label curNumberLabel = new Label("剩余数: " + book.getCurNumber());
+        Label libNumberLabel = new Label("馆藏数: " + book.getLibNumber());
+        Label locationLabel = new Label("位置: " + book.getLocation());
 
-        vbox.getChildren().add(new Label("书名: " + book.getName()));
-        vbox.getChildren().add(new Label("作者: " + book.getAuthor()));
-        vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()));
-        vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()));
-        vbox.getChildren().add(new Label("分类: " + book.getClassification()));
-        vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()));
-        vbox.getChildren().add(new Label("馆藏数量: " + book.getLibNumber()));
-        vbox.getChildren().add(new Label("位置: " + book.getLocation()));
+        // 显示书籍图片
+        ImageView bookImageView = new ImageView();
+        if (book.getImagePath() != null && !book.getImagePath().isEmpty()) {
+            File imageFile = new File(book.getImagePath());
+            if (imageFile.exists()) {
+                Image bookImage = new Image(imageFile.toURI().toString());
+                bookImageView.setImage(bookImage);
+                bookImageView.setFitWidth(200);
+                bookImageView.setPreserveRatio(true);
+            }
+        }
 
-        Scene scene = new Scene(vbox, 300, 400);
-        detailStage.setScene(scene);
-        detailStage.show();
+        VBox vbox = new VBox(10, nameLabel, authorLabel, publishHouseLabel, publicationYearLabel, classificationLabel, curNumberLabel, libNumberLabel, locationLabel, bookImageView);
+        vbox.setPadding(new Insets(10));
+        vbox.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(vbox, 400, 600);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void updateTableData(List<Book> books) {
+        resultTable.getItems().clear();
+        resultTable.getItems().addAll(books);
     }
 
     private void showAddDeleteWindow() {
