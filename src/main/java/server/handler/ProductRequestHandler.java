@@ -47,6 +47,7 @@ public class ProductRequestHandler implements RequestHandler {
 
 
             case "getSameCategory"://获取所有同类商品，已实现
+                System.out.println(parameters.toString());
                 productID = parameters.getString("productID");
                 response = productService.getSameCategoryProducts(productID);
                 break;
@@ -119,7 +120,7 @@ public class ProductRequestHandler implements RequestHandler {
         String productID = parameters.getString("productID");
         String productName = parameters.getString("productName");
         String productDetail = parameters.getString("productDetail");
-        byte[] productImage = parameters.getString("productImage").getBytes();  // 假设图片以base64字符串形式发送
+        String productImage = parameters.getString("productImage");  // 假设图片以base64字符串形式发送
         float productOriginalPrice = (float) parameters.getDouble("productOriginalPrice");
         float productCurrentPrice = (float) parameters.getDouble("productCurrentPrice");
         int productInventory = parameters.getInt("productInventory");

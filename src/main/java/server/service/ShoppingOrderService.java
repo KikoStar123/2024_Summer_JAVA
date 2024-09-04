@@ -198,6 +198,7 @@ public class ShoppingOrderService {
                     order.put("productNumber", resultSet.getInt("productNumber"));
                     order.put("whetherComment", resultSet.getBoolean("whetherComment"));
                     order.put("paidMoney", resultSet.getFloat("paidMoney"));
+                    order.put("paidStatus", resultSet.getBoolean("paidStatus"));
                     ordersArray.put(order);
                 }
 

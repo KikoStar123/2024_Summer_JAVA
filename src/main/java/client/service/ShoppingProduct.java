@@ -156,6 +156,8 @@ public class ShoppingProduct {
                 productsArray[i].productAddress = theproduct.getString("productAddress");
                 productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
                 productsArray[i].productStatus = theproduct.getBoolean("productStatus");
+
+                System.out.println(productsArray[i].productImage);
             }
 
             return productsArray;
@@ -303,8 +305,8 @@ public class ShoppingProduct {
             JSONObject request = new JSONObject();
             request.put("requestType", "product");
             request.put("parameters", new JSONObject()
-                    .put("action", "getSameCategory"))
-                    .put("productID", productID);
+                    .put("action", "getSameCategory")
+                    .put("productID", productID));
 
             // 发送请求
             out.println(request);
