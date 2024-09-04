@@ -1,7 +1,11 @@
 package client.service;
 
 public enum Role {
-    teacher,
-    student,
-    manager
+    teacher,//101
+    student,//001
+    BankManager,//
+    Librarian,
+    ShopAssistant,
+    CourseManager,
+    StuInfoManager,
 }
