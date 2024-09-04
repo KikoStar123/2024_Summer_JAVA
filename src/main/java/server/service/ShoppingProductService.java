@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.UUID;
+
 
 public class ShoppingProductService {
 
@@ -19,21 +21,43 @@ public class ShoppingProductService {
     private final Lock deleteProductLock = new ReentrantLock();
     private final Lock updateProductStatusLock = new ReentrantLock();
     private final Lock getSameCategoryProductsLock = new ReentrantLock();
+    private final Lock updateProductPriceLock = new ReentrantLock();
+    private final Lock updateProductInventoryLock = new ReentrantLock();
+    private final Lock getProductCommentsLock = new ReentrantLock();
+    private final Lock addCommentLock = new ReentrantLock();
+
+
+
 
     // 获取所有的商品
-    public JSONObject getAllProducts() {
+    public JSONObject getAllProducts(String sortBy, String sortOrder) {
         getAllProductsLock.lock();
         try {
             JSONObject response = new JSONObject();
             JSONArray productsArray = new JSONArray();
 
-            String query = "SELECT * FROM tblShoppingProduct WHERE productStatus = true ORDER BY productCurrentPrice ASC";
+            // 确定排序列和顺序
+            String orderByColumn;
+            switch (sortBy) {
+                case "price":
+                    orderByColumn = "productCurrentPrice";
+                    break;
+                case "rate":
+                    orderByColumn = "productCommentRate";
+                    break;
+                default:
+                    response.put("status", "fail").put("message", "无效的排序参数");
+                    return response;
+            }
+
+            String order = "ASC".equalsIgnoreCase(sortOrder) ? "ASC" : "DESC";
+            String query = "SELECT * FROM tblShoppingProduct WHERE productStatus = true ORDER BY " + orderByColumn + " " + order;
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
 
             if (conn == null) {
-                response.put("status", "fail").put("message", "Database connection failed");
+                response.put("status", "fail").put("message", "数据库连接失败");
                 return response;
             }
 
@@ -45,12 +69,14 @@ public class ShoppingProductService {
                     product.put("productID", resultSet.getString("productID"));
                     product.put("productName", resultSet.getString("productName"));
                     product.put("productDetail", resultSet.getString("productDetail"));
-                    product.put("productImage", resultSet.getBytes("productImage"));  // Assuming image is stored as a BLOB
+                    product.put("productImage", resultSet.getBytes("productImage"));  // 假设图片以BLOB形式存储
                     product.put("productOriginalPrice", resultSet.getFloat("productOriginalPrice"));
                     product.put("productCurrentPrice", resultSet.getFloat("productCurrentPrice"));
                     product.put("productInventory", resultSet.getInt("productInventory"));
                     product.put("productAddress", resultSet.getString("productAddress"));
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
+                    product.put("productStatus", resultSet.getBoolean("productStatus"));
+
 
                     productsArray.put(product);
                 }
@@ -58,7 +84,7 @@ public class ShoppingProductService {
                 response.put("status", "success").put("products", productsArray);
             } catch (SQLException e) {
                 e.printStackTrace();
-                response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
+                response.put("status", "fail").put("message", "SQL错误: " + e.getMessage());
             } finally {
                 try {
                     if (conn != null) {
@@ -74,6 +100,7 @@ public class ShoppingProductService {
             getAllProductsLock.unlock();
         }
     }
+
 
     // 根据商品ID查询商品详情
     public JSONObject getProductDetails(String productID) {
@@ -106,6 +133,7 @@ public class ShoppingProductService {
                     product.put("productInventory", resultSet.getInt("productInventory"));
                     product.put("productAddress", resultSet.getString("productAddress"));
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
+                    product.put("productStatus", resultSet.getBoolean("productStatus"));
 
                     response.put("status", "success").put("product", product);
                 } else {
@@ -131,48 +159,45 @@ public class ShoppingProductService {
     }
 
     // 检索商品
-    public JSONObject searchProducts(String searchKeyword, String category, String specification) {
+    public JSONObject searchProducts(String searchTerm, String sortBy, String sortOrder) {
         searchProductsLock.lock();
         try {
             JSONObject response = new JSONObject();
             JSONArray productsArray = new JSONArray();
 
-            StringBuilder query = new StringBuilder("SELECT * FROM tblShoppingProduct WHERE productStatus = true");
-
-            if (searchKeyword != null && !searchKeyword.isEmpty()) {
-                query.append(" AND productName LIKE ?");
+            // 确定排序列和顺序
+            String orderByColumn;
+            switch (sortBy) {
+                case "price":
+                    orderByColumn = "productCurrentPrice";
+                    break;
+                case "rate":
+                    orderByColumn = "productCommentRate";
+                    break;
+                default:
+                    orderByColumn = "productCurrentPrice"; // 默认按价格排序
+                    break;
             }
 
-            if (category != null && !category.isEmpty()) {
-                query.append(" AND productID LIKE ?");
-            }
+            String order = "ASC".equalsIgnoreCase(sortOrder) ? "ASC" : "DESC";
 
-            if (specification != null && !specification.isEmpty()) {
-                query.append(" AND productDetail LIKE ?");
-            }
+            String query = "SELECT * FROM tblShoppingProduct WHERE productStatus = true " +
+                    "AND (productName LIKE ? OR productID LIKE ? OR productDetail LIKE ?) " +
+                    "ORDER BY " + orderByColumn + " " + order;
 
-            DatabaseConnection dbConnection = new DatabaseConnection();
+             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
 
             if (conn == null) {
-                response.put("status", "fail").put("message", "Database connection failed");
+                response.put("status", "fail").put("message", "数据库连接失败");
                 return response;
             }
 
-            try (PreparedStatement preparedStatement = conn.prepareStatement(query.toString())) {
-                int index = 1;
-
-                if (searchKeyword != null && !searchKeyword.isEmpty()) {
-                    preparedStatement.setString(index++, "%" + searchKeyword + "%");
-                }
-
-                if (category != null && !category.isEmpty()) {
-                    preparedStatement.setString(index++, category + "%");
-                }
-
-                if (specification != null && !specification.isEmpty()) {
-                    preparedStatement.setString(index++, "%" + specification + "%");
-                }
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                String searchPattern = "%" + searchTerm + "%";
+                preparedStatement.setString(1, searchPattern);
+                preparedStatement.setString(2, searchPattern);
+                preparedStatement.setString(3, searchPattern);
 
                 ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -187,6 +212,7 @@ public class ShoppingProductService {
                     product.put("productInventory", resultSet.getInt("productInventory"));
                     product.put("productAddress", resultSet.getString("productAddress"));
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
+                    product.put("productStatus", resultSet.getBoolean("productStatus"));
 
                     productsArray.put(product);
                 }
@@ -194,7 +220,7 @@ public class ShoppingProductService {
                 response.put("status", "success").put("products", productsArray);
             } catch (SQLException e) {
                 e.printStackTrace();
-                response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
+                response.put("status", "fail").put("message", "SQL错误: " + e.getMessage());
             } finally {
                 try {
                     if (conn != null) {
@@ -210,6 +236,8 @@ public class ShoppingProductService {
             searchProductsLock.unlock();
         }
     }
+
+
 
     // 添加商品
     public boolean addProduct(String productID, String productName, String productDetail, byte[] productImage,
@@ -303,8 +331,20 @@ public class ShoppingProductService {
         }
     }
 
+    //------------------------------------------------------------------------------------------------------//
     // 上架或者下架商品
-    public boolean updateProductStatus(String productID, boolean status) {
+    // 上架商品
+    public boolean enableProduct(String productID) {
+        return updateProductStatus(productID, true);
+    }
+
+    // 下架商品
+    public boolean disableProduct(String productID) {
+        return updateProductStatus(productID, false);
+    }
+
+    // 私有方法，用于更新商品状态
+    private boolean updateProductStatus(String productID, boolean status) {
         updateProductStatusLock.lock();
         try {
             boolean isSuccess = false;
@@ -342,6 +382,7 @@ public class ShoppingProductService {
             updateProductStatusLock.unlock();
         }
     }
+    //-------------------------------------------------------------------------------------//
 
     // 获取同品类的商品
     public JSONObject getSameCategoryProducts(String productID) {
@@ -399,4 +440,313 @@ public class ShoppingProductService {
             getSameCategoryProductsLock.unlock();
         }
     }
+
+    //---------------------------------------------------------------------------------------------------
+
+    //调整商品价格
+
+    // 调整商品原价
+    public boolean updateProductOriginalPrice(String productID, float newOriginalPrice) {
+        return updateProductPrice(productID, "productOriginalPrice", newOriginalPrice);
+    }
+
+
+    // 调整商品现价
+    public boolean updateProductCurrentPrice(String productID, float newCurrentPrice) {
+        return updateProductPrice(productID, "productCurrentPrice", newCurrentPrice);
+    }
+
+
+    // 私有方法，用于更新商品价格
+    private boolean updateProductPrice(String productID, String priceColumn, float newPrice) {
+        updateProductPriceLock.lock();
+        try {
+            boolean isSuccess = false;
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                return false;
+            }
+
+            String query = "UPDATE tblShoppingProduct SET " + priceColumn + " = ? WHERE productID = ?";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setFloat(1, newPrice);
+                preparedStatement.setString(2, productID);
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    isSuccess = true;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            return isSuccess;
+        } finally {
+            updateProductPriceLock.unlock();
+        }
+    }
+
+    //---------------------------------------------------------------------------------------------------
+
+    // 增加商品库存
+    public boolean increaseProductInventory(String productID, int amount) {
+        return updateProductInventory(productID, amount, true);
+    }
+
+    // 减少商品库存
+    public boolean decreaseProductInventory(String productID, int amount) {
+        return updateProductInventory(productID, amount, false);
+    }
+
+    // 私有方法，用于更新商品库存
+    private boolean updateProductInventory(String productID, int amount, boolean increase) {
+        updateProductInventoryLock.lock();
+        try {
+            boolean isSuccess = false;
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                return false;
+            }
+
+            // 根据是增加还是减少库存，选择相应的操作
+            String operation = increase ? "productInventory + ?" : "productInventory - ?";
+            String query = "UPDATE tblShoppingProduct SET productInventory = " + operation + " WHERE productID = ?";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setInt(1, amount);
+                preparedStatement.setString(2, productID);
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    isSuccess = true;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            return isSuccess;
+        } finally {
+            updateProductInventoryLock.unlock();
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------//
+
+    //查询商品的评论
+    public JSONObject getProductComments(String productID, Integer commentAttitude) {
+        getProductCommentsLock.lock();
+        try {
+            JSONObject response = new JSONObject();
+            JSONArray commentsArray = new JSONArray();
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                response.put("status", "fail").put("message", "Database connection failed");
+                return response;
+            }
+
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM tblShoppingComment WHERE productID = ?");
+            if (commentAttitude != null) {
+                queryBuilder.append(" AND commentAttitude = ?");
+            }
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(queryBuilder.toString())) {
+                preparedStatement.setString(1, productID);
+                if (commentAttitude != null) {
+                    preparedStatement.setInt(2, commentAttitude);
+                }
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    JSONObject comment = new JSONObject();
+                    comment.put("username", resultSet.getString("username"));
+                    comment.put("productID", resultSet.getString("productID"));
+                    comment.put("commentID", resultSet.getString("commentID"));
+                    comment.put("commentAttitude", resultSet.getInt("commentAttitude"));
+                    comment.put("commentContent", resultSet.getString("commentContent"));
+                    commentsArray.put(comment);
+                }
+
+                response.put("status", "success").put("comments", commentsArray);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            return response;
+        } finally {
+            getProductCommentsLock.unlock();
+        }
+    }
+
+
+
+    //------------------------------------------------------------------------------------------------------//
+
+    //查看所有商品的评论
+
+    public JSONObject getAllProductComments() {
+        return getProductComments(null, null);
+    }
+
+    public JSONObject searchProductComments(String username, String productID) {
+        getProductCommentsLock.lock();
+        try {
+            JSONObject response = new JSONObject();
+            JSONArray commentsArray = new JSONArray();
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                response.put("status", "fail").put("message", "Database connection failed");
+                return response;
+            }
+
+            StringBuilder queryBuilder = new StringBuilder("SELECT * FROM tblShoppingComment WHERE 1=1");
+            if (username != null && !username.isEmpty()) {
+                queryBuilder.append(" AND username = ?");
+            }
+            if (productID != null && !productID.isEmpty()) {
+                queryBuilder.append(" AND productID = ?");
+            }
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(queryBuilder.toString())) {
+                int paramIndex = 1;
+                if (username != null && !username.isEmpty()) {
+                    preparedStatement.setString(paramIndex++, username);
+                }
+                if (productID != null && !productID.isEmpty()) {
+                    preparedStatement.setString(paramIndex++, productID);
+                }
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    JSONObject comment = new JSONObject();
+                    comment.put("username", resultSet.getString("username"));
+                    comment.put("productID", resultSet.getString("productID"));
+                    comment.put("commentID", resultSet.getString("commentID"));
+                    comment.put("commentAttitude", resultSet.getInt("commentAttitude"));
+                    comment.put("commentContent", resultSet.getString("commentContent"));
+                    commentsArray.put(comment);
+                }
+
+                response.put("status", "success").put("comments", commentsArray);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            return response;
+        } finally {
+            getProductCommentsLock.unlock();
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------//
+
+    //根据订单添加评论
+    public boolean addComment(String username, String productID, int commentAttitude, String commentContent) {
+        addCommentLock.lock();
+        try {
+            boolean isSuccess = false;
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                return false;
+            }
+
+            String insertCommentQuery = "INSERT INTO tblShoppingComment (username, productID, commentID, commentAttitude, commentContent) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+            String updateOrderQuery = "UPDATE tblShoppingOrder SET whetherComment = true WHERE username = ? AND productID = ?";
+            //修改对应商品好评率
+            String updateProductRateQuery = "UPDATE tblShoppingProduct SET productCommentRate = " +
+                    "(SELECT AVG(commentAttitude) FROM tblShoppingComment WHERE productID = ?) WHERE productID = ?";
+
+            try (PreparedStatement insertStatement = conn.prepareStatement(insertCommentQuery);
+                 PreparedStatement updateOrderStatement = conn.prepareStatement(updateOrderQuery);
+                 PreparedStatement updateProductRateStatement = conn.prepareStatement(updateProductRateQuery)) {
+
+                String commentID = UUID.randomUUID().toString(); // 生成唯一评论ID
+
+                insertStatement.setString(1, username);
+                insertStatement.setString(2, productID);
+                insertStatement.setString(3, commentID);
+                insertStatement.setInt(4, commentAttitude);
+                insertStatement.setString(5, commentContent);
+                int rowsAffected = insertStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    updateOrderStatement.setString(1, username);
+                    updateOrderStatement.setString(2, productID);
+                    updateOrderStatement.executeUpdate();
+
+                    //更新商品好评率
+                    updateProductRateStatement.setString(1, productID);
+                    updateProductRateStatement.setString(2, productID);
+                    updateProductRateStatement.executeUpdate();
+
+                    isSuccess = true;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            return isSuccess;
+        } finally {
+            addCommentLock.unlock();
+        }
+    }
+
+
+    //------------------------------------------------------------------------------------------------------//
+
+    //------------------------------------------------------------------------------------------------------//
 }

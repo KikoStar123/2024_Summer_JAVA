@@ -13,15 +13,13 @@ public class AddCourseRequestHandler implements RequestHandler {
         int courseCredits = parameters.getInt("courseCredits");
         String courseTime = parameters.getString("courseTime");
         int courseCapacity = parameters.getInt("courseCapacity");
+        String courseRoom = parameters.getString("courseRoom");
+        String courseType = parameters.getString("courseType");
 
-        boolean success = courseService.addCourse(courseID, courseName, courseTeacher, courseCredits, courseTime, courseCapacity);
+        // 调用 addCourse 方法，并接收返回的 JSONObject
+        JSONObject response = courseService.addCourse(courseID, courseName, courseTeacher, courseCredits, courseTime, courseCapacity, courseRoom, courseType);
 
-        JSONObject jsonResponse = new JSONObject();
-        if (success) {
-            jsonResponse.put("status", "success").put("message", "Course added successfully");
-        } else {
-            jsonResponse.put("status", "fail").put("message", "Failed to add course");
-        }
-        return jsonResponse.toString();
+        // 返回 response 对象
+        return response.toString();
     }
 }

@@ -1,37 +1,37 @@
 package client.service;
 
-    public class BankUser {
-        private String username;
-        private float balance;
-        private String bankpwd;
-        //private BankRecord[] bankRecords; // 声明一个BankRecord数组
+public class BankUser {
+    private String username;
+    private float balance;
+    private String bankpwd;
+    //private BankRecord[] bankRecords; // 声明一个BankRecord数组
 
-        public BankUser(String username, float balance, String bankpwd) {
-            this.username = username;
-            this.balance = balance;
-            this.bankpwd = bankpwd;
-        }
+    public BankUser(String username, float balance, String bankpwd) {
+        this.username = username;
+        this.balance = balance;
+        this.bankpwd = bankpwd;
+    }
 
-        // 构造函数、getter和setter方法
-        // BankUser的getter方法
-        public String getUsername() {
-            return username;
-        }
+    // 构造函数、getter和setter方法
+    // BankUser的getter方法
+    public String getUsername() {
+        return username;
+    }
 
-        public float getBalance() {
-            return balance;
-        }
+    public float getBalance() {
+        return balance;
+    }
 
-        public String getBankpwd() {
-            return bankpwd;
-        }
+    public String getBankpwd() {
+        return bankpwd;
+    }
 
-        // BankUser的setter方法
-        public void setUsername(String username) {
-            this.username = username;
-        }
+    // BankUser的setter方法
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-        // 添加银行记录的方法
+    // 添加银行记录的方法
 //        public void addBankRecord(BankRecord record) {
 //            for (int i = 0; i < bankRecords.length; i++) {
 //                if (bankRecords[i] == null) {
@@ -42,7 +42,7 @@ package client.service;
 //            System.out.println("记录数组已满，无法添加更多记录。");
 //        }
 
-        // 获取银行记录的方法
+    // 获取银行记录的方法
 //        public BankRecord[] getBankRecords() {
 //            return bankRecords;
 //        }

@@ -77,6 +77,26 @@ public class ShoppingCartService {
                 return false;
             }
 
+            // 首先检查商品库存是否足够
+            String checkInventoryQuery = "SELECT productInventory FROM tblShoppingProduct WHERE productID = ?";
+            try (PreparedStatement checkStatement = conn.prepareStatement(checkInventoryQuery)) {
+                checkStatement.setString(1, productID);
+                ResultSet resultSet = checkStatement.executeQuery();
+                if (resultSet.next()) {
+                    int availableInventory = resultSet.getInt("productInventory");
+                    if (quantity > availableInventory) {
+                        // 商品数量超过库存，返回false
+                        return false;
+                    }
+                } else {
+                    // 商品未找到，返回false
+                    return false;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
+            }
+
             String query = "MERGE INTO tblShoppingCart AS target " +
                     "USING (VALUES (?, ?, ?)) AS source (username, productID, productNumber) " +
                     "ON target.username = source.username AND target.productID = source.productID " +
@@ -111,6 +131,7 @@ public class ShoppingCartService {
             addToCartLock.unlock();
         }
     }
+
 
     // 更改购物车某个商品的数量
     public boolean updateCart(String username, String productID, int quantity) {

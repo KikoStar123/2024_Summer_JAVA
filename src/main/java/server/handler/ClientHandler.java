@@ -65,6 +65,9 @@ public class ClientHandler implements Runnable {
         routeMap.put("addBook", new AddBookRequestHandler());
         routeMap.put("renewBook", new RenewBookRequestHandler());
         routeMap.put("getAllLibRecords", new GetAllLibRecordsRequestHandler());
+        routeMap.put("updateBookImagePath", new UpdateBookImagePathRequestHandler());
+        routeMap.put("updateBookPDFPath", new UpdateBookPDFPathRequestHandler());
+
 
         // 课程相关请求
         routeMap.put("enrollInCourse", new EnrollInCourseRequestHandler());
@@ -110,6 +113,7 @@ public class ClientHandler implements Runnable {
         routeMap.put("updatePwd", new UpdatePwdRequestHandler());
         routeMap.put("searchUser", new SearchUserRequestHandler());
         routeMap.put("getBankUser", new GetBankUserRequestHandler());
+
 
         return routeMap;
     }
