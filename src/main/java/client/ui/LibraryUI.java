@@ -4,22 +4,21 @@ import client.service.Book;
 import client.service.LibRecord;
 import client.service.Library;
 import client.service.User;
-import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
 import javafx.stage.Modality;
-import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 
 
 import java.util.ArrayList;
@@ -278,13 +277,13 @@ public class LibraryUI {
 
         searchButton.setOnAction(e -> {
             String searchText = searchField.getText();
-                // 根据用户名搜索借阅记录的逻辑
+            // 根据用户名搜索借阅记录的逻辑
             borrowedBooksTable.setItems(FXCollections.observableArrayList(library.getLibRecordsByUsername(searchText)));
             borrowedBooksTable.setItems(FXCollections.observableArrayList(library.getAllLibRecords()));
         });
 
         refreshButton.setOnAction(e -> {
-                // 刷新表格数据的逻辑
+            // 刷新表格数据的逻辑
             borrowedBooksTable.setItems(FXCollections.observableArrayList(library.getAllLibRecords()));
         });
         HBox searchBox = new HBox(10, searchField, searchButton, refreshButton);
@@ -320,42 +319,25 @@ public class LibraryUI {
     }
 
     private void showBookDetails(Book book) {
-        Stage stage = new Stage();
-        stage.setTitle("书籍详情");
+        Stage detailStage = new Stage();
+        detailStage.initModality(Modality.APPLICATION_MODAL);
+        detailStage.setTitle("书籍详情");
 
-        Label nameLabel = new Label("书名: " + book.getName());
-        Label authorLabel = new Label("作者: " + book.getAuthor());
-        Label publishHouseLabel = new Label("出版社: " + book.getPublishHouse());
-        Label publicationYearLabel = new Label("出版年份: " + book.getPublicationYear());
-        Label classificationLabel = new Label("分类: " + book.getClassification());
-        Label curNumberLabel = new Label("剩余数: " + book.getCurNumber());
-        Label libNumberLabel = new Label("馆藏数: " + book.getLibNumber());
-        Label locationLabel = new Label("位置: " + book.getLocation());
+        VBox vbox = new VBox();
+        vbox.setSpacing(10);
 
-        // 显示书籍图片
-        ImageView bookImageView = new ImageView();
-        if (book.getImagePath() != null && !book.getImagePath().isEmpty()) {
-            File imageFile = new File(book.getImagePath());
-            if (imageFile.exists()) {
-                Image bookImage = new Image(imageFile.toURI().toString());
-                bookImageView.setImage(bookImage);
-                bookImageView.setFitWidth(200);
-                bookImageView.setPreserveRatio(true);
-            }
-        }
+        vbox.getChildren().add(new Label("书名: " + book.getName()));
+        vbox.getChildren().add(new Label("作者: " + book.getAuthor()));
+        vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()));
+        vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()));
+        vbox.getChildren().add(new Label("分类: " + book.getClassification()));
+        vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()));
+        vbox.getChildren().add(new Label("馆藏数量: " + book.getLibNumber()));
+        vbox.getChildren().add(new Label("位置: " + book.getLocation()));
 
-        VBox vbox = new VBox(10, nameLabel, authorLabel, publishHouseLabel, publicationYearLabel, classificationLabel, curNumberLabel, libNumberLabel, locationLabel, bookImageView);
-        vbox.setPadding(new Insets(10));
-        vbox.setAlignment(Pos.CENTER);
-
-        Scene scene = new Scene(vbox, 400, 600);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    private void updateTableData(List<Book> books) {
-        resultTable.getItems().clear();
-        resultTable.getItems().addAll(books);
+        Scene scene = new Scene(vbox, 300, 400);
+        detailStage.setScene(scene);
+        detailStage.show();
     }
 
     private void showAddDeleteWindow() {
