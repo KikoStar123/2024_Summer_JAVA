@@ -22,6 +22,8 @@ public class ShoppingOrder {
         boolean whetherComment;//是否评价
         float paidMoney;//支付金额
 
+        boolean paidStatus;//是否支付（支付true，未支付false）
+
         public String getOrderID() {
             return orderID;
         }
@@ -44,6 +46,10 @@ public class ShoppingOrder {
 
         public float getPaidMoney() {
             return paidMoney;
+        }
+
+        public boolean getpaidStatus() {
+            return paidStatus;
         }
     }
 
@@ -110,6 +116,7 @@ public class ShoppingOrder {
             theOrder.productNumber=jsonResponse.getInt("productNumber");
             theOrder.whetherComment=jsonResponse.getBoolean("whetherComment");
             theOrder.paidMoney=jsonResponse.getFloat("paidMoney");
+            theOrder.paidStatus=jsonResponse.getBoolean("paidStatus");
 
             return theOrder;
         } catch (IOException e) {
@@ -158,6 +165,7 @@ public class ShoppingOrder {
                 ordersArray[i].productNumber=theOrder.getInt("productNumber");
                 ordersArray[i].whetherComment=theOrder.getBoolean("whetherComment");
                 ordersArray[i].paidMoney=theOrder.getFloat("paidMoney");
+                ordersArray[i].paidStatus=theOrder.getBoolean("paidStatus");
             }
 
             return ordersArray;
@@ -208,6 +216,7 @@ public class ShoppingOrder {
                 ordersArray[i].productNumber=theOrder.getInt("productNumber");
                 ordersArray[i].whetherComment=theOrder.getBoolean("whetherComment");
                 ordersArray[i].paidMoney=theOrder.getFloat("paidMoney");
+                ordersArray[i].paidStatus=theOrder.getBoolean("paidStatus");
             }
 
             return ordersArray;
@@ -257,6 +266,7 @@ public class ShoppingOrder {
                 ordersArray[i].productNumber=theOrder.getInt("productNumber");
                 ordersArray[i].whetherComment=theOrder.getBoolean("whetherComment");
                 ordersArray[i].paidMoney=theOrder.getFloat("paidMoney");
+                ordersArray[i].paidStatus=theOrder.getBoolean("paidStatus");
             }
 
             return ordersArray;
@@ -305,6 +315,7 @@ public class ShoppingOrder {
                 ordersArray[i].productNumber=theOrder.getInt("productNumber");
                 ordersArray[i].whetherComment=theOrder.getBoolean("whetherComment");
                 ordersArray[i].paidMoney=theOrder.getFloat("paidMoney");
+                ordersArray[i].paidStatus=theOrder.getBoolean("paidStatus");
             }
 
             return ordersArray;
@@ -359,6 +370,36 @@ public class ShoppingOrder {
                     .put("action", "updateCommentStatus")
                     .put("orderID", orderID)
                     .put("whetherComment", whetherComment));
+
+            // 发送请求
+            out.println(request);
+
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 支付
+    // 输入 订单id orderID；支付金额 amount
+    // 返回 状态
+    public boolean payOrder(String orderID, float amount) throws IOException
+    {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+
+            // 构建请求
+            JSONObject request = new JSONObject();
+            request.put("requestType", "order");
+            request.put("parameters", new JSONObject()
+                    .put("action", "pay")
+                    .put("orderID", orderID)
+                    .put("amount", amount));
 
             // 发送请求
             out.println(request);

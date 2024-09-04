@@ -56,8 +56,10 @@ public class CourseSelectionTest {
         int newCourseCredits = 4;
         String newCourseTime = "1-16|1|1-2;1-16|3|3-4";
         int newCourseCapacity = 100;
+        String newcourseRoom="J1-206";
+        String newcourseType="required";
         boolean addCourseSuccess = courseSelection.addCourse(newCourseID, newCourseName, newCourseTeacher,
-                newCourseCredits, newCourseTime, newCourseCapacity);
+                newCourseCredits, newCourseTime, newCourseCapacity, newcourseRoom, newcourseType);
         System.out.println("添加课程 " + newCourseID + " 结果: " + (addCourseSuccess ? "成功" : "失败"));
 
         // 测试搜索课程
