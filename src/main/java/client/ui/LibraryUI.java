@@ -19,7 +19,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
+import javafx.util.Callback;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +113,34 @@ public class LibraryUI {
         TableColumn<Book, String> curnumColumn = new TableColumn<>("剩余数");
         curnumColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCurNumber())));
 
-        resultTable.getColumns().addAll(titleColumn, authorColumn, libnumColumn, curnumColumn);
+        // 添加图片列
+        TableColumn<Book, String> imageColumn = new TableColumn<>("图片");
+        imageColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getImagePath()));
+        imageColumn.setCellFactory(new Callback<TableColumn<Book, String>, TableCell<Book, String>>() {
+            @Override
+            public TableCell<Book, String> call(TableColumn<Book, String> param) {
+                return new TableCell<Book, String>() {
+                    private final ImageView imageView = new ImageView();
+
+                    @Override
+                    protected void updateItem(String imagePath, boolean empty) {
+                        super.updateItem(imagePath, empty);
+                        if (empty || imagePath == null || imagePath.isEmpty()) {
+                            setGraphic(null);
+                        } else {
+                            Image image = new Image("file:" + imagePath);
+                            imageView.setImage(image);
+                            imageView.setFitWidth(50); // 设置图片宽度
+                            imageView.setFitHeight(50); // 设置图片高度
+                            imageView.setPreserveRatio(true); // 保持图片比例
+                            setGraphic(imageView);
+                        }
+                    }
+                };
+            }
+        });
+
+        resultTable.getColumns().addAll(imageColumn, titleColumn, authorColumn, libnumColumn, curnumColumn);
 
         VBox resultBox = new VBox(10, resultTable);
 
@@ -334,6 +363,17 @@ public class LibraryUI {
         vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()));
         vbox.getChildren().add(new Label("馆藏数量: " + book.getLibNumber()));
         vbox.getChildren().add(new Label("位置: " + book.getLocation()));
+
+        // 添加 ImageView 来显示书籍图片
+        ImageView bookImageView = new ImageView();
+        String imagePath = book.getImagePath(); // 获取图片路径
+        if (imagePath != null && !imagePath.isEmpty()) {
+            Image bookImage = new Image("file:" + imagePath);
+            bookImageView.setImage(bookImage);
+            bookImageView.setFitWidth(200); // 设置图片宽度
+            bookImageView.setPreserveRatio(true); // 保持图片比例
+        }
+        vbox.getChildren().add(bookImageView);
 
         Scene scene = new Scene(vbox, 300, 400);
         detailStage.setScene(scene);
