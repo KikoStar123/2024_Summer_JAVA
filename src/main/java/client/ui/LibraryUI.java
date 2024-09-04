@@ -208,7 +208,7 @@ public class LibraryUI {
         addbStage.show();
 
     }
-
+//显示书籍的借阅记录
     private void showBorrowWindow() {
         Stage borrowStage = new Stage();
         borrowStage.setTitle("借阅记录");
@@ -217,8 +217,10 @@ public class LibraryUI {
         TableView<LibRecord> borrowedBooksTable = new TableView<>();
 
 // 设置 titleColumn 的单元格值工厂
+        TableColumn<LibRecord, String> truenameColumn = new TableColumn<>("借书人");
+        truenameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTruename()));
         TableColumn<LibRecord, String> titleColumn = new TableColumn<>("书名");
-        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBookID()));
+        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         TableColumn<LibRecord, String> isbnColumn = new TableColumn<>("ISBN");
         isbnColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBookID()));
         TableColumn<LibRecord, String> borrowdataColumn = new TableColumn<>("借阅时间");
@@ -228,7 +230,7 @@ public class LibraryUI {
         TableColumn<LibRecord, String> statusColumn = new TableColumn<>("借阅状态");
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRecordStatus()));
 
-        borrowedBooksTable.getColumns().addAll(titleColumn, isbnColumn, borrowdataColumn, returndataColumn,statusColumn);
+        borrowedBooksTable.getColumns().addAll(truenameColumn,titleColumn, isbnColumn, borrowdataColumn, returndataColumn,statusColumn);
         if (user.getUsername().charAt(0) != '0') {
             // 学生用户，添加续借栏
             TableColumn<LibRecord, Void> renewColumn = new TableColumn<>("续借");
