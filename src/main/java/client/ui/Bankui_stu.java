@@ -1,12 +1,21 @@
 package client.ui;
 
+import client.service.BankUser;
 import client.service.User;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import client.service.Bank;
+import javafx.stage.Stage;
+
+import java.util.List;
+
+import static client.service.Bank.getAllBankRecords;
 
 public class Bankui_stu {
     private static BorderPane bankBox;
@@ -28,10 +37,12 @@ public class Bankui_stu {
         buttonsBox.setPadding(new Insets(0, 0, 10, 0));
 
         Button loginButton = new Button("登录");
+        loginButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
         loginButton.setOnAction(e -> showLoginForm());
         buttonsBox.getChildren().add(loginButton);
 
         Button registerButton = new Button("注册");
+        registerButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
         registerButton.setOnAction(e -> showRegisterForm());
         buttonsBox.getChildren().add(registerButton);
 
@@ -52,6 +63,7 @@ public class Bankui_stu {
         HBox actionBox = new HBox(10);
 
         Button backButton = new Button("返回");
+        backButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
         backButton.setOnAction(e -> handleBack());
         actionBox.getChildren().add(backButton);
 
@@ -70,9 +82,9 @@ public class Bankui_stu {
         final PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("请输入密码");
         Button confirmButton = new Button("确认");
+        confirmButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
         confirmButton.setOnAction(e -> handleConfirm(user, passwordField)); // 传递 user 和 passwordField 到 handleConfirm
         loginForm.getChildren().addAll(passwordLabel, passwordField, confirmButton);
-
         return loginForm;
     }
 
@@ -93,6 +105,7 @@ public class Bankui_stu {
         registerForm.getChildren().addAll(confirmPasswordLabel, confirmPasswordField);
 
         Button confirmButtonb = new Button("确认");
+        confirmButtonb.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
         confirmButtonb.setOnAction(e -> handleConfirmb(user, passwordField, confirmPasswordField));
 
         registerForm.getChildren().add(confirmButtonb);
@@ -117,9 +130,9 @@ public class Bankui_stu {
             if (success) {
                 // 登录成功
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("登录成功");
+                alert.setTitle("注册成功");
                 alert.setHeaderText(null);
-                alert.setContentText("欢迎回来, " + username);
+                alert.setContentText("注册成功, " + username);
                 alert.showAndWait();
             } else {
                 // 登录失败
@@ -156,6 +169,7 @@ public class Bankui_stu {
             alert.setHeaderText(null);
             alert.setContentText("欢迎回来, " + username);
             alert.showAndWait();
+            bankBox.setCenter(showBankMainView(user));
         } else {
             // 登录失败
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -164,6 +178,51 @@ public class Bankui_stu {
             alert.setContentText("用户名或密码错误");
             alert.showAndWait();
         }
+
+    }
+
+    private static VBox showBankMainView(User user) {
+
+        VBox bankMainView = new VBox(10);
+        bankMainView.setPadding(new Insets(10));
+        Label usernameLabel=new Label("我的账户");
+        Label welcomeLabel = new Label("欢迎, " + user.getUsername() + "!");
+        Label balanceLabel=new Label("余额: ");
+        Button bankrecord=new Button("收支明细");
+        Button pwdchange=new Button("修改密码");
+        Label rateLabel=new Label("当前利率: ");
+        bankMainView.getChildren().addAll(usernameLabel,welcomeLabel,balanceLabel,bankrecord,pwdchange,rateLabel);
+        bankrecord.setOnAction(e -> showBankRecord(user));
+        return bankMainView;
+    }
+
+    private static void showBankRecord(User user) {
+
+        Stage recordStage = new Stage();
+        recordStage.setTitle("收支明细");
+
+        TableView<BankUser.BankRecord> table = new TableView<>();
+        ObservableList<BankUser.BankRecord> data = FXCollections.observableArrayList(getAllBankRecords(user.getUsername()));
+
+        TableColumn<BankUser.BankRecord, String> usernameCol = new TableColumn<>("用户名");
+        usernameCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getUsername()));
+
+        TableColumn<BankUser.BankRecord, Float> balanceChangeCol = new TableColumn<>("余额变动");
+        balanceChangeCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleFloatProperty(cellData.getValue().getBalanceChange()).asObject());
+
+        TableColumn<BankUser.BankRecord, String> balanceReasonCol = new TableColumn<>("原因");
+        balanceReasonCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getBalanceReason()));
+
+        TableColumn<BankUser.BankRecord, String> curDateCol = new TableColumn<>("日期");
+        curDateCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getCurDate()));
+
+        table.setItems(data);
+        table.getColumns().addAll(usernameCol, balanceChangeCol, balanceReasonCol, curDateCol);
+
+        VBox vbox = new VBox(table);
+        Scene scene = new Scene(vbox);
+        recordStage.setScene(scene);
+        recordStage.show();
 
     }
 

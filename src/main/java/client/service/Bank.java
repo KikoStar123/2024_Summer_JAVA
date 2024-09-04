@@ -92,7 +92,7 @@ public class Bank {
         return isSuccess;
     }
     //获取所有收支记录//管理员和学生都可以使用
-    public List<BankUser.BankRecord> getAllBankRecords(String username) {
+    public static List<BankUser.BankRecord> getAllBankRecords(String username) {
         List<BankUser.BankRecord> bankRecords = new ArrayList<>();
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
@@ -112,6 +112,7 @@ public class Bank {
                 for (int i = 0; i < recordsArray.length(); i++) {
                     JSONObject recordJson = recordsArray.getJSONObject(i);
                     BankUser.BankRecord record = new BankUser.BankRecord(
+                            recordJson.getString("username"),
                             recordJson.getFloat("balanceChange"),
                             recordJson.getString("balanceReason"),
                             recordJson.getString("curDate")
