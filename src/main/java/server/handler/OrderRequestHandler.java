@@ -80,9 +80,17 @@ public class OrderRequestHandler implements RequestHandler {
             String productID = parameters.getString("productID");
             int productNumber = parameters.getInt("productNumber");
             float paidMoney = (float) parameters.getDouble("paidMoney");
-
-            boolean success = orderService.createOrder(username, productID, productNumber, paidMoney);
-            response.put("status", success ? "success" : "fail");
+            // 调用 createOrder 并获取 JSON 响应
+            JSONObject createOrderResponse = orderService.createOrder(username, productID, productNumber, paidMoney);
+            // 将订单创建的响应返回给客户端
+            response.put("status", createOrderResponse.getString("status"));
+            // 如果订单创建成功，返回 orderID
+            if (createOrderResponse.has("orderID")) {
+                response.put("orderID", createOrderResponse.getString("orderID"));
+            }
+            if (createOrderResponse.has("message")) {
+                response.put("message", createOrderResponse.getString("message"));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,6 +99,7 @@ public class OrderRequestHandler implements RequestHandler {
 
         return response;
     }
+
 
     // Helper method to handle updating the order comment status
     private JSONObject handleUpdateCommentStatus(JSONObject parameters, ShoppingOrderService orderService) {
