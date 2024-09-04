@@ -37,7 +37,6 @@ public class ShoppingProductService {
             JSONObject response = new JSONObject();
             JSONArray productsArray = new JSONArray();
 
-            // 确定排序列和顺序
             String orderByColumn;
             switch (sortBy) {
                 case "price":
@@ -77,13 +76,12 @@ public class ShoppingProductService {
                     product.put("productAddress", resultSet.getString("productAddress"));
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
                     product.put("productStatus", resultSet.getBoolean("productStatus"));
-
+                    product.put("storeID", resultSet.getString("storeID")); // 新增 storeID
 
                     productsArray.put(product);
                 }
 
                 response.put("status", "success").put("products", productsArray);
-                System.out.println(response.toString());
             } catch (SQLException e) {
                 e.printStackTrace();
                 response.put("status", "fail").put("message", "SQL错误: " + e.getMessage());
@@ -102,6 +100,7 @@ public class ShoppingProductService {
             getAllProductsLock.unlock();
         }
     }
+
 
 
     // 根据商品ID查询商品详情
@@ -136,6 +135,7 @@ public class ShoppingProductService {
                     product.put("productAddress", resultSet.getString("productAddress"));
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
                     product.put("productStatus", resultSet.getBoolean("productStatus"));
+                    product.put("storeID", resultSet.getString("storeID")); // 新增 storeID
 
                     response.put("status", "success").put("product", product);
                 } else {
@@ -160,6 +160,7 @@ public class ShoppingProductService {
         }
     }
 
+
     // 检索商品
     public JSONObject searchProducts(String searchTerm, String sortBy, String sortOrder) {
         searchProductsLock.lock();
@@ -167,7 +168,6 @@ public class ShoppingProductService {
             JSONObject response = new JSONObject();
             JSONArray productsArray = new JSONArray();
 
-            // 确定排序列和顺序
             String orderByColumn;
             switch (sortBy) {
                 case "price":
@@ -187,7 +187,7 @@ public class ShoppingProductService {
                     "AND (productName LIKE ? OR productID LIKE ? OR productDetail LIKE ?) " +
                     "ORDER BY " + orderByColumn + " " + order;
 
-             DatabaseConnection dbConnection = new DatabaseConnection();
+            DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
 
             if (conn == null) {
@@ -215,6 +215,7 @@ public class ShoppingProductService {
                     product.put("productAddress", resultSet.getString("productAddress"));
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
                     product.put("productStatus", resultSet.getBoolean("productStatus"));
+                    product.put("storeID", resultSet.getString("storeID")); // 新增 storeID
 
                     productsArray.put(product);
                 }
@@ -244,7 +245,7 @@ public class ShoppingProductService {
     // 添加商品
     public boolean addProduct(String productID, String productName, String productDetail, String productImage,
                               float productOriginalPrice, float productCurrentPrice, int productInventory,
-                              String productAddress, float productCommentRate, boolean productStatus) {
+                              String productAddress, float productCommentRate, boolean productStatus, String storeID) {
         addProductLock.lock();
         try {
             boolean isSuccess = false;
@@ -257,8 +258,8 @@ public class ShoppingProductService {
 
             String query = "INSERT INTO tblShoppingProduct (productID, productName, productDetail, productImage, " +
                     "productOriginalPrice, productCurrentPrice, productInventory, productAddress, " +
-                    "productCommentRate, productStatus) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "productCommentRate, productStatus, storeID) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, productID);
@@ -271,6 +272,7 @@ public class ShoppingProductService {
                 preparedStatement.setString(8, productAddress);
                 preparedStatement.setFloat(9, productCommentRate);
                 preparedStatement.setBoolean(10, productStatus);
+                preparedStatement.setString(11, storeID); // 新增 storeID
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
@@ -629,9 +631,6 @@ public class ShoppingProductService {
             getProductCommentsLock.unlock();
         }
     }
-
-
-
 
     //------------------------------------------------------------------------------------------------------//
 

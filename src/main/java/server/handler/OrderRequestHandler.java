@@ -62,6 +62,15 @@ public class OrderRequestHandler implements RequestHandler {
                 response = orderService.payOrder(orderID, amount);
                 break;
 
+            case "getAllOrdersByStore": // 根据商店ID获取所有订单
+                String storeID = parameters.getString("storeID");
+                if (storeID != null && !storeID.isEmpty()) {
+                    response = orderService.getAllOrdersByStore(storeID);
+                } else {
+                    response.put("status", "fail").put("message", "Missing or empty storeID");
+                }
+                break;
+
             default:
                 response.put("status", "fail").put("message", "Unknown action");
                 break;
