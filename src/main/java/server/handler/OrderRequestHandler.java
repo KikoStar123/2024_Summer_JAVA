@@ -13,6 +13,7 @@ public class OrderRequestHandler implements RequestHandler {
         // 获取操作类型
         String action = parameters.optString("action");
 
+
         switch (action) {
             case "create"://添加订单，已实现
                 response = handleCreateOrder(parameters, orderService);
@@ -54,6 +55,12 @@ public class OrderRequestHandler implements RequestHandler {
             case "getOrderCommentStatus": // 获取订单是否评论的状态
                 orderID = parameters.getString("orderID");
                 response = orderService.getOrderCommentStatus(orderID);
+                break;
+
+            case "pay":
+                orderID = parameters.getString("orderID");
+                double  amount=parameters.getFloat("amount");
+                response=orderService.payOrder(orderID,amount);
                 break;
 
             default:

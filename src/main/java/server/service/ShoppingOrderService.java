@@ -24,7 +24,6 @@ public class ShoppingOrderService {
 
 
     // 创建订单
-    // 创建订单
     public boolean createOrder(String username, String productID, int productNumber, float paidMoney) {
         createOrderLock.lock();
         try {
@@ -52,12 +51,7 @@ public class ShoppingOrderService {
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
-                    // 创建订单成功后，进行支付
-                    isSuccess = payOrder(orderID, paidMoney);
-                    if (isSuccess) {
-                        // 如果支付成功，更新 paidStatus
-                        updateOrderPaidStatus(orderID, true);
-                    }
+                    isSuccess = true; // 订单创建成功
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -77,7 +71,7 @@ public class ShoppingOrderService {
         }
     }
 
-    //更新订单支付状态
+
     // 更新订单支付状态
     public boolean updateOrderPaidStatus(String orderID, boolean paidStatus) {
         boolean isSuccess = false;
@@ -361,17 +355,18 @@ public class ShoppingOrderService {
     //------------------------------------------------------------------------------------------------------//
 
     // 支付系统
-    public boolean payOrder(String orderID, double amount) {
+    public JSONObject payOrder(String orderID, double amount) {
         payOrderLock.lock();
+        JSONObject response = new JSONObject();
         try {
             boolean isPaid = false;
-            String serverAddress = "localhost";
+            String serverAddress = "localhost";  // 可以使用常量来定义
             int serverPort = 8080;
 
             try (Socket socket = new Socket(serverAddress, serverPort)) {
                 // 构建请求
                 JSONObject request = new JSONObject();
-                request.put("requestType", "wait");
+                request.put("requestType", "pay");
                 request.put("parameters", new JSONObject()
                         .put("orderID", orderID)
                         .put("amount", amount));
@@ -382,27 +377,32 @@ public class ShoppingOrderService {
 
                 // 读取银行服务器的响应
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                String response = in.readLine();
-                JSONObject jsonResponse = new JSONObject(response);
+                String responseFromBank = in.readLine();
+                JSONObject jsonResponse = new JSONObject(responseFromBank);
 
                 // 解析银行返回的结果
                 if ("success".equalsIgnoreCase(jsonResponse.getString("status"))) {
                     isPaid = true;  // 支付成功
-
                     // 支付成功后，更新订单的支付状态
                     updateOrderPaidStatus(orderID, true);
+                    response.put("status", "success");
+                    response.put("message", "Payment successful");
                 } else {
-                    System.out.println("Payment failed: " + jsonResponse.getString("message"));
+                    response.put("status", "fail");
+                    response.put("message", jsonResponse.getString("message"));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                response.put("status", "fail");
+                response.put("message", "Payment system error: " + e.getMessage());
             }
 
-            return isPaid;
+            return response;
         } finally {
             payOrderLock.unlock();
         }
     }
+
 
 
     //------------------------------------------------------------------------------------------------------//
