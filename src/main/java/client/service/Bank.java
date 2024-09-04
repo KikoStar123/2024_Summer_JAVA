@@ -198,7 +198,7 @@ public class Bank {
         return isSuccess;
     }
     //支付功能
-    public boolean payment(String username, String bankpwd, String orderID) {
+    public boolean payment(String username, String bankpwd, String orderID, double amount) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
@@ -206,7 +206,8 @@ public class Bank {
             request.put("parameters", new JSONObject()
                     .put("username", username)
                     .put("bankpwd", bankpwd)
-                    .put("orderID", orderID));
+                    .put("orderID", orderID)
+                    .put("amount", amount));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());

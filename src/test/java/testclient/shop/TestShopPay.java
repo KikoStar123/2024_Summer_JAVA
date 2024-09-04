@@ -8,10 +8,10 @@ public class TestShopPay {
     public static void main(String[] args) throws IOException {
         ShoppingOrder orderService = new ShoppingOrder();
 
-        String orderID = orderService.createOrder("200000001", "123456", 2, 120.5f);
+        String orderID = orderService.createOrder("200000001", "123456", 2, 1200.5f);
 
         System.out.println("orderID: " + orderID);
 
-        order.payOrder(orderID);
+        System.out.println("pay status: " + orderService.payOrder(orderID, 1200.5f));
     }
 }

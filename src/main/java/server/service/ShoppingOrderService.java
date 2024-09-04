@@ -378,7 +378,7 @@ public class ShoppingOrderService {
             try (Socket socket = new Socket(serverAddress, serverPort)) {
                 // 构建请求
                 JSONObject request = new JSONObject();
-                request.put("requestType", "pay");
+                request.put("requestType", "wait");
                 request.put("parameters", new JSONObject()
                         .put("orderID", orderID)
                         .put("amount", amount));
