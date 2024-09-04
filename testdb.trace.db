@@ -2297,3 +2297,15 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: D:/iCloud/iCloud
 	at org.h2.mvstore.FileStore.open(FileStore.java:128)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:452)
 	... 24 more
+2024-09-04 10:21:19 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBLBANKUSER" not found; SQL statement:
+SELECT * FROM tblBankUser WHERE username = ? AND bankpwd = ? [42102-214]
+2024-09-04 10:57:25 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBLBANKUSER" not found; SQL statement:
+SELECT * FROM tblBankUser WHERE username = ? AND bankpwd = ? [42102-214]
+2024-09-04 10:57:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBLBANKUSER" not found; SQL statement:
+SELECT * FROM tblBankUser WHERE username = ? AND bankpwd = ? [42102-214]
+2024-09-04 10:58:58 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TBLBANKUSER" not found; SQL statement:
+SELECT * FROM tblBankUser WHERE username = ? [42102-214]

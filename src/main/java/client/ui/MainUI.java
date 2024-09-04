@@ -60,7 +60,7 @@ public class MainUI extends Application {
         Button bankButton = new Button("银行");
         bankButton.setPrefSize(150, 40);
         bankButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
-        bankButton.setOnAction(e -> handleShop(user.getUsername()));
+        bankButton.setOnAction(e -> handleBank(user.getUsername()));
         leftBox.getChildren().add(bankButton);
 
         Button registerButton = new Button("修改密码");
@@ -97,6 +97,11 @@ public class MainUI extends Application {
     }
 
     private void handleBank(String username) {
+        Platform.runLater(() -> {
+            Bankui_stu bankUI = new Bankui_stu(user);
+            BorderPane bankstu=Bankui_stu.createBankUI();
+            borderPane.setCenter(bankstu);
+        });
     }
 
     private void handleLibrary(String username) {

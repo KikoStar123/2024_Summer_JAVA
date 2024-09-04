@@ -330,6 +330,7 @@ public class LibraryUI {
         vbox.getChildren().add(new Label("书名: " + book.getName()));
         vbox.getChildren().add(new Label("作者: " + book.getAuthor()));
         vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()));
+        vbox.getChildren().add(new Label("ISBN: "+book.getBookID()));
         vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()));
         vbox.getChildren().add(new Label("分类: " + book.getClassification()));
         vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()));

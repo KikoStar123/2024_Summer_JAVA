@@ -8,8 +8,8 @@ import java.net.Socket;
 import org.json.JSONObject; // 如果你使用的是 org.json 库
 
 public class Bank {
-    private final String SERVER_ADDRESS = "localhost";
-    private final int SERVER_PORT = 8080;
+    private static final String SERVER_ADDRESS = "localhost";
+    private static final int SERVER_PORT = 8080;
 //存钱
     public boolean deposit(String username, float amount) {
         boolean isSuccess = false;
@@ -67,7 +67,7 @@ public class Bank {
         return isSuccess;
     }
     //登录
-    public boolean bankLogin(String username, String bankpwd) {
+    public static boolean bankLogin(String username, String bankpwd) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "bankLogin");
@@ -89,7 +89,7 @@ public class Bank {
         }
     }
     //注册账号
-    public boolean bankRegister(String username, String bankpwd) {
+    public static boolean bankRegister(String username, String bankpwd) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "bankRegister");
