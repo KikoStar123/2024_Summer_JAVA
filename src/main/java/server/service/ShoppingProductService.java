@@ -83,6 +83,7 @@ public class ShoppingProductService {
                 }
 
                 response.put("status", "success").put("products", productsArray);
+                System.out.println(response.toString());
             } catch (SQLException e) {
                 e.printStackTrace();
                 response.put("status", "fail").put("message", "SQL错误: " + e.getMessage());

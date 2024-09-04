@@ -13,13 +13,12 @@ public class OrderRequestHandler implements RequestHandler {
         // 获取操作类型
         String action = parameters.optString("action");
 
-
         switch (action) {
-            case "create"://添加订单，已实现
+            case "create": // 添加订单，已实现
                 response = handleCreateOrder(parameters, orderService);
                 break;
 
-            case "getDetails"://用订单ID获取订单详情，已实现
+            case "getDetails": // 用订单ID获取订单详情，已实现
                 String orderID = parameters.optString("orderID");
                 if (orderID != null && !orderID.isEmpty()) {
                     response = orderService.getOrderDetails(orderID);
@@ -28,27 +27,27 @@ public class OrderRequestHandler implements RequestHandler {
                 }
                 break;
 
-            case "getAllOrdersByUser":// 查询特定用户的所有订单，已实现
+            case "getAllOrdersByUser": // 查询特定用户的所有订单，已实现
                 String username = parameters.getString("username");
                 response = orderService.getAllOrdersByUser(username);
                 break;
 
-            case "searchOrdersByUser"://按照关键词搜索特定用户的订单，已实现
+            case "searchOrdersByUser": // 按照关键词搜索特定用户的订单，已实现
                 username = parameters.getString("username");
                 String searchTerm = parameters.optString("searchTerm");
                 response = orderService.searchOrdersByUser(username, searchTerm);
                 break;
 
-            case "searchOrdersByKeyword"://在所有订单中搜索关键词
+            case "searchOrdersByKeyword": // 在所有订单中搜索关键词
                 searchTerm = parameters.optString("searchTerm");
                 response = orderService.searchOrdersByKeyword(searchTerm);
                 break;
 
-            case "getAllOrders"://获取所有用户的所有订单
+            case "getAllOrders": // 获取所有用户的所有订单
                 response = orderService.getAllOrders();
                 break;
 
-            case "updateCommentStatus"://更新是否评论状态
+            case "updateCommentStatus": // 更新是否评论状态
                 response = handleUpdateCommentStatus(parameters, orderService);
                 break;
 
@@ -57,10 +56,10 @@ public class OrderRequestHandler implements RequestHandler {
                 response = orderService.getOrderCommentStatus(orderID);
                 break;
 
-            case "pay":
+            case "pay": // 支付订单
                 orderID = parameters.getString("orderID");
-                double  amount=parameters.getFloat("amount");
-                response=orderService.payOrder(orderID,amount);
+                double amount = parameters.getDouble("amount");
+                response = orderService.payOrder(orderID, amount);
                 break;
 
             default:
@@ -78,12 +77,15 @@ public class OrderRequestHandler implements RequestHandler {
         try {
             String username = parameters.getString("username");
             String productID = parameters.getString("productID");
+            String productName = parameters.getString("productName"); // 新增 productName 字段
             int productNumber = parameters.getInt("productNumber");
             float paidMoney = (float) parameters.getDouble("paidMoney");
+
             // 调用 createOrder 并获取 JSON 响应
-            JSONObject createOrderResponse = orderService.createOrder(username, productID, productNumber, paidMoney);
+            JSONObject createOrderResponse = orderService.createOrder(username, productID, productName, productNumber, paidMoney); // 修改为包含 productName
             // 将订单创建的响应返回给客户端
             response.put("status", createOrderResponse.getString("status"));
+
             // 如果订单创建成功，返回 orderID
             if (createOrderResponse.has("orderID")) {
                 response.put("orderID", createOrderResponse.getString("orderID"));
@@ -99,7 +101,6 @@ public class OrderRequestHandler implements RequestHandler {
 
         return response;
     }
-
 
     // Helper method to handle updating the order comment status
     private JSONObject handleUpdateCommentStatus(JSONObject parameters, ShoppingOrderService orderService) {

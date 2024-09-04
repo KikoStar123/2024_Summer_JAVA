@@ -23,7 +23,7 @@ public class ShoppingOrderService {
     private final Lock payOrderLock = new ReentrantLock();
 
     // 创建订单
-    public JSONObject createOrder(String username, String productID, int productNumber, float paidMoney) {
+    public JSONObject createOrder(String username, String productID, String productName, int productNumber, float paidMoney) {
         createOrderLock.lock();
         JSONObject response = new JSONObject();
         try {
@@ -39,16 +39,18 @@ public class ShoppingOrderService {
 
             String orderID = generateOrderID();
 
-            String query = "INSERT INTO tblShoppingOrder (orderID, username, productID, productNumber, whetherComment, paidMoney, paidStatus) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            // 插入时添加 productName
+            String query = "INSERT INTO tblShoppingOrder (orderID, username, productID, productName, productNumber, whetherComment, paidMoney, paidStatus) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, orderID);
                 preparedStatement.setString(2, username);
                 preparedStatement.setString(3, productID);
-                preparedStatement.setInt(4, productNumber);
-                preparedStatement.setBoolean(5, false); // whetherComment 默认为 false (0)
-                preparedStatement.setFloat(6, paidMoney);
-                preparedStatement.setBoolean(7, false); // paidStatus 默认为 false (未支付)
+                preparedStatement.setString(4, productName);  // 添加商品名称
+                preparedStatement.setInt(5, productNumber);
+                preparedStatement.setBoolean(6, false); // whetherComment 默认为 false (0)
+                preparedStatement.setFloat(7, paidMoney);
+                preparedStatement.setBoolean(8, false); // paidStatus 默认为 false (未支付)
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     isSuccess = true;
@@ -79,8 +81,6 @@ public class ShoppingOrderService {
             createOrderLock.unlock();
         }
     }
-
-
 
     // 更新订单支付状态
     public boolean updateOrderPaidStatus(String orderID, boolean paidStatus) {
@@ -171,7 +171,7 @@ public class ShoppingOrderService {
                 queryBuilder.append(" AND username = ?");
             }
             if (searchTerm != null && !searchTerm.isEmpty()) {
-                queryBuilder.append(" AND (productID LIKE ? OR orderID LIKE ?)");
+                queryBuilder.append(" AND (productID LIKE ? OR orderID LIKE ? OR productName LIKE ?)");
             }
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(queryBuilder.toString())) {
@@ -184,6 +184,7 @@ public class ShoppingOrderService {
                     String searchPattern = "%" + searchTerm + "%";
                     preparedStatement.setString(paramIndex++, searchPattern);
                     preparedStatement.setString(paramIndex++, searchPattern);
+                    preparedStatement.setString(paramIndex++, searchPattern);
                 }
 
                 ResultSet resultSet = preparedStatement.executeQuery();
@@ -193,6 +194,7 @@ public class ShoppingOrderService {
                     order.put("orderID", resultSet.getString("orderID"));
                     order.put("username", resultSet.getString("username"));
                     order.put("productID", resultSet.getString("productID"));
+                    order.put("productName", resultSet.getString("productName"));  // 返回 productName
                     order.put("productNumber", resultSet.getInt("productNumber"));
                     order.put("whetherComment", resultSet.getBoolean("whetherComment"));
                     order.put("paidMoney", resultSet.getFloat("paidMoney"));
@@ -250,6 +252,7 @@ public class ShoppingOrderService {
                     response.put("orderID", resultSet.getString("orderID"));
                     response.put("username", resultSet.getString("username"));
                     response.put("productID", resultSet.getString("productID"));
+                    response.put("productName", resultSet.getString("productName"));  // 返回 productName
                     response.put("productNumber", resultSet.getInt("productNumber"));
                     response.put("whetherComment", resultSet.getBoolean("whetherComment"));
                     response.put("paidMoney", resultSet.getFloat("paidMoney"));
