@@ -18,9 +18,9 @@ public class PrintTblBook {
                 ResultSet rs = pstmt.executeQuery();
 
                 System.out.println("Printing tblBook table...");
-                System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------");
-                System.out.println("|  bookId  |  name  |  author  |  publishHouse  |  publishingYear  |  classification  |  libNumber  |  curNumber  |  location  |");
-                System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------");
+                System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------");
+                System.out.println("|  bookId  |  name  |  author  |  publishHouse  |  publishingYear  |  classification  |  libNumber  |  curNumber  |  location  |  imagePath  |  pdfPath  |");
+                System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
                 while (rs.next()) {
                     String bookId = rs.getString("bookId");
@@ -32,11 +32,13 @@ public class PrintTblBook {
                     int libNumber = rs.getInt("libNumber");
                     int curNumber = rs.getInt("curNumber");
                     String location = rs.getString("location");
+                    String imagePath = rs.getString("imagePath");
+                    String pdfPath = rs.getString("pdfPath");
 
-                    System.out.println("|   " + bookId + "   |   " + name + "   |   " + author + "   |   " + publishHouse + "   |   " + publishingYear + "   |   " + classification + "   |   " + libNumber + "   |   " + curNumber + "   |   " + location + "   |");
+                    System.out.println("|   " + bookId + "   |   " + name + "   |   " + author + "   |   " + publishHouse + "   |   " + publishingYear + "   |   " + classification + "   |   " + libNumber + "   |   " + curNumber + "   |   " + location + "   |   " + imagePath + "   |   " + pdfPath + "   |");
                 }
 
-                System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------");
+                System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
                 conn.close();
             } catch (Exception e) {

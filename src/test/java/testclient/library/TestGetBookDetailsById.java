@@ -10,7 +10,7 @@ public class TestGetBookDetailsById {
 
     public static void main(String[] args) {
         Library client = new Library();
-        Book book = client.getBookDetailsById("978-7-121-33462-7");
+        Book book = client.getBookDetailsById("book1");
 
         if (book != null) {
             System.out.println("Book ID: " + book.getBookID());
@@ -22,6 +22,8 @@ public class TestGetBookDetailsById {
             System.out.println("Current Number: " + book.getCurNumber());
             System.out.println("Library Number: " + book.getLibNumber());
             System.out.println("Location: " + book.getLocation());
+            System.out.println("Image Path: " + book.getImagePath());
+            System.out.println("PDF Path: " + book.getPdfPath());
         } else {
             System.out.println("Book not found.");
         }

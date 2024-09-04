@@ -22,6 +22,8 @@ public class TestSearchBooksByName {
             System.out.println("Current Number: " + book.getCurNumber());
             System.out.println("Library Number: " + book.getLibNumber());
             System.out.println("Location: " + book.getLocation());
+            System.out.println("Image Path: " + book.getImagePath());
+            System.out.println("PDF Path: " + book.getPdfPath());
             System.out.println("---------------------------");
         }
     }
