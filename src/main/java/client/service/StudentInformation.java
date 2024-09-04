@@ -10,28 +10,51 @@ import java.net.Socket;
 
 
 public class StudentInformation {
-    private final String SERVER_ADDRESS = "localhost";//服务器的地址 即本地服务器
-    private final int SERVER_PORT = 8080;//定义服务器的端口号
-    private final int TIMEOUT = 5000; // 连接的超时时间：5秒超时
+    private static final String SERVER_ADDRESS = "localhost";//服务器的地址 即本地服务器
+    private static final int SERVER_PORT = 8080;//定义服务器的端口号
+    private static final int TIMEOUT = 5000; // 连接的超时时间：5秒超时
+
+    //内部类，表示单个学生学籍
+    public static class oneStudentInformation {
+        String name;
+        String id;//学号
+        String gender;
+        String origin;
+        String birthday;
+        String academy;
+        public String getName(){
+            return name;
+        }
+        public void setName(String name){this.name=name;}
+        public String getId(){
+            return id;
+        }
+        public void setId(String id){this.id=id;}
+        public String getGender(){
+            return  gender;
+        }
+        public void setGender(String gender){this.gender=gender;}
+        public String getOrigin(){
+            return  origin;
+        }
+        public void setOrigin(String origin){this.origin=origin;}
+        public String getBirthday(){
+            return birthday;
+        }
+        public void setBirthday(String birthday){this.birthday=birthday;}
+        public String getAcademy(){
+            return academy;
+        }
+        public void setAcademy(String academy){this.academy=academy;}
+    }
 
     /**
-     * 查看学生信息
+     * 查看单个学生信息
      *
-     * @param id 学生的ID
+     * @param id 学生的username
      * @return 学生信息的JSONObject，如果出错则返回null
      */
-    public boolean viewStudentInfo(Role role, String id) {
-        //确认是学生身份
-        try {
-            if (role != Role.student) {
-                throw new Exception("The role should be a student.");
-            }
-        } catch (Exception e) {
-            System.out.println("Caught an exception: " + e.getMessage());
-            return false;
-        }
-
-        //进行正常操作
+    public static oneStudentInformation viewOneStudentInfo(String id) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT))//创建一个Socket对象，并连接到指定的服务器地址和端口号
         {
             socket.setSoTimeout(TIMEOUT);//设置socket的超时时间
@@ -58,60 +81,27 @@ public class StudentInformation {
             // 读取响应
             // 从 JSON 对象中获取特定属性的值
             JSONObject studentData = jsonResponse.getJSONObject("data");
-            String name = studentData.getString("name");
-            // String id = studentData.getString("id");
-            String gender = studentData.getString("gender");
-            String origin = studentData.getString("origin");
-            String birthday = studentData.getString("birthday");
-            String academy = studentData.getString("academy");
+            oneStudentInformation thestudent = new oneStudentInformation();
+            thestudent.name = studentData.getString("name");
+            thestudent.id = studentData.getString("id");
+            thestudent.gender = studentData.getString("gender");
+            thestudent.origin = studentData.getString("origin");
+            thestudent.birthday = studentData.getString("birthday");
+            thestudent.academy = studentData.getString("academy");
 
-            System.out.println("Name: " + name);
-            System.out.println("ID: " + id);
-            System.out.println("Gender: " + gender);
-            System.out.println("Origin: " + origin);
-            System.out.println("Birthday: " + birthday);
-            System.out.println("Academy: " + academy);
-            // 对获取的数据进行处理
-            // 展示... 不需要请求
-            //System.out.println("Name: " + name);
-            //System.out.println("Age: " + age);
-
-            return jsonResponse.getString("status").equals("success");
+            return thestudent;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
-    }
-
-    //内部类，表示单个学生学籍
-    public static class oneStudentInformation {
-        String name;
-        String id;
-        String gender;
-        String origin;
-        String birthday;
-        String academy;
     }
 
     /**
-     * 修改学生信息
-     * //@param studentId 学生的ID
-     * //@param newInfo 要更新的新信息的JSONObject
+     * 查看所有学生信息
      *
      * @return 如果更新成功返回true，否则返回false
      */
-    public boolean modifyStudentInfo(Role role, String id) {
-        //确认是教师或管理员身份
-        try {
-            if (role != Role.teacher && role != Role.manager) {
-                throw new Exception("The role should be a teacher or a manager.");
-            }
-        } catch (Exception e) {
-            System.out.println("Caught an exception: " + e.getMessage());
-            return false;
-        }
-
-        //进行正常操作
+    public static oneStudentInformation[] viewAllStudentInfo() {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT))//创建一个Socket对象，并连接到指定的服务器地址和端口号
         {
             socket.setSoTimeout(TIMEOUT);//设置socket的超时时间
@@ -166,33 +156,54 @@ public class StudentInformation {
                 index++;
             }
 
+            return studentArray;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-            // 对每个学生信息进行处理
+    /**
+     * 修改一个学生信息
+     * @param id 学生的学号
+     * @param theinfo 要更新的新信息的JSONObject
+     *
+     * @return 如果更新成功返回true，否则返回false
+     */
+    public static boolean modifyOneStudentInfo(String id, oneStudentInformation theinfo){
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT))//创建一个Socket对象，并连接到指定的服务器地址和端口号
+        {
+            socket.setSoTimeout(TIMEOUT);//设置socket的超时时间
 
-            // 点击修改
-
-            // 将修改传回数据库
-            index = 0;//发生修改的
             // 创建一个空的 JSON 对象
             JSONObject studentObject = new JSONObject();
-            studentObject.put("name", studentArray[index].name);
-            studentObject.put("id", studentArray[index].id);
-            studentObject.put("gender", studentArray[index].gender);
-            studentObject.put("origin", studentArray[index].origin);
-            studentObject.put("birthday", studentArray[index].birthday);
-            studentObject.put("academy", studentArray[index].academy);
-
-            JSONObject modifiyData = new JSONObject();
-            modifiyData.put("data", studentObject);
+            studentObject.put("name", theinfo.name);
+            studentObject.put("id", theinfo.id);
+            studentObject.put("gender", theinfo.gender);
+            studentObject.put("origin", theinfo.origin);
+            studentObject.put("birthday", theinfo.birthday);
+            studentObject.put("academy", theinfo.academy);
 
             //构建请求JSON
+            JSONObject request = new JSONObject();
             request = new JSONObject();//创建了一个新的 JSON对象request，用于存储整个请求的内容
             request.put("requestType", "modifyStudentInfo");//修改所有学生信息
-            request.put("parameters", modifiyData);//查看所有学生信息
+            request.put("parameters", new JSONObject()
+                    .put("data", studentObject)
+                    .put("id", id));//查看所有学生信息
 
             // 发送请求
-            out = new PrintWriter(socket.getOutputStream(), true);//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
             out.println(request.toString());//将请求request转换为字符串形式，并使用println方法将其写入输出流中，发送到服务器端
+            // 输入流，从服务器读取数据
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            if (response == null || response.isEmpty()) {
+                System.err.println("Received null or empty response from server.");
+                return false;
+            }
+
+            JSONObject jsonResponse = new JSONObject(response);
 
             return jsonResponse.getString("status").equals("success");
         } catch (IOException e) {
