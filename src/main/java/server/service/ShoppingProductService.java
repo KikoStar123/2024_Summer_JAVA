@@ -75,6 +75,8 @@ public class ShoppingProductService {
                     product.put("productInventory", resultSet.getInt("productInventory"));
                     product.put("productAddress", resultSet.getString("productAddress"));
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
+                    product.put("productStatus", resultSet.getBoolean("productStatus"));
+
 
                     productsArray.put(product);
                 }
@@ -131,6 +133,7 @@ public class ShoppingProductService {
                     product.put("productInventory", resultSet.getInt("productInventory"));
                     product.put("productAddress", resultSet.getString("productAddress"));
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
+                    product.put("productStatus", resultSet.getBoolean("productStatus"));
 
                     response.put("status", "success").put("product", product);
                 } else {
@@ -209,6 +212,7 @@ public class ShoppingProductService {
                     product.put("productInventory", resultSet.getInt("productInventory"));
                     product.put("productAddress", resultSet.getString("productAddress"));
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
+                    product.put("productStatus", resultSet.getBoolean("productStatus"));
 
                     productsArray.put(product);
                 }
