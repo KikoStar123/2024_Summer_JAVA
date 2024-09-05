@@ -1,9 +1,6 @@
 package client.ui;
 
-import client.service.Book;
-import client.service.LibRecord;
-import client.service.Library;
-import client.service.User;
+import client.service.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -17,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -27,6 +25,7 @@ import javafx.scene.web.WebEngine;
 import com.dansoftware.pdfdisplayer.PDFDisplayer;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -78,13 +77,16 @@ public class LibraryUI {
         borrowButton.setOnMousePressed(e -> borrowButton.setStyle(buttonPressedStyle));
         borrowButton.setOnMouseReleased(e -> borrowButton.setStyle(buttonHoverStyle));
 
-        if (user.getUsername().charAt(0) == '0') {
+        if (user.getRole() == Role.Librarian) {
             Button addButton = new Button("借阅/归还");
             Button addbButton = new Button("添加新书");
             Button updateButton = new Button("更新数目");
+            Button uploadButton = new Button("上传文件");
             addButton.setStyle(buttonStyle);
             addbButton.setStyle(buttonStyle);
             updateButton.setStyle(buttonStyle);
+            uploadButton.setStyle(buttonStyle);
+
 
             addButton.setOnMouseEntered(e -> addButton.setStyle(buttonHoverStyle));
             addButton.setOnMouseExited(e -> addButton.setStyle(buttonStyle));
@@ -101,11 +103,18 @@ public class LibraryUI {
             updateButton.setOnMousePressed(e -> updateButton.setStyle(buttonPressedStyle));
             updateButton.setOnMouseReleased(e -> updateButton.setStyle(buttonHoverStyle));
 
+            uploadButton.setOnMouseEntered(e -> uploadButton.setStyle(buttonHoverStyle));
+            uploadButton.setOnMouseExited(e -> uploadButton.setStyle(buttonStyle));
+            uploadButton.setOnMousePressed(e -> uploadButton.setStyle(buttonPressedStyle));
+            uploadButton.setOnMouseReleased(e -> uploadButton.setStyle(buttonHoverStyle));
 
-            searchBox.getChildren().addAll(addButton, addbButton, updateButton);
+
+            searchBox.getChildren().addAll(addButton, addbButton, updateButton, uploadButton);
             addButton.setOnAction(e -> showAddDeleteWindow());
             addbButton.setOnAction(e -> showAddbWindow());
             updateButton.setOnAction(e -> showUpdateWindow());
+            // 上传文件按钮事件
+            uploadButton.setOnAction(e -> showUploadDialog());
         }
 
         // 结果显示区域
@@ -165,6 +174,7 @@ public class LibraryUI {
 
         //借阅记录按钮事件
         borrowButton.setOnAction(e -> showBorrowWindow());
+
 
         // 表格行点击事件
         resultTable.setOnMouseClicked((MouseEvent event) -> {
@@ -475,6 +485,76 @@ public class LibraryUI {
         Scene scene = new Scene(layout, 300, 200);
         addDeleteStage.setScene(scene);
         addDeleteStage.show();
+    }
+
+    private void showUploadDialog() {
+        Stage dialog = new Stage();
+        dialog.setTitle("上传文件");
+
+        VBox dialogVBox = new VBox(10);
+        dialogVBox.setPadding(new Insets(10));
+
+        TextField bookIDField = new TextField();
+        bookIDField.setPromptText("输入书籍ID");
+
+        Button uploadImageButton = new Button("上传图片");
+        Button uploadPDFButton = new Button("上传PDF");
+
+        uploadImageButton.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);");
+        uploadPDFButton.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);");
+
+        uploadImageButton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png"));
+            File selectedFile = fileChooser.showOpenDialog(dialog);
+            if (selectedFile != null) {
+                String bookID = bookIDField.getText();
+                if (!bookID.isEmpty()) {
+                    boolean success = library.uploadBookImage(selectedFile, bookID);
+                    if (success) {
+                        showAlert(Alert.AlertType.INFORMATION, "图片上传成功！");
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "图片上传失败，请重试。");
+                    }
+                } else {
+                    showAlert(Alert.AlertType.WARNING, "请输入书籍ID");
+                }
+            }
+        });
+
+        uploadPDFButton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+            File selectedFile = fileChooser.showOpenDialog(dialog);
+            if (selectedFile != null) {
+                String bookID = bookIDField.getText();
+                if (!bookID.isEmpty()) {
+                    boolean success = library.uploadBookPDF(selectedFile, bookID);
+                    if (success) {
+                        showAlert(Alert.AlertType.INFORMATION, "PDF上传成功！");
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "PDF上传失败，请重试。");
+                    }
+                } else {
+                    showAlert(Alert.AlertType.WARNING, "请输入书籍ID");
+                }
+            }
+        });
+
+        dialogVBox.getChildren().addAll(new Label("书籍ID:"), bookIDField, uploadImageButton, uploadPDFButton);
+
+        Scene dialogScene = new Scene(dialogVBox, 300, 200);
+        dialog.setScene(dialogScene);
+        dialog.show();
+    }
+
+    // 显示消息对话框
+    private void showAlert(Alert.AlertType alertType, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle("提示");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
 }

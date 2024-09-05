@@ -65,8 +65,6 @@ public class FileStorageServer {
         }
     }
 
-
-
     private static class FileUploadHandler implements Runnable {
         private final Socket clientSocket;
 
@@ -108,6 +106,14 @@ public class FileStorageServer {
                         }
                     } else {
                         out.println("File not found: " + fileName);
+                    }
+                } else if (request.startsWith("EXISTS")) {
+                    String fileName = request.split(" ")[1];
+                    File file = new File(UPLOAD_DIR + fileName);
+                    if (file.exists()) {
+                        out.println("File exists");
+                    } else {
+                        out.println("File does not exist");
                     }
                 }
             } catch (IOException e) {

@@ -61,7 +61,7 @@ public class ClientService {
              //   String userEmail = userJson.getString("email"); // 示例属性
                // String userName = userJson.getString("username");
                 Gender gender = Gender.valueOf(userJson.getString("gender").toLowerCase()); // 性别
-                Role role = Role.valueOf(userJson.getString("role").toLowerCase()); // 角色
+                Role role = Role.valueOf(userJson.getString("role")); // 角色
                 int age = userJson.getInt("age"); // 年龄
                 // 假设User类有一个构造函数接受用户名和电子邮件
                 return new User(userName,role, age, gender,password); // 返回User对象
