@@ -43,6 +43,7 @@ public class MainUI extends Application {
         Button courseButton = new Button("选课系统");
         courseButton.setPrefSize(150, 40);
         courseButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
+        courseButton.setOnAction(e -> handlecourseSelection(user.getUsername()));
         leftBox.getChildren().add(courseButton);
 
         Button stuButton = new Button("学籍管理");
@@ -114,6 +115,14 @@ public class MainUI extends Application {
             borderPane.setCenter(studentInfoView); // 假设 borderPane 是 MainUI 的一部分
         });
     }
+    private void handlecourseSelection(String username) {
+        Platform.runLater(() -> {
+            CourseSelectionUI CourseSelectionUI = new CourseSelectionUI(user);
+            BorderPane CourseSelection=CourseSelectionUI.createLibraryView();
+            borderPane.setCenter(CourseSelection);
+        });
+    }
+
 
     public void display() {
         launch();

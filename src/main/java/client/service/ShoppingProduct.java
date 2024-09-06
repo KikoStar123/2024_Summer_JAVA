@@ -107,7 +107,6 @@ public class ShoppingProduct {
             theproduct.productAddress = data.getString("productAddress");
             theproduct.productCommentRate = data.getFloat("productCommentRate");
             theproduct.productStatus = data.getBoolean("productStatus");
-            theproduct
 
             return theproduct;
         } catch (IOException e) {
