@@ -20,6 +20,9 @@ import javafx.scene.image.Image;
 
 import java.net.URL;
 
+import static client.service.Role.BankManager;
+import static client.service.Role.Librarian;
+
 public class LoginUI extends Application {
     private TextField usernameField;
     private PasswordField passwordField;
@@ -112,6 +115,7 @@ public class LoginUI extends Application {
             alert.setContentText("Login successful!");
             alert.showAndWait();
 
+
             // 关闭当前窗口
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.close();
@@ -119,14 +123,35 @@ public class LoginUI extends Application {
             // 启动主界面
             //User user = new User(username, Role.student, 12, Gender.male, "123");
             User user = clientService.login_return(username, password);
-            Platform.runLater(() -> {
-                MainUI mainUI = new MainUI(user);
-                try {
-                    mainUI.start(new Stage());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+            if(user.getRole()==BankManager)
+            {
+                Platform.runLater(() -> {
+                    Bankui_Manager managerui=new Bankui_Manager();
+                    try {
+                        managerui.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            if(user.getRole()==Librarian)
+            {
+
+            }
+            else
+            {
+                Platform.runLater(() -> {
+                    MainUI mainUI = new MainUI(user);
+                    try {
+                        mainUI.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+
+
 
 
         } else {
