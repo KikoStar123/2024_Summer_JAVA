@@ -20,6 +20,7 @@ import javafx.geometry.Pos;
 
 import java.net.URL;
 
+import static client.service.Role.StuInfoManager;
 import static client.service.StudentInformation.modifyOneStudentInfo;
 
 public class StuUI extends Application {
@@ -30,7 +31,7 @@ public class StuUI extends Application {
     }
 
     public VBox createStudentInfoView() {
-        if(user.getUsername().charAt(0)=='0'){
+        if(user.getRole()==StuInfoManager){
             StudentInformation.oneStudentInformation[] students = StudentInformation.viewAllStudentInfo();
 
             TableView<StudentInformation.oneStudentInformation> table = new TableView<>();

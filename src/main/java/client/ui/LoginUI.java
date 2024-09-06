@@ -134,10 +134,7 @@ public class LoginUI extends Application {
                     }
                 });
             }
-            if(user.getRole()==Librarian)
-            {
 
-            }
             else
             {
                 Platform.runLater(() -> {
