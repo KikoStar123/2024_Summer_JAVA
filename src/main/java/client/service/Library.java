@@ -9,6 +9,13 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.File;
+import java.util.UUID;
+
 //import java.util.*;
 
 public class Library {
@@ -381,112 +388,133 @@ public class Library {
 //        return libRecords; // 返回借阅记录列表
 //    }
 
-    public boolean uploadBookImage(File imageFile, String bookID) {
-        try (Socket socket = new Socket("localhost", 8081);
-             FileInputStream fis = new FileInputStream(imageFile);
-             OutputStream os = socket.getOutputStream();
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+        public boolean uploadBookImage(File imageFile, String bookID) {
+            try (Socket socket = new Socket("localhost", 8081);
+                 FileInputStream fis = new FileInputStream(imageFile);
+                 OutputStream os = socket.getOutputStream();
+                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-            out.println("UPLOAD " + bookID + ".jpg");
+                String fileName = bookID + ".jpg";
+                if (fileExists(fileName)) {
+                    fileName = bookID + "_" + UUID.randomUUID().toString() + ".jpg";
+                }
 
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = fis.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
+                out.println("UPLOAD " + fileName);
+
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    os.write(buffer, 0, bytesRead);
+                }
+
+                os.flush();
+                socket.shutdownOutput();
+
+                String response = in.readLine();
+                if (response.contains("File uploaded successfully")) {
+                    // 发送请求到后端更新数据库中的 imagePath 字段
+                    return updateBookImagePath(bookID, "uploads/" + fileName);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            os.flush();
-            socket.shutdownOutput();
-
-            String response = in.readLine();
-            if (response.contains("File uploaded successfully")) {
-                // 发送请求到后端更新数据库中的 imagePath 字段
-                return updateBookImagePath(bookID, "uploads/" + bookID + ".jpg");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
-
-    public boolean uploadBookPDF(File pdfFile, String bookID) {
-        try (Socket socket = new Socket("localhost", 8081);
-             FileInputStream fis = new FileInputStream(pdfFile);
-             OutputStream os = socket.getOutputStream();
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-
-            out.println("UPLOAD " + bookID + ".pdf");
-
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = fis.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
-            }
-
-            os.flush();
-            socket.shutdownOutput();
-
-            String response = in.readLine();
-            if (response.contains("File uploaded successfully")) {
-                // 发送请求到后端更新数据库中的 pdfPath 字段
-                return updateBookPDFPath(bookID, "uploads/" + bookID + ".pdf");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
-
-    public boolean updateBookImagePath(String bookID, String imagePath) {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
-            JSONObject request = new JSONObject();
-            request.put("requestType", "updateBookImagePath");
-            request.put("parameters", new JSONObject()
-                    .put("bookID", bookID)
-                    .put("imagePath", imagePath));
-
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(request.toString());
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String response = in.readLine();
-            JSONObject jsonResponse = new JSONObject(response);
-
-            return jsonResponse.getString("status").equals("success");
-        } catch (IOException e) {
-            e.printStackTrace();
             return false;
         }
-    }
 
-    public boolean updateBookPDFPath(String bookID, String pdfPath) {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
-            JSONObject request = new JSONObject();
-            request.put("requestType", "updateBookPDFPath");
-            request.put("parameters", new JSONObject()
-                    .put("bookID", bookID)
-                    .put("pdfPath", pdfPath));
+        public boolean uploadBookPDF(File pdfFile, String bookID) {
+            try (Socket socket = new Socket("localhost", 8081);
+                 FileInputStream fis = new FileInputStream(pdfFile);
+                 OutputStream os = socket.getOutputStream();
+                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
 
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(request.toString());
+                String fileName = bookID + ".pdf";
+                if (fileExists(fileName)) {
+                    fileName = bookID + "_" + UUID.randomUUID().toString() + ".pdf";
+                }
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String response = in.readLine();
-            JSONObject jsonResponse = new JSONObject(response);
+                out.println("UPLOAD " + fileName);
 
-            return jsonResponse.getString("status").equals("success");
-        } catch (IOException e) {
-            e.printStackTrace();
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    os.write(buffer, 0, bytesRead);
+                }
+
+                os.flush();
+                socket.shutdownOutput();
+
+                String response = in.readLine();
+                if (response.contains("File uploaded successfully")) {
+                    // 发送请求到后端更新数据库中的 pdfPath 字段
+                    return updateBookPDFPath(bookID, "uploads/" + fileName);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return false;
+        }
+
+        // 检查文件是否存在
+        private boolean fileExists(String fileName) {
+            try (Socket socket = new Socket("localhost", 8081);
+                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+
+                out.println("EXISTS " + fileName);
+                String response = in.readLine();
+                return response.contains("File exists");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        // 更新数据库中的图片路径
+        public boolean updateBookImagePath(String bookID, String imagePath) {
+            try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+                JSONObject request = new JSONObject();
+                request.put("requestType", "updateBookImagePath");
+                request.put("parameters", new JSONObject()
+                        .put("bookID", bookID)
+                        .put("imagePath", imagePath));
+
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                out.println(request.toString());
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String response = in.readLine();
+                JSONObject jsonResponse = new JSONObject(response);
+
+                return jsonResponse.getString("status").equals("success");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        // 更新数据库中的PDF路径
+        public boolean updateBookPDFPath(String bookID, String pdfPath) {
+            try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+                JSONObject request = new JSONObject();
+                request.put("requestType", "updateBookPDFPath");
+                request.put("parameters", new JSONObject()
+                        .put("bookID", bookID)
+                        .put("pdfPath", pdfPath));
+
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                out.println(request.toString());
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String response = in.readLine();
+                JSONObject jsonResponse = new JSONObject(response);
+
+                return jsonResponse.getString("status").equals("success");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
         }
     }
 
-
-
-}

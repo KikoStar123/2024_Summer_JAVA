@@ -18,6 +18,8 @@ public class ShoppingCart {
         String productID;//商品id
         int productNumber;//商品数量
 
+        String storeID;//商店id
+
         public String getProductID() {
             return productID;
         }
@@ -25,6 +27,8 @@ public class ShoppingCart {
         public int getProductNumber() {
             return productNumber;
         }
+
+        public String getStoreID() {return storeID;}
     }
 
     // 添加商品到购物车
@@ -175,6 +179,7 @@ public class ShoppingCart {
                 theCartElements[i]=new oneCartElement();
                 theCartElements[i].productID = course.getString("productID");
                 theCartElements[i].productNumber = course.getInt("productNumber");
+                theCartElements[i].storeID = course.getString("storeID");
             }
 
             return theCartElements;

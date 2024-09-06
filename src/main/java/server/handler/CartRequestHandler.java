@@ -17,43 +17,40 @@ public class CartRequestHandler implements RequestHandler {
         }
 
         // 获取操作类型
-        String action = parameters.optString("action", null);
+        String action = parameters.optString("action", "view"); // 默认为 "view" 操作，查看购物车
 
-        if (action != null) {
-            String productID = parameters.optString("productID", null);
-            int quantity = parameters.optInt("quantity", 0);
+        String productID = parameters.optString("productID", null);
+        int quantity = parameters.optInt("quantity", 0);
 
-            switch (action) {
-                case "add":
-                    if (productID != null && quantity > 0) {
-                        boolean addSuccess = cartService.addToCart(username, productID, quantity);
-                        response.put("status", addSuccess ? "success" : "fail");
-                    } else {
-                        response.put("status", "fail").put("message", "Invalid productID or quantity");
-                    }
-                    break;
-                case "update":
-                    if (productID != null && quantity > 0) {
-                        boolean updateSuccess = cartService.updateCart(username, productID, quantity);
-                        response.put("status", updateSuccess ? "success" : "fail");
-                    } else {
-                        response.put("status", "fail").put("message", "Invalid productID or quantity");
-                    }
-                    break;
-                case "remove":
-                    if (productID != null) {
-                        boolean removeSuccess = cartService.removeFromCart(username, productID);
-                        response.put("status", removeSuccess ? "success" : "fail");
-                    } else {
-                        response.put("status", "fail").put("message", "Invalid productID");
-                    }
-                    break;
-                default:
-                    response.put("status", "fail").put("message", "Unknown action");
-                    break;
-            }
-        } else {
-            response = cartService.getShoppingCart(username);
+        switch (action) {
+            case "add":
+                if (productID != null && quantity > 0) {
+                    boolean addSuccess = cartService.addToCart(username, productID, quantity);
+                    response.put("status", addSuccess ? "success" : "fail");
+                } else {
+                    response.put("status", "fail").put("message", "Invalid productID or quantity");
+                }
+                break;
+            case "update":
+                if (productID != null && quantity > 0) {
+                    boolean updateSuccess = cartService.updateCart(username, productID, quantity);
+                    response.put("status", updateSuccess ? "success" : "fail");
+                } else {
+                    response.put("status", "fail").put("message", "Invalid productID or quantity");
+                }
+                break;
+            case "remove":
+                if (productID != null) {
+                    boolean removeSuccess = cartService.removeFromCart(username, productID);
+                    response.put("status", removeSuccess ? "success" : "fail");
+                } else {
+                    response.put("status", "fail").put("message", "Invalid productID");
+                }
+                break;
+            case "view":  // 查看购物车
+            default:
+                response = cartService.getShoppingCart(username);
+                break;
         }
 
         return response.toString();
