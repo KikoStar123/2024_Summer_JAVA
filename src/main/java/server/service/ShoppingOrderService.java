@@ -23,7 +23,7 @@ public class ShoppingOrderService {
     private final Lock payOrderLock = new ReentrantLock();
 
     // 创建订单
-    public JSONObject createOrder(String username, String productID, int productNumber, float paidMoney) {
+    public JSONObject createOrder(String username, String productID, String productName, int productNumber, float paidMoney) {
         createOrderLock.lock();
         JSONObject response = new JSONObject();
         try {
@@ -39,33 +39,33 @@ public class ShoppingOrderService {
 
             String orderID = generateOrderID();
 
-            String query = "INSERT INTO tblShoppingOrder (orderID, username, productID, productNumber, whetherComment, paidMoney, paidStatus) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            // 获取 storeID 关联商品
+            String storeID = getStoreIDByProductID(productID);
 
+            // 插入时添加 storeID
+            String query = "INSERT INTO tblShoppingOrder (orderID, username, productID, productName, productNumber, whetherComment, paidMoney, paidStatus, storeID) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, orderID);
                 preparedStatement.setString(2, username);
                 preparedStatement.setString(3, productID);
-                preparedStatement.setInt(4, productNumber);
-                preparedStatement.setBoolean(5, false); // whetherComment 默认为 false (0)
-                preparedStatement.setFloat(6, paidMoney);
-                preparedStatement.setBoolean(7, false); // paidStatus 默认为 false (未支付)
+                preparedStatement.setString(4, productName);
+                preparedStatement.setInt(5, productNumber);
+                preparedStatement.setBoolean(6, false);  // whetherComment 默认为 false (0)
+                preparedStatement.setFloat(7, paidMoney);
+                preparedStatement.setBoolean(8, false);  // paidStatus 默认为 false (未支付)
+                preparedStatement.setString(9, storeID); // 添加 storeID
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
                     isSuccess = true;
-                    // 创建成功，返回订单 ID 和成功状态
-                    response.put("status", "success");
-                    response.put("orderID", orderID);
+                    response.put("status", "success").put("orderID", orderID);
                 } else {
-                    // 如果插入失败，返回失败状态
-                    response.put("status", "fail");
-                    response.put("message", "Order creation failed");
+                    response.put("status", "fail").put("message", "Order creation failed");
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                response.put("status", "fail");
-                response.put("message", "SQL Error: " + e.getMessage());
+                response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
             } finally {
                 try {
                     if (conn != null) {
@@ -82,6 +82,85 @@ public class ShoppingOrderService {
         }
     }
 
+    private String getStoreIDByProductID(String productID) {
+        String storeID = null;
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        String query = "SELECT storeID FROM tblShoppingProduct WHERE productID = ?";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, productID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                storeID = resultSet.getString("storeID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+        return storeID;
+    }
+
+    // 根据商店ID查询该商店的所有订单
+    public JSONObject getAllOrdersByStore(String storeID) {
+        getOrderDetailsLock.lock();
+        try {
+            JSONObject response = new JSONObject();
+            JSONArray ordersArray = new JSONArray();
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                response.put("status", "fail").put("message", "Database connection failed");
+                return response;
+            }
+
+            String query = "SELECT * FROM tblShoppingOrder WHERE storeID = ?";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, storeID);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                while (resultSet.next()) {
+                    JSONObject order = new JSONObject();
+                    order.put("orderID", resultSet.getString("orderID"));
+                    order.put("username", resultSet.getString("username"));
+                    order.put("productID", resultSet.getString("productID"));
+                    order.put("productName", resultSet.getString("productName"));
+                    order.put("productNumber", resultSet.getInt("productNumber"));
+                    order.put("whetherComment", resultSet.getBoolean("whetherComment"));
+                    order.put("paidMoney", resultSet.getFloat("paidMoney"));
+                    order.put("paidStatus", resultSet.getBoolean("paidStatus"));
+                    order.put("storeID", resultSet.getBoolean("storeID"));
+                    ordersArray.put(order);
+                }
+
+                response.put("status", "success").put("orders", ordersArray);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                response.put("status", "fail").put("message", "SQL Error: " + e.getMessage());
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+
+            return response;
+        } finally {
+            getOrderDetailsLock.unlock();
+        }
+    }
 
 
     // 更新订单支付状态
@@ -173,7 +252,7 @@ public class ShoppingOrderService {
                 queryBuilder.append(" AND username = ?");
             }
             if (searchTerm != null && !searchTerm.isEmpty()) {
-                queryBuilder.append(" AND (productID LIKE ? OR orderID LIKE ?)");
+                queryBuilder.append(" AND (productID LIKE ? OR orderID LIKE ? OR productName LIKE ?)");
             }
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(queryBuilder.toString())) {
@@ -186,6 +265,7 @@ public class ShoppingOrderService {
                     String searchPattern = "%" + searchTerm + "%";
                     preparedStatement.setString(paramIndex++, searchPattern);
                     preparedStatement.setString(paramIndex++, searchPattern);
+                    preparedStatement.setString(paramIndex++, searchPattern);
                 }
 
                 ResultSet resultSet = preparedStatement.executeQuery();
@@ -195,9 +275,12 @@ public class ShoppingOrderService {
                     order.put("orderID", resultSet.getString("orderID"));
                     order.put("username", resultSet.getString("username"));
                     order.put("productID", resultSet.getString("productID"));
+                    order.put("productName", resultSet.getString("productName"));  // 返回 productName
                     order.put("productNumber", resultSet.getInt("productNumber"));
                     order.put("whetherComment", resultSet.getBoolean("whetherComment"));
                     order.put("paidMoney", resultSet.getFloat("paidMoney"));
+                    order.put("paidStatus", resultSet.getBoolean("paidStatus"));
+                    order.put("orderID", resultSet.getString("orderID"));
                     ordersArray.put(order);
                 }
 
@@ -251,10 +334,12 @@ public class ShoppingOrderService {
                     response.put("orderID", resultSet.getString("orderID"));
                     response.put("username", resultSet.getString("username"));
                     response.put("productID", resultSet.getString("productID"));
+                    response.put("productName", resultSet.getString("productName"));  // 返回 productName
                     response.put("productNumber", resultSet.getInt("productNumber"));
                     response.put("whetherComment", resultSet.getBoolean("whetherComment"));
                     response.put("paidMoney", resultSet.getFloat("paidMoney"));
                     response.put("paidStatus", resultSet.getBoolean("paidStatus")); // 返回支付状态
+                    response.put("orderID", resultSet.getString("orderID"));
                     response.put("status", "success");
                 } else {
                     response.put("status", "fail").put("message", "Order not found");
