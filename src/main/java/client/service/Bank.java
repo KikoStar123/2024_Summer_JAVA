@@ -15,8 +15,8 @@ import java.util.List;
 import client.service.BankUser;
 
 public class Bank {
-    private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
-    private final int SERVER_PORT = IpConfig.SERVER_PORT;
+    private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
+    private static final int SERVER_PORT = IpConfig.SERVER_PORT;
     //利率实现
     private  double InterestRate;
     // 获取利率
@@ -91,7 +91,7 @@ public class Bank {
         return isSuccess;
     }
     //获取所有收支记录//管理员和学生都可以使用
-    public List<BankUser.BankRecord> getAllBankRecords(String username) {
+    public static List<BankUser.BankRecord> getAllBankRecords(String username) {
         List<BankUser.BankRecord> bankRecords = new ArrayList<>();
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
@@ -125,7 +125,7 @@ public class Bank {
         return bankRecords;
     }
     //登录返回bool值
-    public boolean bankLogin(String username, String bankpwd) {
+    public static boolean bankLogin(String username, String bankpwd) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "bankLogin");
@@ -181,7 +181,7 @@ public BankUser getBankUser(String username,String bankpwd) {
     return user;
 }
     //注册账号
-    public boolean bankRegister(String username, String bankpwd) {
+    public static boolean bankRegister(String username, String bankpwd) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "bankRegister");
@@ -204,7 +204,7 @@ public BankUser getBankUser(String username,String bankpwd) {
     }
     //修改密码
     // 修改密码功能
-    public boolean updatePwd(String username, String oldPwd, String newPwd) {
+    public static boolean updatePwd(String username, String oldPwd, String newPwd) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();

@@ -69,6 +69,7 @@ public class BankUser {
             this.balanceChange = balanceChange;
             this.balanceReason = balanceReason;
             this.curDate = curDate;
+
         }
 
         // BankRecord的getter方法
@@ -80,9 +81,9 @@ public class BankUser {
             this.curDate = curDate;
         }
 
-        //public String getUsername() {
-        //    return username;
-        //}
+        public String getUsername() {
+            return username;
+        }
 
         public float getBalanceChange() {
             return balanceChange;

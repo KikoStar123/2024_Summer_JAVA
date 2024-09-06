@@ -10,10 +10,12 @@ public class GetBankUserRequestHandler implements RequestHandler {
         String username = parameters.getString("username");
         String bankpwd = parameters.getString("bankpwd");
         JSONObject result = bankService.getBankUser(username, bankpwd);
-
+        System.out.println(result.toString());
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("status", result.getString("status"));
-        jsonResponse.put("data", result.getJSONObject("data"));
+        if(jsonResponse.getString("status").equals("success")){
+            jsonResponse.put("data", result.getJSONObject("data"));
+        }
         return jsonResponse.toString();
     }
 }
