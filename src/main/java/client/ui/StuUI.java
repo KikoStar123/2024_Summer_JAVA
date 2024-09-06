@@ -29,7 +29,6 @@ public class StuUI extends Application {
         this.user = user;
     }
 
-
     public VBox createStudentInfoView() {
         if(user.getUsername().charAt(0)=='0'){
             StudentInformation.oneStudentInformation[] students = StudentInformation.viewAllStudentInfo();
