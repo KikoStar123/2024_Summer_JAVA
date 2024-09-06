@@ -719,13 +719,17 @@ public class ShoppingProductService {
             String insertCommentQuery = "INSERT INTO tblShoppingComment (username, productID, commentID, commentAttitude, commentContent) " +
                     "VALUES (?, ?, ?, ?, ?)";
             String updateOrderQuery = "UPDATE tblShoppingOrder SET whetherComment = true WHERE username = ? AND productID = ?";
-            //修改对应商品好评率
+            // 修改对应商品好评率
             String updateProductRateQuery = "UPDATE tblShoppingProduct SET productCommentRate = " +
-                    "(SELECT AVG(commentAttitude) FROM tblShoppingComment WHERE productID = ?) WHERE productID = ?";
+                    "(SELECT COUNT(*) FILTER (WHERE commentAttitude = 3) * 1.0 / COUNT(*) FROM tblShoppingComment WHERE productID = ?) WHERE productID = ?";
+            // 修改对应商店好评率
+            String updateStoreRateQuery = "UPDATE tblStore SET storeRate = " +
+                    "(SELECT COUNT(*) FILTER (WHERE commentAttitude = 3) * 1.0 / COUNT(*) FROM tblShoppingComment c JOIN tblShoppingProduct p ON c.productID = p.productID WHERE p.storeID = ?) WHERE storeID = ?";
 
             try (PreparedStatement insertStatement = conn.prepareStatement(insertCommentQuery);
                  PreparedStatement updateOrderStatement = conn.prepareStatement(updateOrderQuery);
-                 PreparedStatement updateProductRateStatement = conn.prepareStatement(updateProductRateQuery)) {
+                 PreparedStatement updateProductRateStatement = conn.prepareStatement(updateProductRateQuery);
+                 PreparedStatement updateStoreRateStatement = conn.prepareStatement(updateStoreRateQuery)) {
 
                 String commentID = UUID.randomUUID().toString(); // 生成唯一评论ID
 
@@ -741,10 +745,18 @@ public class ShoppingProductService {
                     updateOrderStatement.setString(2, productID);
                     updateOrderStatement.executeUpdate();
 
-                    //更新商品好评率
+                    // 更新商品好评率
                     updateProductRateStatement.setString(1, productID);
                     updateProductRateStatement.setString(2, productID);
                     updateProductRateStatement.executeUpdate();
+
+                    // 更新商店好评率
+                    String storeID = getStoreIDByProductID(productID, conn);
+                    if (storeID != null) {
+                        updateStoreRateStatement.setString(1, storeID);
+                        updateStoreRateStatement.setString(2, storeID);
+                        updateStoreRateStatement.executeUpdate();
+                    }
 
                     isSuccess = true;
                 }
@@ -765,6 +777,23 @@ public class ShoppingProductService {
             addCommentLock.unlock();
         }
     }
+
+    // 获取商品对应的商店ID
+    private String getStoreIDByProductID(String productID, Connection conn) {
+        String storeID = null;
+        String query = "SELECT storeID FROM tblShoppingProduct WHERE productID = ?";
+        try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, productID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                storeID = resultSet.getString("storeID");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return storeID;
+    }
+
 
 
     //------------------------------------------------------------------------------------------------------//

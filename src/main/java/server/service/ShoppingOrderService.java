@@ -280,7 +280,8 @@ public class ShoppingOrderService {
                     order.put("whetherComment", resultSet.getBoolean("whetherComment"));
                     order.put("paidMoney", resultSet.getFloat("paidMoney"));
                     order.put("paidStatus", resultSet.getBoolean("paidStatus"));
-                    order.put("orderID", resultSet.getString("orderID"));
+                    order.put("storeID", resultSet.getString("storeID"));
+
                     ordersArray.put(order);
                 }
 
@@ -339,7 +340,7 @@ public class ShoppingOrderService {
                     response.put("whetherComment", resultSet.getBoolean("whetherComment"));
                     response.put("paidMoney", resultSet.getFloat("paidMoney"));
                     response.put("paidStatus", resultSet.getBoolean("paidStatus")); // 返回支付状态
-                    response.put("orderID", resultSet.getString("orderID"));
+                    response.put("storeID", resultSet.getString("storeID"));
                     response.put("status", "success");
                 } else {
                     response.put("status", "fail").put("message", "Order not found");

@@ -159,9 +159,8 @@ public class ShoppingStore {
             out.println(request);
 
             String response = in.readLine();
-            JSONObject jsonResponse = new JSONObject(response);
+            JSONObject data = new JSONObject(response);
 
-            JSONObject data = jsonResponse.getJSONObject("product");
 
             oneStore theoStore = new oneStore();
 
