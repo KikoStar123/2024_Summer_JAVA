@@ -1,34 +1,34 @@
-
 /* 主色调和辅助色定义 */
+/*定义了主要的紫色背景色*/
 .PrimaryPurple {
     -fx-background-color: #6A0DAD;
 }
-
+/*定义了强调的粉色背景色*/
 .AccentPink {
     -fx-background-color: #FF69B4;
 }
-
+/*定义了背景色为白色*/
 .BackgroundWhite {
     -fx-background-color: #FFFFFF;
 }
-
+/*定义了浅紫色背景色*/
 .LightPurple {
     -fx-background-color: #D8BFD8;
 }
-
+/*定义了浅粉色背景色*/
 .LightPink {
     -fx-background-color: #FFC0CB;
 }
-
+/*定义了灰色的文本颜色和边框颜色*/
 .Gray {
     -fx-text-fill: #B0B0B0;
     -fx-border-color: #B0B0B0;
 }
-
+/*定义了整个应用程序的根节点的背景色*/
 .root {
-    -fx-background-color: #FFFFFF; /* 设置背景颜色为白色 */
+    -fx-background-color: rgba(205, 237, 222, 0.5); /* 设置背景颜色 */
 }
-
+/*定义了带有灰色边框、圆角和内边距的样式*/
 .gray-border {
     -fx-border-color: #808080; /* 灰色边框 */
     -fx-border-width: 2px;
@@ -38,19 +38,20 @@
 }
 
 /* 字体规范 */
-.title-font {
+/*定义了标题的字体样式，包括字体、大小、颜色和加粗*/
+.title-font {/*使用*/
     -fx-font-family: 'Segoe UI', 'Roboto';
     -fx-font-size: 24px;
     -fx-font-weight: bold;
-    -fx-text-fill: #6A0DAD;
+    -fx-text-fill: #996f7a;
 }
-
-.body-font {
+/*定义了正文文本的字体样式，包括字体、大小和颜色*/
+.body-font {/*使用*/
     -fx-font-family: 'Segoe UI', 'Roboto';
     -fx-font-size: 14px;
-    -fx-text-fill: #4B0082;
+    -fx-text-fill: #6f9986;
 }
-
+/*定义了按钮文本的字体样式，包括字体、大小、颜色和字重*/
 .button-font {
     -fx-font-family: 'Segoe UI', 'Roboto';
     -fx-font-size: 16px;
@@ -59,19 +60,20 @@
 }
 
 /* 按钮规范 */
-.main-button {
+/*定义了主要按钮的样式，包括背景色、边框颜色、圆角等*/
+.main-button {/*使用*/
     -fx-background-color: #FFFFFF;
     -fx-border-color: #6A0DAD;
     -fx-border-width: 2px;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
 }
-
-.main-button:hover {
+/*定义了主要按钮在鼠标悬停时的样式*/
+.main-button:hover {/*使用*/
     -fx-background-color: #FFC0CB;
 }
-
-.main-button:pressed {
+/*定义了主要按钮在按下时的样式*/
+.main-button:pressed {/*使用*/
     -fx-background-color: #FF69B4;
     -fx-border-color: #6A0DAD;
 }
@@ -81,7 +83,8 @@
 /*}*/
 
 /* 输入框规范 */
-.input-field {
+/*定义了输入框的样式，包括背景色、边框颜色、圆角和阴影效果*/
+.input-field {/*使用*/
     -fx-background-color: #FFFFFF;
     -fx-border-color: #B0B0B0;
     -fx-border-width: 1px;
@@ -91,6 +94,7 @@
 
 
 /* 面板和卡片规范 */
+/*定义了面板的样式，包括背景色、阴影效果和圆角*/
 .panel {
     -fx-background-color: #FFFFFF;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 2, 0.0, 2, 2);
@@ -98,6 +102,7 @@
 }
 
 /* 悬浮提示规范 */
+/*定义了悬浮提示框的样式，包括背景色、文本颜色、圆角和阴影效果*/
 .tooltip {
     -fx-background-color: #6A0DAD;
     -fx-text-fill: #FFFFFF;
