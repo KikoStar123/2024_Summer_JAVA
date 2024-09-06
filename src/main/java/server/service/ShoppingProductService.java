@@ -51,7 +51,7 @@ public class ShoppingProductService {
             }
 
             String order = "ASC".equalsIgnoreCase(sortOrder) ? "ASC" : "DESC";
-            String query = "SELECT * FROM tblShoppingProduct WHERE productStatus = true ORDER BY " + orderByColumn + " " + order;
+            String query = "SELECT * FROM tblShoppingProduct p JOIN tblStore s ON p.storeID = s.storeID WHERE productStatus = true ORDER BY " + orderByColumn + " " + order;
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -77,6 +77,7 @@ public class ShoppingProductService {
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
                     product.put("productStatus", resultSet.getBoolean("productStatus"));
                     product.put("storeID", resultSet.getString("storeID")); // 新增 storeID
+                    product.put("storeName", resultSet.getString("storeName"));
 
                     productsArray.put(product);
                 }
@@ -109,7 +110,7 @@ public class ShoppingProductService {
         try {
             JSONObject response = new JSONObject();
 
-            String query = "SELECT * FROM tblShoppingProduct WHERE productID = ?";
+            String query = "SELECT * FROM tblShoppingProduct p JOIN tblStore s ON p.storeID = s.storeID WHERE productID = ?";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -136,6 +137,7 @@ public class ShoppingProductService {
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
                     product.put("productStatus", resultSet.getBoolean("productStatus"));
                     product.put("storeID", resultSet.getString("storeID")); // 新增 storeID
+                    product.put("storeName", resultSet.getString("storeName"));
 
                     response.put("status", "success").put("product", product);
                 } else {
@@ -183,7 +185,7 @@ public class ShoppingProductService {
 
             String order = "ASC".equalsIgnoreCase(sortOrder) ? "ASC" : "DESC";
 
-            String query = "SELECT * FROM tblShoppingProduct WHERE productStatus = true " +
+            String query = "SELECT * FROM tblShoppingProduct p JOIN tblStore s ON p.storeID = s.storeID WHERE productStatus = true " +
                     "AND (productName LIKE ? OR productID LIKE ? OR productDetail LIKE ?) " +
                     "ORDER BY " + orderByColumn + " " + order;
 
@@ -216,6 +218,7 @@ public class ShoppingProductService {
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
                     product.put("productStatus", resultSet.getBoolean("productStatus"));
                     product.put("storeID", resultSet.getString("storeID")); // 新增 storeID
+                    product.put("storeName", resultSet.getString("storeName"));
 
                     productsArray.put(product);
                 }
@@ -399,9 +402,7 @@ public class ShoppingProductService {
             String categoryID = productID.substring(0, 4);
 
             // SQL 查询，确保查询所有需要的列
-            String query = "SELECT productID, productName, productImage, productOriginalPrice, productCurrentPrice, " +
-                    "productInventory, productDetail, productAddress, productCommentRate, productStatus " +
-                    "FROM tblShoppingProduct WHERE productID LIKE ?";
+            String query = "SELECT * FROM tblShoppingProduct p JOIN tblStore s ON p.storeID = s.storeID WHERE productID LIKE ?";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -428,6 +429,9 @@ public class ShoppingProductService {
                     product.put("productAddress", resultSet.getString("productAddress"));
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
                     product.put("productStatus", resultSet.getBoolean("productStatus"));
+                    product.put("storeID", resultSet.getString("storeID")); // 新增 storeID
+                    product.put("storeName", resultSet.getString("storeName"));
+
 
                     productsArray.put(product);
                 }

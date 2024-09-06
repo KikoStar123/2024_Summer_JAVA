@@ -3,6 +3,7 @@ package testclient.shop;
 import client.service.ShoppingProduct;
 
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class ShoppingProductTest {
@@ -45,6 +46,8 @@ public class ShoppingProductTest {
                         System.out.println("商品发货地址: " + product.getProductAddress());
                         System.out.println("商品好评率: " + product.getProductCommentRate());
                         System.out.println("商品状态: " + (product.isProductStatus() ? "上架" : "下架"));
+                        System.out.println("商店ID：" + product.getStoreID());
+                        System.out.println("商店名称：" + product.getStoreName());
                         break;
                     case 2:
                         System.out.println("请输入排序方式(price/rate):");

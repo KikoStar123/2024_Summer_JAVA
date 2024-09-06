@@ -25,6 +25,8 @@ public class ShoppingProduct {
         boolean productStatus;//商品状态
         String storeID;//商店id
 
+        String storeName;
+
         public String getProductID() {
             return productID;
         }
@@ -69,6 +71,8 @@ public class ShoppingProduct {
             return storeID;
         }
 
+        public String getStoreName() {return storeName; }
+
     }
 
     // 查看单个商品详细信息
@@ -108,6 +112,7 @@ public class ShoppingProduct {
             theproduct.productCommentRate = data.getFloat("productCommentRate");
             theproduct.productStatus = data.getBoolean("productStatus");
             theproduct.storeID = data.getString("storeID");
+            theproduct.storeName = data.getString("storeName");
 
             return theproduct;
         } catch (IOException e) {
@@ -164,6 +169,7 @@ public class ShoppingProduct {
                 productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
                 productsArray[i].productStatus = theproduct.getBoolean("productStatus");
                 productsArray[i].storeID = theproduct.getString("storeID");
+                productsArray[i].storeName = theproduct.getString("storeName");
 
                 System.out.println(productsArray[i].productImage);
             }
@@ -346,6 +352,7 @@ public class ShoppingProduct {
                 productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
                 productsArray[i].productStatus = theproduct.getBoolean("productStatus");
                 productsArray[i].storeID = theproduct.getString("storeID");
+                productsArray[i].storeName = theproduct.getString("storeName");
             }
 
             return productsArray;
@@ -405,6 +412,7 @@ public class ShoppingProduct {
                 productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
                 productsArray[i].productStatus = theproduct.getBoolean("productStatus");
                 productsArray[i].storeID = theproduct.getString("storeID");
+                productsArray[i].storeName = theproduct.getString("storeName");
             }
 
             return productsArray;
