@@ -37,7 +37,6 @@ public class FileStorageServer {
     private static void startHttpServer() throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(HTTP_SERVER_PORT), 0);
         server.createContext("/files", new HttpFileHandler());
-        server.createContext("/resources", new ResourceHandler());
         server.setExecutor(null);
         server.start();
         System.out.println("HTTP server is running on port " + HTTP_SERVER_PORT);
@@ -63,21 +62,6 @@ public class FileStorageServer {
             } else {
                 exchange.sendResponseHeaders(404, -1); // 文件未找到
             }
-        }
-    }
-
-
-    private static class ResourceHandler implements HttpHandler {
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            String resourcePath = RESOURCE_DIR + exchange.getRequestURI().getPath().substring("/resources/".length());
-            byte[] resourceBytes = Files.readAllBytes(Paths.get(resourcePath));
-
-            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
-            exchange.sendResponseHeaders(200, resourceBytes.length);
-            OutputStream os = exchange.getResponseBody();
-            os.write(resourceBytes);
-            os.close();
         }
     }
 
@@ -122,6 +106,14 @@ public class FileStorageServer {
                         }
                     } else {
                         out.println("File not found: " + fileName);
+                    }
+                } else if (request.startsWith("EXISTS")) {
+                    String fileName = request.split(" ")[1];
+                    File file = new File(UPLOAD_DIR + fileName);
+                    if (file.exists()) {
+                        out.println("File exists");
+                    } else {
+                        out.println("File does not exist");
                     }
                 }
             } catch (IOException e) {

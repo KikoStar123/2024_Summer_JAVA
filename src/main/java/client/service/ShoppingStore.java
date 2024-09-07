@@ -41,7 +41,7 @@ public class ShoppingStore {
         }
     }
 
-    // 添加商店not
+    // 添加商店
     // 输入 商店id storeID；商店名称 storeName；联系电话 storePhone；商店好评率 storeRate；商店状态 storeStatus
     // 返回 状态
     public boolean addStore(String storeID, String storeName, String storePhone, float storeRate, boolean storeStatus) throws IOException
@@ -109,7 +109,7 @@ public class ShoppingStore {
         }
     }
 
-    // 删除商店not
+    // 删除商店
     // 输入 商店id storeID
     // 返回 状态
     public boolean deleteStore(String storeID) throws IOException
@@ -178,7 +178,7 @@ public class ShoppingStore {
         }
     }
 
-    // 获取所有商店信息not
+    // 获取所有商店信息
     // 输入 无
     // 返回 商店数组
     public oneStore[] getAllStores() throws IOException

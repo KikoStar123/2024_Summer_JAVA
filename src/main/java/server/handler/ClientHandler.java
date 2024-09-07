@@ -102,6 +102,7 @@ public class ClientHandler implements Runnable {
         routeMap.put("product", new ProductRequestHandler());  // 处理与商品相关的请求
         routeMap.put("cart", new CartRequestHandler());        // 处理与购物车相关的请求
         routeMap.put("order", new OrderRequestHandler());      // 处理与订单相关的请求
+        routeMap.put("store", new StoreRequestHandler());      // 处理店铺相关请求
 
         //银行相关请求
         routeMap.put("deposit", new DepositRequestHandler());

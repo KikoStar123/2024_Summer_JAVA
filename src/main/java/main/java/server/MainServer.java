@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
+import java.net.InetAddress;
 
 public class MainServer {
     private static final int SERVER_PORT = 8080; // 服务器端口
@@ -38,7 +39,7 @@ public class MainServer {
             // 启动文件存储服务
             new Thread(FileStorageServer::startFileServer).start();
 
-            try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT)) {
+            try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT, 50, InetAddress.getByName("0.0.0.0"))) {
                 logger.info("Server is running and listening on port " + SERVER_PORT + "...");
 
                 while (true) {

@@ -225,6 +225,7 @@ public class ShoppingComment {
                     .put("commentAttitude", commentAttitude)
                     .put("commentContent", commentContent));
 
+            System.out.println(request.toString());
             // 发送请求
             out.println(request);
 
