@@ -1,8 +1,6 @@
 package client.ui;
 
 import client.service.ClientService;
-import client.service.Gender;
-import client.service.Role;
 import client.service.User;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -10,15 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.geometry.Pos;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.image.Image;
 //import jdk.javadoc.internal.doclets.formats.html.DocFilesHandlerImpl;
 
-import java.net.URL;
 
 public class LoginUI extends Application {
     private TextField usernameField;
@@ -30,20 +24,16 @@ public class LoginUI extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        primaryStage.setTitle("登陆");
+        primaryStage.setTitle("用户登录");
         //primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
 
         // 创建一个布局容器（比如GridPane）
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
-        grid.setAlignment(Pos.CENTER);
+        // grid.setAlignment(Pos.CENTER);
 
-        // 应用CSS样式
-        Scene scene = new Scene(grid, 350, 200);
-        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-
-        // 创建登录表单的标题
+        // 创建登录表单的标题(。。。)
         Text title = new Text("用户登录");
         title.getStyleClass().add("title-font");// 主色调
 
@@ -70,10 +60,15 @@ public class LoginUI extends Application {
         HBox buttonBox = new HBox(80); // 间距为10
         buttonBox.setAlignment(Pos.CENTER); // 水平居中
 
-        // 将按钮添加到buttonBox
-        buttonBox.getChildren().addAll(loginButton, registerButton);
+//        // 布局设置
+//        grid.add(userLabel, 0, 0);
+//        grid.add(userTextField, 1, 0);
+//        grid.add(passwordLabel, 0, 1);
+//        grid.add(passwordField, 1, 1);
+//        grid.add(loginButton, 0, 2);
+//        grid.add(registerButton, 1, 2);
 
-        // 将组件添加到网格中
+        //将组件添加到网格中
         grid.add(title, 0, 0, 2, 1); // 标题居中
         grid.add(userLabel, 0, 1);
         grid.add(usernameField, 1, 1);
@@ -82,9 +77,14 @@ public class LoginUI extends Application {
         // 将buttonBox添加到GridPane中，占据两列
         grid.add(buttonBox, 0, 3, 2, 1); // 从第0列开始，跨越2列，从第3行开始
 
+        // 应用CSS样式
+        Scene scene = new Scene(grid, 300, 200);
+        //scene.getStylesheets().add(getClass().getResource("/styles/LoginUIstyles.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
 
     private void handleLogin() {
         String username = usernameField.getText();
