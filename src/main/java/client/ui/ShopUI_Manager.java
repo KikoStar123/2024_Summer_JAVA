@@ -66,6 +66,7 @@ public class ShopUI_Manager extends Application {
         productVBox.setPadding(new Insets(10)); // 内边距为10
 
         // 创建商品信息
+
         createProductItem(productVBox, "商品1", "商品描述1", "100", "90", "5", "在库", "95%");
         createProductItem(productVBox, "商品2", "商品描述2", "200", "180", "10", "在库", "90%");
 

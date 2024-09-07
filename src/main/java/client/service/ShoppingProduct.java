@@ -23,6 +23,9 @@ public class ShoppingProduct {
         String productAddress;//商品发货地址
         float productCommentRate;//商品好评率
         boolean productStatus;//商品状态
+        String storeID;//商店id
+
+        String storeName;
 
         public String getProductID() {
             return productID;
@@ -63,6 +66,13 @@ public class ShoppingProduct {
         public boolean isProductStatus() {
             return productStatus;
         }
+
+        public String getStoreID() {
+            return storeID;
+        }
+
+        public String getStoreName() {return storeName; }
+
     }
 
     // 查看单个商品详细信息
@@ -101,6 +111,8 @@ public class ShoppingProduct {
             theproduct.productAddress = data.getString("productAddress");
             theproduct.productCommentRate = data.getFloat("productCommentRate");
             theproduct.productStatus = data.getBoolean("productStatus");
+            theproduct.storeID = data.getString("storeID");
+            theproduct.storeName = data.getString("storeName");
 
             return theproduct;
         } catch (IOException e) {
@@ -156,6 +168,10 @@ public class ShoppingProduct {
                 productsArray[i].productAddress = theproduct.getString("productAddress");
                 productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
                 productsArray[i].productStatus = theproduct.getBoolean("productStatus");
+                productsArray[i].storeID = theproduct.getString("storeID");
+                productsArray[i].storeName = theproduct.getString("storeName");
+
+                System.out.println(productsArray[i].productImage);
             }
 
             return productsArray;
@@ -166,9 +182,9 @@ public class ShoppingProduct {
     }
 
     // 添加商品
-    // 输入 商品id productID；商品名称 productName；商品属性 productDetail；商品图片 productImage；商品原价 productOriginalPrice；商品现价 productCurrentPrice；商品库存 productInventory；商品发货地址 productAddress；商品好评率 productCommentRate；商品状态 productStatus
+    // 输入 商品id productID；商品名称 productName；商品属性 productDetail；商品图片 productImage；商品原价 productOriginalPrice；商品现价 productCurrentPrice；商品库存 productInventory；商品发货地址 productAddress；商品好评率 productCommentRate；商品状态 productStatus；商店id storeID
     // 返回 状态
-    public boolean addProduct(String productID, String productName, String productDetail, String productImage, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, float productCommentRate, boolean productStatus) throws IOException
+    public boolean addProduct(String productID, String productName, String productDetail, String productImage, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, float productCommentRate, boolean productStatus, String storeID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -188,7 +204,8 @@ public class ShoppingProduct {
                     .put("productInventory", productInventory)
                     .put("productAddress", productAddress)
                     .put("productCommentRate", productCommentRate)
-                    .put("productStatus", productStatus));
+                    .put("productStatus", productStatus)
+                    .put("storeID", storeID));
 
             // 发送请求
             out.println(request);
@@ -203,7 +220,7 @@ public class ShoppingProduct {
         }
     }
 
-    // 删除商品
+    // 删除商品not
     // 输入 商品id productID
     // 返回 状态
     public boolean deleteProduct(String productID) throws IOException
@@ -303,8 +320,8 @@ public class ShoppingProduct {
             JSONObject request = new JSONObject();
             request.put("requestType", "product");
             request.put("parameters", new JSONObject()
-                    .put("action", "getSameCategory"))
-                    .put("productID", productID);
+                    .put("action", "getSameCategory")
+                    .put("productID", productID));
 
             // 发送请求
             out.println(request);
@@ -334,6 +351,8 @@ public class ShoppingProduct {
                 productsArray[i].productAddress = theproduct.getString("productAddress");
                 productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
                 productsArray[i].productStatus = theproduct.getBoolean("productStatus");
+                productsArray[i].storeID = theproduct.getString("storeID");
+                productsArray[i].storeName = theproduct.getString("storeName");
             }
 
             return productsArray;
@@ -359,8 +378,8 @@ public class ShoppingProduct {
             JSONObject request = new JSONObject();
             request.put("requestType", "product");
             request.put("parameters", new JSONObject()
-                    .put("action", "search")
-                    .put("searchTerm", searchTerm))
+                            .put("action", "search")
+                            .put("searchTerm", searchTerm))
                     .put("sortBy", sortBy)
                     .put("sortOrder", sortOrder);
 
@@ -392,6 +411,8 @@ public class ShoppingProduct {
                 productsArray[i].productAddress = theproduct.getString("productAddress");
                 productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
                 productsArray[i].productStatus = theproduct.getBoolean("productStatus");
+                productsArray[i].storeID = theproduct.getString("storeID");
+                productsArray[i].storeName = theproduct.getString("storeName");
             }
 
             return productsArray;
