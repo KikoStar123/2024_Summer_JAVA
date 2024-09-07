@@ -1,5 +1,6 @@
 package server.handler;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import server.service.ShoppingOrderService;
 
@@ -57,10 +58,15 @@ public class OrderRequestHandler implements RequestHandler {
                 break;
 
             case "pay": // 支付订单
-                orderID = parameters.getString("orderID");
+                JSONArray orderIDsArray = parameters.getJSONArray("orderIDs");
+                String[] orderIDs = new String[orderIDsArray.length()];
+                for (int i = 0; i < orderIDsArray.length(); i++) {
+                    orderIDs[i] = orderIDsArray.getString(i);
+                }
                 double amount = parameters.getDouble("amount");
-                response = orderService.payOrder(orderID, amount);
+                response = orderService.payOrder(orderIDs, amount); // 调用更新后的方法
                 break;
+
 
             case "getAllOrdersByStore": // 根据商店ID获取所有订单
                 String storeID = parameters.getString("storeID");

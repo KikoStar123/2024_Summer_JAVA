@@ -12,6 +12,8 @@ public class TestShopProduct {
 
         System.out.println("orderID: " + orderID);
 
-        System.out.println("pay status: " + orderService.payOrder(orderID, 1200.5f));
+        String[] orderIDs = {orderID};
+
+        System.out.println("pay status: " + orderService.payOrder(orderIDs, 1200.5f));
     }
 }

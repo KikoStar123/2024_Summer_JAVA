@@ -453,7 +453,7 @@ public class ShoppingOrderService {
     //------------------------------------------------------------------------------------------------------//
 
     // 支付系统
-    public JSONObject payOrder(String orderID, double amount) {
+    public JSONObject payOrder(String[] orderIDs, double amount) {
         payOrderLock.lock();
         JSONObject response = new JSONObject();
         try {
@@ -466,7 +466,7 @@ public class ShoppingOrderService {
                 JSONObject request = new JSONObject();
                 request.put("requestType", "wait");
                 request.put("parameters", new JSONObject()
-                        .put("orderID", orderID)
+                        .put("orderID", orderIDs[0]) // 只传递第一个订单ID给银行
                         .put("amount", amount));
 
                 // 发送请求到银行服务器
@@ -481,8 +481,10 @@ public class ShoppingOrderService {
                 // 解析银行返回的结果
                 if ("success".equalsIgnoreCase(jsonResponse.getString("status"))) {
                     isPaid = true;  // 支付成功
-                    // 支付成功后，更新订单的支付状态
-                    updateOrderPaidStatus(orderID, true);
+                    // 支付成功后，更新所有订单的支付状态
+                    for (String orderID : orderIDs) {
+                        updateOrderPaidStatus(orderID, true);
+                    }
                     response.put("status", "success");
                     response.put("message", "Payment successful");
                 } else {
@@ -500,6 +502,7 @@ public class ShoppingOrderService {
             payOrderLock.unlock();
         }
     }
+
 
 
 

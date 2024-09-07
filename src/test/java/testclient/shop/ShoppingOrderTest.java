@@ -113,11 +113,12 @@ public class ShoppingOrderTest {
                         break;
 
                     case 8:
-                        System.out.println("请输入订单ID:");
-                        String payOrderID = scanner.nextLine();
+                        System.out.println("请输入订单ID（用逗号分隔多个订单ID）:");
+                        String payOrderIDs = scanner.nextLine();
+                        String[] orderIDs = payOrderIDs.split(","); // 将输入的订单ID字符串分割成数组
                         System.out.println("请输入支付金额:");
                         float amount = scanner.nextFloat();
-                        boolean payStatus = shoppingOrder.payOrder(payOrderID, amount);
+                        boolean payStatus = shoppingOrder.payOrder(orderIDs, amount); // 调用更新后的方法
                         System.out.println("支付状态: " + (payStatus ? "支付成功" : "支付失败"));
                         break;
                     case 9:

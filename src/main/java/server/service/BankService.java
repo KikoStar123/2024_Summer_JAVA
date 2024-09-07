@@ -125,7 +125,7 @@ public class BankService {
                             PreparedStatement insertRecordStmt = conn.prepareStatement(insertRecordQuery);
                             insertRecordStmt.setString(1, username);
                             insertRecordStmt.setDouble(2, -amount);
-                            insertRecordStmt.setString(3, "支付" + orderID);
+                            insertRecordStmt.setString(3, "支付");
                             insertRecordStmt.setDate(4, new java.sql.Date(System.currentTimeMillis()));
                             insertRecordStmt.executeUpdate();
 
