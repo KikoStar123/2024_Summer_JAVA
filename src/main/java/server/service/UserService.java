@@ -213,7 +213,52 @@ public class UserService {
             lock.unlock();
         }
     }
+    public JSONObject updateUserPwd(String username, String oldPwd, String newPwd) {//更改用户密码****
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
 
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "UPDATE tblUser SET pwd = ? WHERE username = ? AND pwd = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, newPwd);
+            stmt.setString(2, username);
+            stmt.setString(3, oldPwd);
+
+            int rowsUpdated = stmt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                response.put("status", "success");
+                response.put("message", "Password updated successfully.");
+            } else {
+                response.put("status", "error");
+                response.put("message", "Old password is incorrect.");
+            }
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
     public String logout(JSONObject parameters) {
         JSONObject jsonResponse = new JSONObject();
 

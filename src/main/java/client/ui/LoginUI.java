@@ -149,11 +149,6 @@ public class LoginUI extends Application {
                     }
                 });
             }
-
-
-
-
-
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Login");

@@ -54,6 +54,7 @@ public class ClientHandler implements Runnable {
         routeMap.put("viewStudentInfo", new ViewStudentInfoRequestHandler());
         routeMap.put("modifyStudentInfo", new ModifyStudentInfoRequestHandler());
         routeMap.put("register", new RegisterRequestHandler());
+        routeMap.put("updateUserPwd", new UpdateUserPwdRequestHandler());//名称相同***
 
         //图书馆相关请求
         routeMap.put("searchBooksByName", new SearchBooksByNameRequestHandler());
