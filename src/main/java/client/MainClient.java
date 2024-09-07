@@ -8,7 +8,7 @@ import client.ui.UpdatePwdUI;
 
 public class MainClient {
     public static void main(String[] args) {
-        ShopUI_Manager.main(args);
-       //LoginUI.main(args);
+        //ShopUI_Manager.main(args);
+        LoginUI.main(args);
     }
 }

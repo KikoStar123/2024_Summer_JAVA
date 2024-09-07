@@ -10,10 +10,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ShoppingOrder {
-    private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
-    private final int SERVER_PORT = IpConfig.SERVER_PORT;
+    private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
+    private static final int SERVER_PORT = IpConfig.SERVER_PORT;
 
-    public class oneOrder
+    public static class oneOrder
     {
         String orderID;//订单号
         String username;//用户账号
@@ -439,7 +439,7 @@ public class ShoppingOrder {
     // 根据商店ID查询该商店的所有订单
     // 输入 商店id storeID
     // 返回 订单数组
-    public oneOrder[] getAllOrdersByStore(String storeID) throws IOException
+    public static oneOrder[] getAllOrdersByStore(String storeID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -450,7 +450,7 @@ public class ShoppingOrder {
             request.put("requestType", "order");
             request.put("parameters", new JSONObject()
                     .put("action", "getAllOrdersByStore")
-                    .put("username", storeID));
+                    .put("storeID", storeID));
 
             // 发送请求
             out.println(request);
@@ -468,7 +468,6 @@ public class ShoppingOrder {
 
             for (int i = 0; i < numOrders; i++) {
                 JSONObject theOrder = data.getJSONObject(i);
-
                 ordersArray[i] = new oneOrder();
                 ordersArray[i].orderID=theOrder.getString("orderID");
                 ordersArray[i].username = theOrder.getString("username");

@@ -110,6 +110,11 @@ public class ProductRequestHandler implements RequestHandler {
                 response.put("status", productService.addComment(username, productID, commentAttitude, commentContent) ? "success" : "fail");
                 break;
 
+            case "updateProductImagePath":
+                productID = parameters.getString("productID");
+                String imagePath = parameters.getString("imagePath");
+                response = productService.updateProductImagePath(productID, imagePath);
+
             default: // 默认无操作
                 response.put("status", "fail").put("message", "Unknown action");
                 break;

@@ -134,9 +134,19 @@ public class LoginUI extends Application {
                     }
                 });
             }
-            if(user.getRole()==Librarian)
+            else if(user.getRole()==Librarian)
             {
 
+            }
+            else if(user.getRole()==Role.ShopAssistant){
+                Platform.runLater(() -> {
+                    ShopUI_Manager shopmanagerui=new ShopUI_Manager(user.getUsername());
+                    try {
+                        shopmanagerui.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
             }
             else
             {

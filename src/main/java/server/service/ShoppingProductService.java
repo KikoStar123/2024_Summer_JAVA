@@ -28,6 +28,7 @@ public class ShoppingProductService {
     private final Lock addCommentLock = new ReentrantLock();
     private final Lock getProductsByStoreLock = new ReentrantLock();
 
+    private final Lock updateProductImagePathLock = new ReentrantLock();
 
 
     // 获取所有的商品
@@ -809,7 +810,7 @@ public class ShoppingProductService {
             JSONArray productsArray = new JSONArray();
 
             // SQL 查询语句，选择所有属于该商店的商品
-            String query = "SELECT * FROM tblShoppingProduct WHERE storeID = ?";
+            String query = "SELECT * FROM tblShoppingProduct p JOIN tblStore s ON p.storeID = s.storeID WHERE p.storeID = ?";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -837,6 +838,7 @@ public class ShoppingProductService {
                     product.put("productCommentRate", resultSet.getFloat("productCommentRate"));
                     product.put("productStatus", resultSet.getBoolean("productStatus"));
                     product.put("storeID", resultSet.getString("storeID"));
+                    product.put("storeName", resultSet.getString("storeName"));
 
                     productsArray.put(product);
                 }
@@ -863,4 +865,52 @@ public class ShoppingProductService {
     }
 
     //------------------------------------------------------------------------------------------------------//
+    //更新商品图片路径
+    public JSONObject updateProductImagePath(String productID, String imagePath) {
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+        updateProductImagePathLock.lock();
+        if (conn == null) {
+            response.put("status", "fail");
+            response.put("message", "Database connection failed");
+            return response;
+        }
+
+        try {
+            String query = "UPDATE tblShoppingProduct SET productImage = ? WHERE productID = ?";
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, imagePath);
+            pstmt.setString(2, productID);
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                response.put("status", "success");
+            } else {
+                response.put("status", "fail");
+                response.put("message", "Product not found");
+            }
+        } catch (SQLException e) {
+            response.put("status", "fail");
+            response.put("message", "SQL Error: " + e.getMessage());
+        } finally {
+            updateProductImagePathLock.lock();
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "fail");
+                response.put("message", ex.getMessage());
+            }
+        }
+        return response;
+    }
+
+
+    //------------------------------------------------------------------------------------------------------//
+
+    //------------------------------------------------------------------------------------------------------//
+
+
 }
