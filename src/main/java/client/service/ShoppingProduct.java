@@ -414,7 +414,6 @@ public class ShoppingProduct {
                 productsArray[i].storeID = theproduct.getString("storeID");
                 productsArray[i].storeName = theproduct.getString("storeName");
             }
-
             return productsArray;
         } catch (IOException e) {
             e.printStackTrace();

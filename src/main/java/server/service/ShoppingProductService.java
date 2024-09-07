@@ -183,6 +183,7 @@ public class ShoppingProductService {
                     break;
             }
 
+
             String order = "ASC".equalsIgnoreCase(sortOrder) ? "ASC" : "DESC";
 
             String query = "SELECT * FROM tblShoppingProduct p JOIN tblStore s ON p.storeID = s.storeID WHERE productStatus = true " +
@@ -203,8 +204,11 @@ public class ShoppingProductService {
                 preparedStatement.setString(2, searchPattern);
                 preparedStatement.setString(3, searchPattern);
 
+                System.out.println(preparedStatement.toString());
+
                 ResultSet resultSet = preparedStatement.executeQuery();
 
+                System.out.println(resultSet.toString());
                 while (resultSet.next()) {
                     JSONObject product = new JSONObject();
                     product.put("productID", resultSet.getString("productID"));
@@ -236,7 +240,7 @@ public class ShoppingProductService {
                     System.out.println(ex.getMessage());
                 }
             }
-
+            System.out.println(response.toString());
             return response;
         } finally {
             searchProductsLock.unlock();
