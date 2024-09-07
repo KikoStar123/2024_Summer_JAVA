@@ -1,55 +1,29 @@
-/* 主色调和辅助色定义 */
-/*定义了主要的紫色背景色*/
-.PrimaryPurple {
-    -fx-background-color: #6A0DAD;
-}
-/*定义了强调的粉色背景色*/
-.AccentPink {
-    -fx-background-color: #FF69B4;
-}
-/*定义了背景色为白色*/
-.BackgroundWhite {
-    -fx-background-color: #FFFFFF;
-}
-/*定义了浅紫色背景色*/
-.LightPurple {
-    -fx-background-color: #D8BFD8;
-}
-/*定义了浅粉色背景色*/
-.LightPink {
-    -fx-background-color: #FFC0CB;
-}
-/*定义了灰色的文本颜色和边框颜色*/
-.Gray {
-    -fx-text-fill: #B0B0B0;
-    -fx-border-color: #B0B0B0;
-}
-/*定义了整个应用程序的根节点的背景色*/
+/*定义了整个应用程序的根节点的背景色*//*使用了*/
 .root {
+    -fx-border-radius: 20px; /* 设置圆角边框半径 */
+    -fx-border-width: 2px; /* 设置边框宽度 */
+    -fx-border-color: #009b9f; /* 设置边框颜色 */
     -fx-background-color: rgba(205, 237, 222, 0.5); /* 设置背景颜色 */
-}
-/*定义了带有灰色边框、圆角和内边距的样式*/
-.gray-border {
-    -fx-border-color: #808080; /* 灰色边框 */
-    -fx-border-width: 2px;
-    -fx-border-style: solid;
-    -fx-border-radius: 10px; /* 边框圆角 */
-    -fx-padding: 10px; /* 内边距 */
+    -fx-background-insets: 0; /* 设置背景的内边距为0 */
 }
 
 /* 字体规范 */
-/*定义了标题的字体样式，包括字体、大小、颜色和加粗*/
-.title-font {/*使用*/
-    -fx-font-family: 'Segoe UI', 'Roboto';
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #996f7a;
+/*定义了标题的字体样式，包括字体、大小、颜色和加粗*//*使用了*/
+.title-font {
+    -fx-font-family: "微软雅黑"; /* 字体 */
+    -fx-font-size: 24px; /* 字体大小 */
+    -fx-text-fill: rgb(191, 204, 204); /* 字体颜色 */
+    -fx-font-weight: bold; /* 字体加粗 */
+    -fx-underline: false; /* 无下划线 */
+    -fx-strikethrough: false; /* 无删除线 */
+    /*-fx-effect: dropshadow(three-pass-box, rgba(232, 5, 5, 0.5), 5, 0, 0, 0);*/ /* 添加阴影效果 */
+    -fx-alignment: center; /* 文本居中 */
 }
-/*定义了正文文本的字体样式，包括字体、大小和颜色*/
+/*定义了正文文本的字体样式，包括字体、大小和颜色*//*使用了*/
 .body-font {/*使用*/
     -fx-font-family: 'Segoe UI', 'Roboto';
     -fx-font-size: 14px;
-    -fx-text-fill: #6f9986;
+    -fx-text-fill: #003153;
 }
 /*定义了按钮文本的字体样式，包括字体、大小、颜色和字重*/
 .button-font {
@@ -60,36 +34,43 @@
 }
 
 /* 按钮规范 */
-/*定义了主要按钮的样式，包括背景色、边框颜色、圆角等*/
+/*定义了主要按钮的样式，包括背景色、边框颜色、圆角等*//*使用了*/
 .main-button {/*使用*/
-    -fx-background-color: #FFFFFF;
-    -fx-border-color: #6A0DAD;
+    -fx-background-color: rgba(220,245,240, 0.1);
+    -fx-border-color: #718771;
     -fx-border-width: 2px;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
+    transition: background-color 3s ease;
 }
 /*定义了主要按钮在鼠标悬停时的样式*/
 .main-button:hover {/*使用*/
-    -fx-background-color: #FFC0CB;
+    -fx-background-color: rgba(255, 217, 163, 0.6);
 }
 /*定义了主要按钮在按下时的样式*/
 .main-button:pressed {/*使用*/
-    -fx-background-color: #FF69B4;
-    -fx-border-color: #6A0DAD;
+    -fx-background-color: rgba(0, 155, 159, 0.3);
+    -fx-border-color: #003153;
 }
-/*.input-field:focus {*/
-/*    -fx-border-color: #D8BFD8;*/
-/*    -fx-border-width: 2px;*/
-/*}*/
 
 /* 输入框规范 */
-/*定义了输入框的样式，包括背景色、边框颜色、圆角和阴影效果*/
+/*定义了输入框的样式，包括背景色、边框颜色、圆角和阴影效果*//*使用了*/
 .input-field {/*使用*/
     -fx-background-color: #FFFFFF;
     -fx-border-color: #B0B0B0;
     -fx-border-width: 1px;
     -fx-border-radius: 6px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0.0, 2, 2);
+}
+
+@keyframes backgroundAnimation {
+    from { -fx-background-color: #ff0000; }
+    to { -fx-background-color: #ffff00; }
+}
+
+.background-animate {
+    -fx-background-color: #ff0000;
+    -fx-animation: backgroundAnimation 5s linear infinite;
 }
 
 

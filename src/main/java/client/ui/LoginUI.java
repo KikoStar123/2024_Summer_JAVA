@@ -4,8 +4,13 @@ import client.service.ClientService;
 import client.service.User;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
@@ -13,6 +18,11 @@ import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
+
+import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import javafx.scene.image.Image;
 //import jdk.javadoc.internal.doclets.formats.html.DocFilesHandlerImpl;
 
 
@@ -27,37 +37,29 @@ public class LoginUI extends Application {
     public void start(Stage primaryStage) {
         BorderPane root = new BorderPane();
 
-        // 设置根布局的样式
-        root.setStyle("-fx-border-radius: 20px; " // 设置圆角边框半径
-                + "-fx-border-color: #6A0DAD; "  // 设置边框颜色
-                + "-fx-border-width: 2px; "        // 设置边框宽度
-                + "-fx-background-color: #808080;"); // 设置背景颜色
-
-        // 创建 Scene，并将根布局添加到其中
-
-        Scene scene_login = new Scene(root, 300, 200);
-        primaryStage.setScene(scene_login);
-        scene_login.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
         primaryStage.setTitle("登录");
-        //primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        primaryStage.getIcons().add(image);
 
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setAlignment(Pos.CENTER);
+        primaryStage.setWidth(450); // 设置窗口宽度为800像素
+        primaryStage.setHeight(300); // 设置窗口高度为600像素
+
+        GridPane grid = new GridPane();//创建GridPane实例
+        grid.setHgap(10);//设置水平间距，每行中的组件之间将有10像素的空隙
+        grid.setVgap(10);//设置垂直间距，每列中的组件之间将有10像素的空隙
+        grid.setAlignment(Pos.CENTER);//设置整个GridPane的对齐方式为居中
 
         // 创建登录表单的标题
-        Text title = new Text("用户登录");
-        title.setFont(new Font("Segoe UI", 24));
-        title.setStyle("-fx-fill: #6A0DAD;"); // 主色调
+        Text logintitle = new Text("用户登录");
+        logintitle.getStyleClass().add("title-font");
 
         // 创建登录表单的标签和输入框
-        Label userLabel = new Label("Username:");
+        Label userLabel = new Label("账号:");
         userLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         usernameField = new TextField();
         usernameField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
-        Label passwordLabel = new Label("Password:");
+        Label passwordLabel = new Label("密码:");
         passwordLabel.getStyleClass().add("body-font");
         passwordField = new PasswordField();
         passwordField.getStyleClass().add("input-field");
@@ -78,16 +80,19 @@ public class LoginUI extends Application {
         buttonBox.getChildren().addAll(loginButton, registerButton);
 
         // 将组件添加到网格中
-        grid.add(title, 0, 0, 2, 1); // 标题居中
-        grid.add(userLabel, 0, 1);
-        grid.add(usernameField, 1, 1);
-        grid.add(passwordLabel, 0, 2);
-        grid.add(passwordField, 1, 2);
+        grid.add(logintitle, 1, 0, 2, 2); // 标题居中
+        GridPane.setValignment(logintitle, VPos.CENTER);
+        grid.add(userLabel, 0, 3);
+        grid.add(usernameField, 1, 3);
+        grid.add(passwordLabel, 0, 4);
+        grid.add(passwordField, 1, 4);
+
         // 将buttonBox添加到GridPane中，占据两列
-        grid.add(buttonBox, 0, 3, 2, 1); // 从第0列开始，跨越2列，从第3行开始
+        grid.add(buttonBox, 0, 6, 2, 1); // 从第0列开始，跨越2列，从第3行开始
 
         // 应用CSS样式
         Scene scene = new Scene(grid, 350, 200);
+        scene.getRoot().getStyleClass().add("background-animate");
         scene.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
 
         primaryStage.setScene(scene);
@@ -140,4 +145,7 @@ public class LoginUI extends Application {
             registerUI.display();
         });
     }
+
+
 }
+
