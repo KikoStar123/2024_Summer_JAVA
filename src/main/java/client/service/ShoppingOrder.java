@@ -450,7 +450,7 @@ public class ShoppingOrder {
             request.put("requestType", "order");
             request.put("parameters", new JSONObject()
                     .put("action", "getAllOrdersByStore")
-                    .put("username", storeID));
+                    .put("storeID", storeID));
 
             // 发送请求
             out.println(request);

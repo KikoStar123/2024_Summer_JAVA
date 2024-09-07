@@ -1,4 +1,4 @@
-package main.java.server;
+package server;
 
 import org.h2.tools.Server;
 import server.handler.ClientHandler;

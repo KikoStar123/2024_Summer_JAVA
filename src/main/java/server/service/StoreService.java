@@ -16,6 +16,7 @@ public class StoreService {
     private final Lock updateStoreLock = new ReentrantLock();
     private final Lock deleteStoreLock = new ReentrantLock();
     private final Lock getStoreLock = new ReentrantLock();
+    private final Lock getStoreByUsernameLock = new ReentrantLock();
 
     // 添加商店
     public boolean addStore(String storeID, String storeName, String storePhone, float storeRate, boolean storeStatus) {
@@ -231,5 +232,42 @@ public class StoreService {
         }
     }
 
+    // 获取商店ID根据用户名
+    public String getStoreIDByUsername(String username) {
+        getStoreByUsernameLock.lock();
+        try {
+            String storeID = null;
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                return null;
+            }
+
+            String query = "SELECT storeID FROM tblStore WHERE username = ?";
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, username);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    storeID = resultSet.getString("storeID");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException ex) {
+                    System.out.println(ex.getMessage());
+                }
+            }
+            return storeID;
+        } finally {
+            getStoreByUsernameLock.unlock();
+        }
+    }
 
 }

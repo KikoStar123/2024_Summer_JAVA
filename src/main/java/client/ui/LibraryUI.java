@@ -263,7 +263,7 @@ public class LibraryUI {
 
 // 设置 titleColumn 的单元格值工厂
         TableColumn<LibRecord, String> titleColumn = new TableColumn<>("书名");
-        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBookID()));
+        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         TableColumn<LibRecord, String> isbnColumn = new TableColumn<>("ISBN");
         isbnColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBookID()));
         TableColumn<LibRecord, String> borrowdataColumn = new TableColumn<>("借阅时间");
@@ -274,7 +274,7 @@ public class LibraryUI {
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRecordStatus()));
 
         borrowedBooksTable.getColumns().addAll(titleColumn, isbnColumn, borrowdataColumn, returndataColumn,statusColumn);
-        if (user.getUsername().charAt(0) != '0') {
+        if (user.getRole().equals(Role.student)) {
             // 学生用户，添加续借栏
             TableColumn<LibRecord, Void> renewColumn = new TableColumn<>("续借");
             renewColumn.setCellFactory(col -> new TableCell<LibRecord, Void>() {
@@ -388,6 +388,7 @@ public class LibraryUI {
         if (imagePath != null && !imagePath.isEmpty()) {
             // 去掉前缀 "uploads/"
             String relativePath = imagePath.replace("uploads/", "");
+            System.out.println("http://localhost:8082/files/" + relativePath);
             Image bookImage = new Image("http://localhost:8082/files/" + relativePath);
             bookImageView.setImage(bookImage);
             bookImageView.setFitWidth(200); // 设置图片宽度
@@ -408,6 +409,7 @@ public class LibraryUI {
                 // 去掉前缀 "uploads/"
                 String relativePdfPath = pdfPath.replace("uploads/", "");
                 try {
+                    System.out.printf("http://localhost:8082/files/" + relativePdfPath);
                     pdfDisplayer.loadPDF(new URL("http://localhost:8082/files/" + relativePdfPath));
                 } catch (IOException ex) {
                     ex.printStackTrace();

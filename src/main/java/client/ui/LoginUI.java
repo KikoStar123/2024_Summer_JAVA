@@ -24,11 +24,19 @@ public class LoginUI extends Application {
     private TextField usernameField;
     private PasswordField passwordField;
 
+    private static String instanceName = "Default";
+
+    public static void setInstanceName(String name) {
+        instanceName = name;
+    }
     public static void main(String[] args) {
         launch(args);
     }
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setTitle("Login UI - " + instanceName);
+
+
         BorderPane root = new BorderPane();
 
         // 设置根布局的样式

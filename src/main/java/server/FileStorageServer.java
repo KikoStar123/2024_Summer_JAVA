@@ -1,4 +1,4 @@
-package main.java.server;
+package server;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;
@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 public class FileStorageServer {
 
@@ -114,6 +115,16 @@ public class FileStorageServer {
                         out.println("File exists");
                     } else {
                         out.println("File does not exist");
+                    }
+                } else if (request.startsWith("DELETE")) {
+                    String fileName = request.split(" ")[1];
+                    File file = new File(UPLOAD_DIR + fileName);
+                    if (file.exists() && file.delete()) {
+                        System.out.println("delete success");
+                        out.println("File deleted successfully");
+                    } else {
+                        System.out.println("delete fail");
+                        out.println("Failed to delete file");
                     }
                 }
             } catch (IOException e) {

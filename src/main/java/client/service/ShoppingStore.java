@@ -225,5 +225,32 @@ public class ShoppingStore {
             return null;
         }
     }
+    public String getStoreIDByUsername(String username) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT); // 创建一个Socket对象，并连接到指定的服务器地址和端口号
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // 输入流，从服务器读取数据
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) { // 创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+
+            // 构建请求
+            JSONObject request = new JSONObject();
+            request.put("requestType", "store");
+            request.put("parameters", new JSONObject()
+                    .put("action", "getStoreIDByUsername")
+                    .put("username", username));
+
+            // 发送请求
+            out.println(request);
+
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            // 获取商店ID
+            String storeID = jsonResponse.getString("storeID");
+
+            return storeID;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

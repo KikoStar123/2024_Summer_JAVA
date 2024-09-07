@@ -5,9 +5,11 @@ import java.net.Socket;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import java.util.UUID;
 
 public class ShoppingProduct {
+
+    private final FileService fileService = new FileService();
     private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
     private final int SERVER_PORT = IpConfig.SERVER_PORT;
 
@@ -542,5 +544,95 @@ public class ShoppingProduct {
             return false;
         }
     }
+
+    public oneProduct[] getAllProductsByStore(String storeID) throws IOException{
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+
+            // 构建请求
+            JSONObject request = new JSONObject();
+            request.put("requestType", "product");
+            request.put("parameters", new JSONObject()
+                    .put("action", "getAllByStore")
+                    .put("storeID", storeID));
+
+            // 发送请求
+            out.println(request);
+
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            System.out.println(jsonResponse.toString());
+
+            JSONArray data = jsonResponse.getJSONArray("products");//获取JSON数组
+
+            // 获取商品数量
+            int numProducts = data.length();
+
+            // 创建一个数组来存储所有商品信息
+            ShoppingProduct.oneProduct[] productsArray = new ShoppingProduct.oneProduct[numProducts];
+
+            for (int i = 0; i < numProducts; i++) {
+
+                JSONObject theproduct = data.getJSONObject(i);
+
+                productsArray[i] = new ShoppingProduct.oneProduct();
+
+                productsArray[i].productID = theproduct.getString("productID");
+                productsArray[i].productName = theproduct.getString("productName");
+                productsArray[i].productDetail = theproduct.getString("productDetail");
+                productsArray[i].productImage = theproduct.getString("productImage");
+                productsArray[i].productOriginalPrice = theproduct.getFloat("productOriginalPrice");
+                productsArray[i].productCurrentPrice = theproduct.getFloat("productCurrentPrice");
+                productsArray[i].productInventory = theproduct.getInt("productInventory");
+                productsArray[i].productAddress = theproduct.getString("productAddress");
+                productsArray[i].productCommentRate = theproduct.getFloat("productCommentRate");
+                productsArray[i].productStatus = theproduct.getBoolean("productStatus");
+                productsArray[i].storeID = theproduct.getString("storeID");
+                productsArray[i].storeName = theproduct.getString("storeName");
+            }
+
+            return productsArray;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean uploadProductImage(File imageFile, String productID) {
+        String fileName = productID + ".jpg";
+        if (fileService.fileExists(fileName)) {
+            fileName = productID + "_" + UUID.randomUUID().toString() + ".jpg";
+        }
+
+        if (fileService.uploadFile(imageFile, fileName)) {
+            return updateProductImagePath(productID, "uploads/" + fileName);
+        }
+        return false;
+    }
+    public boolean updateProductImagePath(String productID, String imagePath) {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "product");
+            request.put("parameters", new JSONObject()
+                    .put("productID", productID)
+                    .put("imagePath", imagePath)
+                    .put("action", "updateProductImagePath"));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            return jsonResponse.getString("status").equals("success");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
 }

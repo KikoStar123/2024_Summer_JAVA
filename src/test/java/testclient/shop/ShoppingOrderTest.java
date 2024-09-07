@@ -1,6 +1,7 @@
 package testclient.shop;
 
 import client.service.ShoppingOrder;
+import client.service.ShoppingProduct;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -20,7 +21,8 @@ public class ShoppingOrderTest {
             System.out.println("6. 获取订单是否评论状态");
             System.out.println("7. 更新订单评论状态");
             System.out.println("8. 支付订单");
-            System.out.println("9. 退出");
+            System.out.println("9. 查看商店所有订单");
+            System.out.println("10. 退出");
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // 处理换行符
@@ -118,8 +120,17 @@ public class ShoppingOrderTest {
                         boolean payStatus = shoppingOrder.payOrder(payOrderID, amount);
                         System.out.println("支付状态: " + (payStatus ? "支付成功" : "支付失败"));
                         break;
-
                     case 9:
+                        System.out.println("请输入商店ID:");
+                        String storeID = scanner.nextLine();
+                        ShoppingOrder.oneOrder[] allOrdersInStore = shoppingOrder.getAllOrdersByStore(storeID);
+                        if (allOrdersInStore != null) {
+                            for (ShoppingOrder.oneOrder o : allOrdersInStore) {
+                                System.out.println("订单ID: " + o.getOrderID() + ", 商品名称: " + o.productName());
+                            }
+                        }
+                        break;
+                    case 10:
                         System.out.println("退出程序");
                         System.exit(0);
 

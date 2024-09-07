@@ -45,6 +45,20 @@ public class StoreRequestHandler implements RequestHandler {
                 response = storeService.getAllStores();
                 break;
 
+            case "getStoreIDByUsername": // 根据用户名获取商店ID
+                String username = parameters.optString("username");
+                if (!username.isEmpty()) {
+                    String storeIDByUsername = storeService.getStoreIDByUsername(username);
+                    if (storeIDByUsername != null) {
+                        response.put("status", "success").put("storeID", storeIDByUsername);
+                    } else {
+                        response.put("status", "fail").put("message", "Store not found for the given username");
+                    }
+                } else {
+                    response.put("status", "fail").put("message", "Missing or empty username");
+                }
+                break;
+
             default:
                 response.put("status", "fail").put("message", "Unknown action");
                 break;
