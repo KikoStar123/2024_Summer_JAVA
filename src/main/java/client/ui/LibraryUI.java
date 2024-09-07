@@ -302,7 +302,7 @@ public class LibraryUI {
             borrowedBooksTable.getColumns().add(renewColumn);
         }
         //管理员，添加用户名栏
-        if (user.getUsername().charAt(0) == '0') {
+        if (user.getRole()==Role.Librarian) {
             // 管理员，添加用户名列
             TableColumn<LibRecord, String> usernameColumn = new TableColumn<>("用户名");
             usernameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));

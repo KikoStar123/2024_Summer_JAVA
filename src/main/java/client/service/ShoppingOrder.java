@@ -327,7 +327,7 @@ public class ShoppingOrder {
         }
     }
 
-    // 获取订单是否评论的状态
+    // 获取订单是否评论的状态not
     // 输入 订单id orderID
     // 返回 是否评价 1代表评价过了，0代表没评价过，允许评价
     public boolean getOrderCommentStatus(String orderID) throws IOException
@@ -356,7 +356,7 @@ public class ShoppingOrder {
         }
     }
 
-    // 更新是否评论状态
+    // 更新是否评论状态not
     // 输入 订单id orderID；是否评价 whetherComment 1代表评价过了，0代表没评价过，允许评价
     // 返回 状态
     public boolean updateCommentStatus(String orderID, boolean whetherComment) throws IOException
@@ -386,7 +386,7 @@ public class ShoppingOrder {
         }
     }
 
-    // 支付
+    // 支付not
     // 输入 订单id orderID；支付金额 amount
     // 返回 状态
     public boolean payOrder(String orderID, float amount) throws IOException
