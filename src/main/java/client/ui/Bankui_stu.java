@@ -14,10 +14,6 @@ import javafx.scene.layout.VBox;
 import client.service.Bank;
 import javafx.stage.Stage;
 
-import java.util.List;
-
-import static client.service.Bank.getAllBankRecords;
-
 public class Bankui_stu {
     private static BorderPane bankBox;
     private static HBox buttonsBox;

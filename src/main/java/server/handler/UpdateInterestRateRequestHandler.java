@@ -3,15 +3,13 @@ package server.handler;
 import server.service.BankService;
 import org.json.JSONObject;
 
-public class DepositRequestHandler implements RequestHandler {
+public class UpdateInterestRateRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {
         BankService bankService = BankService.getInstance();
-        String username = parameters.getString("username");
-        double amount = parameters.getDouble("amount");
-        String depositType = parameters.getString("depositType");
-        int term = parameters.getInt("term");
-        JSONObject result = bankService.deposit(username, amount, depositType, term);
+        String type = parameters.getString("type");
+        double newRate = parameters.getDouble("newRate");
+        JSONObject result = bankService.updateInterestRate(type, newRate);
 
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("status", result.getString("status"));

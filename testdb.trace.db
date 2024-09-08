@@ -3088,3 +3088,9 @@ ALTER TABLE tblShoppingCart DROP COLUMN username [90083-214]
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:840)
+2024-09-08 11:42:30 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]TBLINTERESTRATE"; expected "TRUNCATE"; SQL statement:
+TBLINTERESTRATE [42001-214]
+2024-09-08 11:43:30 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "[*]TBLINTERESTRATE"; expected "TRUNCATE"; SQL statement:
+TBLINTERESTRATE [42001-214]
