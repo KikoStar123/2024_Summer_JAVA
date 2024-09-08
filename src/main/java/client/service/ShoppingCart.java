@@ -9,11 +9,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ShoppingCart {
-    private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
-    private final int SERVER_PORT = IpConfig.SERVER_PORT;
+public  class ShoppingCart {
+    private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
+    private static final int SERVER_PORT = IpConfig.SERVER_PORT;
 
-    public class oneCartElement
+    public static class oneCartElement
     {
         String productID;//商品id
         int productNumber;//商品数量
@@ -34,7 +34,7 @@ public class ShoppingCart {
     // 添加商品到购物车
     // 输入 用户账号 username；商品id productID；商品数量 productNumber
     // 返回 状态
-    public boolean AddToCart(String username, String productID, int quantity) throws IOException
+    public static boolean AddToCart(String username, String productID, int quantity) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -84,7 +84,7 @@ public class ShoppingCart {
     // 删除购物车的商品
     // 输入 用户账号 username；商品id productID
     // 返回 状态
-    public boolean removeFromCart(String username, String productID) throws IOException
+    public static boolean removeFromCart(String username, String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -114,7 +114,7 @@ public class ShoppingCart {
     // 更新购物车商品信息
     // 输入 用户账号 username；商品id productID；商品数量 productNumber
     // 返回 状态
-    public boolean updateCart(String username, String productID, int quantity) throws IOException
+    public static boolean updateCart(String username, String productID, int quantity) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -145,7 +145,7 @@ public class ShoppingCart {
     // 获取购物车信息
     // 输入 用户账号 username
     // 返回 购物车元素数组
-    public oneCartElement[] getShoppingCart(String username) throws IOException
+    public static oneCartElement[] getShoppingCart(String username) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据

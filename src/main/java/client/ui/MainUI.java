@@ -116,7 +116,7 @@ public class MainUI extends Application {
         primaryStage.show();
     }
     private void handleShop(String username) {
-        ShopUI_stu shopUI = new ShopUI_stu();
+        ShopUI_stu shopUI = new ShopUI_stu(user);
         VBox shopLayout = shopUI.getShopLayout();
         borderPane.setCenter(shopLayout);
     }

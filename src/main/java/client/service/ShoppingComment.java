@@ -10,10 +10,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ShoppingComment {
-    private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
-    private final int SERVER_PORT = IpConfig.SERVER_PORT;
+    private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
+    private static final int SERVER_PORT = IpConfig.SERVER_PORT;
 
-    public class oneComment {
+    public static class oneComment {
         String username;//用户账号
         String productID;//商品id
         String commentID;//评论id
@@ -200,7 +200,7 @@ public class ShoppingComment {
     // 输入 用户账号 username；商品id productID；评论态度（差评=1、中评=2、好评=3） commentAttitude；评论内容 commentContent；订单号 orderID
     // （注意修改订单的 是否评价 属性）
     // 返回 状态
-    public boolean addComment(String username, String productID, int commentAttitude, String commentContent, String orderID) throws IOException
+    public static boolean addComment(String username, String productID, int commentAttitude, String commentContent, String orderID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
