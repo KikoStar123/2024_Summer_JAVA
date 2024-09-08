@@ -36,13 +36,13 @@ public class MainUI extends Application {
         // 添加功能按钮
         Button libButton = new Button("图书馆");
         libButton.setPrefSize(150, 40);
-        libButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
+        libButton.setStyle("-fx-background-color: #346fb6; -fx-text-fill: white; -fx-font-size: 16px;");
         libButton.setOnAction(e -> handleLibrary(user.getUsername()));
         leftBox.getChildren().add(libButton);
 
         Button courseButton = new Button("选课系统");
         courseButton.setPrefSize(150, 40);
-        courseButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
+        courseButton.setStyle("-fx-background-color: #b61c94; -fx-text-fill: white; -fx-font-size: 16px;");
         leftBox.getChildren().add(courseButton);
 
         Button stuButton = new Button("学籍管理");
@@ -53,21 +53,21 @@ public class MainUI extends Application {
 
         Button shopButton = new Button("商店");
         shopButton.setPrefSize(150, 40);
-        shopButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
+        shopButton.setStyle("-fx-background-color: #b66921; -fx-text-fill: white; -fx-font-size: 16px;");
         shopButton.setOnAction(e -> handleShop(user.getUsername()));
         leftBox.getChildren().add(shopButton);
 
         Button bankButton = new Button("银行");
         bankButton.setPrefSize(150, 40);
-        bankButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
-        bankButton.setOnAction(e -> handleShop(user.getUsername()));
+        bankButton.setStyle("-fx-background-color: #ca1036; -fx-text-fill: white; -fx-font-size: 16px;");
+        bankButton.setOnAction(e -> handleBank(user.getUsername()));
         leftBox.getChildren().add(bankButton);
 
-        Button registerButton = new Button("修改密码");
-        registerButton.setPrefSize(150, 40);
-        registerButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
-        registerButton.setOnAction(e -> handleShop(user.getUsername()));
-        leftBox.getChildren().add(registerButton);
+        Button updateButton = new Button("修改密码");
+        updateButton.setPrefSize(150, 40);
+        updateButton.setStyle("-fx-background-color: #18bcaf; -fx-text-fill: white; -fx-font-size: 16px;");
+        updateButton.setOnAction(e -> handleupdatepwd(user.getUsername()));
+        leftBox.getChildren().add(updateButton);
 
         // 添加标签
         Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
@@ -93,13 +93,23 @@ public class MainUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    private void handleShop(String username) {
+    private void handleShop(String username) {//解决学生的商店ui
     }
 
-    private void handleBank(String username) {
+    private void handleupdatepwd(String username) {
+        UpdatePwdUI updatePwdUI = new UpdatePwdUI(user);
+        updatePwdUI.showUpdatePwdWindow();  // 显示新窗口
+    }
+    private void handleBank(String username) {//解决学生的bankui
+        Platform.runLater(() -> {
+            Bankui_stu bankUI = new Bankui_stu(user);
+            BorderPane bankstu=Bankui_stu.createBankUI();
+            borderPane.setCenter(bankstu);
+        });
+
     }
 
-    private void handleLibrary(String username) {
+    private void handleLibrary(String username) {//解决图书馆ui
         Platform.runLater(() -> {
             LibraryUI libraryUI = new LibraryUI(user);
            BorderPane library=libraryUI.createLibraryView();

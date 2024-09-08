@@ -10,10 +10,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ShoppingStore {
-    private final String SERVER_ADDRESS = "localhost";//服务器的地址 即本地服务器
-    private final int SERVER_PORT = 8080;//定义服务器的端口号
+    private static final String SERVER_ADDRESS = "localhost";//服务器的地址 即本地服务器
+    private static final int SERVER_PORT = 8080;//定义服务器的端口号
 
-    public class oneStore{
+    public static class oneStore{
         String storeID;//商店id
         String storeName;//商店名称
         String storePhone;//联系电话
@@ -142,7 +142,7 @@ public class ShoppingStore {
     // 获取商店详情
     // 输入 商店id storeID
     // 返回 商店对象
-    public oneStore oneStore(String storeID) throws IOException
+    public static oneStore oneStore(String storeID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据

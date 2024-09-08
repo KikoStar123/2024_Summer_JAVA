@@ -1,5 +1,6 @@
 package client.ui;
 
+import client.service.Role;
 import client.service.StudentInformation;
 import client.service.User;
 
@@ -29,9 +30,8 @@ public class StuUI extends Application {
         this.user = user;
     }
 
-
     public VBox createStudentInfoView() {
-        if(user.getUsername().charAt(0)=='0'){
+        if(user.getRole()== Role.StuInfoManager) {
             StudentInformation.oneStudentInformation[] students = StudentInformation.viewAllStudentInfo();
 
             TableView<StudentInformation.oneStudentInformation> table = new TableView<>();
