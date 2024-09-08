@@ -1,55 +1,43 @@
 package client.ui;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.animation.TranslateTransition;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.StackPane;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import org.springframework.context.annotation.DeferredImportSelector;
-import javafx.animation.*;
-import javafx.animation.Timeline;
+
+import javax.swing.text.html.HTML;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 public class GradientBackgroundAnimation extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        // 创建一个Group作为场景的根节点
-        Group root = new Group();
-        // 创建一个场景，并将Group作为其根节点
-        Scene scene = new Scene(root, 600, 400);
+        primaryStage.setTitle("Firefly Background Animation");
 
-        // 创建渐变背景
-        // 创建一个矩形，用于作为渐变背景
-        Rectangle rectangle = new Rectangle(600, 400);
-        // 创建一个线性渐变，定义了渐变的开始和结束颜色
-        Timeline timeline = new Timeline();
-        timeline.setCycleMethod(Timeline.CycleMethod.NO_CYCLE);
-        LinearGradient gradient = new LinearGradient(0, 0, 1, 0, true, Timeline.CycleMethod.NO_CYCLE, new Stop[]{
-                new Stop(0, Color.BLUE),    // 渐变开始的颜色为蓝色
-                new Stop(0.5, Color.CYAN),   // 渐变中间的颜色为青色
-                new Stop(1, Color.BLUE)     // 渐变结束的颜色为蓝色
-        });
-        // 将渐变应用到矩形的填充
-        rectangle.setFill(gradient);
+        // 创建 WebView 实例
+        WebView webView = new WebView();//WebView 是用于展示 Web 内容的 JavaFX 组件
+        WebEngine webEngine = webView.getEngine();//WebEngine 用于加载和操作 Web 内容
+         // HTML 文件路径
+        String htmlFilePath = getClass().getResource("/Fireflies.html").toExternalForm();
+        // 加载内容
+        webEngine.load(htmlFilePath);
+        // 设置 WebView 的大小
+        webView.setPrefSize(800, 600);
 
-        // 动画渐变的偏移量
-        TranslateTransition transition = new TranslateTransition(Duration.seconds(5), rectangle);
-        transition.setByX(1);
-        transition.setCycleCount(Animation.INDEFINITE);
-        transition.setAutoReverse(true);
-        transition.play();
+        // 创建主布局
+        // 使用 StackPane 布局来将 WebView 放置在你的应用中，可以方便地将它作为背景显示
+        StackPane root = new StackPane();
+        root.getChildren().add(webView);
 
-        root.getChildren().add(rectangle);
-        primaryStage.setTitle("Gradient Background Animation");
+        // 创建场景并添加到舞台
+        // 将 StackPane 设置为场景的根节点，然后将场景设置到舞台上并显示
+        Scene scene = new Scene(root, 800, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -59,34 +47,4 @@ public class GradientBackgroundAnimation extends Application {
     }
 }
 
-//public class BackgroundAnimation {
-//    private Rectangle rectangle;
-//    private Scene scene;
-//
-//    public BackgroundAnimation(Scene scene) {
-//        this.scene = scene;
-//        createAnimation();
-//    }
-//
-//    private void createAnimation() {
-//        rectangle = new Rectangle(600, 400);
-//        LinearGradient gradient = new LinearGradient(0, 0, 1, 0, true, CycleMethod.NO_CYCLE, new Stop[]{
-//                new Stop(0, Color.BLUE),
-//                new Stop(0.5, Color.CYAN),
-//                new Stop(1, Color.BLUE)
-//        });
-//        rectangle.setFill(gradient);
-//
-//        TranslateTransition transition = new TranslateTransition(Duration.seconds(5), rectangle);
-//        transition.setByX(1);
-//        transition.setCycleCount(Animation.INDEFINITE);
-//        transition.setAutoReverse(true);
-//        transition.play();
-//
-//        scene.getRoot().getChildren().add(rectangle);
-//    }
-//
-//    public Rectangle getRectangle() {
-//        return rectangle;
-//    }
-//}
+

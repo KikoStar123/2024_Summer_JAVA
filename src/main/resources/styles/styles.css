@@ -63,17 +63,6 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0.0, 2, 2);
 }
 
-@keyframes backgroundAnimation {
-    from { -fx-background-color: #ff0000; }
-    to { -fx-background-color: #ffff00; }
-}
-
-.background-animate {
-    -fx-background-color: #ff0000;
-    -fx-animation: backgroundAnimation 5s linear infinite;
-}
-
-
 /* 面板和卡片规范 */
 /*定义了面板的样式，包括背景色、阴影效果和圆角*/
 .panel {

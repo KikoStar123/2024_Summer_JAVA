@@ -1,0 +1,14 @@
+/* Fireflies.css */
+.root {
+    -fx-background-image: url("https://i.pinimg.com/originals/44/6e/3b/446e3b79395a287ca32f7977dd83b290.jpg");
+    -fx-background-size: cover;
+}
+
+.firefly {
+    -fx-position: absolute;
+    -fx-width: 10px;
+    -fx-height: 10px;
+    -fx-background-color: yellow;
+    -fx-border-radius: 50%;
+    -fx-opacity: 0.8;
+}

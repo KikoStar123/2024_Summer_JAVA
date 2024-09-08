@@ -13,7 +13,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.scene.text.Text;
 import javafx.geometry.Pos;
@@ -35,11 +38,21 @@ public class LoginUI extends Application {
     }
     @Override
     public void start(Stage primaryStage) {
-        BorderPane root = new BorderPane();
+        //BorderPane root = new BorderPane();
 
         primaryStage.setTitle("登录");
         Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
         primaryStage.getIcons().add(image);
+
+        // 创建 WebView 实例
+        WebView webView = new WebView();//WebView 是用于展示 Web 内容的 JavaFX 组件
+        WebEngine webEngine = webView.getEngine();//WebEngine 用于加载和操作 Web 内容
+        // HTML 文件路径
+        String htmlFilePath = getClass().getResource("/Fireflies.html").toExternalForm();
+        // 加载内容
+        webEngine.load(htmlFilePath);
+        // 设置 WebView 的大小
+        webView.setPrefSize(450, 300);
 
         primaryStage.setWidth(450); // 设置窗口宽度为800像素
         primaryStage.setHeight(300); // 设置窗口高度为600像素
@@ -48,6 +61,10 @@ public class LoginUI extends Application {
         grid.setHgap(10);//设置水平间距，每行中的组件之间将有10像素的空隙
         grid.setVgap(10);//设置垂直间距，每列中的组件之间将有10像素的空隙
         grid.setAlignment(Pos.CENTER);//设置整个GridPane的对齐方式为居中
+
+//        // 创建 StackPane 将 WebView 作为背景
+//        StackPane root = new StackPane();
+//        root.getChildren().add(webView);
 
         // 创建登录表单的标题
         Text logintitle = new Text("用户登录");
@@ -90,8 +107,14 @@ public class LoginUI extends Application {
         // 将buttonBox添加到GridPane中，占据两列
         grid.add(buttonBox, 0, 6, 2, 1); // 从第0列开始，跨越2列，从第3行开始
 
+        // 创建 StackPane 将 WebView 作为背景
+        StackPane root = new StackPane();
+        root.getChildren().add(webView);
+        root.getChildren().add(grid);
+
         // 应用CSS样式
-        Scene scene = new Scene(grid, 350, 200);
+        //Scene scene = new Scene(grid, 350, 200);
+        Scene scene = new Scene(root, 350, 200);
         scene.getRoot().getStyleClass().add("background-animate");
         scene.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
 
