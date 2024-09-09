@@ -16,7 +16,6 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.image.Image;
-//import jdk.javadoc.internal.doclets.formats.html.DocFilesHandlerImpl;
 
 import java.net.URL;
 
