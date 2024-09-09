@@ -66,11 +66,11 @@ public class MainUI extends Application {
         bankButton.setOnAction(e -> handleBank(user.getUsername()));
         leftBox.getChildren().add(bankButton);
 
-        Button registerButton = new Button("修改密码");
-        registerButton.setPrefSize(150, 40);
-        registerButton.setStyle("-fx-background-color: #18bcaf; -fx-text-fill: white; -fx-font-size: 16px;");
-        registerButton.setOnAction(e -> handleShop(user.getUsername()));
-        leftBox.getChildren().add(registerButton);
+        Button updateButton = new Button("修改密码");
+        updateButton.setPrefSize(150, 40);
+        updateButton.setStyle("-fx-background-color: #18bcaf; -fx-text-fill: white; -fx-font-size: 16px;");
+        updateButton.setOnAction(e -> handleShop(user.getUsername()));
+        leftBox.getChildren().add(updateButton);
 
         if(user.getRole()==Librarian)
         {
