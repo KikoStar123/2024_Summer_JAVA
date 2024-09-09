@@ -144,7 +144,14 @@ public class LoginUI extends Application {
             }
             else if(user.getRole()==Librarian)
             {
-
+                Platform.runLater(() -> {
+                    LibraryUI_Manager librarymanagerui=new LibraryUI_Manager();
+                    try {
+                        librarymanagerui.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
             }
             else if(user.getRole()==Role.ShopAssistant){
                 Platform.runLater(() -> {

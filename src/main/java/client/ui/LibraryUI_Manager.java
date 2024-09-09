@@ -17,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.application.Application;
 import javafx.util.Callback;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,26 +25,23 @@ import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 import com.dansoftware.pdfdisplayer.PDFDisplayer;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
-public class LibraryUI {
+public class LibraryUI_Manager extends Application {
 
     private TableView<Book> resultTable;
     private User user;
-    private Library library; // 添加 Library 类的实例
+    private Library library;
 
-    public LibraryUI(User user) {
-        this.user = user;
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("图书馆管理界面");
+        BorderPane root = new BorderPane();
+        root.setPadding(new Insets(10));
         this.library = new Library(); // 初始化 Library 实例
-    }
-
-
-    public BorderPane createLibraryView() {
 
         // 搜索栏和按钮
         TextField nameField = new TextField();
@@ -61,6 +59,7 @@ public class LibraryUI {
 
         HBox searchBox = new HBox(10, new Label("书名或作者:"), nameField, searchButton, borrowButton);
         searchBox.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-text-fill: #4B0082;");
+
         // 设置按钮样式
         String buttonStyle = "-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);";
         String buttonHoverStyle = "-fx-background-color: rgba(255, 255, 255, 0.3); -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 15, 0, 0, 0); -fx-opacity: 0.9;";
@@ -77,6 +76,42 @@ public class LibraryUI {
         borrowButton.setOnMousePressed(e -> borrowButton.setStyle(buttonPressedStyle));
         borrowButton.setOnMouseReleased(e -> borrowButton.setStyle(buttonHoverStyle));
 
+        // 管理员特有的按钮
+        Button addButton = new Button("借阅/归还");
+        Button addbButton = new Button("添加新书");
+        Button updateButton = new Button("更新数目");
+        Button uploadButton = new Button("上传文件");
+        addButton.setStyle(buttonStyle);
+        addbButton.setStyle(buttonStyle);
+        updateButton.setStyle(buttonStyle);
+        uploadButton.setStyle(buttonStyle);
+
+        addButton.setOnMouseEntered(e -> addButton.setStyle(buttonHoverStyle));
+        addButton.setOnMouseExited(e -> addButton.setStyle(buttonStyle));
+        addButton.setOnMousePressed(e -> addButton.setStyle(buttonPressedStyle));
+        addButton.setOnMouseReleased(e -> addButton.setStyle(buttonHoverStyle));
+
+        addbButton.setOnMouseEntered(e -> addbButton.setStyle(buttonHoverStyle));
+        addbButton.setOnMouseExited(e -> addbButton.setStyle(buttonStyle));
+        addbButton.setOnMousePressed(e -> addbButton.setStyle(buttonPressedStyle));
+        addbButton.setOnMouseReleased(e -> addbButton.setStyle(buttonHoverStyle));
+
+        updateButton.setOnMouseEntered(e -> updateButton.setStyle(buttonHoverStyle));
+        updateButton.setOnMouseExited(e -> updateButton.setStyle(buttonStyle));
+        updateButton.setOnMousePressed(e -> updateButton.setStyle(buttonPressedStyle));
+        updateButton.setOnMouseReleased(e -> updateButton.setStyle(buttonHoverStyle));
+
+        uploadButton.setOnMouseEntered(e -> uploadButton.setStyle(buttonHoverStyle));
+        uploadButton.setOnMouseExited(e -> uploadButton.setStyle(buttonStyle));
+        uploadButton.setOnMousePressed(e -> uploadButton.setStyle(buttonPressedStyle));
+        uploadButton.setOnMouseReleased(e -> uploadButton.setStyle(buttonHoverStyle));
+
+        searchBox.getChildren().addAll(addButton, addbButton, updateButton, uploadButton);
+        addButton.setOnAction(e -> showAddDeleteWindow());
+        addbButton.setOnAction(e -> showAddbWindow());
+        updateButton.setOnAction(e -> showUpdateWindow());
+        uploadButton.setOnAction(e -> showUploadDialog());
+
         // 结果显示区域
         resultTable = new TableView<>();
         TableColumn<Book, String> titleColumn = new TableColumn<>("书名");
@@ -88,7 +123,7 @@ public class LibraryUI {
         TableColumn<Book, String> curnumColumn = new TableColumn<>("剩余数");
         curnumColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCurNumber())));
 
-// 在表格中显示图片
+        // 在表格中显示图片
         TableColumn<Book, String> imageColumn = new TableColumn<>("图片");
         imageColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getImagePath()));
         imageColumn.setCellFactory(new Callback<TableColumn<Book, String>, TableCell<Book, String>>() {
@@ -132,9 +167,8 @@ public class LibraryUI {
             updateTableData(books);
         });
 
-        //借阅记录按钮事件
+        // 借阅记录按钮事件
         borrowButton.setOnAction(e -> showBorrowWindow());
-
 
         // 表格行点击事件
         resultTable.setOnMouseClicked((MouseEvent event) -> {
@@ -145,11 +179,15 @@ public class LibraryUI {
                 }
             }
         });
-        return mainLayout;
+
+        root.setTop(searchBox);
+        root.setCenter(resultBox);
+        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.show();
     }
 
     private void showUpdateWindow() {
-        Stage updateStage =new Stage();
+        Stage updateStage = new Stage();
         updateStage.setTitle("更新书籍");
         Label isbnLabel = new Label("Bookid:");
         TextField isbnField = new TextField();
@@ -160,13 +198,13 @@ public class LibraryUI {
             String isbn = isbnField.getText();
             int finalLibNumber = Integer.parseInt(finalLibNumberField.getText());
             // 处理更新书籍的逻辑
-            library.updateBook(isbn,finalLibNumber);
+            library.updateBook(isbn, finalLibNumber);
             updateStage.close();
         });
     }
 
     private void showAddbWindow() {
-        Stage addbStage=new Stage();
+        Stage addbStage = new Stage();
         addbStage.setTitle("增加书籍");
         Label nameLabel = new Label("书名:");
         TextField nameField = new TextField();
@@ -200,12 +238,12 @@ public class LibraryUI {
             String location = locationField.getText();
 
             // 处理添加书籍的逻辑
-            library.addBook(new Book(isbn,name,author,publishHouse,publicationYear,classification,curNumber,libNumber,location));
+            library.addBook(new Book(isbn, name, author, publishHouse, publicationYear, classification, curNumber, libNumber, location));
             addbStage.close();
         });
-        VBox layout = new VBox(10, nameLabel, nameField, isbnLabel, isbnField, authorLabel,authorField,
-                publishHouseLabel,publishHouseField,publicationYearLabel,publicationYearField,classificationLabel,
-                classificationField,libNumberLabel,libNumberField,curNumberLabel,curNumberField,locationLabel,locationField,confirmButton);
+        VBox layout = new VBox(10, nameLabel, nameField, isbnLabel, isbnField, authorLabel, authorField,
+                publishHouseLabel, publishHouseField, publicationYearLabel, publicationYearField, classificationLabel,
+                classificationField, libNumberLabel, libNumberField, curNumberLabel, curNumberField, locationLabel, locationField, confirmButton);
         layout.setPadding(new Insets(10));
 
         Scene scene = new Scene(layout, 300, 650);
@@ -233,7 +271,7 @@ public class LibraryUI {
         TableColumn<LibRecord, String> statusColumn = new TableColumn<>("借阅状态");
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRecordStatus()));
 
-        borrowedBooksTable.getColumns().addAll(titleColumn, isbnColumn, borrowdataColumn, returndataColumn,statusColumn);
+        borrowedBooksTable.getColumns().addAll(titleColumn, isbnColumn, borrowdataColumn, returndataColumn, statusColumn);
         if (user.getRole().equals(Role.student)) {
             // 学生用户，添加续借栏
             TableColumn<LibRecord, Void> renewColumn = new TableColumn<>("续借");
@@ -247,7 +285,7 @@ public class LibraryUI {
                         if (success) {
                             System.out.println("续借成功: " + record.getBookID());
                             renewButton.setDisable(true); // 点击后禁用按钮
-                        }else {
+                        } else {
                             System.out.println("续借失败: " + record.getBookID());
                         }
                     });
@@ -319,13 +357,13 @@ public class LibraryUI {
         borrowStage.show();
     }
 
-    void updateTableData(List<Book> books) {
+    private void updateTableData(List<Book> books) {
         resultTable.getItems().clear();
         resultTable.getItems().addAll(books);
     }
 
 
-    void showBookDetails(Book book) {
+    private void showBookDetails(Book book) {
         Stage detailStage = new Stage();
         detailStage.initModality(Modality.APPLICATION_MODAL);
         detailStage.setTitle("书籍详情");
@@ -387,4 +425,135 @@ public class LibraryUI {
         detailStage.show();
     }
 
+
+    private void showAddDeleteWindow() {
+        Stage addDeleteStage = new Stage();
+        addDeleteStage.setTitle("借阅/归还书籍");
+
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("输入书籍ID");
+
+        TextField bookIdField = new TextField();
+        bookIdField.setPromptText("输入书籍ID");
+
+        Button borrowButton = new Button("借阅");
+        Button returnButton = new Button("归还");
+
+        HBox buttonBox = new HBox(10, borrowButton, returnButton);
+        VBox layout = new VBox(10, new Label("用户名:"), usernameField, new Label("书籍ID:"), bookIdField, buttonBox);
+        layout.setPadding(new Insets(10));
+
+        borrowButton.setOnAction(e -> {
+            String username = usernameField.getText();
+            String bookId = bookIdField.getText();
+            boolean success = library.bookBorrow(username, bookId);
+            Alert alert;
+            if (success) {
+                alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("成功");
+                alert.setHeaderText(null);
+                alert.setContentText("书籍借阅成功！");
+            } else {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("失败");
+                alert.setHeaderText(null);
+                alert.setContentText("书籍借阅失败！");
+            }
+            alert.showAndWait();
+        });
+
+        returnButton.setOnAction(e -> {
+            String username = usernameField.getText();
+            String bookId = bookIdField.getText();
+            //可能有问题
+            boolean success = library.bookReturn(username, bookId);
+            Alert alert;
+            if (success) {
+                alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("成功");
+                alert.setHeaderText(null);
+                alert.setContentText("书籍归还成功！");
+            } else {
+                alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("失败");
+                alert.setHeaderText(null);
+                alert.setContentText("书籍归还失败！");
+            }
+            alert.showAndWait();
+        });
+
+        Scene scene = new Scene(layout, 300, 200);
+        addDeleteStage.setScene(scene);
+        addDeleteStage.show();
+    }
+
+    private void showUploadDialog() {
+        Stage dialog = new Stage();
+        dialog.setTitle("上传文件");
+
+        VBox dialogVBox = new VBox(10);
+        dialogVBox.setPadding(new Insets(10));
+
+        TextField bookIDField = new TextField();
+        bookIDField.setPromptText("输入书籍ID");
+
+        Button uploadImageButton = new Button("上传图片");
+        Button uploadPDFButton = new Button("上传PDF");
+
+        uploadImageButton.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);");
+        uploadPDFButton.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);");
+
+        uploadImageButton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png"));
+            File selectedFile = fileChooser.showOpenDialog(dialog);
+            if (selectedFile != null) {
+                String bookID = bookIDField.getText();
+                if (!bookID.isEmpty()) {
+                    boolean success = library.uploadBookImage(selectedFile, bookID);
+                    if (success) {
+                        showAlert(Alert.AlertType.INFORMATION, "图片上传成功！");
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "图片上传失败，请重试。");
+                    }
+                } else {
+                    showAlert(Alert.AlertType.WARNING, "请输入书籍ID");
+                }
+            }
+        });
+
+        uploadPDFButton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+            File selectedFile = fileChooser.showOpenDialog(dialog);
+            if (selectedFile != null) {
+                String bookID = bookIDField.getText();
+                if (!bookID.isEmpty()) {
+                    boolean success = library.uploadBookPDF(selectedFile, bookID);
+                    if (success) {
+                        showAlert(Alert.AlertType.INFORMATION, "PDF上传成功！");
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "PDF上传失败，请重试。");
+                    }
+                } else {
+                    showAlert(Alert.AlertType.WARNING, "请输入书籍ID");
+                }
+            }
+        });
+
+        dialogVBox.getChildren().addAll(new Label("书籍ID:"), bookIDField, uploadImageButton, uploadPDFButton);
+
+        Scene dialogScene = new Scene(dialogVBox, 300, 200);
+        dialog.setScene(dialogScene);
+        dialog.show();
+    }
+
+    // 显示消息对话框
+    private void showAlert(Alert.AlertType alertType, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle("提示");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

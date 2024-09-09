@@ -3215,3 +3215,18 @@ ALTER TABLE tblFixedDeposit ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY [42121-
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:842)
+2024-09-09 09:41:23 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE [*]* FROM BANKRECORD"; expected "identifier"; SQL statement:
+DELETE * FROM BANKRECORD [42001-214]
+2024-09-09 09:42:11 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "BANKRECORD" not found; SQL statement:
+DELETE  FROM BANKRECORD [42102-214]
+2024-09-09 09:49:23 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE [*]* FROM TBLSHOPPINGCART"; expected "identifier"; SQL statement:
+DELETE * FROM TBLSHOPPINGCART [42001-214]
+2024-09-09 10:12:11 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (TBLUSER: ""AGE"" INTEGER)"; SQL statement:
+INSERT INTO "PUBLIC"."TBLUSER"("USERNAME","TRUENAME","ROLE","AGE","PWD","GENDER")VALUES(?,?,?,?,?,?) [22018-214]
+2024-09-09 10:12:11 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (TBLUSER: ""AGE"" INTEGER)"; SQL statement:
+INSERT INTO "PUBLIC"."TBLUSER"("USERNAME","TRUENAME","ROLE","AGE","PWD","GENDER")VALUES(?,?,?,?,?,?) [22018-214]

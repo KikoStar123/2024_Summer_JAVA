@@ -11,7 +11,7 @@ public class MainClient {
         if (args.length > 0) {
             LoginUI.setInstanceName(args[0]);
         }
-        //LoginUI.main(args);
-        Bankui_Manager.main(args);
+        LoginUI.main(args);
+        //Bankui_Manager.main(args);
     }
 }
