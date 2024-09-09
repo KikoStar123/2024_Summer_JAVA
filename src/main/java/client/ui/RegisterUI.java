@@ -1,142 +1,113 @@
 package client.ui;
 
 import client.service.ClientService;
-import client.service.User;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import client.service.Gender;
+import client.service.StudentInformation;
+import client.service.User;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
-public class RegisterUI {
-    private JFrame regFrame;
-    private JTextField name;
-    private JTextField id;
-    private JComboBox<String> genderComboBox;
-    private JTextField origin;
-    private JTextField birthday;
-    private JTextField academy;
-    private JButton registerButton;
-    private JPasswordField passwordField;
+import java.awt.event.ActionListener;
 
-    public void display() {
-        regFrame = new JFrame("学籍注册");
-        regFrame.setSize(300, 400);
-        regFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        regFrame.setLocationRelativeTo(null);
-        JPanel panel = new JPanel();
-        regFrame.add(panel);
-        placeComponents(panel);
-        regFrame.setVisible(true);
-    }
+import static antlr.build.ANTLR.root;
 
-    private void placeComponents(JPanel panel) {
-        panel.setLayout(null);
 
-        JLabel nameLabel = new JLabel("Name:");
-        nameLabel.setBounds(10, 20, 80, 25);
-        panel.add(nameLabel);
+public class RegisterUI  {
+    private static TextField name;
+    private static TextField id;
+    private static ComboBox<String> genderComboBox;
+    private static TextField origin;
+    private static TextField birthday;
+    private static TextField academy;
+    private static PasswordField passwordField;
+    private static Button registerButton;
+    private static Button backButton;
 
-        name = new JTextField(20);
-        name.setBounds(100, 20, 165, 25);
-        panel.add(name);
+    static GridPane grid;
+    public static GridPane showRegisterUI() {
 
-        JLabel idLabel = new JLabel("ID:");
-        idLabel.setBounds(10, 60, 80, 25);
-        panel.add(idLabel);
+        grid= new GridPane();
+        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.setVgap(8);
+        grid.setHgap(10);
 
-        id = new JTextField(20);
-        id.setBounds(100, 60, 165, 25);
-        panel.add(id);
+        Label nameLabel = new Label("姓名:");
+        GridPane.setConstraints(nameLabel, 0, 0);
+        name = new TextField();
+        GridPane.setConstraints(name, 1, 0);
 
-        JLabel genderLabel = new JLabel("Gender:");
-        genderLabel.setBounds(10, 100, 80, 25); // 调整 y 坐标到 100
-        panel.add(genderLabel);
+        Label idLabel = new Label("学号:");
+        GridPane.setConstraints(idLabel, 0, 1);
+        id = new TextField();
+        GridPane.setConstraints(id, 1, 1);
 
-// 创建下拉框并添加选项
-        String[] genders = new String[Gender.values().length];
-        int i = 0;
-        for (Gender gender : Gender.values()) {
-            genders[i++] = gender.toString().toLowerCase();
-        }
-        genderComboBox = new JComboBox<>(genders);
-        genderComboBox.setBounds(100, 100, 165, 25); // 调整 y 坐标到 140
-        panel.add(genderComboBox);
+        Label genderLabel = new Label("性别:");
+        GridPane.setConstraints(genderLabel, 0, 2);
+        genderComboBox = new ComboBox<>();
+        genderComboBox.getItems().addAll("male", "female");
+        GridPane.setConstraints(genderComboBox, 1, 2);
 
-        JLabel originLabel = new JLabel("Origin:");
-        originLabel.setBounds(10, 140, 80, 25); // 调整 y 坐标到 180
-        panel.add(originLabel);
+        Label originLabel = new Label("籍贯:");
+        GridPane.setConstraints(originLabel, 0, 3);
+        origin = new TextField();
+        GridPane.setConstraints(origin, 1, 3);
 
-        origin = new JTextField(20);
-        origin.setBounds(100, 140, 165, 25); // 调整 y 坐标到 180
-        panel.add(origin);
+        Label birthdayLabel = new Label("生日:");
+        GridPane.setConstraints(birthdayLabel, 0, 4);
+        birthday = new TextField();
+        GridPane.setConstraints(birthday, 1, 4);
 
-        JLabel birthdayLabel = new JLabel("Birthday:");
-        birthdayLabel.setBounds(10, 180, 80, 25);
-        panel.add(birthdayLabel);
+        Label academyLabel = new Label("学院:");
+        GridPane.setConstraints(academyLabel, 0, 5);
+        academy = new TextField();
+        GridPane.setConstraints(academy, 1, 5);
 
-        birthday = new JTextField(20);
-        birthday.setBounds(100, 180, 165, 25);
-        panel.add(birthday);
+        Label passwordLabel = new Label("密码:");
+        GridPane.setConstraints(passwordLabel, 0, 6);
+        passwordField = new PasswordField();
+        GridPane.setConstraints(passwordField, 1, 6);
 
-        JLabel academyLabel = new JLabel("Academy:");
-        academyLabel.setBounds(10, 220, 80, 25);
-        panel.add(academyLabel);
+        registerButton = new Button("注册");
+        GridPane.setConstraints(registerButton, 1, 7);
 
-        academy = new JTextField(20);
-        academy.setBounds(100, 220, 165, 25);
-        panel.add(academy);
+        backButton=new Button("返回");
+        GridPane.setConstraints(backButton, 1, 8);
+        backButton.setOnAction(e->{
 
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setBounds(10, 260, 80, 25);
-        panel.add(passwordLabel);
+            LoginUI.root.setCenter(LoginUI.grid);
 
-        passwordField = new JPasswordField(20);
-        passwordField.setBounds(100, 260, 165, 25);
-        panel.add(passwordField);
+        });
+        registerButton.setOnAction(e -> {
+            String truename = name.getText();
+            String stuid = id.getText();
+            String gender = genderComboBox.getValue();
+            String originText = origin.getText();
+            String birthdayText = birthday.getText();
+            String academyText = academy.getText();
+            String passwordText = passwordField.getText();
 
-        registerButton = new JButton("Register");
-        registerButton.setBounds(100, 300, 80, 25);
-        panel.add(registerButton);
-
-        registerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                handleRegister();
+            boolean success = ClientService.register(truename, Gender.valueOf(gender.toLowerCase()), stuid, originText, birthdayText, academyText, passwordText);
+            if (success) {
+                showAlert(Alert.AlertType.INFORMATION, "注册成功", "注册成功！");
+            } else {
+                showAlert(Alert.AlertType.ERROR, "注册失败", "注册失败，请重试。");
             }
         });
+        grid.getChildren().addAll(nameLabel, name, idLabel, id, genderLabel, genderComboBox, originLabel, origin, birthdayLabel, birthday, academyLabel, academy, passwordLabel, passwordField, registerButton,backButton);
+        return grid;
     }
 
-    private void handleRegister() {
-        String nameText = name.getText();
-        String idText = id.getText();
-        String genderText = (String) genderComboBox.getSelectedItem();
-
-        // 将字符串转换为 Gender 枚举
-        Gender genderEnum;
-        if ("male".equalsIgnoreCase(genderText)) {
-            genderEnum = Gender.male;
-        } else if ("female".equalsIgnoreCase(genderText)) {
-            genderEnum = Gender.female;
-        } else {
-            // 处理未知性别或提供默认值
-            genderEnum = Gender.male; // 例如，可以设置为 male 作为默认值
-        }
-        String originText = origin.getText();
-        String birthdayText = birthday.getText();
-        String academyText = academy.getText();
-        String passwordText = new String(passwordField.getPassword());
-
-        ClientService clientService = new ClientService();
-        boolean success = clientService.register(nameText,genderEnum,idText,originText,birthdayText,academyText,passwordText);
-
-        if (success) {
-            JOptionPane.showMessageDialog(regFrame, "Registration successful!", "Success", JOptionPane.INFORMATION_MESSAGE);
-            regFrame.dispose();
-            // 可以启动主界面或其他逻辑
-        } else {
-            JOptionPane.showMessageDialog(regFrame, "Registration failed. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+    private static void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
+
 }

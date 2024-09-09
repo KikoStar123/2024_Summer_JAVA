@@ -11,7 +11,7 @@ public class ShoppingProduct {
     private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
     private static final int SERVER_PORT = IpConfig.SERVER_PORT;
 
-    public class oneProduct
+    public static class oneProduct
     {
         String productID;//商品id
         String productName;//商品名称
@@ -82,7 +82,8 @@ public class ShoppingProduct {
     // 查看单个商品详细信息
     // 输入 商品id productID
     // 返回 一个商品对象
-    public oneProduct getProductDetails(String productID) throws IOException
+    static oneProduct theproduct =new oneProduct();
+    public static oneProduct getProductDetails(String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -103,8 +104,6 @@ public class ShoppingProduct {
 
             JSONObject data = jsonResponse.getJSONObject("product");
 
-            oneProduct theproduct = new oneProduct();
-
             theproduct.productID = productID;
             theproduct.productName = data.getString("productName");
             theproduct.productDetail = data.getString("productDetail");
@@ -121,7 +120,7 @@ public class ShoppingProduct {
             return theproduct;
         } catch (IOException e) {
             e.printStackTrace();
-            return new oneProduct();
+            return null;
         }
     }
 
@@ -419,7 +418,6 @@ public class ShoppingProduct {
                 productsArray[i].storeID = theproduct.getString("storeID");
                 productsArray[i].storeName = theproduct.getString("storeName");
             }
-
             return productsArray;
         } catch (IOException e) {
             e.printStackTrace();
