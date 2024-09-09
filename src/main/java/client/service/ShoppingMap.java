@@ -12,7 +12,7 @@ public class ShoppingMap {
     private static final int SERVER_PORT = IpConfig.SERVER_PORT;
 
     // 添加地图记录
-    public boolean addMapRecord(String productID, String mapStart, String mapEnd) throws IOException {
+    public static boolean addMapRecord(String productID, String mapStart, String mapEnd) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {

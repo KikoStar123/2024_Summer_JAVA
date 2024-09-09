@@ -24,7 +24,7 @@ public class ShoppingUser {
     }
 
     // 获取用户的所有地址和电话
-    public oneUser getUserDetails(String username) throws IOException {
+    public static oneUser getUserDetails(String username) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
@@ -123,7 +123,7 @@ public class ShoppingUser {
     }
 
     // 添加用户新的地址和电话
-    public boolean addUserContact(String username, String newAddress, String newTelephone) throws IOException {
+    public static boolean addUserContact(String username, String newAddress, String newTelephone) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
@@ -149,7 +149,7 @@ public class ShoppingUser {
     }
 
     // 删除用户指定的地址和电话
-    public boolean deleteUserContact(String username, int index) throws IOException {
+    public static boolean deleteUserContact(String username, int index) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
