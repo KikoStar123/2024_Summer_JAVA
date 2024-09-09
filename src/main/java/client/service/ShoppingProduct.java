@@ -5,14 +5,12 @@ import java.net.Socket;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import java.util.UUID;
+
 
 public class ShoppingProduct {
-
+    private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
+    private static final int SERVER_PORT = IpConfig.SERVER_PORT;
     private final FileService fileService = new FileService();
-    private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
-    private final int SERVER_PORT = IpConfig.SERVER_PORT;
-
     public class oneProduct
     {
         String productID;//商品id
@@ -222,7 +220,7 @@ public class ShoppingProduct {
         }
     }
 
-    // 删除商品
+    // 删除商品not
     // 输入 商品id productID
     // 返回 状态
     public boolean deleteProduct(String productID) throws IOException
@@ -380,8 +378,8 @@ public class ShoppingProduct {
             JSONObject request = new JSONObject();
             request.put("requestType", "product");
             request.put("parameters", new JSONObject()
-                    .put("action", "search")
-                    .put("searchTerm", searchTerm))
+                            .put("action", "search")
+                            .put("searchTerm", searchTerm))
                     .put("sortBy", sortBy)
                     .put("sortOrder", sortOrder);
 
@@ -599,40 +597,4 @@ public class ShoppingProduct {
             return null;
         }
     }
-
-    public boolean uploadProductImage(File imageFile, String productID) {
-        String fileName = productID + ".jpg";
-        if (fileService.fileExists(fileName)) {
-            fileName = productID + "_" + UUID.randomUUID().toString() + ".jpg";
-        }
-
-        if (fileService.uploadFile(imageFile, fileName)) {
-            return updateProductImagePath(productID, "uploads/" + fileName);
-        }
-        return false;
-    }
-    public boolean updateProductImagePath(String productID, String imagePath) {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
-            JSONObject request = new JSONObject();
-            request.put("requestType", "product");
-            request.put("parameters", new JSONObject()
-                    .put("productID", productID)
-                    .put("imagePath", imagePath)
-                    .put("action", "updateProductImagePath"));
-
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(request.toString());
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String response = in.readLine();
-            JSONObject jsonResponse = new JSONObject(response);
-
-            return jsonResponse.getString("status").equals("success");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-
 }
