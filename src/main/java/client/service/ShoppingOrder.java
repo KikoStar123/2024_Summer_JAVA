@@ -65,7 +65,7 @@ public class ShoppingOrder {
     // 创建订单
     // 输入 用户账号 username；商品id productID；商品名称 productName；商品数量 productNumber；支付金额 paidMoney（店铺id storeID 后端自行搜索，前端无需传递）
     // 返回 订单号 orderID
-    public String createOrder(String username, String productID, String productName, int productNumber, float paidMoney) throws IOException
+    public static String createOrder(String username, String productID, String productName, int productNumber, float paidMoney) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -350,7 +350,7 @@ public class ShoppingOrder {
     // 获取订单是否评论的状态
     // 输入 订单id orderID
     // 返回 是否评价 1代表评价过了，0代表没评价过，允许评价
-    public boolean getOrderCommentStatus(String orderID) throws IOException
+    public static boolean getOrderCommentStatus(String orderID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -379,7 +379,7 @@ public class ShoppingOrder {
     // 更新是否评论状态
     // 输入 订单id orderID；是否评价 whetherComment 1代表评价过了，0代表没评价过，允许评价
     // 返回 状态
-    public boolean updateCommentStatus(String orderID, boolean whetherComment) throws IOException
+    public static boolean updateCommentStatus(String orderID, boolean whetherComment) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -439,7 +439,7 @@ public class ShoppingOrder {
     // 根据商店ID查询该商店的所有订单
     // 输入 商店id storeID
     // 返回 订单数组
-    public oneOrder[] getAllOrdersByStore(String storeID) throws IOException
+    public static oneOrder[] getAllOrdersByStore(String storeID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -450,7 +450,7 @@ public class ShoppingOrder {
             request.put("requestType", "order");
             request.put("parameters", new JSONObject()
                     .put("action", "getAllOrdersByStore")
-                    .put("username", storeID));
+                    .put("storeID", storeID));
 
             // 发送请求
             out.println(request);

@@ -265,8 +265,8 @@ public class ShopUI_Manager extends Application {
         VBox dialogVBox = new VBox(10);
         dialogVBox.setPadding(new Insets(10));
 
-        TextField bookIDField = new TextField();
-        bookIDField.setPromptText("输入商品ID");
+        TextField productIDField = new TextField();
+        productIDField.setPromptText("输入商品ID");
 
         Button uploadImageButton = new Button("上传图片");
 
@@ -277,9 +277,9 @@ public class ShopUI_Manager extends Application {
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png"));
             File selectedFile = fileChooser.showOpenDialog(dialog);
             if (selectedFile != null) {
-                String bookID = bookIDField.getText();
-                if (!bookID.isEmpty()) {
-                    boolean success = ShoppingProduct.uploadProductImage(selectedFile, bookID);
+                String productID = productIDField.getText();
+                if (!productID.isEmpty()) {
+                    boolean success = ShoppingProduct.uploadProductImage(selectedFile, productID);
                     if (success) {
                         showAlert(Alert.AlertType.INFORMATION, "图片上传成功！");
                     } else {
@@ -292,7 +292,7 @@ public class ShopUI_Manager extends Application {
         });
 
 
-        dialogVBox.getChildren().addAll(new Label("书籍ID:"), bookIDField, uploadImageButton);
+        dialogVBox.getChildren().addAll(new Label("商品ID:"), productIDField, uploadImageButton);
 
         Scene dialogScene = new Scene(dialogVBox, 300, 200);
         dialog.setScene(dialogScene);
