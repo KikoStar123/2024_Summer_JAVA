@@ -1,8 +1,10 @@
 package client.ui;
 
 import client.service.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -19,10 +21,23 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 
+import java.util.ArrayList;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
+import static client.service.Bank.payment;
 import static client.service.ShoppingOrder.createOrder;
 import static client.ui.MainUI.borderPane;
 
@@ -212,35 +227,14 @@ public class ShopUI_stu {
             }
             orderbox.getChildren().addAll(orderid,productname,paidMoney,commentbutton,paybutton);
             items.add(orderbox);
-            paybutton.setOnAction(e-> {
-                boolean result;
-                try {
-                    result = ShoppingOrder.payOrder(order.getOrderID(), order.getPaidMoney());
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-                if (result)
-                {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("提示");
-                    alert.setHeaderText(null);
-                    alert.setContentText("支付成功！");
-                    alert.showAndWait();
-                    try {
-                        borderPane.setCenter(new VBox(showOrders()));
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-                else{
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("提示");
-                    alert.setHeaderText(null);
-                    alert.setContentText("支付失败！");
-                    alert.showAndWait();
-                }
-
+            paybutton.setOnAction(e -> {
+                List<String> orderIds = new ArrayList<>();
+                orderIds.add(order.getOrderID());
+                float totalAmount = order.getPaidMoney();
+                handlePayment(orderIds, totalAmount);
             });
+
+
             commentbutton.setOnAction(e->{
                 VBox commentbox = new VBox();
                 // 创建下拉框用于选择评论态度
@@ -334,15 +328,14 @@ public class ShopUI_stu {
         }
         else
         {
-            for (ShoppingCart.oneCartElement cartElement:cartElements)
-            {
+            for (ShoppingCart.oneCartElement cartElement:cartElements) {
 
-                VBox cart=new VBox();
-                ShoppingProduct.oneProduct oneProduct=ShoppingProduct.getProductDetails(cartElement.getProductID());
-                Label productname=new Label("商品名称: "+oneProduct.getProductName());
-                Label productid=new Label("商品id: "+oneProduct.getProductID());
-                Label productdetail=new Label("商品属性: "+oneProduct.getProductDetail());
-                Label quantityLabel = new Label("数量: "+cartElement.getProductNumber());
+                VBox cart = new VBox();
+                ShoppingProduct.oneProduct oneProduct = ShoppingProduct.getProductDetails(cartElement.getProductID());
+                Label productname = new Label("商品名称: " + oneProduct.getProductName());
+                Label productid = new Label("商品id: " + oneProduct.getProductID());
+                Label productdetail = new Label("商品属性: " + oneProduct.getProductDetail());
+                Label quantityLabel = new Label("数量: " + cartElement.getProductNumber());
                 CheckBox selectBox = new CheckBox();
                 selectBox.setOnAction(event -> {
                     if (selectBox.isSelected()) {
@@ -361,20 +354,20 @@ public class ShopUI_stu {
 
                 HBox quantityBox = new HBox(decreaseButton, quantityLabel, increaseButton);
                 int quantity = Integer.parseInt(quantityLabel.getText().split(": ")[1]);
-                Label sumprice=new Label("商品总价: "+oneProduct.getProductCurrentPrice()*quantity);
+                Label sumprice = new Label("商品总价: " + oneProduct.getProductCurrentPrice() * quantity);
                 decreaseButton.setOnAction(event -> {
                     int quantityb = Integer.parseInt(quantityLabel.getText().split(": ")[1]);
                     if (quantityb > 1) {
                         quantityb--;
                         quantityLabel.setText("数量: " + quantityb);
                         try {
-                            ShoppingCart.updateCart(user.getUsername(),oneProduct.getProductID(), quantityb);
+                            ShoppingCart.updateCart(user.getUsername(), oneProduct.getProductID(), quantityb);
                         } catch (IOException e) {
                             System.out.println("error");
                             throw new RuntimeException(e);
 
                         }
-                        sumprice.setText("商品总价: "+oneProduct.getProductCurrentPrice()*quantityb);
+                        sumprice.setText("商品总价: " + oneProduct.getProductCurrentPrice() * quantityb);
                         if (selectBox.isSelected()) {
                             totalPrice[0] -= oneProduct.getProductCurrentPrice();
                             totalPriceLabel.setText("总价格: " + totalPrice[0]);
@@ -387,17 +380,17 @@ public class ShopUI_stu {
                     quantityb++;
                     quantityLabel.setText("数量: " + quantityb);
                     try {
-                        ShoppingCart.updateCart(user.getUsername(),oneProduct.getProductID(), quantityb);
+                        ShoppingCart.updateCart(user.getUsername(), oneProduct.getProductID(), quantityb);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    sumprice.setText("商品总价: "+oneProduct.getProductCurrentPrice()*quantityb);
+                    sumprice.setText("商品总价: " + oneProduct.getProductCurrentPrice() * quantityb);
                     if (selectBox.isSelected()) {
                         totalPrice[0] += oneProduct.getProductCurrentPrice();
                         totalPriceLabel.setText("总价格: " + totalPrice[0]);
                     }
                 });
-                Button deleteButton=new Button("删除");
+                Button deleteButton = new Button("删除");
                 deleteButton.setOnAction(event -> {
                     items.remove(cart);
                     if (selectBox.isSelected()) {
@@ -405,12 +398,14 @@ public class ShopUI_stu {
                         totalPriceLabel.setText("总价格: " + totalPrice[0]);
                     }
                     try {
-                        ShoppingCart.removeFromCart(user.getUsername(),oneProduct.getProductID());
+                        ShoppingCart.removeFromCart(user.getUsername(), oneProduct.getProductID());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 });
-                buybutton.setOnAction(e->{
+                buybutton.setOnAction(e -> {
+                    List<String> orderIds = new ArrayList<>();
+                    float totalAmount = 0;
                     for (VBox cartBox : items) {
                         CheckBox selectBoxb = null;
                         for (Node node : cartBox.getChildren()) {
@@ -431,50 +426,41 @@ public class ShopUI_stu {
                         if (selectBoxb != null && selectBoxb.isSelected()) {
                             Label productnameb = (Label) ((HBox) cartBox.getChildren().get(0)).getChildren().get(1);
                             Label productIdd = (Label) ((HBox) cartBox.getChildren().get(0)).getChildren().get(3);
-                            Label quantityLabelb = (Label)((HBox) cartBox.getChildren().get(1)).getChildren().get(1);
-                            Label paymoney=(Label) ((HBox) cartBox.getChildren().get(2)).getChildren().get(0);
+                            Label quantityLabelb = (Label) ((HBox) cartBox.getChildren().get(1)).getChildren().get(1);
+                            Label paymoney = (Label) ((HBox) cartBox.getChildren().get(2)).getChildren().get(0);
                             String productName = productnameb.getText().replace("商品名称: ", "");
                             String productId = productIdd.getText().replace("商品id: ", "");
                             int quantityb = Integer.parseInt(quantityLabelb.getText().replace("数量: ", ""));
-                            float paymoneyb= Float.parseFloat(paymoney.getText().replace("商品总价: ",""));
+                            float paymoneyb = Float.parseFloat(paymoney.getText().replace("商品总价: ", ""));
+                            totalAmount += paymoneyb;
+
                             // 调用创建订单的函数
                             try {
-                                String orderid=createOrder(user.getUsername(), productId,productName, quantityb,paymoneyb);
-                                boolean result = ShoppingOrder.payOrder(orderid,paymoneyb);
-                                if (result)
-                                {
-                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                    alert.setTitle("提示");
-                                    alert.setHeaderText(null);
-                                    alert.setContentText("商品"+orderid+"支付成功！");
-                                    alert.showAndWait();
-                                }
-                                else{
-                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                                    alert.setTitle("提示");
-                                    alert.setHeaderText(null);
-                                    alert.setContentText("商品"+orderid+"支付失败！");
-                                    alert.showAndWait();
-                                }
-
+                                String orderid = createOrder(user.getUsername(), productId, productName, quantityb, paymoneyb);
+                                orderIds.add(orderid);
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
                         }
                     }
+                    // 合并结算
+                    if (!orderIds.isEmpty()) {
+                        handlePayment(orderIds, totalAmount);
+                    }
                 });
-                HBox boxa=new HBox(selectBox,productname,productdetail,productid);
-                HBox boxb=new HBox(sumprice,deleteButton);
+
+
+                HBox boxa = new HBox(selectBox, productname, productdetail, productid);
+                HBox boxb = new HBox(sumprice, deleteButton);
 
                 cart.getChildren().addAll(boxa, quantityBox, boxb);
                 items.add(cart);
-            }
-        }
 
-        HBox bottom=new HBox(totalPriceLabel,buybutton);
-        VBox layout = new VBox();
-        layout.getChildren().addAll(scrollPane, bottom);
-        borderPane.setCenter(layout);
+                HBox bottom = new HBox(totalPriceLabel, buybutton);
+                VBox layout = new VBox();
+                layout.getChildren().addAll(scrollPane, bottom);
+                borderPane.setCenter(layout);
+            }}
     }
     //进入商品详情页
     private VBox showProductDetails(ShoppingProduct.oneProduct product) throws IOException {
@@ -712,30 +698,17 @@ public class ShopUI_stu {
                 ShoppingProduct.oneProduct selectedProduct = commonproducts[selectedIndex];
                 int quantity = Integer.parseInt(quantityLabel.getText().split(": ")[1]);
                 try {
-                    String orderid= createOrder(user.getUsername(), product.getProductID(), product.getProductName(), quantity,quantity* product.getProductCurrentPrice());
-                    boolean result = ShoppingOrder.payOrder(orderid,quantity* product.getProductCurrentPrice());
-                    if (result)
-                    {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("提示");
-                        alert.setHeaderText(null);
-                        alert.setContentText("支付成功！");
-                        alert.showAndWait();
-                        borderPane.setCenter(new VBox(getShopLayout()));
-                    }
-                    else{
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("提示");
-                        alert.setHeaderText(null);
-                        alert.setContentText("支付失败！");
-                        alert.showAndWait();
-                    }
+                    String orderid = createOrder(user.getUsername(), product.getProductID(), product.getProductName(), quantity, quantity * product.getProductCurrentPrice());
+                    List<String> orderIds = new ArrayList<>();
+                    orderIds.add(orderid);
+                    float totalAmount = quantity * product.getProductCurrentPrice();
+                    handlePayment(orderIds, totalAmount);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-
         });
+
         borderPane.setCenter(buyproductBox);
     }
     //商店商品页
@@ -810,4 +783,99 @@ public class ShopUI_stu {
         commentBox.getChildren().addAll(select,scrollPane);
         borderPane.setCenter(commentBox);
     }
+    private void handlePayment(List<String> orderIds, float totalAmount) {
+        // 弹出窗口输入用户名和密码
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("支付");
+        dialog.setHeaderText("请输入用户名和密码");
+
+        ButtonType loginButtonType = new ButtonType("确认", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField username = new TextField();
+        username.setPromptText("用户名");
+        PasswordField password = new PasswordField();
+        password.setPromptText("密码");
+
+        grid.add(new Label("用户名:"), 0, 0);
+        grid.add(username, 1, 0);
+        grid.add(new Label("密码:"), 0, 1);
+        grid.add(password, 1, 1);
+
+        dialog.getDialogPane().setContent(grid);
+
+        Platform.runLater(() -> username.requestFocus());
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                return new Pair<>(username.getText(), password.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+
+        result.ifPresent(usernamePassword -> {
+            final String[] credentials = {usernamePassword.getKey(), usernamePassword.getValue()};
+            CountDownLatch latch = new CountDownLatch(1);
+
+            // 线程1：调用 payOrder 方法
+            new Thread(() -> {
+                try {
+                    ShoppingOrder.payOrder(orderIds.toArray(new String[0]), totalAmount);
+                    latch.await(); // 等待 payment 线程完成
+                    // 继续处理 payOrder
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("提示");
+                        alert.setHeaderText(null);
+                        alert.setContentText("订单处理完成！");
+                        alert.showAndWait();
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("提示");
+                        alert.setHeaderText(null);
+                        alert.setContentText("订单请求失败。");
+                        alert.showAndWait();
+                    });
+                }
+            }).start();
+
+            // 延迟一段时间后启动 payment 线程
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000); // 延迟1秒
+                    boolean paymentResult = payment(credentials[0], credentials[1], orderIds.get(0), totalAmount);
+                    if (paymentResult) {
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("提示");
+                            alert.setHeaderText(null);
+                            alert.setContentText("支付成功！");
+                            alert.showAndWait();
+                        });
+                    } else {
+                        Platform.runLater(() -> {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("提示");
+                            alert.setHeaderText(null);
+                            alert.setContentText("支付失败");
+                            alert.showAndWait();
+                        });
+                    }
+                    latch.countDown(); // 通知 payOrder 线程
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        });
+    }
+
 }

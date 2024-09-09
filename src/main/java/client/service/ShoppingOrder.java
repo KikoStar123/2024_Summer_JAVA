@@ -409,8 +409,9 @@ public class ShoppingOrder {
     // 支付
     // 输入 订单id orderID；支付金额 amount
     // 返回 状态
-    public static boolean payOrder(String orderID, float amount) throws IOException
+    public static boolean payOrder(String[] orderIDs, float amount) throws IOException
     {
+        System.out.println("payOrder: " + orderIDs[0]);
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
@@ -420,7 +421,7 @@ public class ShoppingOrder {
             request.put("requestType", "order");
             request.put("parameters", new JSONObject()
                     .put("action", "pay")
-                    .put("orderID", orderID)
+                    .put("orderIDs", orderIDs)
                     .put("amount", amount));
 
             // 发送请求
