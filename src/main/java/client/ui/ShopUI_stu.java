@@ -440,6 +440,7 @@ public class ShopUI_stu {
                             // 调用创建订单的函数
                             try {
                                 String orderid=createOrder(user.getUsername(), productId,productName, quantityb,paymoneyb);
+
                                 boolean result = ShoppingOrder.payOrder(orderid,paymoneyb);
                                 if (result)
                                 {
@@ -721,6 +722,7 @@ public class ShopUI_stu {
                 int quantity = Integer.parseInt(quantityLabel.getText().split(": ")[1]);
                 try {
                     String orderid= createOrder(user.getUsername(), product.getProductID(), product.getProductName(), quantity,quantity* product.getProductCurrentPrice());
+
                     boolean result = ShoppingOrder.payOrder(orderid,quantity* product.getProductCurrentPrice());
                     if (result)
                     {
