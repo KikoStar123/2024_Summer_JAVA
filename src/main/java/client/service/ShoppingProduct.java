@@ -12,7 +12,7 @@ public class ShoppingProduct {
     private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
     private static final int SERVER_PORT = IpConfig.SERVER_PORT;
     private static final FileService fileService = new FileService();
-    public class oneProduct
+    public static class oneProduct
     {
         String productID;//商品id
         String productName;//商品名称
@@ -79,7 +79,8 @@ public class ShoppingProduct {
     // 查看单个商品详细信息
     // 输入 商品id productID
     // 返回 一个商品对象
-    public oneProduct getProductDetails(String productID) throws IOException
+
+    public static oneProduct getProductDetails(String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -220,7 +221,7 @@ public class ShoppingProduct {
         }
     }
 
-    // 删除商品not
+    // 删除商品
     // 输入 商品id productID
     // 返回 状态
     public boolean deleteProduct(String productID) throws IOException
@@ -344,7 +345,7 @@ public class ShoppingProduct {
                 productsArray[i].productID = theproduct.getString("productID");
                 productsArray[i].productName = theproduct.getString("productName");
                 productsArray[i].productDetail = theproduct.getString("productDetail");
-                productsArray[i].productImage = theproduct.optString("productImage", "uploads/defaultproduct.jpg");
+                productsArray[i].productImage = theproduct.getString("productImage");
                 productsArray[i].productOriginalPrice = theproduct.getFloat("productOriginalPrice");
                 productsArray[i].productCurrentPrice = theproduct.getFloat("productCurrentPrice");
                 productsArray[i].productInventory = theproduct.getInt("productInventory");

@@ -1,6 +1,5 @@
 package client.ui;
 
-import client.service.Role;
 import client.service.StudentInformation;
 import client.service.User;
 
@@ -21,6 +20,7 @@ import javafx.geometry.Pos;
 
 import java.net.URL;
 
+import static client.service.Role.StuInfoManager;
 import static client.service.StudentInformation.modifyOneStudentInfo;
 
 public class StuUI extends Application {
@@ -31,7 +31,7 @@ public class StuUI extends Application {
     }
 
     public VBox createStudentInfoView() {
-        if(user.getRole()== Role.StuInfoManager) {
+        if(user.getRole()==StuInfoManager){
             StudentInformation.oneStudentInformation[] students = StudentInformation.viewAllStudentInfo();
 
             TableView<StudentInformation.oneStudentInformation> table = new TableView<>();

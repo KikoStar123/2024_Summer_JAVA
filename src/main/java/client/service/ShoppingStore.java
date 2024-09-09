@@ -78,7 +78,7 @@ public class ShoppingStore {
     // 更新商店信息
     // 输入 商店id storeID；商店名称 storeName；联系电话 storePhone；商店好评率 storeRate；商店状态 storeStatus
     // 返回 状态
-    public static boolean updateStore(String storeID, String storeName, String storePhone, float storeRate, boolean storeStatus) throws IOException
+    public boolean updateStore(String storeID, String storeName, String storePhone, float storeRate, boolean storeStatus) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据

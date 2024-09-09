@@ -14,6 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 
+import static client.service.Role.Librarian;
+import static client.service.Role.StuInfoManager;
+
 public class MainUI extends Application {
     private User user;
 
@@ -21,7 +24,7 @@ public class MainUI extends Application {
         this.user = user;
     }
 
-    BorderPane borderPane;
+    static BorderPane borderPane;
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("主界面");
@@ -63,11 +66,30 @@ public class MainUI extends Application {
         bankButton.setOnAction(e -> handleBank(user.getUsername()));
         leftBox.getChildren().add(bankButton);
 
-        Button updateButton = new Button("修改密码");
-        updateButton.setPrefSize(150, 40);
-        updateButton.setStyle("-fx-background-color: #18bcaf; -fx-text-fill: white; -fx-font-size: 16px;");
-        updateButton.setOnAction(e -> handleupdatepwd(user.getUsername()));
-        leftBox.getChildren().add(updateButton);
+        Button registerButton = new Button("修改密码");
+        registerButton.setPrefSize(150, 40);
+        registerButton.setStyle("-fx-background-color: #18bcaf; -fx-text-fill: white; -fx-font-size: 16px;");
+        registerButton.setOnAction(e -> handleShop(user.getUsername()));
+        leftBox.getChildren().add(registerButton);
+
+        if(user.getRole()==Librarian)
+        {
+            courseButton.setVisible(false);
+            registerButton.setVisible(false);
+            shopButton.setVisible(false);
+            bankButton.setVisible(false);
+            registerButton.setVisible(false);
+            stuButton.setVisible(false);
+        }
+        if(user.getRole()==StuInfoManager)
+        {
+            courseButton.setVisible(false);
+            registerButton.setVisible(false);
+            shopButton.setVisible(false);
+            bankButton.setVisible(false);
+            registerButton.setVisible(false);
+            bankButton.setVisible(false);
+        }
 
         // 添加标签
         Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
@@ -93,7 +115,10 @@ public class MainUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    private void handleShop(String username) {//解决学生的商店ui
+    private void handleShop(String username) {
+        ShopUI_stu shopUI = new ShopUI_stu(user);
+        VBox shopLayout = shopUI.getShopLayout();
+        borderPane.setCenter(shopLayout);
     }
 
     private void handleupdatepwd(String username) {
@@ -109,7 +134,7 @@ public class MainUI extends Application {
 
     }
 
-    private void handleLibrary(String username) {//解决图书馆ui
+    private void handleLibrary(String username) {
         Platform.runLater(() -> {
             LibraryUI libraryUI = new LibraryUI(user);
            BorderPane library=libraryUI.createLibraryView();

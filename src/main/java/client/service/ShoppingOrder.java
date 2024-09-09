@@ -347,7 +347,7 @@ public class ShoppingOrder {
         }
     }
 
-    // 获取订单是否评论的状态not
+    // 获取订单是否评论的状态
     // 输入 订单id orderID
     // 返回 是否评价 1代表评价过了，0代表没评价过，允许评价
     public boolean getOrderCommentStatus(String orderID) throws IOException
@@ -376,7 +376,7 @@ public class ShoppingOrder {
         }
     }
 
-    // 更新是否评论状态not
+    // 更新是否评论状态
     // 输入 订单id orderID；是否评价 whetherComment 1代表评价过了，0代表没评价过，允许评价
     // 返回 状态
     public boolean updateCommentStatus(String orderID, boolean whetherComment) throws IOException
@@ -406,20 +406,21 @@ public class ShoppingOrder {
         }
     }
 
-    // 支付not
+    // 支付
     // 输入 订单id orderID；支付金额 amount
     // 返回 状态
-    public boolean payOrder(String[] orderIDs, float amount) throws IOException {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT); // 创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) { // 创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    public static boolean payOrder(String orderID, float amount) throws IOException
+    {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
 
             // 构建请求
             JSONObject request = new JSONObject();
             request.put("requestType", "order");
             request.put("parameters", new JSONObject()
                     .put("action", "pay")
-                    .put("orderIDs", new JSONArray(orderIDs)) // 传递订单ID数组
+                    .put("orderID", orderID)
                     .put("amount", amount));
 
             // 发送请求
@@ -428,19 +429,17 @@ public class ShoppingOrder {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            return jsonResponse.getString("status").equals("success"); // 判断返回值，是否成功
+            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-
-
     // 根据商店ID查询该商店的所有订单
     // 输入 商店id storeID
     // 返回 订单数组
-    public static oneOrder[] getAllOrdersByStore(String storeID) throws IOException
+    public oneOrder[] getAllOrdersByStore(String storeID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -451,7 +450,7 @@ public class ShoppingOrder {
             request.put("requestType", "order");
             request.put("parameters", new JSONObject()
                     .put("action", "getAllOrdersByStore")
-                    .put("storeID", storeID));
+                    .put("username", storeID));
 
             // 发送请求
             out.println(request);
@@ -469,6 +468,7 @@ public class ShoppingOrder {
 
             for (int i = 0; i < numOrders; i++) {
                 JSONObject theOrder = data.getJSONObject(i);
+
                 ordersArray[i] = new oneOrder();
                 ordersArray[i].orderID=theOrder.getString("orderID");
                 ordersArray[i].username = theOrder.getString("username");
