@@ -14,6 +14,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 
+import java.io.IOException;
+
 import static client.service.Role.Librarian;
 import static client.service.Role.StuInfoManager;
 
@@ -57,7 +59,13 @@ public class MainUI extends Application {
         Button shopButton = new Button("商店");
         shopButton.setPrefSize(150, 40);
         shopButton.setStyle("-fx-background-color: #b66921; -fx-text-fill: white; -fx-font-size: 16px;");
-        shopButton.setOnAction(e -> handleShop(user.getUsername()));
+        shopButton.setOnAction(e -> {
+            try {
+                handleShop(user.getUsername());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         leftBox.getChildren().add(shopButton);
 
         Button bankButton = new Button("银行");
@@ -69,7 +77,13 @@ public class MainUI extends Application {
         Button registerButton = new Button("修改密码");
         registerButton.setPrefSize(150, 40);
         registerButton.setStyle("-fx-background-color: #18bcaf; -fx-text-fill: white; -fx-font-size: 16px;");
-        registerButton.setOnAction(e -> handleShop(user.getUsername()));
+        registerButton.setOnAction(e -> {
+            try {
+                handleShop(user.getUsername());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         leftBox.getChildren().add(registerButton);
 
         if(user.getRole()==Librarian)
@@ -115,7 +129,7 @@ public class MainUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    private void handleShop(String username) {
+    private void handleShop(String username) throws IOException {
         ShopUI_stu shopUI = new ShopUI_stu(user);
         VBox shopLayout = shopUI.getShopLayout();
         borderPane.setCenter(shopLayout);

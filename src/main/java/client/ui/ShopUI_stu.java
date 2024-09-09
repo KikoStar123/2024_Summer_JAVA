@@ -21,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static client.service.ShoppingOrder.createOrder;
 import static client.ui.MainUI.borderPane;
@@ -31,7 +32,7 @@ public class ShopUI_stu {
     {
         this.user=user;
     }
-    public VBox getShopLayout() {
+    public VBox getShopLayout() throws IOException {
         VBox shopLayout = new VBox();
 
         // 创建顶部按钮
@@ -60,10 +61,10 @@ public class ShopUI_stu {
         TextField searchField = new TextField();
         searchField.setPromptText("搜索商品");
         ComboBox<String> sortByComboBox = new ComboBox<>();
-        sortByComboBox.setItems(FXCollections.observableArrayList("price", "rate"));
+        sortByComboBox.setItems(FXCollections.observableArrayList("按价格排序", "按好评率排序"));
         sortByComboBox.setPromptText("排序方式");
         ComboBox<String> sortOrderComboBox = new ComboBox<>();
-        sortOrderComboBox.setItems(FXCollections.observableArrayList("ASC", "DESC"));
+        sortOrderComboBox.setItems(FXCollections.observableArrayList("升序", "降序"));
         sortOrderComboBox.setPromptText("排序顺序");
         Button searchButton = new Button("搜索");
         searchBox.getChildren().addAll(searchField, sortByComboBox, sortOrderComboBox, searchButton);
@@ -78,12 +79,60 @@ public class ShopUI_stu {
         scrollPane.setFitToWidth(true);
 
         shopLayout.getChildren().addAll(topMenu, searchBox, scrollPane);
+        ShoppingProduct shoppingProduct1 = new ShoppingProduct();
+        ShoppingProduct.oneProduct[] products1 = shoppingProduct1.getAllProducts("price","ASC");
+        items.clear();
+        for(ShoppingProduct.oneProduct product:products1){
+            HBox productItem = new HBox(10); // 间距为10
+            productItem.setPadding(new Insets(10)); // 内边距为10
+
+            // 创建商品图片
+                    ImageView productImage = new ImageView();
+                    String relativePath = product.getProductImage().replace("uploads/", "");
+                    Image image = new Image("http://localhost:8082/files/" + relativePath);
+                    productImage.setImage(image);
+                    productImage.setFitWidth(150); // 设置图片宽度
+                    productImage.setFitHeight(150); // 设置图片高度
+                    productImage.setPreserveRatio(true); // 保持图片比例
+
+            // 创建商品详情
+            VBox productDetails = new VBox(5); // 间距为5
+            Label lblName = new Label("名称: " + product.getProductName());
+            Label lblRating = new Label("好评率: " + product.getProductCommentRate() * 100 + "%");
+            Label lblOriginalPrice = new Label("原价: ¥" + product.getProductOriginalPrice());
+            Label lblCurrentPrice = new Label("现价: ¥" + product.getProductCurrentPrice());
+            Label lblSeller = new Label("商家名称: " + product.getStoreName());
+            productDetails.getChildren().addAll(lblName, lblRating, lblOriginalPrice, lblCurrentPrice, lblSeller);
+
+            productItem.getChildren().addAll( productDetails);
+            items.add(productItem);
+
+            // 为每个商品栏设置双击事件
+            productItem.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    // 显示商品详情信息
+                    try {
+                        borderPane.setCenter(new VBox(showProductDetails(product)));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+        }
 
         // 搜索按钮点击事件
         searchButton.setOnAction(e -> {
             String searchTerm = searchField.getText();
-            String sortBy = sortByComboBox.getValue();
-            String sortOrder = sortOrderComboBox.getValue();
+            String sortBy;
+            if(Objects.equals(sortByComboBox.getValue(), "按价格排序"))
+                sortBy="price";
+            else
+                sortBy="rate";
+            String sortOrder;
+            if(Objects.equals(sortOrderComboBox.getValue(), "升序"))
+                sortOrder="ASC";
+            else
+                sortOrder="DESC";
 
             try {
                 ShoppingProduct shoppingProduct = new ShoppingProduct();
@@ -94,13 +143,13 @@ public class ShopUI_stu {
                     productItem.setPadding(new Insets(10)); // 内边距为10
 
                     // 创建商品图片
-                    ImageView productImage = new ImageView();
-                    String relativePath = product.getProductImage().replace("uploads/", "");
-                    Image image = new Image("http://localhost:8082/files/" + relativePath);
-                    productImage.setImage(image);
-                    productImage.setFitWidth(150); // 设置图片宽度
-                    productImage.setFitHeight(150); // 设置图片高度
-                    productImage.setPreserveRatio(true); // 保持图片比例
+//                    ImageView productImage = new ImageView();
+//                    String relativePath = product.getProductImage().replace("uploads/", "");
+//                    Image image = new Image("http://localhost:8082/files/" + relativePath);
+//                    productImage.setImage(image);
+//                    productImage.setFitWidth(150); // 设置图片宽度
+//                    productImage.setFitHeight(150); // 设置图片高度
+//                    productImage.setPreserveRatio(true); // 保持图片比例
 
                     // 创建商品详情
                     VBox productDetails = new VBox(5); // 间距为5
@@ -111,7 +160,7 @@ public class ShopUI_stu {
                     Label lblSeller = new Label("商家名称: " + product.getStoreName());
                     productDetails.getChildren().addAll(lblName, lblRating, lblOriginalPrice, lblCurrentPrice, lblSeller);
 
-                    productItem.getChildren().addAll(productImage, productDetails);
+                    productItem.getChildren().addAll( productDetails);
                     items.add(productItem);
 
                     // 为每个商品栏设置双击事件
@@ -257,7 +306,11 @@ public class ShopUI_stu {
         ordersBox.getChildren().addAll(scrollPane);
         Button backButton=new Button("返回");
         backButton.setOnAction(e->{
-            borderPane.setCenter(new VBox(getShopLayout()));
+            try {
+                borderPane.setCenter(new VBox(getShopLayout()));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
         borderPane.setCenter(ordersBox);
         return ordersBox;
@@ -488,7 +541,11 @@ public class ShopUI_stu {
         buyBox.getChildren().addAll(buyButton, addButton);
         Button backButton = new Button("返回");
         backButton.setOnAction(e -> {
-            borderPane.setCenter(new VBox(getShopLayout()));
+            try {
+                borderPane.setCenter(new VBox(getShopLayout()));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         detailLayout.getChildren().addAll(productImage, lblName, lblProductdetail, lblOriginalPrice, lblCurrentPrice, lblInventory, rateButton, lblAddress, shopperBox, buyBox, backButton);
@@ -510,7 +567,7 @@ public class ShopUI_stu {
         for (ShoppingProduct.oneProduct commonproduct : commonproducts)
         {
             VBox productItem=new VBox();
-            Label productDetail=new Label("商品属性"+commonproduct.getProductDetail());
+            Label productDetail=new Label(commonproduct.getProductDetail());
             productItem.getChildren().addAll(productDetail);
             items.add(productItem);
         }
@@ -608,7 +665,7 @@ public class ShopUI_stu {
         for (ShoppingProduct.oneProduct commonproduct : commonproducts)
         {
             VBox productItem=new VBox();
-            Label productDetail=new Label("商品属性"+commonproduct.getProductDetail());
+            Label productDetail=new Label(commonproduct.getProductDetail());
             productItem.getChildren().addAll(productDetail);
             items.add(productItem);
         }
