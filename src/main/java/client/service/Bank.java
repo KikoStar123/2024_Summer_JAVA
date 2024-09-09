@@ -235,7 +235,7 @@ public class Bank {
     }
 //登陆同时返回user类
 // 新函数，返回BankUser对象
-public BankUser getBankUser(String username,String bankpwd) {
+public static BankUser getBankUser(String username,String bankpwd) {
     BankUser user = null;
     try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
         JSONObject request = new JSONObject();

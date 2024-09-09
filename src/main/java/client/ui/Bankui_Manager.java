@@ -231,8 +231,8 @@ public class Bankui_Manager extends Application {
             if (user != null) {
                 // 更新UI显示用户信息
                 userLabel.setText("用户名: " + user.getUsername());
-                balanceLabel.setText("总余额: " + user.getBalance());
-                currentBalanceLabel.setText("活期余额: " + user.getCurrentBalance());
+                balanceLabel.setText("总资产: " + user.getBalance());
+                currentBalanceLabel.setText("活期资产: " + user.getCurrentBalance());
                 accountInfoBox.setVisible(true);
             } else {
                 // 处理用户未找到的情况
