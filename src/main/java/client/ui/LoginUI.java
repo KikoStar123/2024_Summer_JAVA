@@ -24,15 +24,16 @@ import static client.service.Role.BankManager;
 import static client.service.Role.Librarian;
 
 public class LoginUI extends Application {
-    private TextField usernameField;
-    private PasswordField passwordField;
+    private static TextField usernameField;
+    private static PasswordField passwordField;
+    static BorderPane root;
 
+    static GridPane grid;
     public static void main(String[] args) {
         launch(args);
     }
-    @Override
     public void start(Stage primaryStage) {
-        BorderPane root = new BorderPane();
+        root = new BorderPane();
 
         // 设置根布局的样式
         root.setStyle("-fx-border-radius: 20px; " // 设置圆角边框半径
@@ -42,13 +43,13 @@ public class LoginUI extends Application {
 
         // 创建 Scene，并将根布局添加到其中
 
-        Scene scene_login = new Scene(root, 300, 200);
-        primaryStage.setScene(scene_login);
-        scene_login.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        //Scene scene_login = new Scene(root, 300, 200);
+        //primaryStage.setScene(scene_login);
+        //scene_login.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         primaryStage.setTitle("登陆");
         //primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
 
-        GridPane grid = new GridPane();
+        grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setAlignment(Pos.CENTER);
@@ -94,14 +95,15 @@ public class LoginUI extends Application {
         grid.add(buttonBox, 0, 3, 2, 1); // 从第0列开始，跨越2列，从第3行开始
 
         // 应用CSS样式
-        Scene scene = new Scene(grid, 350, 200);
-        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        root.setCenter(grid);
+        Scene scene = new Scene(root, 350, 400);
+        //scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    private void handleLogin() {
+    private static void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText(); // JavaFX的PasswordField没有getPassword方法，使用getText
 
@@ -147,10 +149,6 @@ public class LoginUI extends Application {
                 });
             }
 
-
-
-
-
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Login");
@@ -159,11 +157,18 @@ public class LoginUI extends Application {
             alert.showAndWait();
         }
     }
-    private void handleRegister() {
-        Platform.runLater(() -> {
-            RegisterUI registerUI = new RegisterUI();
-            registerUI.display();
-        });
+    private static void handleRegister() {
+        GridPane grid = RegisterUI.showRegisterUI();
+       root.setCenter(grid);
+    }
+    public static void showLoginUI() {
+        Stage stage = new Stage();
+        LoginUI loginUI = new LoginUI();
+        try {
+            loginUI.start(stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

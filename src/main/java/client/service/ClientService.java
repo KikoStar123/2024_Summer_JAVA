@@ -7,8 +7,8 @@ import java.time.LocalDate;
 import java.time.Period;
 
 public class ClientService {
-    private final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
-    private final int SERVER_PORT = IpConfig.SERVER_PORT;
+    private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
+    private static final int SERVER_PORT = IpConfig.SERVER_PORT;
 
     public boolean login(String username, String password) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
@@ -107,7 +107,7 @@ public class ClientService {
             return -1; // Return -1 or throw an exception to indicate an error
         }
     }
-    public boolean register(String truename, Gender gender, String stuid, String origin, String birthday, String academy, String password) {
+    public static boolean register(String truename, Gender gender, String stuid, String origin, String birthday, String academy, String password) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             // 创建请求
             int age =calculateAge(birthday);
