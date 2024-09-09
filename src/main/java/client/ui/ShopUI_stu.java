@@ -87,13 +87,13 @@ public class ShopUI_stu {
             productItem.setPadding(new Insets(10)); // 内边距为10
 
             // 创建商品图片
-                    ImageView productImage = new ImageView();
-                    String relativePath = product.getProductImage().replace("uploads/", "");
-                    Image image = new Image("http://localhost:8082/files/" + relativePath);
-                    productImage.setImage(image);
-                    productImage.setFitWidth(150); // 设置图片宽度
-                    productImage.setFitHeight(150); // 设置图片高度
-                    productImage.setPreserveRatio(true); // 保持图片比例
+//                    ImageView productImage = new ImageView();
+//                    String relativePath = product.getProductImage().replace("uploads/", "");
+//                    Image image = new Image("http://localhost:8082/files/" + relativePath);
+//                    productImage.setImage(image);
+//                    productImage.setFitWidth(150); // 设置图片宽度
+//                    productImage.setFitHeight(150); // 设置图片高度
+//                    productImage.setPreserveRatio(true); // 保持图片比例
 
             // 创建商品详情
             VBox productDetails = new VBox(5); // 间距为5
@@ -471,7 +471,15 @@ public class ShopUI_stu {
             }
         }
 
-        HBox bottom=new HBox(totalPriceLabel,buybutton);
+        Button backButton=new Button("返回");
+        backButton.setOnAction(e->{
+            try {
+                borderPane.setCenter(getShopLayout());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        HBox bottom=new HBox(totalPriceLabel,buybutton,backButton);
         VBox layout = new VBox();
         layout.getChildren().addAll(scrollPane, bottom);
         borderPane.setCenter(layout);
@@ -481,14 +489,14 @@ public class ShopUI_stu {
         VBox detailLayout = new VBox(10); // 间距为10
         detailLayout.setPadding(new Insets(10)); // 内边距为10
 
-        // 创建商品图片
-        ImageView productImage = new ImageView();
-        String relativePath = product.getProductImage().replace("uploads/", "");
-        Image image = new Image("http://localhost:8082/files/" + relativePath);
-        productImage.setImage(image);
-        productImage.setFitWidth(200); // 设置图片宽度
-        productImage.setFitHeight(200); // 设置图片高度
-        productImage.setPreserveRatio(true); // 保持图片比例
+//        // 创建商品图片
+//        ImageView productImage = new ImageView();
+//        String relativePath = product.getProductImage().replace("uploads/", "");
+//        Image image = new Image("http://localhost:8082/files/" + relativePath);
+//        productImage.setImage(image);
+//        productImage.setFitWidth(200); // 设置图片宽度
+//        productImage.setFitHeight(200); // 设置图片高度
+//        productImage.setPreserveRatio(true); // 保持图片比例
 
         Label lblName = new Label("商品名称: " + product.getProductName());
         Label lblProductdetail = new Label("商品属性: " + product.getProductDetail());
@@ -548,7 +556,7 @@ public class ShopUI_stu {
             }
         });
 
-        detailLayout.getChildren().addAll(productImage, lblName, lblProductdetail, lblOriginalPrice, lblCurrentPrice, lblInventory, rateButton, lblAddress, shopperBox, buyBox, backButton);
+        detailLayout.getChildren().addAll( lblName, lblProductdetail, lblOriginalPrice, lblCurrentPrice, lblInventory, rateButton, lblAddress, shopperBox, buyBox, backButton);
 
         return detailLayout;
     }
