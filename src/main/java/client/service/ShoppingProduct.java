@@ -82,7 +82,7 @@ public class ShoppingProduct {
     // 查看单个商品详细信息
     // 输入 商品id productID
     // 返回 一个商品对象
-    static oneProduct theproduct =new oneProduct();
+    public static oneProduct theproduct =new oneProduct();
     public static oneProduct getProductDetails(String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号

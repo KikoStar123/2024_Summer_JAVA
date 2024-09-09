@@ -75,25 +75,22 @@ public class MainUI extends Application {
         if(user.getRole()==Librarian)
         {
             courseButton.setVisible(false);
-            registerButton.setVisible(false);
+            stuButton.setVisible(false);
             shopButton.setVisible(false);
             bankButton.setVisible(false);
-            registerButton.setVisible(false);
-            stuButton.setVisible(false);
+            updateButton.setVisible(false);
         }
         if(user.getRole()==StuInfoManager)
         {
             courseButton.setVisible(false);
-            registerButton.setVisible(false);
+            stuButton.setVisible(false);
             shopButton.setVisible(false);
             bankButton.setVisible(false);
-            registerButton.setVisible(false);
-            bankButton.setVisible(false);
+            updateButton.setVisible(false);
         }
 
         // 添加标签
         Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
-
 
         // 将左侧按钮栏添加到 BorderPane 的左侧
         borderPane.setLeft(leftBox);
