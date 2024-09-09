@@ -464,12 +464,7 @@ public class ShopUI_Manager extends Application {
             Alert alert = new Alert(Alert.AlertType.ERROR, "获取评论时发生错误。");
             alert.showAndWait();
         }
-
-
-
     }
-
-
     // 创建订单界面
     private BorderPane createOrdersPane() {
         BorderPane ordersPane = new BorderPane();
@@ -488,7 +483,6 @@ public class ShopUI_Manager extends Application {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         // 将订单信息VBox设置为BorderPane的中心内容
         ordersPane.setCenter(orderVBox);
         // 将初始订单列表布局压入历史栈
