@@ -70,6 +70,7 @@ public class ClientHandler implements Runnable {
         routeMap.put("updateBookPDFPath", new UpdateBookPDFPathRequestHandler());
 
 
+
         // 课程相关请求
         routeMap.put("enrollInCourse", new EnrollInCourseRequestHandler());
         routeMap.put("dropCourse", new DropCourseRequestHandler());
@@ -104,7 +105,7 @@ public class ClientHandler implements Runnable {
         routeMap.put("order", new OrderRequestHandler());      // 处理与订单相关的请求
         routeMap.put("store", new StoreRequestHandler());      // 处理店铺相关请求
 
-        //银行相关请求
+        // 银行
         routeMap.put("deposit", new DepositRequestHandler());
         routeMap.put("withdraw", new WithdrawRequestHandler());
         routeMap.put("bankLogin", new BankLoginRequestHandler());
@@ -115,6 +116,12 @@ public class ClientHandler implements Runnable {
         routeMap.put("updatePwd", new UpdatePwdRequestHandler());
         routeMap.put("searchUser", new SearchUserRequestHandler());
         routeMap.put("getBankUser", new GetBankUserRequestHandler());
+        routeMap.put("simulateMonthEnd", new SimulateMonthEndRequestHandler());
+        routeMap.put("simulateYearEnd", new SimulateYearEndRequestHandler());
+        routeMap.put("updateInterestRate", new UpdateInterestRateRequestHandler());
+        routeMap.put("getInterestRate", new GetInterestRateRequestHandler());
+
+
 
 
         return routeMap;

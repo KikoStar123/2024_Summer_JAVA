@@ -2,14 +2,17 @@ package client.service;
 
 public class BankUser {
     private String username;
-    private float balance;
+    private double balance;
+
+    private double currentBalance;
     private String bankpwd;
     //private BankRecord[] bankRecords; // 声明一个BankRecord数组
 
-    public BankUser(String username, float balance, String bankpwd) {
+    public BankUser(String username, double balance, String bankpwd, double currentBalance) {
         this.username = username;
         this.balance = balance;
         this.bankpwd = bankpwd;
+        this.currentBalance = currentBalance;
     }
 
     // 构造函数、getter和setter方法
@@ -18,7 +21,7 @@ public class BankUser {
         return username;
     }
 
-    public float getBalance() {
+    public double getBalance() {
         return balance;
     }
 
@@ -26,10 +29,13 @@ public class BankUser {
         return bankpwd;
     }
 
+    public double getCurrentBalance() {return currentBalance; }
+
     // BankUser的setter方法
     public void setUsername(String username) {
         this.username = username;
     }
+
 
     // 添加银行记录的方法
 //        public void addBankRecord(BankRecord record) {
@@ -47,13 +53,15 @@ public class BankUser {
 //            return bankRecords;
 //        }
 
-    public void setBalance(float balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
     public void setBankpwd(String bankpwd) {
         this.bankpwd = bankpwd;
     }
+
+    public void setCurrentBalance(double currentBalance) {this.currentBalance = currentBalance; }
 
     // 内部类
     public static class BankRecord {

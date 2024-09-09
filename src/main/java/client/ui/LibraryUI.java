@@ -14,14 +14,20 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-//import javafx.scene.web.WebView;
-//import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
+import javafx.scene.web.WebEngine;
+import com.dansoftware.pdfdisplayer.PDFDisplayer;
 
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,36 +76,6 @@ public class LibraryUI {
         borrowButton.setOnMouseExited(e -> borrowButton.setStyle(buttonStyle));
         borrowButton.setOnMousePressed(e -> borrowButton.setStyle(buttonPressedStyle));
         borrowButton.setOnMouseReleased(e -> borrowButton.setStyle(buttonHoverStyle));
-
-        if (user.getRole() == Role.Librarian) {
-            Button addButton = new Button("借阅/归还");
-            Button addbButton = new Button("添加新书");
-            Button updateButton = new Button("更新数目");
-            addButton.setStyle(buttonStyle);
-            addbButton.setStyle(buttonStyle);
-            updateButton.setStyle(buttonStyle);
-
-            addButton.setOnMouseEntered(e -> addButton.setStyle(buttonHoverStyle));
-            addButton.setOnMouseExited(e -> addButton.setStyle(buttonStyle));
-            addButton.setOnMousePressed(e -> addButton.setStyle(buttonPressedStyle));
-            addButton.setOnMouseReleased(e -> addButton.setStyle(buttonHoverStyle));
-
-            addbButton.setOnMouseEntered(e -> addbButton.setStyle(buttonHoverStyle));
-            addbButton.setOnMouseExited(e -> addbButton.setStyle(buttonStyle));
-            addbButton.setOnMousePressed(e -> addbButton.setStyle(buttonPressedStyle));
-            addbButton.setOnMouseReleased(e -> addbButton.setStyle(buttonHoverStyle));
-
-            updateButton.setOnMouseEntered(e -> updateButton.setStyle(buttonHoverStyle));
-            updateButton.setOnMouseExited(e -> updateButton.setStyle(buttonStyle));
-            updateButton.setOnMousePressed(e -> updateButton.setStyle(buttonPressedStyle));
-            updateButton.setOnMouseReleased(e -> updateButton.setStyle(buttonHoverStyle));
-
-
-            searchBox.getChildren().addAll(addButton, addbButton, updateButton);
-            addButton.setOnAction(e -> showAddDeleteWindow());
-            addbButton.setOnAction(e -> showAddbWindow());
-            updateButton.setOnAction(e -> showUpdateWindow());
-        }
 
         // 结果显示区域
         resultTable = new TableView<>();
@@ -159,6 +135,7 @@ public class LibraryUI {
         //借阅记录按钮事件
         borrowButton.setOnAction(e -> showBorrowWindow());
 
+
         // 表格行点击事件
         resultTable.setOnMouseClicked((MouseEvent event) -> {
             if (event.getClickCount() == 2) { // 双击事件
@@ -172,7 +149,6 @@ public class LibraryUI {
     }
 
     private void showUpdateWindow() {
-        VBox vbox = new VBox(10); // 间距为10的 VBox
         Stage updateStage =new Stage();
         updateStage.setTitle("更新书籍");
         Label isbnLabel = new Label("Bookid:");
@@ -180,8 +156,6 @@ public class LibraryUI {
         Label finalLibNumberLabel = new Label("最终数目:");
         TextField finalLibNumberField = new TextField();
         Button confirmButton = new Button("确认");
-        // 将组件添加到布局容器中
-        vbox.getChildren().addAll(isbnLabel, isbnField, finalLibNumberLabel, finalLibNumberField, confirmButton);
         confirmButton.setOnAction(e -> {
             String isbn = isbnField.getText();
             int finalLibNumber = Integer.parseInt(finalLibNumberField.getText());
@@ -189,12 +163,6 @@ public class LibraryUI {
             library.updateBook(isbn,finalLibNumber);
             updateStage.close();
         });
-        // 创建场景并设置到 Stage 上
-        Scene scene = new Scene(vbox, 300, 200); // 宽度300，高度200
-        updateStage.setScene(scene);
-
-        // 显示窗口
-        updateStage.show();
     }
 
     private void showAddbWindow() {
@@ -245,7 +213,7 @@ public class LibraryUI {
         addbStage.show();
 
     }
-//显示书籍的借阅记录
+
     private void showBorrowWindow() {
         Stage borrowStage = new Stage();
         borrowStage.setTitle("借阅记录");
@@ -254,8 +222,6 @@ public class LibraryUI {
         TableView<LibRecord> borrowedBooksTable = new TableView<>();
 
 // 设置 titleColumn 的单元格值工厂
-        TableColumn<LibRecord, String> truenameColumn = new TableColumn<>("借书人");
-        truenameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTruename()));
         TableColumn<LibRecord, String> titleColumn = new TableColumn<>("书名");
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         TableColumn<LibRecord, String> isbnColumn = new TableColumn<>("ISBN");
@@ -267,8 +233,8 @@ public class LibraryUI {
         TableColumn<LibRecord, String> statusColumn = new TableColumn<>("借阅状态");
         statusColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRecordStatus()));
 
-        borrowedBooksTable.getColumns().addAll(truenameColumn,titleColumn, isbnColumn, borrowdataColumn, returndataColumn,statusColumn);
-        if (user.getUsername().charAt(0) != '0') {
+        borrowedBooksTable.getColumns().addAll(titleColumn, isbnColumn, borrowdataColumn, returndataColumn,statusColumn);
+        if (user.getRole().equals(Role.student)) {
             // 学生用户，添加续借栏
             TableColumn<LibRecord, Void> renewColumn = new TableColumn<>("续借");
             renewColumn.setCellFactory(col -> new TableCell<LibRecord, Void>() {
@@ -302,7 +268,7 @@ public class LibraryUI {
             borrowedBooksTable.getColumns().add(renewColumn);
         }
         //管理员，添加用户名栏
-        if (user.getRole()==Role.Librarian) {
+        if (user.getUsername().charAt(0) == '0') {
             // 管理员，添加用户名列
             TableColumn<LibRecord, String> usernameColumn = new TableColumn<>("用户名");
             usernameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsername()));
@@ -319,7 +285,7 @@ public class LibraryUI {
             String searchText = searchField.getText();
             // 根据用户名搜索借阅记录的逻辑
             borrowedBooksTable.setItems(FXCollections.observableArrayList(library.getLibRecordsByUsername(searchText)));
-          //yjb-lzy  borrowedBooksTable.setItems(FXCollections.observableArrayList(library.getAllLibRecords()));
+            borrowedBooksTable.setItems(FXCollections.observableArrayList(library.getAllLibRecords()));
         });
 
         refreshButton.setOnAction(e -> {
@@ -353,12 +319,13 @@ public class LibraryUI {
         borrowStage.show();
     }
 
-    private void updateTableData(List<Book> books) {
+    void updateTableData(List<Book> books) {
         resultTable.getItems().clear();
         resultTable.getItems().addAll(books);
     }
 
-    private void showBookDetails(Book book) {
+
+    void showBookDetails(Book book) {
         Stage detailStage = new Stage();
         detailStage.initModality(Modality.APPLICATION_MODAL);
         detailStage.setTitle("书籍详情");
@@ -369,7 +336,6 @@ public class LibraryUI {
         vbox.getChildren().add(new Label("书名: " + book.getName()));
         vbox.getChildren().add(new Label("作者: " + book.getAuthor()));
         vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()));
-        vbox.getChildren().add(new Label("ISBN: "+book.getBookID()));
         vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()));
         vbox.getChildren().add(new Label("分类: " + book.getClassification()));
         vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()));
@@ -382,6 +348,7 @@ public class LibraryUI {
         if (imagePath != null && !imagePath.isEmpty()) {
             // 去掉前缀 "uploads/"
             String relativePath = imagePath.replace("uploads/", "");
+            System.out.println("http://localhost:8082/files/" + relativePath);
             Image bookImage = new Image("http://localhost:8082/files/" + relativePath);
             bookImageView.setImage(bookImage);
             bookImageView.setFitWidth(200); // 设置图片宽度
@@ -390,93 +357,34 @@ public class LibraryUI {
         vbox.getChildren().add(bookImageView);
 
         // 添加按钮来预览 PDF 文件
-//        String pdfPath = book.getPdfPath(); // 获取PDF路径
-//        if (pdfPath != null && !pdfPath.isEmpty()) {
-//            Button previewPdfButton = new Button("预览PDF");
-//            previewPdfButton.setOnAction(e -> {
-//                Stage pdfStage = new Stage();
-//                pdfStage.initModality(Modality.APPLICATION_MODAL);
-//                pdfStage.setTitle("PDF预览");
-//
-//                WebView pdfWebView = new WebView();
-//                WebEngine webEngine = pdfWebView.getEngine();
-//                // 去掉前缀 "uploads/"
-//                String relativePdfPath = pdfPath.replace("uploads/", "");
-//                String pdfViewerUrl = "http://localhost:8082/resources/pdf-viewer.html?file=" + relativePdfPath;
-//                webEngine.load(pdfViewerUrl);
-//                pdfWebView.setPrefSize(600, 800); // 设置PDF预览窗口大小
-//
-//                Scene pdfScene = new Scene(pdfWebView);
-//                pdfStage.setScene(pdfScene);
-//                pdfStage.show();
-//            });
-//            vbox.getChildren().add(previewPdfButton);
-//        }
+        String pdfPath = book.getPdfPath(); // 获取PDF路径
+        if (pdfPath != null && !pdfPath.isEmpty()) {
+            Button previewPdfButton = new Button("预览PDF");
+            previewPdfButton.setOnAction(e -> {
+                Stage pdfStage = new Stage();
+                pdfStage.initModality(Modality.APPLICATION_MODAL);
+                pdfStage.setTitle("PDF预览");
+
+                PDFDisplayer pdfDisplayer = new PDFDisplayer();
+                // 去掉前缀 "uploads/"
+                String relativePdfPath = pdfPath.replace("uploads/", "");
+                try {
+                    System.out.printf("http://localhost:8082/files/" + relativePdfPath);
+                    pdfDisplayer.loadPDF(new URL("http://localhost:8082/files/" + relativePdfPath));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+                Scene pdfScene = new Scene(pdfDisplayer.toNode());
+                pdfStage.setScene(pdfScene);
+                pdfStage.show();
+            });
+            vbox.getChildren().add(previewPdfButton);
+        }
 
         Scene scene = new Scene(vbox, 600, 800);
         detailStage.setScene(scene);
         detailStage.show();
-    }
-
-    private void showAddDeleteWindow() {
-        Stage addDeleteStage = new Stage();
-        addDeleteStage.setTitle("借阅/归还书籍");
-
-        TextField usernameField = new TextField();
-        usernameField.setPromptText("输入书籍ID");
-
-        TextField bookIdField = new TextField();
-        bookIdField.setPromptText("输入书籍ID");
-
-        Button borrowButton = new Button("借阅");
-        Button returnButton = new Button("归还");
-
-        HBox buttonBox = new HBox(10, borrowButton, returnButton);
-        VBox layout = new VBox(10, new Label("用户名:"), usernameField, new Label("书籍ID:"), bookIdField, buttonBox);
-        layout.setPadding(new Insets(10));
-
-        borrowButton.setOnAction(e -> {
-            String username = usernameField.getText();
-            String bookId = bookIdField.getText();
-            boolean success = library.bookBorrow(username, bookId);
-            Alert alert;
-            if (success) {
-                alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("成功");
-                alert.setHeaderText(null);
-                alert.setContentText("书籍借阅成功！");
-            } else {
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("失败");
-                alert.setHeaderText(null);
-                alert.setContentText("书籍借阅失败！");
-            }
-            alert.showAndWait();
-        });
-
-        returnButton.setOnAction(e -> {
-            String username = usernameField.getText();
-            String bookId = bookIdField.getText();
-            //可能有问题
-            boolean success = library.bookReturn(username,bookId);
-            Alert alert;
-            if (success) {
-                alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("成功");
-                alert.setHeaderText(null);
-                alert.setContentText("书籍归还成功！");
-            } else {
-                alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("失败");
-                alert.setHeaderText(null);
-                alert.setContentText("书籍归还失败！");
-            }
-            alert.showAndWait();
-        });
-
-        Scene scene = new Scene(layout, 300, 200);
-        addDeleteStage.setScene(scene);
-        addDeleteStage.show();
     }
 
 }

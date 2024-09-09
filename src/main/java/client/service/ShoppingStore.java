@@ -162,6 +162,9 @@ public class ShoppingStore {
             String response = in.readLine();
             JSONObject data = new JSONObject(response);
 
+
+            oneStore theoStore = new oneStore();
+
             theoStore.storeID = storeID;
             theoStore.storeName = data.getString("storeName");
             theoStore.storePhone = data.getString("storePhone");

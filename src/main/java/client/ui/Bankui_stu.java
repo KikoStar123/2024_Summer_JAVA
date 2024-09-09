@@ -14,10 +14,6 @@ import javafx.scene.layout.VBox;
 import client.service.Bank;
 import javafx.stage.Stage;
 
-import java.util.List;
-
-import static client.service.Bank.getAllBankRecords;
-
 public class Bankui_stu {
     private static BorderPane bankBox;
     private static HBox buttonsBox;
@@ -170,7 +166,7 @@ public class Bankui_stu {
             alert.setHeaderText(null);
             alert.setContentText("欢迎回来, " + username);
             alert.showAndWait();
-            bankBox.setCenter(showBankMainView(user));
+            bankBox.setCenter(showBankMainView(Bank.getBankUser(username, password)));
         } else {
             // 登录失败
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -182,23 +178,25 @@ public class Bankui_stu {
 
     }
 
-    private static VBox showBankMainView(User user) {
+    private static VBox showBankMainView(BankUser user) {
 
         VBox bankMainView = new VBox(10);
         bankMainView.setPadding(new Insets(10));
-        Label usernameLabel=new Label("我的账户");
+        Label usernameLabel = new Label("我的账户");
         Label welcomeLabel = new Label("欢迎, " + user.getUsername() + "!");
-        Label balanceLabel=new Label("余额: ");
+        Label balanceLabel = new Label("总资产: " + user.getBalance());
+        Label currentBalanceLabel = new Label("活期资产：" + user.getCurrentBalance());
         Button bankrecord=new Button("收支明细");
         Button pwdchange=new Button("修改密码");
-        Label rateLabel=new Label("当前利率: ");
-        bankMainView.getChildren().addAll(usernameLabel,welcomeLabel,balanceLabel,bankrecord,pwdchange,rateLabel);
+        Label currentRateLabel=new Label("活期利率: " + Bank.getInterestRate("活期"));
+        Label fixedDepositRateLabel = new Label("定期利率：" + Bank.getInterestRate("定期"));
+        bankMainView.getChildren().addAll(usernameLabel,welcomeLabel,balanceLabel,currentBalanceLabel, bankrecord,pwdchange, currentRateLabel, fixedDepositRateLabel);
         bankrecord.setOnAction(e -> showBankRecord(user));
         pwdchange.setOnAction(e->showChangepwd(user));
         return bankMainView;
     }
 
-    private static void showChangepwd(User user) {
+    private static void showChangepwd(BankUser user) {
         Stage stage = new Stage();
         stage.setTitle("修改密码");
 
@@ -252,7 +250,7 @@ public class Bankui_stu {
     }
 
 
-    private static void showBankRecord(User user) {
+    private static void showBankRecord(BankUser user) {
 
         Stage recordStage = new Stage();
         recordStage.setTitle("收支明细");

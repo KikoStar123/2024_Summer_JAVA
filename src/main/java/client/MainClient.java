@@ -9,7 +9,10 @@ import client.service.User;
 
 public class MainClient {
     public static void main(String[] args) {
-        //ShopUI_Manager.main(args);
+        if (args.length > 0) {
+            LoginUI.setInstanceName(args[0]);
+        }
         LoginUI.main(args);
+        //Bankui_Manager.main(args);
     }
 }

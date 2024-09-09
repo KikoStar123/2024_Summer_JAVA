@@ -12,13 +12,12 @@ import org.json.JSONObject; // 如果你使用的是 org.json 库
 import java.util.ArrayList;
 import java.util.List;
 
-import client.service.BankUser;
-
 public class Bank {
     private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
     private static final int SERVER_PORT = IpConfig.SERVER_PORT;
-    //利率实现
-    private  double InterestRate;
+    // 利率实现
+    private double InterestRate;
+
     // 获取利率
     public double getInterestRate() {
         return InterestRate;
@@ -34,15 +33,18 @@ public class Bank {
         // 这里使用简单利息计算公式：利息 = 本金 * 利率 * 时间
         return principal * InterestRate * years / 100;
     }
-//存钱
-    public boolean deposit(String username, float amount) {
+
+    // 存钱
+    public boolean deposit(String username, float amount, String depositType, int term) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
             request.put("requestType", "deposit");
             request.put("parameters", new JSONObject()
                     .put("username", username)
-                    .put("amount", amount));
+                    .put("amount", amount)
+                    .put("depositType", depositType)
+                    .put("term", term));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -62,7 +64,8 @@ public class Bank {
         }
         return isSuccess;
     }
-    //取钱
+
+    // 取钱
     public boolean withdraw(String username, float amount) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
@@ -90,6 +93,90 @@ public class Bank {
         }
         return isSuccess;
     }
+
+    // 模拟过月结算
+    public boolean simulateMonthEnd() {
+        boolean isSuccess = false;
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "simulateMonthEnd");
+            request.put("parameters", new JSONObject());
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            isSuccess = jsonResponse.getString("status").equals("success");
+            if (isSuccess) {
+                System.out.println("模拟过月结算成功！");
+            } else {
+                System.out.println("模拟过月结算失败：" + jsonResponse.getString("message"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return isSuccess;
+    }
+
+    // 模拟过年结算
+    public boolean simulateYearEnd() {
+        boolean isSuccess = false;
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "simulateYearEnd");
+            request.put("parameters", new JSONObject());
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            isSuccess = jsonResponse.getString("status").equals("success");
+            if (isSuccess) {
+                System.out.println("模拟过年结算成功！");
+            } else {
+                System.out.println("模拟过年结算失败：" + jsonResponse.getString("message"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return isSuccess;
+    }
+
+    // 修改利率
+    public boolean updateInterestRate(String type, double newRate) {
+        boolean isSuccess = false;
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "updateInterestRate");
+            request.put("parameters", new JSONObject()
+                    .put("type", type)
+                    .put("newRate", newRate));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            isSuccess = jsonResponse.getString("status").equals("success");
+            if (isSuccess) {
+                System.out.println("利率修改成功！");
+            } else {
+                System.out.println("利率修改失败：" + jsonResponse.getString("message"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return isSuccess;
+    }
+
     //获取所有收支记录//管理员和学生都可以使用
     public static List<BankUser.BankRecord> getAllBankRecords(String username) {
         List<BankUser.BankRecord> bankRecords = new ArrayList<>();
@@ -148,7 +235,7 @@ public class Bank {
     }
 //登陆同时返回user类
 // 新函数，返回BankUser对象
-public BankUser getBankUser(String username,String bankpwd) {
+public static BankUser getBankUser(String username,String bankpwd) {
     BankUser user = null;
     try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
         JSONObject request = new JSONObject();
@@ -170,10 +257,11 @@ public BankUser getBankUser(String username,String bankpwd) {
         if (jsonResponse.getString("status").equals("success")) {
             JSONObject userJson = jsonResponse.getJSONObject("data");
             String retrievedUsername = userJson.getString("username");
-            float retrievedBalance = userJson.getFloat("balance");
+            double retrievedBalance = userJson.getDouble("balance");
             String retrievedBankpwd = userJson.getString("bankpwd");
+            double retrievedCurrentBalance = userJson.getDouble("currentBalance");        ;
 
-            user = new BankUser(retrievedUsername, retrievedBalance, retrievedBankpwd);
+            user = new BankUser(retrievedUsername, retrievedBalance, retrievedBankpwd, retrievedCurrentBalance);
         }
     } catch (IOException e) {
         e.printStackTrace();
@@ -233,7 +321,7 @@ public BankUser getBankUser(String username,String bankpwd) {
         return isSuccess;
     }
     //支付功能--与商店协同
-    public boolean payment(String username, String bankpwd, String orderID) {
+    public boolean payment(String username, String bankpwd, String orderID, float amount) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();
@@ -241,7 +329,8 @@ public BankUser getBankUser(String username,String bankpwd) {
             request.put("parameters", new JSONObject()
                     .put("username", username)
                     .put("bankpwd", bankpwd)
-                    .put("orderID", orderID));
+                    .put("orderID", orderID)
+                    .put("amount", amount));
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(request.toString());
@@ -284,8 +373,9 @@ public BankUser getBankUser(String username,String bankpwd) {
                     JSONObject userJson = jsonResponse.getJSONObject("data");
                     foundUser = new BankUser(
                             userJson.getString("username"),
-                            userJson.getFloat("balance"),
-                            userJson.getString("bankpwd")
+                            userJson.getDouble("balance"),
+                            userJson.getString("bankpwd"),
+                            userJson.getDouble("currentBalance")
                     );
                     System.out.println("用户查找成功：" + foundUser.getUsername());
                 } else {
@@ -295,5 +385,32 @@ public BankUser getBankUser(String username,String bankpwd) {
                 e.printStackTrace();
             }
             return foundUser;
+    }
+
+    public static Double getInterestRate(String type) {
+        double ret = 0.0;
+        try (Socket socket = new Socket("localhost", 8080)) { // 假设服务器地址和端口
+            JSONObject request = new JSONObject();
+            request.put("requestType", "getInterestRate");
+            request.put("parameters", new JSONObject()
+                    .put("type", type));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            Boolean isSuccess = jsonResponse.getString("status").equals("success");
+            if (isSuccess) {
+                ret = jsonResponse.getDouble("rate");
+            } else {
+                System.out.println("利率获取失败：" + jsonResponse.getString("message"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ret;
     }
 }

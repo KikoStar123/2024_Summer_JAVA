@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 import javafx.application.Application;
@@ -21,6 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.scene.input.ScrollEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Stack;
@@ -238,7 +240,37 @@ public class ShopUI_Manager extends Application {
         VBox productVBox = new VBox(10); // 间距为10
         productVBox.setPadding(new Insets(10)); // 内边距为10
 
-        // 创建商品信息
+        // 加载商品信息
+        loadProducts(productVBox);
+
+        // 创建底部添加商品按钮
+        Button addButton = new Button("添加商品");
+        addButton.setOnAction(e -> showEditProductInfoDialog()); // 替换为添加商品的逻辑
+
+        // 添加商品图片按钮
+        Button uploadButton = new Button("上传图片");
+        uploadButton.setOnAction(e -> showUploadDialog());
+
+        // 创建刷新按钮
+        Button refreshButton = new Button("刷新");
+        refreshButton.setOnAction(e -> {
+            productVBox.getChildren().clear(); // 清空当前商品列表
+            loadProducts(productVBox); // 重新加载商品列表
+        });
+
+        // 创建一个HBox来容纳三个按钮
+        HBox buttonBox = new HBox(10); // 间距为10
+        buttonBox.setAlignment(Pos.CENTER); // 居中对齐
+        buttonBox.getChildren().addAll(addButton, uploadButton, refreshButton);
+
+        // 将buttonBox设置为productView的底部
+        productView.setCenter(productVBox);
+        productView.setBottom(buttonBox);
+
+        return productView;
+    }
+
+    private void loadProducts(VBox productVBox) {
         String storeID = null;
         try {
             storeID = shoppingStore.getStoreIDByUsername(username);
@@ -248,10 +280,6 @@ public class ShopUI_Manager extends Application {
                     ShoppingProduct.oneProduct product = shoppingProductList[i];
                     createProductItem(productVBox, product);
 //
-//                    // 为每个商品项添加“查看评论”按钮
-//                    Button viewCommentsButton = new Button("查看评论");
-//                    viewCommentsButton.setOnAction(e -> showProductComments(product.getProductID()));
-//                    productVBox.getChildren().add(viewCommentsButton);
 
                     // 在每个商品项之后添加分割线，除了最后一个商品
                     if (i < shoppingProductList.length - 1) {
@@ -267,6 +295,8 @@ public class ShopUI_Manager extends Application {
             ex.printStackTrace();
             System.out.println("获取商店信息或商品列表时发生错误");
         }
+
+
         // 创建底部添加商品按钮
         Button addButton = new Button("添加商品");
         addButton.setOnAction(e -> showEditProductInfoDialog()); // 替换为添加商品的逻辑
@@ -276,6 +306,54 @@ public class ShopUI_Manager extends Application {
         //root.setCenter(productView);
         //mainPane.getChildren().add(productView);
         return productView;
+    }
+    private void showUploadDialog() {
+        Stage dialog = new Stage();
+        dialog.setTitle("上传图片");
+
+        VBox dialogVBox = new VBox(10);
+        dialogVBox.setPadding(new Insets(10));
+
+        TextField productIDField = new TextField();
+        productIDField.setPromptText("输入商品ID");
+
+        Button uploadImageButton = new Button("上传图片");
+
+        uploadImageButton.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);");
+
+        uploadImageButton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png"));
+            File selectedFile = fileChooser.showOpenDialog(dialog);
+            if (selectedFile != null) {
+                String productID = productIDField.getText();
+                if (!productID.isEmpty()) {
+                    boolean success = ShoppingProduct.uploadProductImage(selectedFile, productID);
+                    if (success) {
+                        showAlert(Alert.AlertType.INFORMATION, "图片上传成功！");
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "图片上传失败，请重试。");
+                    }
+                } else {
+                    showAlert(Alert.AlertType.WARNING, "请输入商品ID");
+                }
+            }
+        });
+
+
+        dialogVBox.getChildren().addAll(new Label("商品ID:"), productIDField, uploadImageButton);
+
+        Scene dialogScene = new Scene(dialogVBox, 300, 200);
+        dialog.setScene(dialogScene);
+        dialog.show();
+    }
+
+    private void showAlert(Alert.AlertType alertType, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle("提示");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
     // 显示修改商家信息的对话框
     private void showEditProductInfoDialog() {
@@ -392,36 +470,48 @@ public class ShopUI_Manager extends Application {
     // 创建商品信息的方法
     private void createProductItem(VBox productVBox, ShoppingProduct.oneProduct product) {
         // 创建一个VBox，用于垂直堆叠两个HBox
-        //VBox productItemBox = new VBox(10); // 间距为10
         productVBox.setPadding(new Insets(5)); // 内边距为5
         productVBox.setStyle("-fx-border-color: #b61c94; -fx-border-width: 1; -fx-border-style: solid; -fx-background-color: rgb(255,255,255); -fx-background-radius: 5; -fx-border-radius: 5;");
 
-// 创建第一个HBox，用于第一行显示
+        // 创建第一个HBox，用于第一行显示
         HBox productItemTop = new HBox(10); // 间距为10
-// 第一行商品信息
+        // 第一行商品信息
         Label idLabel = new Label("ID: " + product.getProductID());
         Label nameLabel = new Label("名称: " + product.getProductName());
         Label originalPriceLabel = new Label("原价: " + String.format("%.2f", product.getProductOriginalPrice()));
         Label currentPriceLabel = new Label("现价: " + String.format("%.2f", product.getProductCurrentPrice()));
         productItemTop.getChildren().addAll(idLabel, nameLabel, originalPriceLabel, currentPriceLabel);
 
-// 创建第二个HBox，用于第二行显示
+        // 创建第二个HBox，用于第二行显示
         HBox productItemBottom = new HBox(10); // 间距为10
-// 第二行商品信息
+        // 第二行商品信息
         Label stockLabel = new Label("库存: " + product.getProductInventory());
         Label statusLabel = new Label("状态: " + (product.isProductStatus() ? "在库" : "缺货"));
         Label ratingLabel = new Label("好评率: " + String.format("%.0f%%", product.getProductCommentRate() * 100));
         Label detailLabel = new Label("描述: " + product.getProductDetail());
         productItemBottom.getChildren().addAll(stockLabel, statusLabel, ratingLabel, detailLabel);
+
         // 创建“查看评论”按钮
         Button viewCommentsButton = new Button("查看评论");
-        viewCommentsButton.setOnAction(e ->  {
+        viewCommentsButton.setOnAction(e -> {
             System.out.println("查看评论按钮被点击"); // 这可以帮助调试
             showProductComments(product.getProductID());
         });
-// 将两个HBox添加到VBox中，实现两行效果
-        productVBox.getChildren().addAll(productItemTop, productItemBottom, viewCommentsButton);
+
+        // 创建图片显示
+        ImageView productImageView = new ImageView();
+        String relativePath = product.getProductImage().replace("uploads/", "");
+        Image productImage = new Image("http://localhost:8082/files/" + relativePath);
+        System.out.println("http://localhost:8082/files/" + relativePath);
+        productImageView.setImage(productImage);
+        productImageView.setFitWidth(200); // 设置图片宽度
+        productImageView.setFitHeight(200); // 设置图片高度
+        productImageView.setPreserveRatio(true); // 保持图片比例
+
+        // 将图片添加到VBox的顶部
+        productVBox.getChildren().addAll(productImageView, productItemTop, productItemBottom, viewCommentsButton);
     }
+
     // 显示评论界面，跳转到评论界面
     private void showProductComments(String productID) {
         // 创建评论界面

@@ -19,7 +19,8 @@ public class ShoppingStoreTest {
             System.out.println("3. 删除商店");
             System.out.println("4. 获取商店详情");
             System.out.println("5. 获取所有商店信息");
-            System.out.println("6. 退出");
+            System.out.println("6. 根据用户名获取商店ID");
+            System.out.println("7. 退出");
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // 处理换行符
@@ -91,7 +92,18 @@ public class ShoppingStoreTest {
                         }
                         break;
 
-                    case 6: // 退出程序
+                    case 6: // 根据用户名获取商店ID
+                        System.out.println("请输入用户名:");
+                        String username = scanner.nextLine();
+                        String storeIDByUsername = shoppingStore.getStoreIDByUsername(username);
+                        if (storeIDByUsername != null) {
+                            System.out.println("用户名 " + username + " 对应的商店ID: " + storeIDByUsername);
+                        } else {
+                            System.out.println("无法获取商店ID");
+                        }
+                        break;
+
+                    case 7: // 退出程序
                         System.out.println("退出程序");
                         System.exit(0);
                         break;

@@ -9,7 +9,9 @@ public class DepositRequestHandler implements RequestHandler {
         BankService bankService = BankService.getInstance();
         String username = parameters.getString("username");
         double amount = parameters.getDouble("amount");
-        JSONObject result = bankService.deposit(username, amount);
+        String depositType = parameters.getString("depositType");
+        int term = parameters.getInt("term");
+        JSONObject result = bankService.deposit(username, amount, depositType, term);
 
         JSONObject jsonResponse = new JSONObject();
         jsonResponse.put("status", result.getString("status"));
@@ -17,4 +19,3 @@ public class DepositRequestHandler implements RequestHandler {
         return jsonResponse.toString();
     }
 }
-

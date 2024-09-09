@@ -25,7 +25,8 @@ public class ShoppingProductTest {
             System.out.println("10. 搜索商品");
             System.out.println("11. 更新商品原价");
             System.out.println("12. 更新商品现价");
-            System.out.println("13. 退出");
+            System.out.println("13. 查看商店内所有商品");
+            System.out.println("14. 退出");
 
             int choice = scanner.nextInt();
             scanner.nextLine(); // 处理换行符
@@ -165,6 +166,16 @@ public class ShoppingProductTest {
                         System.out.println("更新商品现价" + (updateCurrentPriceSuccess ? "成功" : "失败"));
                         break;
                     case 13:
+                        System.out.println("请输入商店ID:");
+                        storeID = scanner.nextLine();
+                        ShoppingProduct.oneProduct[] allProductsInStore = shoppingProduct.getAllProductsByStore(storeID);
+                        if (allProductsInStore != null) {
+                            for (ShoppingProduct.oneProduct p : allProductsInStore) {
+                                System.out.println("商品ID: " + p.getProductID() + ", 商品名称: " + p.getProductName());
+                            }
+                        }
+                        break;
+                    case 14:
                         System.out.println("退出程序");
                         System.exit(0);
                     default:

@@ -21,6 +21,7 @@ import javafx.geometry.Pos;
 
 import java.net.URL;
 
+import static client.service.Role.StuInfoManager;
 import static client.service.StudentInformation.modifyOneStudentInfo;
 
 public class StuUI extends Application {

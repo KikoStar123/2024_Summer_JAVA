@@ -66,11 +66,11 @@ public class MainUI extends Application {
         bankButton.setOnAction(e -> handleBank(user.getUsername()));
         leftBox.getChildren().add(bankButton);
 
-        Button updateButton = new Button("修改密码");
-        updateButton.setPrefSize(150, 40);
-        updateButton.setStyle("-fx-background-color: #18bcaf; -fx-text-fill: white; -fx-font-size: 16px;");
-        updateButton.setOnAction(e -> handleupdatepwd(user.getUsername()));
-        leftBox.getChildren().add(updateButton);
+        Button registerButton = new Button("修改密码");
+        registerButton.setPrefSize(150, 40);
+        registerButton.setStyle("-fx-background-color: #18bcaf; -fx-text-fill: white; -fx-font-size: 16px;");
+        registerButton.setOnAction(e -> handleShop(user.getUsername()));
+        leftBox.getChildren().add(registerButton);
 
         if(user.getRole()==Librarian)
         {
@@ -131,7 +131,7 @@ public class MainUI extends Application {
 
     }
 
-    private void handleLibrary(String username) {//解决图书馆ui
+    private void handleLibrary(String username) {
         Platform.runLater(() -> {
             LibraryUI libraryUI = new LibraryUI(user);
            BorderPane library=libraryUI.createLibraryView();
