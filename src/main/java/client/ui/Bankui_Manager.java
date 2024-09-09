@@ -226,7 +226,6 @@ public class Bankui_Manager extends Application {
         primaryStage.show();
     }
 
-
     private void showPasswordDialog(String username, Stage primaryStage, BorderPane root) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("输入密码");

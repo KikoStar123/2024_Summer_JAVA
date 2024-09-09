@@ -142,6 +142,7 @@ public class ShoppingStore {
     // 获取商店详情
     // 输入 商店id storeID
     // 返回 商店对象
+    static oneStore theoStore=new oneStore() ;
     public static oneStore oneStore(String storeID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号

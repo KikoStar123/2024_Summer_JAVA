@@ -8,14 +8,20 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
-
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.transform.Scale;
+import javafx.stage.Stage;
+import javafx.scene.input.ScrollEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +37,7 @@ public class ShopUI_Manager extends Application {
     Tab shopInfoTab;
     Tab productsTab;
     Tab ordersTab;
+    private double zoomFactor = 1.0;
     private Stack<BorderPane> history = new Stack<>(); // 用于保存历史布局
     // 构造函数，接收用户名
     public ShopUI_Manager(String username) {
@@ -40,6 +47,7 @@ public class ShopUI_Manager extends Application {
     public void start(Stage primaryStage) {
         // 创建主BorderPane
         root = new BorderPane();
+        root.setPrefSize(400, 300); // 设置宽度为400，高度为300
 
         // 创建TabPane作为顶部的容器
         TabPane topTabs = new TabPane();
@@ -74,7 +82,28 @@ public class ShopUI_Manager extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
+    private void handleScrollEvent(ScrollEvent event) {
+        if (event.isControlDown()) {
+            double delta = event.getDeltaY();
+            if (delta > 0) {
+                zoomOut();
+            } else {
+                zoomIn();
+            }
+            event.consume(); // 阻止事件进一步传播
+        }
+    }
+    //用于窗口的缩放
+    private void zoomIn() {
+        zoomFactor *= 1.15;
+        root.getTransforms().clear();
+        root.getTransforms().add(new Scale(zoomFactor, zoomFactor, 0, 0));
+    }
+    private void zoomOut() {
+        zoomFactor /= 1.15;
+        root.getTransforms().clear();
+        root.getTransforms().add(new Scale(zoomFactor, zoomFactor, 0, 0));
+    }
     // 创建商店信息界面
     private BorderPane createShopInfoPane(ShoppingStore.oneStore storeInfo) {
         BorderPane shopInfoPane = new BorderPane();
@@ -197,17 +226,14 @@ public class ShopUI_Manager extends Application {
 //        return productView;
 //    }
     private BorderPane createProductsPane() {
-        // 创建 StackPane 用于切换商品界面和评论界面
-        // 商品界面布局
-        productView = new BorderPane();
-
-        // 创建商品信息的VBox
-        VBox productVBox = new VBox(10); // 间距为10
-        productVBox.setPadding(new Insets(10)); // 内边距为10
-
+        System.out.println("Creating products pane...");
+        BorderPane productsPane = new BorderPane();
+        // 商品界面布局使用VBox
+        VBox productView = new VBox(10);
+        productView.setPadding(new Insets(10));
+        System.out.println("Initializing productView...");
         // 加载商品信息
-        loadProducts(productVBox);
-
+        loadProducts(productView); // 传入 productView
         // 创建底部添加商品按钮
         Button addButton = new Button("添加商品");
         addButton.setOnAction(e -> showEditProductInfoDialog()); // 替换为添加商品的逻辑
@@ -219,8 +245,8 @@ public class ShopUI_Manager extends Application {
         // 创建刷新按钮
         Button refreshButton = new Button("刷新");
         refreshButton.setOnAction(e -> {
-            productVBox.getChildren().clear(); // 清空当前商品列表
-            loadProducts(productVBox); // 重新加载商品列表
+            productView.getChildren().clear(); // 清空当前商品列表
+            loadProducts(productView); // 重新加载商品列表
         });
 
         // 创建一个HBox来容纳三个按钮
@@ -229,10 +255,15 @@ public class ShopUI_Manager extends Application {
         buttonBox.getChildren().addAll(addButton, uploadButton, refreshButton);
 
         // 将buttonBox设置为productView的底部
-        productView.setCenter(productVBox);
-        productView.setBottom(buttonBox);
+        productsPane.setCenter(productView);
+        productsPane.setBottom(buttonBox);
+        // 创建 ScrollPane 并设置其包含 VBox（productView）
+        ScrollPane scrollPane = new ScrollPane(productView);
+        scrollPane.setFitToWidth(true); // 让 ScrollPane 自动调整宽度以适应内容
+        productsPane.setCenter(scrollPane);
 
-        return productView;
+        System.out.println("Products pane created with productView: " + productView);
+        return productsPane;
     }
 
     private void loadProducts(VBox productVBox) {
@@ -244,7 +275,6 @@ public class ShopUI_Manager extends Application {
                 for (int i = 0; i < shoppingProductList.length; i++) {
                     ShoppingProduct.oneProduct product = shoppingProductList[i];
                     createProductItem(productVBox, product);
-
                     // 在每个商品项之后添加分割线，除了最后一个商品
                     if (i < shoppingProductList.length - 1) {
                         Separator separator = new Separator();
@@ -260,9 +290,6 @@ public class ShopUI_Manager extends Application {
             System.out.println("获取商店信息或商品列表时发生错误");
         }
     }
-
-
-
     private void showUploadDialog() {
         Stage dialog = new Stage();
         dialog.setTitle("上传图片");

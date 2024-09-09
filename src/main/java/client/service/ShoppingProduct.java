@@ -28,6 +28,10 @@ public class ShoppingProduct {
 
         String storeName;
 
+        public oneProduct() {
+            //what
+        }
+
         public String getProductID() {
             return productID;
         }
@@ -79,7 +83,7 @@ public class ShoppingProduct {
     // 查看单个商品详细信息
     // 输入 商品id productID
     // 返回 一个商品对象
-
+    public static oneProduct theproduct =new oneProduct();
     public static oneProduct getProductDetails(String productID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
@@ -100,8 +104,6 @@ public class ShoppingProduct {
             JSONObject jsonResponse = new JSONObject(response);
 
             JSONObject data = jsonResponse.getJSONObject("product");
-
-            oneProduct theproduct = new oneProduct();
 
             theproduct.productID = productID;
             theproduct.productName = data.getString("productName");
@@ -415,7 +417,6 @@ public class ShoppingProduct {
                 productsArray[i].storeID = theproduct.getString("storeID");
                 productsArray[i].storeName = theproduct.getString("storeName");
             }
-
             return productsArray;
         } catch (IOException e) {
             e.printStackTrace();

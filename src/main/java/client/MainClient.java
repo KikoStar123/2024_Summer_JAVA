@@ -4,6 +4,7 @@ import client.ui.Bankui_Manager;
 import client.ui.LoginUI;
 import client.ui.ShopUI_Manager;
 import client.ui.UpdatePwdUI;
+import client.service.User;
 
 
 public class MainClient {
