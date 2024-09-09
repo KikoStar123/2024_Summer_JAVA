@@ -345,7 +345,7 @@ public class ShoppingProduct {
                 productsArray[i].productID = theproduct.getString("productID");
                 productsArray[i].productName = theproduct.getString("productName");
                 productsArray[i].productDetail = theproduct.getString("productDetail");
-                productsArray[i].productImage = theproduct.getString("productImage");
+                productsArray[i].productImage = theproduct.optString("productImage", "uploads/defaultproduct.jpg");
                 productsArray[i].productOriginalPrice = theproduct.getFloat("productOriginalPrice");
                 productsArray[i].productCurrentPrice = theproduct.getFloat("productCurrentPrice");
                 productsArray[i].productInventory = theproduct.getInt("productInventory");
