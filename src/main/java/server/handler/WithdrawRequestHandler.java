@@ -6,7 +6,7 @@ import org.json.JSONObject;
 public class WithdrawRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {
-        BankService bankService = new BankService();
+        BankService bankService = BankService.getInstance();
         String username = parameters.getString("username");
         double amount = parameters.getDouble("amount");
         JSONObject result = bankService.withdraw(username, amount);

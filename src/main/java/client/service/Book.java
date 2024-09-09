@@ -6,24 +6,35 @@ public class Book {
     private String name;
     private String author;
     private String publishHouse;
-    private String publicationYear; // 修改字段名
+    private String publicationYear;
     private String classification;
-    private int curNumber;//可借数量
-    private int libNumber; // 新增馆藏数量
+    private int curNumber;
+    private int libNumber;
     private String location;
+    private String imagePath;
+    private String pdfPath;
 
     // 构造函数
     public Book(String bookID, String name, String author, String publishHouse,
-                String publicationYear, String classification, int curNumber, int libNumber, String location) {
+                String publicationYear, String classification, int curNumber, int libNumber, String location,
+                String imagePath, String pdfPath) {
         this.bookID = bookID;
         this.name = name;
         this.author = author;
         this.publishHouse = publishHouse;
-        this.publicationYear = publicationYear; // 修改参数名
+        this.publicationYear = publicationYear;
         this.classification = classification;
         this.curNumber = curNumber;
-        this.libNumber = libNumber; // 初始化馆藏数量
+        this.libNumber = libNumber;
         this.location = location;
+        this.imagePath = imagePath;
+        this.pdfPath = pdfPath;
+    }
+
+    // 重载构造函数，不包含 imagePath 和 pdfPath
+    public Book(String bookID, String name, String author, String publishHouse,
+                String publicationYear, String classification, int curNumber, int libNumber, String location) {
+        this(bookID, name, author, publishHouse, publicationYear, classification, curNumber, libNumber, location, null, null);
     }
 
 //    public void Book_4(String name, String author, int curNumber, int libNumber) {
@@ -112,6 +123,14 @@ public class Book {
         this.libNumber = libNumber;
     }
 
+    public String getImagePath(){ return imagePath; }
+
+    public void setImagePath() {this.imagePath = imagePath; }
+
+    public String getPdfPath(){ return pdfPath; }
+
+    public void setPdfPath() {this.pdfPath = pdfPath; }
+
     // 重写toString方法，方便打印书籍信息
     @Override
     public String toString() {
@@ -125,6 +144,8 @@ public class Book {
                 ", curNumber=" + curNumber +
                 ", libNumber=" + libNumber + // 添加馆藏数量的打印
                 ", location='" + location + '\'' +
+                ", imagePath=" + imagePath + '\'' +
+                ", pdfPath=" + pdfPath + '\'' +
                 '}';
     }
 }

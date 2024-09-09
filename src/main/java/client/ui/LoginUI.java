@@ -1,6 +1,8 @@
 package client.ui;
 
 import client.service.ClientService;
+import client.service.Gender;
+import client.service.Role;
 import client.service.User;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -142,16 +144,49 @@ public class LoginUI extends Application {
             // 启动主界面
             //User user = new User(username, Role.student, 12, Gender.male, "123");
             User user = clientService.login_return(username, password);
-            Platform.runLater(() -> {
-                MainUI mainUI = new MainUI(user);
-                try {
-                    mainUI.start(new Stage());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-
-
+            if(user.getRole()==BankManager)
+            {
+                Platform.runLater(() -> {
+                    Bankui_Manager managerui=new Bankui_Manager();
+                    try {
+                        managerui.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            else if(user.getRole()==Librarian)
+            {
+                Platform.runLater(() -> {
+                    LibraryUI_Manager librarymanagerui=new LibraryUI_Manager();
+                    try {
+                        librarymanagerui.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            else if(user.getRole()==Role.ShopAssistant){
+                Platform.runLater(() -> {
+                    ShopUI_Manager shopmanagerui=new ShopUI_Manager(user.getUsername());
+                    try {
+                        shopmanagerui.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            else
+            {
+                Platform.runLater(() -> {
+                    MainUI mainUI = new MainUI(user);
+                    try {
+                        mainUI.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Login");
@@ -167,6 +202,4 @@ public class LoginUI extends Application {
         });
     }
 
-
 }
-

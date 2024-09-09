@@ -8,14 +8,11 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import client.service.Bank;
 import javafx.stage.Stage;
-
-import java.util.List;
-
-import static client.service.Bank.getAllBankRecords;
 
 public class Bankui_stu {
     private static BorderPane bankBox;
@@ -169,7 +166,7 @@ public class Bankui_stu {
             alert.setHeaderText(null);
             alert.setContentText("欢迎回来, " + username);
             alert.showAndWait();
-            bankBox.setCenter(showBankMainView(user));
+            bankBox.setCenter(showBankMainView(Bank.getBankUser(username, password)));
         } else {
             // 登录失败
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -181,28 +178,85 @@ public class Bankui_stu {
 
     }
 
-    private static VBox showBankMainView(User user) {
+    private static VBox showBankMainView(BankUser user) {
 
         VBox bankMainView = new VBox(10);
         bankMainView.setPadding(new Insets(10));
-        Label usernameLabel=new Label("我的账户");
+        Label usernameLabel = new Label("我的账户");
         Label welcomeLabel = new Label("欢迎, " + user.getUsername() + "!");
-        Label balanceLabel=new Label("余额: ");
+        Label balanceLabel = new Label("总资产: " + user.getBalance());
+        Label currentBalanceLabel = new Label("活期资产：" + user.getCurrentBalance());
         Button bankrecord=new Button("收支明细");
         Button pwdchange=new Button("修改密码");
-        Label rateLabel=new Label("当前利率: ");
-        bankMainView.getChildren().addAll(usernameLabel,welcomeLabel,balanceLabel,bankrecord,pwdchange,rateLabel);
+        Label currentRateLabel=new Label("活期利率: " + Bank.getInterestRate("活期"));
+        Label fixedDepositRateLabel = new Label("定期利率：" + Bank.getInterestRate("定期"));
+        bankMainView.getChildren().addAll(usernameLabel,welcomeLabel,balanceLabel,currentBalanceLabel, bankrecord,pwdchange, currentRateLabel, fixedDepositRateLabel);
         bankrecord.setOnAction(e -> showBankRecord(user));
+        pwdchange.setOnAction(e->showChangepwd(user));
         return bankMainView;
     }
 
-    private static void showBankRecord(User user) {
+    private static void showChangepwd(BankUser user) {
+        Stage stage = new Stage();
+        stage.setTitle("修改密码");
+
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.setVgap(8);
+        grid.setHgap(10);
+
+        Label oldPwdLabel = new Label("旧密码:");
+        GridPane.setConstraints(oldPwdLabel, 0, 0);
+
+        PasswordField oldPwdField = new PasswordField();
+        GridPane.setConstraints(oldPwdField, 1, 0);
+
+        Label newPwdLabel = new Label("新密码:");
+        GridPane.setConstraints(newPwdLabel, 0, 1);
+
+        PasswordField newPwdField = new PasswordField();
+        GridPane.setConstraints(newPwdField, 1, 1);
+
+        Button confirmButton = new Button("确定");
+        GridPane.setConstraints(confirmButton, 1, 2);
+
+        confirmButton.setOnAction(e -> {
+            String oldPwd = oldPwdField.getText();
+            String newPwd = newPwdField.getText();
+            boolean isSuccess = Bank.updatePwd(user.getUsername(), oldPwd, newPwd);
+            if (isSuccess) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("提示");
+                alert.setHeaderText(null);
+                alert.setContentText("密码修改成功！");
+                alert.showAndWait().ifPresent(response -> {
+                    stage.close();
+                    showLoginForm();
+                });
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("提示");
+                alert.setHeaderText(null);
+                alert.setContentText("原密码输入错误，密码修改失败！");
+                alert.showAndWait();
+            }
+        });
+
+        grid.getChildren().addAll(oldPwdLabel, oldPwdField, newPwdLabel, newPwdField, confirmButton);
+
+        Scene scene = new Scene(grid, 300, 200);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
+    private static void showBankRecord(BankUser user) {
 
         Stage recordStage = new Stage();
         recordStage.setTitle("收支明细");
 
         TableView<BankUser.BankRecord> table = new TableView<>();
-        ObservableList<BankUser.BankRecord> data = FXCollections.observableArrayList(getAllBankRecords(user.getUsername()));
+        ObservableList<BankUser.BankRecord> data = FXCollections.observableArrayList(Bank.getAllBankRecords(user.getUsername()));
 
         TableColumn<BankUser.BankRecord, String> usernameCol = new TableColumn<>("用户名");
         usernameCol.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getUsername()));

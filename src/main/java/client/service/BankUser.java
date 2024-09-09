@@ -1,37 +1,43 @@
 package client.service;
 
-    public class BankUser {
-        private String username;
-        private float balance;
-        private String bankpwd;
-       // private BankRecord[] bankRecords; // 声明一个BankRecord数组
+public class BankUser {
+    private String username;
+    private double balance;
 
-        public BankUser(String username, float balance, String bankpwd) {
-            this.username = username;
-            this.balance = balance;
-            this.bankpwd = bankpwd;
-        }
+    private double currentBalance;
+    private String bankpwd;
+    //private BankRecord[] bankRecords; // 声明一个BankRecord数组
 
-        // 构造函数、getter和setter方法
-        // BankUser的getter方法
-        public String getUsername() {
-            return username;
-        }
+    public BankUser(String username, double balance, String bankpwd, double currentBalance) {
+        this.username = username;
+        this.balance = balance;
+        this.bankpwd = bankpwd;
+        this.currentBalance = currentBalance;
+    }
 
-        public float getBalance() {
-            return balance;
-        }
+    // 构造函数、getter和setter方法
+    // BankUser的getter方法
+    public String getUsername() {
+        return username;
+    }
 
-        public String getBankpwd() {
-            return bankpwd;
-        }
+    public double getBalance() {
+        return balance;
+    }
 
-        // BankUser的setter方法
-        public void setUsername(String username) {
-            this.username = username;
-        }
+    public String getBankpwd() {
+        return bankpwd;
+    }
 
-        // 添加银行记录的方法
+    public double getCurrentBalance() {return currentBalance; }
+
+    // BankUser的setter方法
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+
+    // 添加银行记录的方法
 //        public void addBankRecord(BankRecord record) {
 //            for (int i = 0; i < bankRecords.length; i++) {
 //                if (bankRecords[i] == null) {
@@ -42,18 +48,20 @@ package client.service;
 //            System.out.println("记录数组已满，无法添加更多记录。");
 //        }
 
-        // 获取银行记录的方法
+    // 获取银行记录的方法
 //        public BankRecord[] getBankRecords() {
 //            return bankRecords;
 //        }
 
-    public void setBalance(float balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
     public void setBankpwd(String bankpwd) {
         this.bankpwd = bankpwd;
     }
+
+    public void setCurrentBalance(double currentBalance) {this.currentBalance = currentBalance; }
 
     // 内部类
     public static class BankRecord {
@@ -62,14 +70,14 @@ package client.service;
         private String balanceReason;
         private String curDate;//添加收支日期；
 
-
         // 构造函数、getter和setter方法
         // BankRecord的构造函数
-        public BankRecord(String usename,float balanceChange, String balanceReason, String curDate) {
+        public BankRecord(String username,float balanceChange, String balanceReason, String curDate) {
             this.username = username;
             this.balanceChange = balanceChange;
             this.balanceReason = balanceReason;
             this.curDate = curDate;
+
         }
 
         // BankRecord的getter方法

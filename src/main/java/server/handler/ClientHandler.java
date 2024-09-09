@@ -54,6 +54,7 @@ public class ClientHandler implements Runnable {
         routeMap.put("viewStudentInfo", new ViewStudentInfoRequestHandler());
         routeMap.put("modifyStudentInfo", new ModifyStudentInfoRequestHandler());
         routeMap.put("register", new RegisterRequestHandler());
+        routeMap.put("updateUserPwd", new UpdateUserPwdRequestHandler());//名称相同***
 
         //图书馆相关请求
         routeMap.put("searchBooksByName", new SearchBooksByNameRequestHandler());
@@ -65,6 +66,10 @@ public class ClientHandler implements Runnable {
         routeMap.put("addBook", new AddBookRequestHandler());
         routeMap.put("renewBook", new RenewBookRequestHandler());
         routeMap.put("getAllLibRecords", new GetAllLibRecordsRequestHandler());
+        routeMap.put("updateBookImagePath", new UpdateBookImagePathRequestHandler());
+        routeMap.put("updateBookPDFPath", new UpdateBookPDFPathRequestHandler());
+
+
 
         // 课程相关请求
         routeMap.put("enrollInCourse", new EnrollInCourseRequestHandler());
@@ -98,12 +103,26 @@ public class ClientHandler implements Runnable {
         routeMap.put("product", new ProductRequestHandler());  // 处理与商品相关的请求
         routeMap.put("cart", new CartRequestHandler());        // 处理与购物车相关的请求
         routeMap.put("order", new OrderRequestHandler());      // 处理与订单相关的请求
+        routeMap.put("store", new StoreRequestHandler());      // 处理店铺相关请求
 
-        //银行相关请求
+        // 银行
         routeMap.put("deposit", new DepositRequestHandler());
         routeMap.put("withdraw", new WithdrawRequestHandler());
         routeMap.put("bankLogin", new BankLoginRequestHandler());
         routeMap.put("bankRegister", new BankRegisterRequestHandler());
+        routeMap.put("payment", new PaymentRequestHandler());
+        routeMap.put("wait", new WaitRequestHandler());
+        routeMap.put("getAllBankRecords", new GetAllBankRecordsRequestHandler());
+        routeMap.put("updatePwd", new UpdatePwdRequestHandler());
+        routeMap.put("searchUser", new SearchUserRequestHandler());
+        routeMap.put("getBankUser", new GetBankUserRequestHandler());
+        routeMap.put("simulateMonthEnd", new SimulateMonthEndRequestHandler());
+        routeMap.put("simulateYearEnd", new SimulateYearEndRequestHandler());
+        routeMap.put("updateInterestRate", new UpdateInterestRateRequestHandler());
+        routeMap.put("getInterestRate", new GetInterestRateRequestHandler());
+
+
+
 
         return routeMap;
     }

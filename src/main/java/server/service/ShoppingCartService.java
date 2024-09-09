@@ -24,7 +24,11 @@ public class ShoppingCartService {
             JSONObject response = new JSONObject();
             JSONArray cartItems = new JSONArray();
 
-            String query = "SELECT * FROM tblShoppingCart WHERE username = ?";
+            // 修改查询，联接 tblShoppingCart 和 tblShoppingProduct 获取 storeID
+            String query = "SELECT c.productID, c.productNumber, p.storeID " +
+                    "FROM tblShoppingCart c " +
+                    "JOIN tblShoppingProduct p ON c.productID = p.productID " +
+                    "WHERE c.username = ?";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -42,6 +46,8 @@ public class ShoppingCartService {
                     JSONObject cartItem = new JSONObject();
                     cartItem.put("productID", resultSet.getString("productID"));
                     cartItem.put("productNumber", resultSet.getInt("productNumber"));
+                    cartItem.put("storeID", resultSet.getString("storeID"));  // 新增 storeID 字段
+
                     cartItems.put(cartItem);
                 }
 
@@ -65,6 +71,7 @@ public class ShoppingCartService {
         }
     }
 
+
     // 添加一个商品到购物车
     public boolean addToCart(String username, String productID, int quantity) {
         addToCartLock.lock();
@@ -74,6 +81,26 @@ public class ShoppingCartService {
             Connection conn = dbConnection.connect();
 
             if (conn == null) {
+                return false;
+            }
+
+            // 首先检查商品库存是否足够
+            String checkInventoryQuery = "SELECT productInventory FROM tblShoppingProduct WHERE productID = ?";
+            try (PreparedStatement checkStatement = conn.prepareStatement(checkInventoryQuery)) {
+                checkStatement.setString(1, productID);
+                ResultSet resultSet = checkStatement.executeQuery();
+                if (resultSet.next()) {
+                    int availableInventory = resultSet.getInt("productInventory");
+                    if (quantity > availableInventory) {
+                        // 商品数量超过库存，返回false
+                        return false;
+                    }
+                } else {
+                    // 商品未找到，返回false
+                    return false;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
                 return false;
             }
 
@@ -111,6 +138,7 @@ public class ShoppingCartService {
             addToCartLock.unlock();
         }
     }
+
 
     // 更改购物车某个商品的数量
     public boolean updateCart(String username, String productID, int quantity) {
