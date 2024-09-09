@@ -116,7 +116,6 @@ public class LoginUI extends Application {
             alert.setContentText("Login successful!");
             alert.showAndWait();
 
-
             // 关闭当前窗口
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.close();

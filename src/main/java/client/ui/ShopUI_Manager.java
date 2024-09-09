@@ -11,10 +11,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
-
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.transform.Scale;
+import javafx.stage.Stage;
+import javafx.scene.input.ScrollEvent;
 import java.io.IOException;
 import java.util.List;
 import java.util.Stack;
@@ -29,6 +35,7 @@ public class ShopUI_Manager extends Application {
     Tab shopInfoTab;
     Tab productsTab;
     Tab ordersTab;
+    private double zoomFactor = 1.0;
     private Stack<BorderPane> history = new Stack<>(); // 用于保存历史布局
     // 构造函数，接收用户名
     public ShopUI_Manager(String username) {
@@ -38,6 +45,13 @@ public class ShopUI_Manager extends Application {
     public void start(Stage primaryStage) {
         // 创建主BorderPane
         root = new BorderPane();
+        root.setPrefSize(400, 300); // 设置宽度为400，高度为300
+
+        // 创建一个 ScrollPane 来包含 BorderPane
+        ScrollPane scrollPane = new ScrollPane(root);
+        scrollPane.setPrefSize(400, 300); // 同样设置 ScrollPane 的大小
+        // 为 BorderPane 添加鼠标滚轮事件处理器
+        root.addEventFilter(ScrollEvent.ANY, this::handleScrollEvent);
 
         // 创建TabPane作为顶部的容器
         TabPane topTabs = new TabPane();
@@ -72,7 +86,28 @@ public class ShopUI_Manager extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
+    private void handleScrollEvent(ScrollEvent event) {
+        if (event.isControlDown()) {
+            double delta = event.getDeltaY();
+            if (delta > 0) {
+                zoomOut();
+            } else {
+                zoomIn();
+            }
+            event.consume(); // 阻止事件进一步传播
+        }
+    }
+    //用于窗口的缩放
+    private void zoomIn() {
+        zoomFactor *= 1.15;
+        root.getTransforms().clear();
+        root.getTransforms().add(new Scale(zoomFactor, zoomFactor, 0, 0));
+    }
+    private void zoomOut() {
+        zoomFactor /= 1.15;
+        root.getTransforms().clear();
+        root.getTransforms().add(new Scale(zoomFactor, zoomFactor, 0, 0));
+    }
     // 创建商店信息界面
     private BorderPane createShopInfoPane(ShoppingStore.oneStore storeInfo) {
         BorderPane shopInfoPane = new BorderPane();
