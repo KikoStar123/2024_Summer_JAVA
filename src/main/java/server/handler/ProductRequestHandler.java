@@ -114,6 +114,7 @@ public class ProductRequestHandler implements RequestHandler {
                 productID = parameters.getString("productID");
                 String imagePath = parameters.getString("imagePath");
                 response = productService.updateProductImagePath(productID, imagePath);
+                break;
 
             default: // 默认无操作
                 response.put("status", "fail").put("message", "Unknown action");
