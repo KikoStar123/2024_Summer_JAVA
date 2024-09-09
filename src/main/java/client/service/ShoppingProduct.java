@@ -2,6 +2,7 @@ package client.service;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -10,7 +11,7 @@ import org.json.JSONObject;
 public class ShoppingProduct {
     private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
     private static final int SERVER_PORT = IpConfig.SERVER_PORT;
-    private final FileService fileService = new FileService();
+    private static final FileService fileService = new FileService();
     public class oneProduct
     {
         String productID;//商品id
@@ -104,7 +105,7 @@ public class ShoppingProduct {
             theproduct.productID = productID;
             theproduct.productName = data.getString("productName");
             theproduct.productDetail = data.getString("productDetail");
-            theproduct.productImage = data.getString("productImage");
+            theproduct.productImage = data.optString("productImage", "uploads/defaultproduct.jpg");
             theproduct.productOriginalPrice = data.getFloat("productOriginalPrice");
             theproduct.productCurrentPrice = data.getFloat("productCurrentPrice");
             theproduct.productInventory = data.getInt("productInventory");
@@ -161,7 +162,7 @@ public class ShoppingProduct {
                 productsArray[i].productID = theproduct.getString("productID");
                 productsArray[i].productName = theproduct.getString("productName");
                 productsArray[i].productDetail = theproduct.getString("productDetail");
-                productsArray[i].productImage = theproduct.getString("productImage");
+                productsArray[i].productImage = theproduct.optString("productImage", "uploads/defaultproduct.jpg");
                 productsArray[i].productOriginalPrice = theproduct.getFloat("productOriginalPrice");
                 productsArray[i].productCurrentPrice = theproduct.getFloat("productCurrentPrice");
                 productsArray[i].productInventory = theproduct.getInt("productInventory");
@@ -184,7 +185,7 @@ public class ShoppingProduct {
     // 添加商品
     // 输入 商品id productID；商品名称 productName；商品属性 productDetail；商品图片 productImage；商品原价 productOriginalPrice；商品现价 productCurrentPrice；商品库存 productInventory；商品发货地址 productAddress；商品好评率 productCommentRate；商品状态 productStatus；商店id storeID
     // 返回 状态
-    public boolean addProduct(String productID, String productName, String productDetail, String productImage, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, float productCommentRate, boolean productStatus, String storeID) throws IOException
+    public static boolean addProduct(String productID, String productName, String productDetail, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, float productCommentRate, boolean productStatus, String storeID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -198,7 +199,6 @@ public class ShoppingProduct {
                     .put("productID", productID)
                     .put("productName", productName)
                     .put("productDetail", productDetail)
-                    .put("productImage", productImage)
                     .put("productOriginalPrice", productOriginalPrice)
                     .put("productCurrentPrice", productCurrentPrice)
                     .put("productInventory", productInventory)
@@ -344,7 +344,7 @@ public class ShoppingProduct {
                 productsArray[i].productID = theproduct.getString("productID");
                 productsArray[i].productName = theproduct.getString("productName");
                 productsArray[i].productDetail = theproduct.getString("productDetail");
-                productsArray[i].productImage = theproduct.getString("productImage");
+                productsArray[i].productImage = theproduct.optString("productImage", "uploads/defaultproduct.jpg");
                 productsArray[i].productOriginalPrice = theproduct.getFloat("productOriginalPrice");
                 productsArray[i].productCurrentPrice = theproduct.getFloat("productCurrentPrice");
                 productsArray[i].productInventory = theproduct.getInt("productInventory");
@@ -404,7 +404,7 @@ public class ShoppingProduct {
                 productsArray[i].productID = theproduct.getString("productID");
                 productsArray[i].productName = theproduct.getString("productName");
                 productsArray[i].productDetail = theproduct.getString("productDetail");
-                productsArray[i].productImage = theproduct.getString("productImage");
+                productsArray[i].productImage = theproduct.optString("productImage", "uploads/defaultproduct.jpg");
                 productsArray[i].productOriginalPrice = theproduct.getFloat("productOriginalPrice");
                 productsArray[i].productCurrentPrice = theproduct.getFloat("productCurrentPrice");
                 productsArray[i].productInventory = theproduct.getInt("productInventory");
@@ -580,7 +580,7 @@ public class ShoppingProduct {
                 productsArray[i].productID = theproduct.getString("productID");
                 productsArray[i].productName = theproduct.getString("productName");
                 productsArray[i].productDetail = theproduct.getString("productDetail");
-                productsArray[i].productImage = theproduct.getString("productImage");
+                productsArray[i].productImage = theproduct.optString("productImage", "uploads/defaultproduct.jpg");
                 productsArray[i].productOriginalPrice = theproduct.getFloat("productOriginalPrice");
                 productsArray[i].productCurrentPrice = theproduct.getFloat("productCurrentPrice");
                 productsArray[i].productInventory = theproduct.getInt("productInventory");
@@ -595,6 +595,39 @@ public class ShoppingProduct {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+    public static boolean uploadProductImage(File imageFile, String productID) {
+        String fileName = productID + ".jpg";
+        if (fileService.fileExists(fileName)) {
+            fileName = productID + "_" + UUID.randomUUID().toString() + ".jpg";
+        }
+
+        if (fileService.uploadFile(imageFile, fileName)) {
+            return updateProductImagePath(productID, "uploads/" + fileName);
+        }
+        return false;
+    }
+    public static boolean updateProductImagePath(String productID, String imagePath) {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "product");
+            request.put("parameters", new JSONObject()
+                    .put("productID", productID)
+                    .put("imagePath", imagePath)
+                    .put("action", "updateProductImagePath"));
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            return jsonResponse.getString("status").equals("success");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }
