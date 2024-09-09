@@ -8,8 +8,9 @@ function createFireflies(quantity) {
         firefly.style.left = Math.random() * 100 + 'vw';
         firefly.style.top = Math.random() * 100 + 'vh';
         firefly.style.animation = 'drift ' + (Math.random() * 10 + 5) + 's infinite linear, flash ' + (Math.random() * 3 + 1) + 's infinite linear';
+        //firefly.style.animation = 'drift ' + (Math.random() * 10 + 5) + 's infinite linear, flash ' + (Math.random() * 6 + 1) + 's infinite linear';
         document.body.appendChild(firefly);
     }
 }
 
-createFireflies(15);
+createFireflies(60);
