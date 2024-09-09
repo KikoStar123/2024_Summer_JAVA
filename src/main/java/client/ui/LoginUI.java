@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
@@ -44,9 +45,9 @@ public class LoginUI extends Application {
 
         // 设置根布局的样式
         root.setStyle("-fx-border-radius: 20px; " // 设置圆角边框半径
-                + "-fx-border-color: #6A0DAD; "  // 设置边框颜色
+                + "-fx-border-color: #ffffff; "  // 设置边框颜色
                 + "-fx-border-width: 2px; "        // 设置边框宽度
-                + "-fx-background-color: #808080;"); // 设置背景颜色
+                + "-fx-background-color: #ffffff;"); // 设置背景颜色
 
         // 创建 Scene，并将根布局添加到其中
 
@@ -64,18 +65,44 @@ public class LoginUI extends Application {
         // 创建登录表单的标题
         Text title = new Text("用户登录");
         title.setFont(new Font("Segoe UI", 24));
-        title.setStyle("-fx-fill: #6A0DAD;"); // 主色调
+        title.setStyle("-fx-fill: #1138cf;"); // 主色调
 
         // 创建登录表单的标签和输入框
         Label userLabel = new Label("Username:");
         userLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         usernameField = new TextField();
+        usernameField.setPromptText("请输入用户名");
         usernameField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         Label passwordLabel = new Label("Password:");
         passwordLabel.getStyleClass().add("body-font");
+
         passwordField = new PasswordField();
+        passwordField.setPromptText("请输入密码");
         passwordField.getStyleClass().add("input-field");
+
+//        TextField PasswordVisibleField = new TextField();
+//        PasswordVisibleField.setVisible(false);  // Initially hidden
+//        passwordField.setVisible(true);  // Initially visible
+//
+//        Button showOldPasswordButton = createIconButton("/eye-closed.png");
+//
+//// Event handler to toggle visibility of the password
+//        showOldPasswordButton.setOnAction(e -> {
+//            if (PasswordVisibleField.isVisible()) {
+//                // If visible, switch back to PasswordField
+//                passwordField.setText(PasswordVisibleField.getText());  // Transfer text back to PasswordField
+//                PasswordVisibleField.setVisible(false);  // Hide TextField
+//                passwordField.setVisible(true);  // Show PasswordField
+//                showOldPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-closed.png"))));
+//            } else {
+//                // If not visible, show the TextField
+//                PasswordVisibleField.setText(passwordField.getText());  // Transfer text to TextField
+//                passwordField.setVisible(false);  // Hide PasswordField
+//                PasswordVisibleField.setVisible(true);  // Show TextField
+//                showOldPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-open.png"))));
+//            }
+//        });
 
         // 创建登录和注册按钮
         Button loginButton = new Button("登录");
@@ -98,6 +125,7 @@ public class LoginUI extends Application {
         grid.add(usernameField, 1, 1);
         grid.add(passwordLabel, 0, 2);
         grid.add(passwordField, 1, 2);
+        //grid.add(showOldPasswordButton, 2, 2);
 // 将buttonBox添加到GridPane中，占据两列
         grid.add(buttonBox, 0, 3, 2, 1); // 从第0列开始，跨越2列，从第3行开始
 
@@ -109,7 +137,15 @@ public class LoginUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
+    private Button createIconButton(String imagePath) {
+        Button button = new Button();
+        button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+        ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));
+        button.setGraphic(imageView);
+        button.setMinSize(24, 24); // 设置按钮的最小尺寸以适应图标
+        button.setMaxSize(24, 24); // 设置按钮的最大尺寸以适应图标
+        return button;
+    }
     private static void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText(); // JavaFX的PasswordField没有getPassword方法，使用getText
