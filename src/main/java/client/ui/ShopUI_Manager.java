@@ -26,6 +26,9 @@ public class ShopUI_Manager extends Application {
     ShoppingComment shoppingComment = new ShoppingComment();
    // ShoppingProduct.oneProduct oneProduct= new ShoppingProduct.oneProduct();
     BorderPane root;
+    Tab shopInfoTab;
+    Tab productsTab;
+    Tab ordersTab;
     private Stack<BorderPane> history = new Stack<>(); // 用于保存历史布局
     // 构造函数，接收用户名
     public ShopUI_Manager(String username) {
@@ -43,11 +46,11 @@ public class ShopUI_Manager extends Application {
             storeID = shoppingStore.getStoreIDByUsername(username);//修改成功！
             ShoppingStore.oneStore onestore =shoppingStore.oneStore(storeID);
             // 创建商店信息Tab，并设置内容
-            Tab shopInfoTab = new Tab("商店信息", createShopInfoPane(onestore));
+            shopInfoTab = new Tab("商店信息", createShopInfoPane(onestore));
             // 创建商品Tab，并设置内容
-            Tab productsTab = new Tab("商品", createProductsPane());
+            productsTab = new Tab("商品", createProductsPane());
             // 创建订单Tab，并设置内容
-            Tab ordersTab = new Tab("订单", createOrdersPane());
+            ordersTab = new Tab("订单", createOrdersPane());
 
             topTabs.getTabs().addAll(shopInfoTab, productsTab, ordersTab);
         } catch (IOException e) {
@@ -58,7 +61,7 @@ public class ShopUI_Manager extends Application {
         topTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE); // 禁止关闭Tab
 
         // 设置BorderPane的顶部为TabPane
-        root.setTop(topTabs);
+        root.setCenter(topTabs);
 
         // 设置默认显示的中心内容
         topTabs.getSelectionModel().selectFirst();
@@ -179,7 +182,6 @@ public class ShopUI_Manager extends Application {
 
     // 创建商品界面//---每一个加入查看评论按钮---
     // 商品界面的根布局// 存放商品和评论的主Pane
-    private StackPane mainPane;
     private BorderPane productView;
     // 评论界面的根布局
     private BorderPane commentView;
@@ -194,8 +196,6 @@ public class ShopUI_Manager extends Application {
 //    }
     private BorderPane createProductsPane() {
         // 创建 StackPane 用于切换商品界面和评论界面
-        mainPane = new StackPane();
-
         // 商品界面布局
         productView = new BorderPane();
 
@@ -238,8 +238,8 @@ public class ShopUI_Manager extends Application {
         productView.setCenter(productVBox);
         productView.setBottom(addButton);
         // 添加商品界面到主Pane
-        mainPane.getChildren().add(productView);
-
+        //root.setCenter(productView);
+        //mainPane.getChildren().add(productView);
         return productView;
     }
     // 显示修改商家信息的对话框
@@ -395,6 +395,14 @@ public class ShopUI_Manager extends Application {
         VBox commentsVBox = new VBox(10); // 间距为10
         commentsVBox.setPadding(new Insets(10)); // 内边距为10
 
+        // 添加返回按钮
+        Button backButton = new Button("返回");
+        backButton.setOnAction(e -> {
+            System.out.println("返回到商品页面");  // 调试日志
+            productsTab.setContent(productView);
+            //mainPane.getChildren().remove(commentView);
+        });
+
         try {
             ShoppingComment.oneComment[] comments = shoppingComment.getProductComments(productID, 0);
             if (comments != null && comments.length > 0) {
@@ -439,6 +447,13 @@ public class ShopUI_Manager extends Application {
                     // 添加单个评论到 VBox
                     commentsVBox.getChildren().add(commentPane);
                     System.out.println("已找到相关评论");
+                    // 将返回按钮和评论VBox添加到评论界面
+                    commentView.setTop(backButton);
+                    commentView.setCenter(commentsVBox);
+
+                    // 显示评论界面，添加到主StackPane
+                    productsTab.setContent(commentView);
+
                 }
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "没有找到评论或者无法加载评论。");
@@ -450,19 +465,8 @@ public class ShopUI_Manager extends Application {
             alert.showAndWait();
         }
 
-        // 添加返回按钮
-        Button backButton = new Button("返回");
-        backButton.setOnAction(e -> {
-            System.out.println("返回到商品页面");  // 调试日志
-            mainPane.getChildren().remove(commentView);
-        });
-        System.out.println("返回按钮正确添加");  // 调试日志
-        // 将返回按钮和评论VBox添加到评论界面
-        commentView.setTop(backButton);
-        commentView.setCenter(commentsVBox);
 
-        // 显示评论界面，添加到主StackPane
-        mainPane.getChildren().setAll(commentView);
+
     }
 
 
@@ -534,9 +538,7 @@ public class ShopUI_Manager extends Application {
         // 为返回按钮设置事件处理器，以便返回到订单列表
         Button backButton = new Button("返回");
         backButton.setOnAction(e -> {
-            if (!history.isEmpty()) {
-                root.setCenter(history.pop());
-            }
+            ordersTab.setContent(new BorderPane(createOrdersPane()));
         });
 
         HBox buttonBox = new HBox(10); // 创建一个水平布局的 HBox，用于存放按钮
@@ -547,16 +549,12 @@ public class ShopUI_Manager extends Application {
         // 保存当前订单列表布局到历史栈（如果需要）
         // history.push(root.getCenter());
         // 将当前订单列表布局压入历史栈
-        history.push((BorderPane) root.getCenter());
+        //history.push((BorderPane) root.getCenter());
 
         // 将 detailsVBox 设置为根布局的中心内容
-        root.setCenter(detailsVBox);
+        ordersTab.setContent(detailsVBox);
     }
 
-    // 切换中心内容的方法
-    private void changeCenter(BorderPane root, BorderPane newCenter) {
-        root.setCenter(newCenter);
-    }
     public static void main(String[] args) {
         launch(args);
     }
