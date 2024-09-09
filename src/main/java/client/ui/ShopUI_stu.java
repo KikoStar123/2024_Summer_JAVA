@@ -7,6 +7,20 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import java.io.IOException;
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 import static client.service.ShoppingOrder.createOrder;
 import static client.ui.MainUI.borderPane;
@@ -26,20 +40,21 @@ public class ShopUI_stu {
         Button btnCart = new Button("购物车");
         Button btnOrders = new Button("订单");
         topMenu.getChildren().addAll(btnProducts, btnCart, btnOrders);
-        btnCart.setOnAction(e-> {
+        btnCart.setOnAction(e -> {
             try {
                 showShoppingCart(user);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        btnOrders.setOnAction(e-> {
+        btnOrders.setOnAction(e -> {
             try {
                 showOrders();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
+
         // 创建商品搜索栏
         HBox searchBox = new HBox();
         TextField searchField = new TextField();
@@ -75,19 +90,30 @@ public class ShopUI_stu {
                 ShoppingProduct.oneProduct[] products = shoppingProduct.searchProducts(searchTerm, sortBy, sortOrder);
                 items.clear();
                 for (ShoppingProduct.oneProduct product : products) {
-                    HBox productItem = new HBox();
-                    //ImageView productImage = new ImageView(new Image(product.productImage));
-                    //productImage.setFitWidth(100);
-                    //productImage.setFitHeight(100);
-                    VBox productDetails = new VBox();
+                    HBox productItem = new HBox(10); // 间距为10
+                    productItem.setPadding(new Insets(10)); // 内边距为10
+
+                    // 创建商品图片
+                    ImageView productImage = new ImageView();
+                    String relativePath = product.getProductImage().replace("uploads/", "");
+                    Image image = new Image("http://localhost:8082/files/" + relativePath);
+                    productImage.setImage(image);
+                    productImage.setFitWidth(150); // 设置图片宽度
+                    productImage.setFitHeight(150); // 设置图片高度
+                    productImage.setPreserveRatio(true); // 保持图片比例
+
+                    // 创建商品详情
+                    VBox productDetails = new VBox(5); // 间距为5
                     Label lblName = new Label("名称: " + product.getProductName());
-                    Label lblRating = new Label("好评率: " + product.getProductCommentRate()*100 + "%");
+                    Label lblRating = new Label("好评率: " + product.getProductCommentRate() * 100 + "%");
                     Label lblOriginalPrice = new Label("原价: ¥" + product.getProductOriginalPrice());
                     Label lblCurrentPrice = new Label("现价: ¥" + product.getProductCurrentPrice());
                     Label lblSeller = new Label("商家名称: " + product.getStoreName());
                     productDetails.getChildren().addAll(lblName, lblRating, lblOriginalPrice, lblCurrentPrice, lblSeller);
-                    productItem.getChildren().addAll(productDetails);
+
+                    productItem.getChildren().addAll(productImage, productDetails);
                     items.add(productItem);
+
                     // 为每个商品栏设置双击事件
                     productItem.setOnMouseClicked(event -> {
                         if (event.getClickCount() == 2) {
@@ -97,7 +123,6 @@ public class ShopUI_stu {
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
-                            ;
                         }
                     });
                 }
@@ -108,6 +133,7 @@ public class ShopUI_stu {
 
         return shopLayout;
     }
+
     private VBox showOrders() throws IOException {
         ListView<VBox> orderList = new ListView<>();
         ObservableList<VBox> items = FXCollections.observableArrayList();
@@ -399,27 +425,38 @@ public class ShopUI_stu {
     }
     //进入商品详情页
     private VBox showProductDetails(ShoppingProduct.oneProduct product) throws IOException {
-        VBox detailLayout = new VBox();
+        VBox detailLayout = new VBox(10); // 间距为10
+        detailLayout.setPadding(new Insets(10)); // 内边距为10
+
+        // 创建商品图片
+        ImageView productImage = new ImageView();
+        String relativePath = product.getProductImage().replace("uploads/", "");
+        Image image = new Image("http://localhost:8082/files/" + relativePath);
+        productImage.setImage(image);
+        productImage.setFitWidth(200); // 设置图片宽度
+        productImage.setFitHeight(200); // 设置图片高度
+        productImage.setPreserveRatio(true); // 保持图片比例
+
         Label lblName = new Label("商品名称: " + product.getProductName());
-        Label lblProductdetail=new Label("商品属性: "+product.getProductDetail());
+        Label lblProductdetail = new Label("商品属性: " + product.getProductDetail());
         Label lblOriginalPrice = new Label("原价: ¥" + product.getProductOriginalPrice());
         Label lblCurrentPrice = new Label("现价: ¥" + product.getProductCurrentPrice());
-        Label lblInventory=new Label("商品库存: "+product.getProductInventory());
-        Button rateButton=new Button("商品评价");
-        rateButton.setOnAction(e-> {
+        Label lblInventory = new Label("商品库存: " + product.getProductInventory());
+        Button rateButton = new Button("商品评价");
+        rateButton.setOnAction(e -> {
             try {
                 showComment(product);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        Label lblAddress=new Label("商品发货地址: "+product.getProductAddress());
-        ShoppingStore.oneStore oneStore=ShoppingStore.oneStore(product.getStoreID());
-        VBox shopperBox=new VBox();
+        Label lblAddress = new Label("商品发货地址: " + product.getProductAddress());
+        ShoppingStore.oneStore oneStore = ShoppingStore.oneStore(product.getStoreID());
+        VBox shopperBox = new VBox(5); // 间距为5
         Label lblSeller = new Label("商家名称: " + product.getStoreName());
-        Label lblSellerrating=new Label("商家好评率: "+oneStore.getStoreRate()*100+"%");
-        shopperBox.getChildren().addAll(lblSeller,lblSellerrating);
-        shopperBox.setOnMouseClicked(event->{
+        Label lblSellerrating = new Label("商家好评率: " + oneStore.getStoreRate() * 100 + "%");
+        shopperBox.getChildren().addAll(lblSeller, lblSellerrating);
+        shopperBox.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 // 显示商店详情信息
                 try {
@@ -429,35 +466,36 @@ public class ShopUI_stu {
                 }
             }
         });
-        HBox buyBox=new HBox();
-        Button buyButton=new Button("直接购买");
-        //点击购买进入购买页
-        buyButton.setOnAction(e-> {
+        HBox buyBox = new HBox(10); // 间距为10
+        Button buyButton = new Button("直接购买");
+        // 点击购买进入购买页
+        buyButton.setOnAction(e -> {
             try {
                 buyproduct(product);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        //加入购物车
-        Button addButton=new Button("加入购物车");
-        addButton.setOnAction(e-> {
+        // 加入购物车
+        Button addButton = new Button("加入购物车");
+        addButton.setOnAction(e -> {
             try {
                 addproduct(product);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        buyBox.getChildren().addAll(buyButton,addButton);
-        Button backButton=new Button("返回");
-        backButton.setOnAction(e->{
+        buyBox.getChildren().addAll(buyButton, addButton);
+        Button backButton = new Button("返回");
+        backButton.setOnAction(e -> {
             borderPane.setCenter(new VBox(getShopLayout()));
         });
-        detailLayout.getChildren().addAll(lblName, lblProductdetail, lblOriginalPrice, lblCurrentPrice,lblInventory,rateButton,lblAddress, shopperBox,buyBox,backButton);
+
+        detailLayout.getChildren().addAll(productImage, lblName, lblProductdetail, lblOriginalPrice, lblCurrentPrice, lblInventory, rateButton, lblAddress, shopperBox, buyBox, backButton);
 
         return detailLayout;
-
     }
+
     private void addproduct(ShoppingProduct.oneProduct product) throws IOException {
         VBox buyproductBox=new VBox();
         Label common=new Label("同类商品");

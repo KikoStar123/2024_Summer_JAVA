@@ -205,7 +205,37 @@ public class ShopUI_Manager extends Application {
         VBox productVBox = new VBox(10); // 间距为10
         productVBox.setPadding(new Insets(10)); // 内边距为10
 
-        // 创建商品信息
+        // 加载商品信息
+        loadProducts(productVBox);
+
+        // 创建底部添加商品按钮
+        Button addButton = new Button("添加商品");
+        addButton.setOnAction(e -> showEditProductInfoDialog()); // 替换为添加商品的逻辑
+
+        // 添加商品图片按钮
+        Button uploadButton = new Button("上传图片");
+        uploadButton.setOnAction(e -> showUploadDialog());
+
+        // 创建刷新按钮
+        Button refreshButton = new Button("刷新");
+        refreshButton.setOnAction(e -> {
+            productVBox.getChildren().clear(); // 清空当前商品列表
+            loadProducts(productVBox); // 重新加载商品列表
+        });
+
+        // 创建一个HBox来容纳三个按钮
+        HBox buttonBox = new HBox(10); // 间距为10
+        buttonBox.setAlignment(Pos.CENTER); // 居中对齐
+        buttonBox.getChildren().addAll(addButton, uploadButton, refreshButton);
+
+        // 将buttonBox设置为productView的底部
+        productView.setCenter(productVBox);
+        productView.setBottom(buttonBox);
+
+        return productView;
+    }
+
+    private void loadProducts(VBox productVBox) {
         String storeID = null;
         try {
             storeID = shoppingStore.getStoreIDByUsername(username);
@@ -214,11 +244,6 @@ public class ShopUI_Manager extends Application {
                 for (int i = 0; i < shoppingProductList.length; i++) {
                     ShoppingProduct.oneProduct product = shoppingProductList[i];
                     createProductItem(productVBox, product);
-//
-//                    // 为每个商品项添加“查看评论”按钮
-//                    Button viewCommentsButton = new Button("查看评论");
-//                    viewCommentsButton.setOnAction(e -> showProductComments(product.getProductID()));
-//                    productVBox.getChildren().add(viewCommentsButton);
 
                     // 在每个商品项之后添加分割线，除了最后一个商品
                     if (i < shoppingProductList.length - 1) {
@@ -234,29 +259,9 @@ public class ShopUI_Manager extends Application {
             ex.printStackTrace();
             System.out.println("获取商店信息或商品列表时发生错误");
         }
-// 创建底部添加商品按钮
-        Button addButton = new Button("添加商品");
-        addButton.setOnAction(e -> showEditProductInfoDialog()); // 替换为添加商品的逻辑
-
-// 添加商品图片按钮
-        Button uploadButton = new Button("上传图片");
-        uploadButton.setOnAction(e -> showUploadDialog());
-
-// 创建一个HBox来容纳两个按钮
-        HBox buttonBox = new HBox(10); // 间距为10
-        buttonBox.setAlignment(Pos.CENTER); // 居中对齐
-        buttonBox.getChildren().addAll(addButton, uploadButton);
-
-// 将buttonBox设置为productView的底部
-        productView.setCenter(productVBox);
-        productView.setBottom(buttonBox);
-
-
-        // 添加商品界面到主Pane
-        //root.setCenter(productView);
-        //mainPane.getChildren().add(productView);
-        return productView;
     }
+
+
 
     private void showUploadDialog() {
         Stage dialog = new Stage();
@@ -452,9 +457,10 @@ public class ShopUI_Manager extends Application {
         ImageView productImageView = new ImageView();
         String relativePath = product.getProductImage().replace("uploads/", "");
         Image productImage = new Image("http://localhost:8082/files/" + relativePath);
+        System.out.println("http://localhost:8082/files/" + relativePath);
         productImageView.setImage(productImage);
-        productImageView.setFitWidth(50); // 设置图片宽度
-        productImageView.setFitHeight(50); // 设置图片高度
+        productImageView.setFitWidth(200); // 设置图片宽度
+        productImageView.setFitHeight(200); // 设置图片高度
         productImageView.setPreserveRatio(true); // 保持图片比例
 
         // 将图片添加到VBox的顶部

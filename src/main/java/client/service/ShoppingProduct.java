@@ -624,7 +624,7 @@ public class ShoppingProduct {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
-
+            System.out.println(jsonResponse.toString());
             return jsonResponse.getString("status").equals("success");
         } catch (IOException e) {
             e.printStackTrace();
