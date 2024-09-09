@@ -18,7 +18,7 @@ public class TestShopPay {
         String[] orderIDs = {orderID1, orderID2};
 
         // 支付订单
-        System.out.println("pay status: " + (orderService.payOrder(orderIDs, 2401.0f) ? "支付成功" : "支付失败"));
+        //System.out.println("pay status: " + (orderService.payOrder(orderIDs, 2401.0f) ? "支付成功" : "支付失败"));
     }
 
 }

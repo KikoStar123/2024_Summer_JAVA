@@ -87,9 +87,9 @@ public class ShoppingProductTest {
                         System.out.println("请输入商品状态(1:上架, 0:下架):");
                         boolean productStatus = scanner.nextInt() == 1;
 
-                        boolean addProductSuccess = shoppingProduct.addProduct(addProductID, productName, productDetail, productImage,
-                                productOriginalPrice, productCurrentPrice, productInventory, productAddress, productCommentRate, productStatus, storeID);
-                        System.out.println("添加商品" + (addProductSuccess ? "成功" : "失败"));
+                        //boolean addProductSuccess = shoppingProduct.addProduct(addProductID, productName, productDetail, productImage,
+                        //        productOriginalPrice, productCurrentPrice, productInventory, productAddress, productCommentRate, productStatus, storeID);
+                        //System.out.println("添加商品" + (addProductSuccess ? "成功" : "失败"));
                         break;
                     case 4:
                         System.out.println("请输入要删除的商品ID:");
