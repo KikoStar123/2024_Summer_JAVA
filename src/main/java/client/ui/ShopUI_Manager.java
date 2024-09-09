@@ -49,12 +49,6 @@ public class ShopUI_Manager extends Application {
         root = new BorderPane();
         root.setPrefSize(400, 300); // 设置宽度为400，高度为300
 
-        // 创建一个 ScrollPane 来包含 BorderPane
-        ScrollPane scrollPane = new ScrollPane(root);
-        scrollPane.setPrefSize(400, 300); // 同样设置 ScrollPane 的大小
-        // 为 BorderPane 添加鼠标滚轮事件处理器
-        root.addEventFilter(ScrollEvent.ANY, this::handleScrollEvent);
-
         // 创建TabPane作为顶部的容器
         TabPane topTabs = new TabPane();
         String storeID =null;
@@ -232,17 +226,14 @@ public class ShopUI_Manager extends Application {
 //        return productView;
 //    }
     private BorderPane createProductsPane() {
-        // 创建 StackPane 用于切换商品界面和评论界面
-        // 商品界面布局
-        productView = new BorderPane();
-
-        // 创建商品信息的VBox
-        VBox productVBox = new VBox(10); // 间距为10
-        productVBox.setPadding(new Insets(10)); // 内边距为10
-
+        System.out.println("Creating products pane...");
+        BorderPane productsPane = new BorderPane();
+        // 商品界面布局使用VBox
+        VBox productView = new VBox(10);
+        productView.setPadding(new Insets(10));
+        System.out.println("Initializing productView...");
         // 加载商品信息
-        loadProducts(productVBox);
-
+        loadProducts(productView); // 传入 productView
         // 创建底部添加商品按钮
         Button addButton = new Button("添加商品");
         addButton.setOnAction(e -> showEditProductInfoDialog()); // 替换为添加商品的逻辑
@@ -254,8 +245,8 @@ public class ShopUI_Manager extends Application {
         // 创建刷新按钮
         Button refreshButton = new Button("刷新");
         refreshButton.setOnAction(e -> {
-            productVBox.getChildren().clear(); // 清空当前商品列表
-            loadProducts(productVBox); // 重新加载商品列表
+            productView.getChildren().clear(); // 清空当前商品列表
+            loadProducts(productView); // 重新加载商品列表
         });
 
         // 创建一个HBox来容纳三个按钮
@@ -264,10 +255,15 @@ public class ShopUI_Manager extends Application {
         buttonBox.getChildren().addAll(addButton, uploadButton, refreshButton);
 
         // 将buttonBox设置为productView的底部
-        productView.setCenter(productVBox);
-        productView.setBottom(buttonBox);
+        productsPane.setCenter(productView);
+        productsPane.setBottom(buttonBox);
+        // 创建 ScrollPane 并设置其包含 VBox（productView）
+        ScrollPane scrollPane = new ScrollPane(productView);
+        scrollPane.setFitToWidth(true); // 让 ScrollPane 自动调整宽度以适应内容
+        productsPane.setCenter(scrollPane);
 
-        return productView;
+        System.out.println("Products pane created with productView: " + productView);
+        return productsPane;
     }
 
     private void loadProducts(VBox productVBox) {
@@ -279,8 +275,6 @@ public class ShopUI_Manager extends Application {
                 for (int i = 0; i < shoppingProductList.length; i++) {
                     ShoppingProduct.oneProduct product = shoppingProductList[i];
                     createProductItem(productVBox, product);
-//
-
                     // 在每个商品项之后添加分割线，除了最后一个商品
                     if (i < shoppingProductList.length - 1) {
                         Separator separator = new Separator();
@@ -295,17 +289,6 @@ public class ShopUI_Manager extends Application {
             ex.printStackTrace();
             System.out.println("获取商店信息或商品列表时发生错误");
         }
-
-
-        // 创建底部添加商品按钮
-        Button addButton = new Button("添加商品");
-        addButton.setOnAction(e -> showEditProductInfoDialog()); // 替换为添加商品的逻辑
-        productView.setCenter(productVBox);
-        productView.setBottom(addButton);
-        // 添加商品界面到主Pane
-        //root.setCenter(productView);
-        //mainPane.getChildren().add(productView);
-        return productView;
     }
     private void showUploadDialog() {
         Stage dialog = new Stage();
@@ -433,7 +416,6 @@ public class ShopUI_Manager extends Application {
                             productIDField.getText(),
                             productNameField.getText(),
                             productDetailTextArea.getText(),
-                            "123",
                             Float.parseFloat(productOriginalPriceField.getText()),
                             Float.parseFloat(productCurrentPriceField.getText()),
                             Integer.parseInt(productInventoryField.getText()),
