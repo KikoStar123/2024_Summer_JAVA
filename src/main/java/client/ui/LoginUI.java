@@ -16,9 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.image.Image;
-//import jdk.javadoc.internal.doclets.formats.html.DocFilesHandlerImpl;
 
-import java.net.URL;
 
 public class LoginUI extends Application {
     private TextField usernameField;
@@ -100,35 +98,54 @@ public class LoginUI extends Application {
 
     private void handleLogin() {
         String username = usernameField.getText();
-        String password = passwordField.getText(); // JavaFX的PasswordField没有getPassword方法，使用getText
-
+        String password = passwordField.getText();
         ClientService clientService = new ClientService();
         boolean success = clientService.login(username, password);
 
         if (success) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Login");
-            alert.setHeaderText(null);
-            alert.setContentText("Login successful!");
-            alert.showAndWait();
-
-            // 关闭当前窗口
-            Stage stage = (Stage) usernameField.getScene().getWindow();
-            stage.close();
-
-            // 启动主界面
-            //User user = new User(username, Role.student, 12, Gender.male, "123");
             User user = clientService.login_return(username, password);
-            Platform.runLater(() -> {
-                MainUI mainUI = new MainUI(user);
-                try {
-                    mainUI.start(new Stage());
-                } catch (Exception e) {
-                    e.printStackTrace();
+            if (user != null) {
+                Role role = user.getRole(); // 假设User类中有getRole方法
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Login");
+                alert.setHeaderText(null);
+                alert.setContentText("Login successful!");
+
+                alert.showAndWait();
+
+                // 关闭当前窗口
+                Stage stage = (Stage) usernameField.getScene().getWindow();
+                stage.close();
+
+                // 根据用户角色打开不同的UI
+                if (role == Role.coursemanager) {
+                    // 启动课程管理界面
+                    Platform.runLater(() -> {
+                        Admin_CourseUI adminCourseUI = new Admin_CourseUI(user);
+                        BorderPane adminCoursePane = adminCourseUI.createAdminCourseSelectionView();
+                        Scene adminScene = new Scene(adminCoursePane, 800, 600);
+                        Stage adminStage = new Stage();
+                        adminStage.setScene(adminScene);
+                        adminStage.show();
+                    });
+                } else {
+                    // 启动主界面或其他界面
+                    Platform.runLater(() -> {
+                        MainUI mainUI = new MainUI(user);
+                        try {
+                            mainUI.start(new Stage());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
                 }
-            });
-
-
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Login");
+                alert.setHeaderText(null);
+                alert.setContentText("Failed to retrieve user information.");
+                alert.showAndWait();
+            }
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Login");

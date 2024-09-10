@@ -10,6 +10,7 @@ public class ViewEnrolledCoursesRequestHandler implements RequestHandler {
         String username = parameters.getString("username");
 
         JSONObject jsonResponse = new JSONObject();
+
         try {
             JSONObject coursesJson = courseService.getEnrolledCourses(username);
             if (coursesJson != null && coursesJson.length() > 0) {

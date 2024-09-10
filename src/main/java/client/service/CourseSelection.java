@@ -43,6 +43,16 @@ public class CourseSelection {
         public int getEndsection() {
             return endsection;
         }
+        @Override
+        public String toString() {
+            return  getStaWeek() + "-" + getEndWeek()+ " 周"   + "，" + convertDayToInt(getDay()) +" , " + getStasection() + "-" + getEndsection()+ " 节 ";
+        }
+
+        // 将数字转换为星期几的名称
+        private String convertDayToInt(int day) {
+            String[] days = {"星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"};
+            return days[day - 1];
+        }
     }
 
     public class oneCourseinfo
@@ -86,11 +96,11 @@ public class CourseSelection {
             return selectedCount;
         }
 
-        public String courseRoom() {
+        public String getCourseRoom() {
             return courseRoom;
         }
 
-        public String courseType() {
+        public String getCourseType() {
             return courseType;
         }
     }
@@ -102,33 +112,42 @@ public class CourseSelection {
      * @return onePeriod
      */
     public onePeriod[] parseCourseTime(String timeString) {
-        //使用链表动态添加元素，最后转化为数组
+        //System.out.println("Course time string: " + timeString);
         List<onePeriod> thePeriods = new ArrayList<>();
 
-        //按";"为分隔符进行拆分，得到一个字符串数组
+        // 按";"分割时间段
         String[] timeSegments = timeString.split(";");
-        //依次解析一个时间段
         for (String segment : timeSegments) {
-            // 将输入字符串以 '|' 为分隔符进行拆分，得到一个字符串数组
             String[] parts = segment.split("\\|");
-
-            // 从数组中提取出每部分的数据
-            String weeks = parts[0];//课程周次范围，如 "1-16"
-            String day = parts[1];//上课的星期几，如 "Monday"
-            String periods = parts[2];//课程节次范围，如 "1-2"
+            if (parts.length != 3) {
+                // 如果部分数量不正确，跳过当前段落
+                System.err.println("Invalid segment format: " + segment);
+                continue;
+            }
 
             onePeriod thePeriod = new onePeriod();
+            try {
+                // 解析周次
+                String[] weeks = parts[0].split("-");
+                if (weeks.length != 2) throw new IllegalArgumentException("Invalid week range: " + parts[0]);
+                thePeriod.staWeek = Integer.parseInt(weeks[0]);
+                thePeriod.endWeek = Integer.parseInt(weeks[1]);
 
-            // 解析课程的开始和结束周次
-            thePeriod.staWeek = Integer.parseInt(weeks.split("-")[0]);
-            thePeriod.endWeek = Integer.parseInt(weeks.split("-")[1]);
-            // 提取星期几
-            thePeriod.Day = Integer.parseInt(day);
-            // 解析课程的开始和结束节次
-            thePeriod.stasection = Integer.parseInt(periods.split("-")[0]);
-            thePeriod.endsection = Integer.parseInt(periods.split("-")[1]);
+                // 解析星期几
+                thePeriod.Day = Integer.parseInt(parts[1]);
 
-            thePeriods.add(thePeriod);
+                // 解析节次
+                String[] periods = parts[2].split("-");
+                if (periods.length != 2) throw new IllegalArgumentException("Invalid period range: " + parts[2]);
+                thePeriod.stasection = Integer.parseInt(periods[0]);
+                thePeriod.endsection = Integer.parseInt(periods[1]);
+
+                thePeriods.add(thePeriod);
+            } catch (NumberFormatException e) {
+                System.err.println("Number format error in segment: " + segment);
+            } catch (IllegalArgumentException e) {
+                System.err.println(e.getMessage() + " in segment: " + segment);
+            }
         }
         return thePeriods.toArray(new onePeriod[0]);
     }
@@ -276,7 +295,7 @@ public class CourseSelection {
             String response = in.readLine();//从输入流中读取一行数据，并将其存储在字符串response中（假设按行发送）
             JSONObject jsonResponse = new JSONObject(response);//将字符串解析为一个JSON对象
 
-            System.out.println(jsonResponse.toString());
+            if(jsonResponse.getString("status").equals("fail")) return null;
 
             JSONArray data = jsonResponse.getJSONArray("courses");//获取JSON数组
 

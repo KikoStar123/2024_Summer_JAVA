@@ -6,6 +6,6 @@ public enum Role {
     BankManager,//
     Librarian,
     ShopAssistant,
-    CourseManager,
+    coursemanager,
     StuInfoManager,
 }

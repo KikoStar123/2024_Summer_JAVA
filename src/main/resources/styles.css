@@ -25,9 +25,7 @@
     -fx-border-color: #B0B0B0;
 }
 
-.root {
-    -fx-background-color: #FFFFFF; /* 设置背景颜色为白色 */
-}
+
 
 .gray-border {
     -fx-border-color: #808080; /* 灰色边框 */
@@ -103,4 +101,96 @@
     -fx-text-fill: #FFFFFF;
     -fx-border-radius: 4px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 1, 0.0, 1, 1);
+}
+
+
+/* 颜色规范 */
+.root {
+    --primary-purple: #6A0DAD;
+    --accent-pink: #FF69B4;
+    --background-white: #FFFFFF;
+    --light-purple: #D8BFD8;
+    --light-pink: #FFC0CB;
+    --gray: #B0B0B0;
+    --deep-purple: #4B0082;
+}
+
+/* 标题字体 */
+.title-font {
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    font-size: 24px;
+    color: var(--primary-purple);
+    font-weight: bold;
+}
+
+/* 正文字体 */
+.body-font {
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    font-size: 14px;
+    color: var(--deep-purple);
+    font-weight: regular;
+}
+
+/* 按钮字体 */
+.button-font {
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+    font-size: 16px;
+    color: var(--background-white);
+    font-weight: medium;
+}
+
+/* 按钮规范 */
+.button {
+    background-color: var(--background-white);
+    border: 2px solid var(--primary-purple);
+    border-radius: 8px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease-out;
+}
+
+.button:hover {
+    background-color: var(--light-pink);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+}
+
+.button:pressed {
+    background-color: var(--light-purple);
+    border-color: var(--primary-purple);
+}
+
+/* 输入框规范 */
+.input-field {
+    background-color: var(--background-white);
+    border: 1px solid var(--gray);
+    border-radius: 6px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s ease-in;
+}
+
+
+/* 面板和卡片规范 */
+.panel {
+    background-color: var(--background-white);
+    box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+/* 悬浮提示规范 */
+.tooltip {
+    background-color: var(--primary-purple);
+    color: var(--background-white);
+    border-radius: 4px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 整体布局和风格 */
+body {
+    background: linear-gradient(135deg, var(--light-purple), var(--light-pink));
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* 元素间距 */
+* {
+    margin: 16px;
+    padding: 16px;
 }

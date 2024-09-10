@@ -7,9 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
@@ -70,6 +68,12 @@ public class MainUI extends Application {
         registerButton.setOnAction(e -> handleShop(user.getUsername()));
         leftBox.getChildren().add(registerButton);
 
+        Button courseadminButton = new Button("管理选课");
+        courseadminButton.setPrefSize(150, 40);
+        courseadminButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
+        courseadminButton.setOnAction(e -> handleadmincourseSelection(user.getUsername()));
+        leftBox.getChildren().add(courseadminButton);
+
         // 添加标签
         Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
 
@@ -118,8 +122,15 @@ public class MainUI extends Application {
     private void handlecourseSelection(String username) {
         Platform.runLater(() -> {
             CourseSelectionUI CourseSelectionUI = new CourseSelectionUI(user);
-            BorderPane CourseSelection=CourseSelectionUI.createLibraryView();
+            BorderPane CourseSelection=CourseSelectionUI.createCourseSelectionView();
             borderPane.setCenter(CourseSelection);
+        });
+    }
+    private void handleadmincourseSelection(String username) {
+        Platform.runLater(() -> {
+            Admin_CourseUI Admin_CourseUI = new Admin_CourseUI(user);
+            BorderPane Admin_Course=Admin_CourseUI.createAdminCourseSelectionView();
+            borderPane.setCenter(Admin_Course);
         });
     }
 

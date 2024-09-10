@@ -50,13 +50,13 @@ public class CourseSelectionTest {
 
         // 测试添加课程
         System.out.println("\n测试添加课程：");
-        String newCourseID = "CS102";
-        String newCourseName = "Data Structures";
-        String newCourseTeacher = "Prof. Smith";
-        int newCourseCredits = 4;
-        String newCourseTime = "1-16|1|1-2;1-16|3|3-4";
+        String newCourseID = "CS105";
+        String newCourseName = "College Physics";
+        String newCourseTeacher = "Prof. Sam";
+        int newCourseCredits = 2;
+        String newCourseTime = "1-16|1|3-4;1-16|3|6-7";
         int newCourseCapacity = 100;
-        String newcourseRoom="J1-206";
+        String newcourseRoom="J2-206";
         String newcourseType="required";
         boolean addCourseSuccess = courseSelection.addCourse(newCourseID, newCourseName, newCourseTeacher,
                 newCourseCredits, newCourseTime, newCourseCapacity, newcourseRoom, newcourseType);
