@@ -10,11 +10,25 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class UpdatePwdUI extends Application {
     User user=new User();
     public UpdatePwdUI(User user) {
         this.user=user;
+    }
+    //显示修改密码的窗口
+    public void showUpdatePwdWindow() {
+        Stage stage = new Stage();
+        try {
+            start(stage);  // 调用 start 方法显示新窗口
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void main(String[] args) {
+        launch(args);
     }
 
     @Override
@@ -42,48 +56,51 @@ public class UpdatePwdUI extends Application {
         confirmPasswordVisibleField.setVisible(false);
 
         // 添加“显示”按钮
-        Button showOldPasswordButton = new Button("显示");
+        // 创建“显示/隐藏”旧密码的按钮，并设置图标
+        Button showOldPasswordButton = createIconButton("/eye-open.png");
         showOldPasswordButton.setOnAction(e -> {
             if (oldPasswordVisibleField.isVisible()) {
                 oldPasswordField.setText(oldPasswordVisibleField.getText());
                 oldPasswordVisibleField.setVisible(false);
                 oldPasswordField.setVisible(true);
-                showOldPasswordButton.setText("显示");
+                showOldPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-open.png"))));
             } else {
                 oldPasswordVisibleField.setText(oldPasswordField.getText());
                 oldPasswordField.setVisible(false);
                 oldPasswordVisibleField.setVisible(true);
-                showOldPasswordButton.setText("隐藏");
+                showOldPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-closed.png"))));
             }
         });
 
-        Button showNewPasswordButton = new Button("显示");
+// 添加“显示”按钮
+        Button showNewPasswordButton = createIconButton("/eye-open.png");
         showNewPasswordButton.setOnAction(e -> {
             if (newPasswordVisibleField.isVisible()) {
                 newPasswordField.setText(newPasswordVisibleField.getText());
                 newPasswordVisibleField.setVisible(false);
                 newPasswordField.setVisible(true);
-                showNewPasswordButton.setText("显示");
+                showNewPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-open.png"))));
             } else {
                 newPasswordVisibleField.setText(newPasswordField.getText());
                 newPasswordField.setVisible(false);
                 newPasswordVisibleField.setVisible(true);
-                showNewPasswordButton.setText("隐藏");
+                showNewPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-closed.png"))));
             }
         });
 
-        Button showConfirmPasswordButton = new Button("显示");
+// 添加“显示”按钮
+        Button showConfirmPasswordButton = createIconButton("/eye-open.png");
         showConfirmPasswordButton.setOnAction(e -> {
             if (confirmPasswordVisibleField.isVisible()) {
                 confirmPasswordField.setText(confirmPasswordVisibleField.getText());
                 confirmPasswordVisibleField.setVisible(false);
                 confirmPasswordField.setVisible(true);
-                showConfirmPasswordButton.setText("显示");
+                showConfirmPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-open.png"))));
             } else {
                 confirmPasswordVisibleField.setText(confirmPasswordField.getText());
                 confirmPasswordField.setVisible(false);
                 confirmPasswordVisibleField.setVisible(true);
-                showConfirmPasswordButton.setText("隐藏");
+                showConfirmPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-closed.png")))); // 切换为隐藏图标
             }
         });
 //更新密码的具体逻辑，修改函数
@@ -126,15 +143,16 @@ public class UpdatePwdUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    public void showUpdatePwdWindow() {
-        Stage stage = new Stage();
-        try {
-            start(stage);  // 调用 start 方法显示新窗口
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    // 创建一个只有图标没有边框的按钮
+    private Button createIconButton(String imagePath) {
+        Button button = new Button();
+        button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+        ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));
+        button.setGraphic(imageView);
+        button.setMinSize(24, 24); // 设置按钮的最小尺寸以适应图标
+        button.setMaxSize(24, 24); // 设置按钮的最大尺寸以适应图标
+        return button;
     }
-
     public static void main() {
         launch();
     }

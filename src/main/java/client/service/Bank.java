@@ -321,7 +321,8 @@ public static BankUser getBankUser(String username,String bankpwd) {
         return isSuccess;
     }
     //支付功能--与商店协同
-    public boolean payment(String username, String bankpwd, String orderID, float amount) {
+    public static boolean payment(String username, String bankpwd, String orderID, float amount) {
+        System.out.println("payment: " + orderID);
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             JSONObject request = new JSONObject();

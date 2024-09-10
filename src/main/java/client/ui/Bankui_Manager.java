@@ -11,6 +11,14 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import client.service.Bank;
 
+import javafx.application.Platform;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
+import javafx.geometry.Insets;
+import java.util.Optional;
+
+
 import java.time.LocalDate;
 
 public class Bankui_Manager extends Application {
@@ -218,14 +226,38 @@ public class Bankui_Manager extends Application {
         primaryStage.show();
     }
 
-
     private void showPasswordDialog(String username, Stage primaryStage, BorderPane root) {
-        TextInputDialog passwordDialog = new TextInputDialog();
-        passwordDialog.setTitle("输入密码");
-        passwordDialog.setHeaderText(null);
-        passwordDialog.setContentText("密码:");
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("输入密码");
+        dialog.setHeaderText(null);
 
-        passwordDialog.showAndWait().ifPresent(password -> {
+        ButtonType loginButtonType = new ButtonType("确认", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("密码");
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+        grid.add(new Label("密码:"), 0, 0);
+        grid.add(passwordField, 1, 0);
+
+        dialog.getDialogPane().setContent(grid);
+
+        Platform.runLater(() -> passwordField.requestFocus());
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                return passwordField.getText();
+            }
+            return null;
+        });
+
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(password -> {
             Bank bank = new Bank();
             BankUser user = bank.getBankUser(username, password); // 调用 getBankUser 并传入密码
             if (user != null) {
@@ -241,6 +273,7 @@ public class Bankui_Manager extends Application {
             }
         });
     }
+
 
     private void updateAccountInfo(Bank bank, String username) {
         BankUser user = bank.searchByUsername(username);

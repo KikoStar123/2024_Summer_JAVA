@@ -83,7 +83,6 @@ public class BankService {
         public PaymentInfo(double amount) {
             this.amount = amount;
             this.processed = false;
-            this.passwordErrorCount = 0;
         }
 
         public double getAmount() {
@@ -106,13 +105,6 @@ public class BankService {
             this.paymentResult = paymentResult;
         }
 
-        public int getPasswordErrorCount() {
-            return passwordErrorCount;
-        }
-
-        public void incrementPasswordErrorCount() {
-            this.passwordErrorCount++;
-        }
     }
 
 
@@ -187,9 +179,6 @@ public class BankService {
                         }
                         return result;
                     } else {
-                        System.out.println("Invalid username or password for orderID: " + orderID);
-                        paymentInfo.incrementPasswordErrorCount();
-                        if (paymentInfo.getPasswordErrorCount() >= 3) {
                             JSONObject result = new JSONObject().put("status", "error").put("message", "Invalid username or password");
                             synchronized (paymentInfo) {
                                 paymentInfo.setPaymentResult(result);
@@ -197,10 +186,8 @@ public class BankService {
                                 paymentInfo.notifyAll();
                             }
                             return result;
-                        } else {
-                            return new JSONObject().put("status", "error").put("message", "Invalid username or password. Attempt " + paymentInfo.getPasswordErrorCount());
                         }
-                    }
+
                 } catch (SQLException e) {
                     JSONObject result = new JSONObject().put("status", "error").put("message", e.getMessage());
                     synchronized (paymentInfo) {
