@@ -107,7 +107,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>main.MainClass</mainClass>
+                            <mainClass>main.Start</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -136,11 +136,12 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>main.MainClass</mainClass>
+                    <mainClass>main.Start</mainClass>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 
 
 </project>

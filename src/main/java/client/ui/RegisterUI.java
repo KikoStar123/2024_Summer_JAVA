@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import org.json.JSONObject;
 
 import java.awt.event.ActionListener;
 
@@ -91,9 +92,9 @@ public class RegisterUI  {
             String academyText = academy.getText();
             String passwordText = passwordField.getText();
 
-            boolean success = ClientService.register(truename, Gender.valueOf(gender.toLowerCase()), stuid, originText, birthdayText, academyText, passwordText);
-            if (success) {
-                showAlert(Alert.AlertType.INFORMATION, "注册成功", "注册成功！");
+            JSONObject result = ClientService.register(truename, Gender.valueOf(gender.toLowerCase()), stuid, originText, birthdayText, academyText, passwordText);
+            if (result.getString("status").equals("success")) {
+                showAlert(Alert.AlertType.INFORMATION, "注册成功", "注册成功！你的账号是：" + result.getString("username"));
             } else {
                 showAlert(Alert.AlertType.ERROR, "注册失败", "注册失败，请重试。");
             }

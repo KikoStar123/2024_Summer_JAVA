@@ -107,7 +107,7 @@ public class ClientService {
             return -1; // Return -1 or throw an exception to indicate an error
         }
     }
-    public static boolean register(String truename, Gender gender, String stuid, String origin, String birthday, String academy, String password) {
+    public static JSONObject register(String truename, Gender gender, String stuid, String origin, String birthday, String academy, String password) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             // 创建请求
             int age =calculateAge(birthday);
@@ -133,12 +133,11 @@ public class ClientService {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            // 返回注册结果
-            return jsonResponse.getString("status").equals("success");
+            return jsonResponse;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
+        return null;
     }
 //    public User register_user(String username, String password) {
 //        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
