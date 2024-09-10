@@ -45,6 +45,10 @@ public class ShopUI_Manager extends Application {
     }
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setTitle("商家");
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        primaryStage.getIcons().add(image);
+
         // 创建主BorderPane
         root = new BorderPane();
         root.setPrefSize(400, 300); // 设置宽度为400，高度为300
@@ -76,9 +80,12 @@ public class ShopUI_Manager extends Application {
         // 设置默认显示的中心内容
         topTabs.getSelectionModel().selectFirst();
 
-        // 创建场景并设置到舞台上
-        Scene scene = new Scene(root, 1000, 600);
-        primaryStage.setTitle("商家");
+        // 设置场景
+        Scene scene = new Scene(root, 1000, 618); // 调整尺寸以适应新布局
+        primaryStage.setMinWidth(1000); // 最小宽度为800像素
+        primaryStage.setMinHeight(618); // 最小高度为600像素
+        // 加载CSS样式表
+        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

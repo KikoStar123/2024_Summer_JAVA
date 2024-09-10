@@ -33,24 +33,34 @@ public class UpdatePwdUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setTitle("修改密码");
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        primaryStage.getIcons().add(image);
+
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
 
         Label oldPasswordLabel = new Label("旧密码:");
+        oldPasswordLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         PasswordField oldPasswordField = new PasswordField();
+        oldPasswordField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         oldPasswordField.setPromptText("请输入旧密码");//这一行是lmy
         TextField oldPasswordVisibleField = new TextField();
         oldPasswordVisibleField.setVisible(false);
 
         Label newPasswordLabel = new Label("新密码:");
+        newPasswordLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         PasswordField newPasswordField = new PasswordField();
+        newPasswordField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         newPasswordField.setPromptText("请输入新密码");
         TextField newPasswordVisibleField = new TextField();
         newPasswordVisibleField.setVisible(false);
 
         Label confirmPasswordLabel = new Label("确认新密码:");
+        confirmPasswordLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         PasswordField confirmPasswordField = new PasswordField();
+        confirmPasswordField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         confirmPasswordField.setPromptText("请确认新密码");
         TextField confirmPasswordVisibleField = new TextField();
         confirmPasswordVisibleField.setVisible(false);
@@ -72,7 +82,7 @@ public class UpdatePwdUI extends Application {
             }
         });
 
-// 添加“显示”按钮
+        // 添加“显示”按钮
         Button showNewPasswordButton = createIconButton("/eye-open.png");
         showNewPasswordButton.setOnAction(e -> {
             if (newPasswordVisibleField.isVisible()) {
@@ -88,7 +98,7 @@ public class UpdatePwdUI extends Application {
             }
         });
 
-// 添加“显示”按钮
+        // 添加“显示”按钮
         Button showConfirmPasswordButton = createIconButton("/eye-open.png");
         showConfirmPasswordButton.setOnAction(e -> {
             if (confirmPasswordVisibleField.isVisible()) {
@@ -103,8 +113,9 @@ public class UpdatePwdUI extends Application {
                 showConfirmPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-closed.png")))); // 切换为隐藏图标
             }
         });
-//更新密码的具体逻辑，修改函数
+        //更新密码的具体逻辑，修改函数
         Button updateButton = new Button("更新密码");
+        updateButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         updateButton.setOnAction(e -> {
             String oldPassword = oldPasswordField.isVisible() ? oldPasswordField.getText() : oldPasswordVisibleField.getText();
             String newPassword = newPasswordField.isVisible() ? newPasswordField.getText() : newPasswordVisibleField.getText();
@@ -121,25 +132,28 @@ public class UpdatePwdUI extends Application {
 
         });
 
-        grid.add(oldPasswordLabel, 0, 0);
-        grid.add(oldPasswordField, 1, 0);
-        grid.add(oldPasswordVisibleField, 1, 0);
-        grid.add(showOldPasswordButton, 2, 0);
+        int dispx=5;
+        int dispy=3;
 
-        grid.add(newPasswordLabel, 0, 1);
-        grid.add(newPasswordField, 1, 1);
-        grid.add(newPasswordVisibleField, 1, 1);
-        grid.add(showNewPasswordButton, 2, 1);
+        grid.add(oldPasswordLabel, dispx+0, dispy+0);
+        grid.add(oldPasswordField, dispx+1, dispy+0);
+        grid.add(oldPasswordVisibleField, dispx+1, dispy+0);
+        grid.add(showOldPasswordButton, dispx+2, dispy+0);
 
-        grid.add(confirmPasswordLabel, 0, 2);
-        grid.add(confirmPasswordField, 1, 2);
-        grid.add(confirmPasswordVisibleField, 1, 2);
-        grid.add(showConfirmPasswordButton, 2, 2);
+        grid.add(newPasswordLabel, dispx+0, dispy+1);
+        grid.add(newPasswordField, dispx+1, dispy+1);
+        grid.add(newPasswordVisibleField, dispx+1, dispy+1);
+        grid.add(showNewPasswordButton, dispx+2, dispy+1);
 
-        grid.add(updateButton, 1, 3);
+        grid.add(confirmPasswordLabel, dispx+0, dispy+2);
+        grid.add(confirmPasswordField, dispx+1, dispy+2);
+        grid.add(confirmPasswordVisibleField, dispx+1, dispy+2);
+        grid.add(showConfirmPasswordButton, dispx+2, dispy+2);
 
-        Scene scene = new Scene(grid, 400, 250);
-        primaryStage.setTitle("修改密码");
+        grid.add(updateButton, dispx+2, dispy+5);
+
+        Scene scene = new Scene(grid, 400, 210);
+        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

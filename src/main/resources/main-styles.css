@@ -8,6 +8,18 @@
     -fx-background-insets: 0; /* 设置背景的内边距为0 */
 }
 
+/* 字体规范 */
+/*定义了标题的字体样式，包括字体、大小、颜色和加粗*//*使用了*/
+.title-font {
+    -fx-font-family: "微软雅黑"; /* 字体 */
+    -fx-font-size: 24px; /* 字体大小 */
+    -fx-text-fill: rgb(191, 204, 204); /* 字体颜色 */
+    -fx-font-weight: bold; /* 字体加粗 */
+    -fx-underline: false; /* 无下划线 */
+    -fx-strikethrough: false; /* 无删除线 */
+    /*-fx-effect: dropshadow(three-pass-box, rgba(232, 5, 5, 0.5), 5, 0, 0, 0);*/ /* 添加阴影效果 */
+    -fx-alignment: center; /* 文本居中 */
+}
 /*定义了正文文本的字体样式，包括字体、大小和颜色*//*使用了*/
 .body-font {/*使用*/
     -fx-font-family: 'Segoe UI', 'Roboto';

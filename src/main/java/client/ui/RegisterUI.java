@@ -104,7 +104,6 @@ public class RegisterUI  {
         GridPane.setConstraints(passwordLabel, dispx+0, dispy+10);
         GridPane.setConstraints(passwordField, dispx+1, dispy+10);
 
-
         registerButton = new Button("注册");
         registerButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         GridPane.setConstraints(registerButton, dispx+1, dispy+12);

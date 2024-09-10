@@ -223,10 +223,15 @@ public class ShopUI_stu {
         {
             VBox orderbox=new VBox();
             Label orderid=new Label("订单id: "+order.getOrderID());
+            orderid.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
             Label productname=new Label("商品名称: "+order.productName());
+            productname.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
             Label paidMoney=new Label("支付金额: "+order.getPaidMoney());
+            paidMoney.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
             Button commentbutton=new Button("评论");
+            commentbutton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
             Button paybutton=new Button("支付");
+            paybutton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
             ComboBox<String> infoComboBox = new ComboBox<>();
             for (int i = 0; i < currentUser.getAddresses().length; i++) {
@@ -234,6 +239,7 @@ public class ShopUI_stu {
                 String telephone = currentUser.getTelephones()[i];
                 infoComboBox.getItems().add("地址: " + address + " 电话: " + telephone);
             }
+            infoComboBox.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
             infoComboBox.setPromptText("选择收货信息");
             // 默认选择第一个收货信息
             if (!infoComboBox.getItems().isEmpty()) {
@@ -293,7 +299,9 @@ public class ShopUI_stu {
 
                 // 创建确认和返回按钮
                 Button confirmButton = new Button("确认");
+                confirmButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
                 Button backButton = new Button("返回");
+                backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
                 confirmButton.setOnAction(confirmEvent ->{
                     int commentAttitude = attitudeComboBox.getSelectionModel().getSelectedIndex()+1;
                     String commentContent = commentField.getText();
@@ -345,6 +353,7 @@ public class ShopUI_stu {
         VBox ordersBox=new VBox();
         ordersBox.getChildren().addAll(scrollPane);
         Button backButton=new Button("返回");
+        backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         backButton.setOnAction(e->{
             try {
                 borderPane.setCenter(new VBox(getShopLayout()));
@@ -354,18 +363,23 @@ public class ShopUI_stu {
         });
 
         Button deleteButton = new Button("删除收货信息");
+        deleteButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         deleteButton.setOnAction(event -> {
             Stage popupStage = new Stage();
             popupStage.setTitle("删除收货信息");
             VBox layout = new VBox(10);
             layout.setPadding(new Insets(10));
+            Label delinfoLabel = new Label("新的收货信息:");
+            delinfoLabel.getStyleClass().add("body-font");
             ComboBox<String> infoComboBox = new ComboBox<>();
+            infoComboBox.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
             for (int i = 0; i < currentUser.getAddresses().length; i++) {
                 String address = currentUser.getAddresses()[i];
                 String telephone = currentUser.getTelephones()[i];
                 infoComboBox.getItems().add("地址: " + address + " 电话: " + telephone);
             }
             Button confirmButton = new Button("确认");
+            confirmButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
             confirmButton.setOnAction(e -> {
                 int selectedIndex = infoComboBox.getSelectionModel().getSelectedIndex();
                 if (selectedIndex >= 0) {
@@ -387,23 +401,29 @@ public class ShopUI_stu {
                     }
                 }
             });
-            layout.getChildren().addAll(infoComboBox, confirmButton);
+            layout.getChildren().addAll(delinfoLabel,infoComboBox, confirmButton);
             Scene scene = new Scene(layout, 300, 200);
             popupStage.setScene(scene);
             popupStage.show();
         });
 
         Button adduserButton = new Button("添加收货信息");
+        adduserButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         adduserButton.setOnAction(e -> {
             Stage popupStage = new Stage();
             popupStage.setTitle("添加收货信息");
             VBox layout = new VBox(10);
             layout.setPadding(new Insets(10));
+            Label newinfoLabel = new Label("新的收货信息:");
+            newinfoLabel.getStyleClass().add("body-font");
             TextField addressField = new TextField();
             addressField.setPromptText("输入新的收货地址");
+            addressField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
             TextField telephoneField = new TextField();
             telephoneField.setPromptText("输入新的联系电话");
+            telephoneField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
             Button confirmButton = new Button("确认");
+            confirmButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
             confirmButton.setOnAction(event -> {
                 String newAddress = addressField.getText();
                 String newTelephone = telephoneField.getText();
@@ -425,7 +445,7 @@ public class ShopUI_stu {
             });
 
             // 将组件添加到布局中
-            layout.getChildren().addAll(new Label("新的收货信息"), addressField, telephoneField, confirmButton);
+            layout.getChildren().addAll(newinfoLabel, addressField, telephoneField, confirmButton);
 
             // 设置场景并显示弹出窗口
             Scene scene = new Scene(layout, 300, 200);
@@ -451,6 +471,7 @@ public class ShopUI_stu {
         items.clear();
         Label totalPriceLabel = new Label("总价格: 0.0");
         Button buybutton = new Button("购买");
+        buybutton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         double[] totalPrice = {0.0};
         ComboBox<String> infoComboBox = null;
         if (cartElements == null) {
@@ -518,6 +539,7 @@ public class ShopUI_stu {
                     }
                 });
                 Button deleteButton=new Button("删除");
+                deleteButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
                 deleteButton.setOnAction(event -> {
                     items.remove(cart);
                     if (selectBox.isSelected()) {
@@ -531,6 +553,7 @@ public class ShopUI_stu {
                     }
                 });
                 ComboBox<String> finalInfoComboBox = new ComboBox<>();
+                finalInfoComboBox.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
                 ShoppingUser.oneUser currentUser = ShoppingUser.getUserDetails(user.getUsername());
                 for (int i = 0; i < currentUser.getAddresses().length; i++) {
                     String address = currentUser.getAddresses()[i];
@@ -538,7 +561,7 @@ public class ShopUI_stu {
                     finalInfoComboBox.getItems().add("地址: " + address + " 电话: " + telephone);
                 }
                 finalInfoComboBox.setPromptText("选择收货信息");
-// 默认选择第一个收货信息
+                // 默认选择第一个收货信息
                 if (!finalInfoComboBox.getItems().isEmpty()) {
                     finalInfoComboBox.getSelectionModel().selectFirst();
                 }
@@ -625,6 +648,7 @@ public class ShopUI_stu {
                 items.add(cart);
 
                 Button backButton = new Button("返回");
+                backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
                 backButton.setOnAction(e -> {
                     try {
                         borderPane.setCenter(getShopLayout());
@@ -659,6 +683,8 @@ public class ShopUI_stu {
         Label lblCurrentPrice = new Label("现价: ¥" + product.getProductCurrentPrice());
         Label lblInventory = new Label("商品库存: " + product.getProductInventory());
         Button rateButton = new Button("商品评价");
+        rateButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+
         rateButton.setOnAction(e -> {
             try {
                 showComment(product);
@@ -684,6 +710,7 @@ public class ShopUI_stu {
         });
         HBox buyBox = new HBox(10); // 间距为10
         Button buyButton = new Button("直接购买");
+        buyButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         // 点击购买进入购买页
         buyButton.setOnAction(e -> {
             try {
@@ -694,6 +721,7 @@ public class ShopUI_stu {
         });
         // 加入购物车
         Button addButton = new Button("加入购物车");
+        addButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         addButton.setOnAction(e -> {
             try {
                 addproduct(product);
@@ -703,6 +731,7 @@ public class ShopUI_stu {
         });
         buyBox.getChildren().addAll(buyButton, addButton);
         Button backButton = new Button("返回");
+        backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         backButton.setOnAction(e -> {
             try {
                 borderPane.setCenter(new VBox(getShopLayout()));
@@ -1000,14 +1029,22 @@ public class ShopUI_stu {
         grid.setVgap(10);
         grid.setPadding(new Insets(20, 150, 10, 10));
 
+        Label usernameLabel = new Label("用户名:");
+        usernameLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+
+        Label passwordLabel = new Label("密码:");
+        passwordLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+
         TextField username = new TextField();
+        username.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         username.setPromptText("用户名");
         PasswordField password = new PasswordField();
+        password.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         password.setPromptText("密码");
 
-        grid.add(new Label("用户名:"), 0, 0);
+        grid.add(usernameLabel, 0, 0);
         grid.add(username, 1, 0);
-        grid.add(new Label("密码:"), 0, 1);
+        grid.add(passwordLabel, 0, 1);
         grid.add(password, 1, 1);
 
         dialog.getDialogPane().setContent(grid);
@@ -1020,6 +1057,9 @@ public class ShopUI_stu {
             }
             return null;
         });
+
+        // 加载外部CSS
+        dialog.getDialogPane().getStylesheets().add("main-styles.css");
 
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
