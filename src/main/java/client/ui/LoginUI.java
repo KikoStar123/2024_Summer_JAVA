@@ -24,131 +24,79 @@ import static client.service.Role.BankManager;
 import static client.service.Role.Librarian;
 
 public class LoginUI extends Application {
-    private static TextField usernameField;
-    private static PasswordField passwordField;
-    static BorderPane root;
+    private TextField usernameField;
+    private PasswordField passwordField;
+    private BorderPane root;
+    private String instanceName = "Default";
+    private GridPane grid;
 
-    private static String instanceName = "Default";
-    static GridPane grid;
-    public static void setInstanceName(String name) {
+    public void setInstanceName(String name) {
         instanceName = name;
     }
+
     public static void main(String[] args) {
         launch(args);
     }
+
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Login UI - " + instanceName);
 
-
         root = new BorderPane();
-
-        // 设置根布局的样式
-        root.setStyle("-fx-border-radius: 20px; " // 设置圆角边框半径
-                + "-fx-border-color: #ffffff; "  // 设置边框颜色
-                + "-fx-border-width: 2px; "        // 设置边框宽度
-                + "-fx-background-color: #ffffff;"); // 设置背景颜色
-
-        // 创建 Scene，并将根布局添加到其中
-
-        //Scene scene_login = new Scene(root, 300, 200);
-        //primaryStage.setScene(scene_login);
-        //scene_login.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-        primaryStage.setTitle("登陆");
-        //primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
+        root.setStyle("-fx-border-radius: 20px; "
+                + "-fx-border-color: #ffffff; "
+                + "-fx-border-width: 2px; "
+                + "-fx-background-color: #ffffff;");
 
         grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setAlignment(Pos.CENTER);
 
-        // 创建登录表单的标题
         Text title = new Text("用户登录");
         title.setFont(new Font("Segoe UI", 24));
-        title.setStyle("-fx-fill: #1138cf;"); // 主色调
+        title.setStyle("-fx-fill: #1138cf;");
 
-        // 创建登录表单的标签和输入框
         Label userLabel = new Label("Username:");
-        userLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+        userLabel.getStyleClass().add("body-font");
         usernameField = new TextField();
         usernameField.setPromptText("请输入用户名");
-        usernameField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
+        usernameField.getStyleClass().add("input-field");
 
         Label passwordLabel = new Label("Password:");
         passwordLabel.getStyleClass().add("body-font");
-
         passwordField = new PasswordField();
         passwordField.setPromptText("请输入密码");
         passwordField.getStyleClass().add("input-field");
 
-//        TextField PasswordVisibleField = new TextField();
-//        PasswordVisibleField.setVisible(false);  // Initially hidden
-//        passwordField.setVisible(true);  // Initially visible
-//
-//        Button showOldPasswordButton = createIconButton("/eye-closed.png");
-//
-//// Event handler to toggle visibility of the password
-//        showOldPasswordButton.setOnAction(e -> {
-//            if (PasswordVisibleField.isVisible()) {
-//                // If visible, switch back to PasswordField
-//                passwordField.setText(PasswordVisibleField.getText());  // Transfer text back to PasswordField
-//                PasswordVisibleField.setVisible(false);  // Hide TextField
-//                passwordField.setVisible(true);  // Show PasswordField
-//                showOldPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-closed.png"))));
-//            } else {
-//                // If not visible, show the TextField
-//                PasswordVisibleField.setText(passwordField.getText());  // Transfer text to TextField
-//                passwordField.setVisible(false);  // Hide PasswordField
-//                PasswordVisibleField.setVisible(true);  // Show TextField
-//                showOldPasswordButton.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/eye-open.png"))));
-//            }
-//        });
-
-        // 创建登录和注册按钮
         Button loginButton = new Button("登录");
-        loginButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        loginButton.getStyleClass().add("main-button");
         Button registerButton = new Button("注册");
         registerButton.getStyleClass().add("main-button");
 
         loginButton.setOnAction(e -> handleLogin());
         registerButton.setOnAction(e -> handleRegister());
 
-        HBox buttonBox = new HBox(80); // 间距为10
-        buttonBox.setAlignment(Pos.CENTER); // 水平居中
-
-// 将按钮添加到buttonBox
+        HBox buttonBox = new HBox(80);
+        buttonBox.setAlignment(Pos.CENTER);
         buttonBox.getChildren().addAll(loginButton, registerButton);
 
-        // 将组件添加到网格中
-        grid.add(title, 0, 0, 2, 1); // 标题居中
+        grid.add(title, 0, 0, 2, 1);
         grid.add(userLabel, 0, 1);
         grid.add(usernameField, 1, 1);
         grid.add(passwordLabel, 0, 2);
         grid.add(passwordField, 1, 2);
-        //grid.add(showOldPasswordButton, 2, 2);
-// 将buttonBox添加到GridPane中，占据两列
-        grid.add(buttonBox, 0, 3, 2, 1); // 从第0列开始，跨越2列，从第3行开始
+        grid.add(buttonBox, 0, 3, 2, 1);
 
-        // 应用CSS样式
         root.setCenter(grid);
         Scene scene = new Scene(root, 350, 400);
-        //scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    private Button createIconButton(String imagePath) {
-        Button button = new Button();
-        button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
-        ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));
-        button.setGraphic(imageView);
-        button.setMinSize(24, 24); // 设置按钮的最小尺寸以适应图标
-        button.setMaxSize(24, 24); // 设置按钮的最大尺寸以适应图标
-        return button;
-    }
-    private static void handleLogin() {
+
+    private void handleLogin() {
         String username = usernameField.getText();
-        String password = passwordField.getText(); // JavaFX的PasswordField没有getPassword方法，使用getText
+        String password = passwordField.getText();
 
         ClientService clientService = new ClientService();
         boolean success = clientService.login(username, password);
@@ -160,47 +108,38 @@ public class LoginUI extends Application {
             alert.setContentText("Login successful!");
             alert.showAndWait();
 
-            // 关闭当前窗口
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.close();
 
-            // 启动主界面
-            //User user = new User(username, Role.student, 12, Gender.male, "123");
             User user = clientService.login_return(username, password);
-            if(user.getRole()==BankManager)
-            {
+            if (user.getRole() == BankManager) {
                 Platform.runLater(() -> {
-                    Bankui_Manager managerui=new Bankui_Manager();
+                    Bankui_Manager managerui = new Bankui_Manager();
                     try {
                         managerui.start(new Stage());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-            }
-            else if(user.getRole()==Librarian)
-            {
+            } else if (user.getRole() == Librarian) {
                 Platform.runLater(() -> {
-                    LibraryUI_Manager librarymanagerui=new LibraryUI_Manager();
+                    LibraryUI_Manager librarymanagerui = new LibraryUI_Manager();
                     try {
                         librarymanagerui.start(new Stage());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-            }
-            else if(user.getRole()==Role.ShopAssistant){
+            } else if (user.getRole() == Role.ShopAssistant) {
                 Platform.runLater(() -> {
-                    ShopUI_Manager shopmanagerui=new ShopUI_Manager(user.getUsername());
+                    ShopUI_Manager shopmanagerui = new ShopUI_Manager(user.getUsername());
                     try {
                         shopmanagerui.start(new Stage());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 });
-            }
-            else
-            {
+            } else {
                 Platform.runLater(() -> {
                     MainUI mainUI = new MainUI(user);
                     try {
@@ -210,7 +149,6 @@ public class LoginUI extends Application {
                     }
                 });
             }
-
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Login");
@@ -219,18 +157,28 @@ public class LoginUI extends Application {
             alert.showAndWait();
         }
     }
-    private static void handleRegister() {
-        GridPane grid = RegisterUI.showRegisterUI();
-       root.setCenter(grid);
+
+    private void handleRegister() {
+        RegisterUI registerUI = new RegisterUI();
+        GridPane grid = registerUI.showRegisterUI(this);
+        root.setCenter(grid);
     }
-    public static void showLoginUI() {
+
+    public void showLoginUI() {
         Stage stage = new Stage();
-        LoginUI loginUI = new LoginUI();
         try {
-            loginUI.start(stage);
+            start(stage);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public BorderPane getRoot() {
+        return root;
+    }
+
+    public GridPane getGrid() {
+        return grid;
+    }
 }
+

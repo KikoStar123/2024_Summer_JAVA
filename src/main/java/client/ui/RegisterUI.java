@@ -13,26 +13,21 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 
-import java.awt.event.ActionListener;
+public class RegisterUI {
+    private TextField name;
+    private TextField id;
+    private ComboBox<String> genderComboBox;
+    private TextField origin;
+    private TextField birthday;
+    private TextField academy;
+    private PasswordField passwordField;
+    private Button registerButton;
+    private Button backButton;
 
-import static antlr.build.ANTLR.root;
+    private GridPane grid;
 
-
-public class RegisterUI  {
-    private static TextField name;
-    private static TextField id;
-    private static ComboBox<String> genderComboBox;
-    private static TextField origin;
-    private static TextField birthday;
-    private static TextField academy;
-    private static PasswordField passwordField;
-    private static Button registerButton;
-    private static Button backButton;
-
-    static GridPane grid;
-    public static GridPane showRegisterUI() {
-
-        grid= new GridPane();
+    public GridPane showRegisterUI(LoginUI loginUI) {
+        grid = new GridPane();
         grid.setPadding(new Insets(10, 10, 10, 10));
         grid.setVgap(8);
         grid.setHgap(10);
@@ -76,13 +71,12 @@ public class RegisterUI  {
         registerButton = new Button("注册");
         GridPane.setConstraints(registerButton, 1, 7);
 
-        backButton=new Button("返回");
+        backButton = new Button("返回");
         GridPane.setConstraints(backButton, 1, 8);
-        backButton.setOnAction(e->{
-
-            LoginUI.root.setCenter(LoginUI.grid);
-
+        backButton.setOnAction(e -> {
+            loginUI.getRoot().setCenter(loginUI.getGrid());
         });
+
         registerButton.setOnAction(e -> {
             String truename = name.getText();
             String stuid = id.getText();
@@ -99,16 +93,16 @@ public class RegisterUI  {
                 showAlert(Alert.AlertType.ERROR, "注册失败", "注册失败，请重试。");
             }
         });
-        grid.getChildren().addAll(nameLabel, name, idLabel, id, genderLabel, genderComboBox, originLabel, origin, birthdayLabel, birthday, academyLabel, academy, passwordLabel, passwordField, registerButton,backButton);
+
+        grid.getChildren().addAll(nameLabel, name, idLabel, id, genderLabel, genderComboBox, originLabel, origin, birthdayLabel, birthday, academyLabel, academy, passwordLabel, passwordField, registerButton, backButton);
         return grid;
     }
 
-    private static void showAlert(Alert.AlertType alertType, String title, String message) {
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
     }
-
 }

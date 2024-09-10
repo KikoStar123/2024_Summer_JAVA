@@ -21,12 +21,12 @@ import static client.service.Role.StuInfoManager;
 
 public class MainUI extends Application {
     private User user;
+    private BorderPane borderPane;
 
     public MainUI(User user) {
         this.user = user;
     }
 
-    static BorderPane borderPane;
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("主界面");
@@ -80,16 +80,14 @@ public class MainUI extends Application {
         updateButton.setOnAction(e -> handleupdatepwd(user.getUsername()));
         leftBox.getChildren().add(updateButton);
 
-        if(user.getRole()==Librarian)
-        {
+        if (user.getRole() == Librarian) {
             courseButton.setVisible(false);
             stuButton.setVisible(false);
             shopButton.setVisible(false);
             bankButton.setVisible(false);
             updateButton.setVisible(false);
         }
-        if(user.getRole()==StuInfoManager)
-        {
+        if (user.getRole() == StuInfoManager) {
             courseButton.setVisible(false);
             stuButton.setVisible(false);
             shopButton.setVisible(false);
@@ -99,7 +97,6 @@ public class MainUI extends Application {
 
         // 添加标签
         Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
-
 
         // 将左侧按钮栏添加到 BorderPane 的左侧
         borderPane.setLeft(leftBox);
@@ -121,8 +118,9 @@ public class MainUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
     private void handleShop(String username) throws IOException {
-        ShopUI_stu shopUI = new ShopUI_stu(user);
+        ShopUI_stu shopUI = new ShopUI_stu(user, borderPane);
         VBox shopLayout = shopUI.getShopLayout();
         borderPane.setCenter(shopLayout);
     }
@@ -131,33 +129,32 @@ public class MainUI extends Application {
         UpdatePwdUI updatePwdUI = new UpdatePwdUI(user);
         updatePwdUI.showUpdatePwdWindow();  // 显示新窗口
     }
-    private void handleBank(String username) {//解决学生的bankui
+
+    private void handleBank(String username) {
         Platform.runLater(() -> {
             Bankui_stu bankUI = new Bankui_stu(user);
-            BorderPane bankstu=Bankui_stu.createBankUI();
+            BorderPane bankstu = Bankui_stu.createBankUI();
             borderPane.setCenter(bankstu);
         });
-
     }
 
     private void handleLibrary(String username) {
         Platform.runLater(() -> {
             LibraryUI libraryUI = new LibraryUI(user);
-           BorderPane library=libraryUI.createLibraryView();
-           borderPane.setCenter(library);
+            BorderPane library = libraryUI.createLibraryView();
+            borderPane.setCenter(library);
         });
     }
 
     private void handleStudent(String username) {
         Platform.runLater(() -> {
-                    StuUI stuUI = new StuUI(user);
+            StuUI stuUI = new StuUI(user);
             VBox studentInfoView = stuUI.createStudentInfoView();
-            borderPane.setCenter(studentInfoView); // 假设 borderPane 是 MainUI 的一部分
+            borderPane.setCenter(studentInfoView);
         });
     }
 
     public void display() {
         launch();
     }
-
 }
