@@ -52,7 +52,7 @@ public class LoginUI extends Application {
 
         Scene scene_login = new Scene(root, 300, 200);
         primaryStage.setScene(scene_login);
-        scene_login.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        //scene_login.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         primaryStage.setTitle("登陆");
         //primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/icon.png")));
 
@@ -103,7 +103,7 @@ public class LoginUI extends Application {
 
         // 应用CSS样式
         Scene scene = new Scene(grid, 350, 200);
-        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        //scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 
         primaryStage.setScene(scene);
         primaryStage.show();

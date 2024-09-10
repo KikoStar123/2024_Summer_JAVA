@@ -329,6 +329,7 @@ public class ShopUI_stu {
                 });
                 // 将所有控件添加到VBox中
                 commentbox.getChildren().addAll(orderid, productname, paidMoney, attitudeComboBox, commentField, confirmButton, backButton);
+                
             });
         }
         VBox ordersBox=new VBox();
@@ -717,8 +718,16 @@ public class ShopUI_stu {
 
         HBox quantityBox = new HBox(decreaseButton, quantityLabel, increaseButton);
 
+        Button backButton=new Button("返回");
+        backButton.setOnAction(e->{
+            try {
+                borderPane.setCenter(showProductDetails(product));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
-        buyproductBox.getChildren().addAll(common,selectedProductOriginalPrice,selectedProductCurrentPrice,scrollPane,quantityBox,confirmButton);
+        buyproductBox.getChildren().addAll(common,selectedProductOriginalPrice,selectedProductCurrentPrice,scrollPane,quantityBox,confirmButton,backButton);
 
         commonproductList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -828,7 +837,15 @@ public class ShopUI_stu {
         if (!infoComboBox.getItems().isEmpty()) {
             infoComboBox.getSelectionModel().selectFirst();
         }
-        buyproductBox.getChildren().addAll(common,selectedProductOriginalPrice,selectedProductCurrentPrice,scrollPane,quantityBox,infoComboBox,confirmButton);
+        Button backButton=new Button("返回");
+        backButton.setOnAction(e->{
+            try {
+                borderPane.setCenter(showProductDetails(product));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        buyproductBox.getChildren().addAll(common,selectedProductOriginalPrice,selectedProductCurrentPrice,scrollPane,quantityBox,infoComboBox,confirmButton,backButton);
 
         commonproductList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
