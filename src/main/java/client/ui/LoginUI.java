@@ -22,6 +22,7 @@ import java.net.URL;
 
 import static client.service.Role.BankManager;
 import static client.service.Role.Librarian;
+import static client.service.Role.CourseManager;
 
 public class LoginUI extends Application {
     private TextField usernameField;
@@ -135,6 +136,15 @@ public class LoginUI extends Application {
                     ShopUI_Manager shopmanagerui = new ShopUI_Manager(user.getUsername());
                     try {
                         shopmanagerui.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else if (user.getRole() == CourseManager) {
+                Platform.runLater(() -> {
+                    Admin_CourseUI coursemanagerui = new Admin_CourseUI(user);
+                    try {
+                        coursemanagerui.start(new Stage());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
