@@ -37,13 +37,15 @@ import java.util.Optional;
 
 import static client.service.Bank.payment;
 import static client.service.ShoppingOrder.createOrder;
-import static client.ui.MainUI.borderPane;
+
 
 public class ShopUI_stu {
-    User user;
-    ShopUI_stu(User user)
-    {
-        this.user=user;
+    private User user;
+    private BorderPane borderPane;
+
+    public ShopUI_stu(User user, BorderPane borderPane) {
+        this.user = user;
+        this.borderPane = borderPane;
     }
     public VBox getShopLayout() throws IOException {
         VBox shopLayout = new VBox();

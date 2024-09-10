@@ -86,11 +86,11 @@ public class CourseSelection {
             return selectedCount;
         }
 
-        public String courseRoom() {
+        public String getCourseRoom() {
             return courseRoom;
         }
 
-        public String courseType() {
+        public String getCourseType() {
             return courseType;
         }
     }
@@ -277,6 +277,10 @@ public class CourseSelection {
             JSONObject jsonResponse = new JSONObject(response);//将字符串解析为一个JSON对象
 
             System.out.println(jsonResponse.toString());
+
+            if(jsonResponse.getString("status").equals("fail")){
+                return null;
+            }
 
             JSONArray data = jsonResponse.getJSONArray("courses");//获取JSON数组
 

@@ -28,12 +28,23 @@ import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import javafx.scene.image.Image;
-//import jdk.javadoc.internal.doclets.formats.html.DocFilesHandlerImpl;
 
+import java.net.URL;
+
+import static client.service.Role.BankManager;
+import static client.service.Role.Librarian;
+import static client.service.Role.CourseManager;
 
 public class LoginUI extends Application {
     private TextField usernameField;
     private PasswordField passwordField;
+    private BorderPane root;
+    private String instanceName = "Default";
+    private GridPane grid;
+
+    public void setInstanceName(String name) {
+        instanceName = name;
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -75,7 +86,9 @@ public class LoginUI extends Application {
 
         Label passwordLabel = new Label("密码:");
         passwordLabel.getStyleClass().add("body-font");
+
         passwordField = new PasswordField();
+        passwordField.setPromptText("请输入密码");
         passwordField.getStyleClass().add("input-field");
 
         // 创建登录和注册按钮
@@ -175,9 +188,16 @@ public class LoginUI extends Application {
                         e.printStackTrace();
                     }
                 });
-            }
-            else
-            {
+            } else if (user.getRole() == CourseManager) {
+                Platform.runLater(() -> {
+                    Admin_CourseUI coursemanagerui = new Admin_CourseUI(user);
+                    try {
+                        coursemanagerui.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else {
                 Platform.runLater(() -> {
                     MainUI mainUI = new MainUI(user);
                     try {
@@ -187,6 +207,7 @@ public class LoginUI extends Application {
                     }
                 });
             }
+
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Login");
@@ -195,11 +216,27 @@ public class LoginUI extends Application {
             alert.showAndWait();
         }
     }
+
     private void handleRegister() {
-        Platform.runLater(() -> {
-            RegisterUI registerUI = new RegisterUI();
-            registerUI.display();
-        });
+        RegisterUI registerUI = new RegisterUI();
+        GridPane grid = registerUI.showRegisterUI(this);
+        root.setCenter(grid);
     }
 
+    public void showLoginUI() {
+        Stage stage = new Stage();
+        try {
+            start(stage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public BorderPane getRoot() {
+        return root;
+    }
+
+    public GridPane getGrid() {
+        return grid;
+    }
 }
