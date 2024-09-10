@@ -37,7 +37,7 @@ public class Bankui_Manager extends Application {
         root.setPadding(new Insets(10));
         Bank bank = new Bank(); // 创建Bank类的实例
 
-// 业务部分
+        // 业务部分
         HBox searchBox = new HBox(5);
         Label searchLabel = new Label("搜索账号:");
         TextField searchField = new TextField();

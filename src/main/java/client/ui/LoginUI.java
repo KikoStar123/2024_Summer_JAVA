@@ -28,6 +28,15 @@ import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
+
+import static client.service.Role.BankManager;
+import static client.service.Role.Librarian;
 
 import java.net.URL;
 
@@ -55,6 +64,14 @@ public class LoginUI extends Application {
         Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
         primaryStage.getIcons().add(image);
 
+        root = new BorderPane();
+
+        // 创建 Scene，并将根布局添加到其中
+        grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setAlignment(Pos.CENTER);
+
         // 创建 WebView 实例
         WebView webView = new WebView();//WebView 是用于展示 Web 内容的 JavaFX 组件
         WebEngine webEngine = webView.getEngine();//WebEngine 用于加载和操作 Web 内容
@@ -62,31 +79,19 @@ public class LoginUI extends Application {
         webEngine.load(htmlFilePath);// 加载内容
         webView.setPrefSize(450, 300);// 设置 WebView 的大小
 
-//        primaryStage.setWidth(450); // 设置窗口宽度为800像素
-//        primaryStage.setHeight(300); // 设置窗口高度为600像素
-
-        GridPane grid = new GridPane();//创建GridPane实例
-        grid.setHgap(10);//设置水平间距，每行中的组件之间将有10像素的空隙
-        grid.setVgap(10);//设置垂直间距，每列中的组件之间将有10像素的空隙
-        grid.setAlignment(Pos.CENTER);//设置整个GridPane的对齐方式为居中
-
-//        // 创建 StackPane 将 WebView 作为背景
-//        StackPane root = new StackPane();
-//        root.getChildren().add(webView);
-
         // 创建登录表单的标题
-        Text logintitle = new Text("用户登录");
-        logintitle.getStyleClass().add("title-font");
+        Text title = new Text("用户登录");
+        title.getStyleClass().add("title-font");
 
         // 创建登录表单的标签和输入框
         Label userLabel = new Label("账号:");
         userLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         usernameField = new TextField();
+        usernameField.setPromptText("请输入用户名");//这里可以加字体
         usernameField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         Label passwordLabel = new Label("密码:");
         passwordLabel.getStyleClass().add("body-font");
-
         passwordField = new PasswordField();
         passwordField.setPromptText("请输入密码");
         passwordField.getStyleClass().add("input-field");
@@ -107,29 +112,21 @@ public class LoginUI extends Application {
         buttonBox.getChildren().addAll(loginButton, registerButton);
 
         // 将组件添加到网格中
-        grid.add(logintitle, 0, 0, 2, 1); // 标题居中
-        GridPane.setValignment(logintitle, VPos.CENTER);
+        grid.add(title, 0, 0, 2, 1); // 标题居中
+        GridPane.setValignment(title, VPos.CENTER);
         grid.add(userLabel, 0, 2);
         grid.add(usernameField, 1, 2);
         grid.add(passwordLabel, 0, 3);
         grid.add(passwordField, 1, 3);
         grid.add(buttonBox, 0, 5, 2, 1);
 
-        // 使用 BorderPane 布局
-        BorderPane borderPane = new BorderPane();
-        borderPane.setLeft(webView); // 左侧放置 WebView
-        borderPane.setCenter(grid); // 右侧放置登录表单
-
-//        // 创建 StackPane 将 WebView 作为背景
-//        StackPane root = new StackPane();
-//        root.getChildren().add(webView);
-//        root.getChildren().add(grid);
+        root.setLeft(webView); // 左侧放置 WebView
+        root.setCenter(grid); // 右侧放置登录表单
 
         // 应用CSS样式
-        //Scene scene = new Scene(grid, 350, 200);
-        Scene scene = new Scene(borderPane, 800, 495);
+        Scene scene = new Scene(root, 800, 495);
         scene.getRoot().getStyleClass().add("background-animate");
-        scene.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/Loginui-styles.css").toExternalForm());
 
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -207,7 +204,6 @@ public class LoginUI extends Application {
                     }
                 });
             }
-
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Login");

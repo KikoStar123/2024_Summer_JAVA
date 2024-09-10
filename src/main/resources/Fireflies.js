@@ -13,4 +13,7 @@ function createFireflies(quantity) {
     }
 }
 
-createFireflies(60);
+createFireflies(30);
+
+// 每3秒移动一次萤火虫
+//setInterval(moveFireflies, 2000);

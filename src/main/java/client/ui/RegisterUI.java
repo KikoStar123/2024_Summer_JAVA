@@ -6,14 +6,24 @@ import client.service.StudentInformation;
 import client.service.User;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 
-public class RegisterUI {
+import java.awt.event.ActionListener;
+
+import static antlr.build.ANTLR.root;
+
+
+public class RegisterUI  {
     private TextField name;
     private TextField id;
     private ComboBox<String> genderComboBox;
@@ -32,51 +42,80 @@ public class RegisterUI {
         grid.setVgap(8);
         grid.setHgap(10);
 
+        int dispx=5;
+        int dispy=3;
+
+        // 创建登录表单的标题
+        Text title = new Text("用户注册");
+        title.getStyleClass().add("title-font");
+        grid.add(title, dispx+0, dispy+2, 2, 1); // 标题居中
+        GridPane.setValignment(title, VPos.CENTER);
+
         Label nameLabel = new Label("姓名:");
-        GridPane.setConstraints(nameLabel, 0, 0);
+        nameLabel.getStyleClass().add("body-font");
         name = new TextField();
-        GridPane.setConstraints(name, 1, 0);
+        name.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
+        GridPane.setConstraints(nameLabel, dispx+0, dispy+4);
+        GridPane.setConstraints(name, dispx+1, dispy+4);
 
         Label idLabel = new Label("学号:");
-        GridPane.setConstraints(idLabel, 0, 1);
+        idLabel.getStyleClass().add("body-font");
         id = new TextField();
-        GridPane.setConstraints(id, 1, 1);
+        id.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
+        GridPane.setConstraints(idLabel, dispx+0, dispy+5);
+        GridPane.setConstraints(id, dispx+1, dispy+5);
 
         Label genderLabel = new Label("性别:");
-        GridPane.setConstraints(genderLabel, 0, 2);
+        genderLabel.getStyleClass().add("body-font");
         genderComboBox = new ComboBox<>();
         genderComboBox.getItems().addAll("male", "female");
-        GridPane.setConstraints(genderComboBox, 1, 2);
+        GridPane.setConstraints(genderLabel, dispx+0, dispy+6);
+        GridPane.setConstraints(genderComboBox, dispx+1, dispy+6);
 
         Label originLabel = new Label("籍贯:");
-        GridPane.setConstraints(originLabel, 0, 3);
+        originLabel.getStyleClass().add("body-font");
         origin = new TextField();
-        GridPane.setConstraints(origin, 1, 3);
+        origin.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
+        GridPane.setConstraints(originLabel, dispx+0, dispy+7);
+        GridPane.setConstraints(origin, dispx+1, dispy+7);
 
         Label birthdayLabel = new Label("生日:");
-        GridPane.setConstraints(birthdayLabel, 0, 4);
+        birthdayLabel.getStyleClass().add("body-font");
         birthday = new TextField();
-        GridPane.setConstraints(birthday, 1, 4);
+        birthday.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
+        GridPane.setConstraints(birthdayLabel, dispx+0, dispy+8);
+        GridPane.setConstraints(birthday, dispx+1, dispy+8);
 
         Label academyLabel = new Label("学院:");
-        GridPane.setConstraints(academyLabel, 0, 5);
+        academyLabel.getStyleClass().add("body-font");
         academy = new TextField();
-        GridPane.setConstraints(academy, 1, 5);
+        academy.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
+        GridPane.setConstraints(academyLabel, dispx+0, dispy+9);
+        GridPane.setConstraints(academy, dispx+1, dispy+9);
 
         Label passwordLabel = new Label("密码:");
-        GridPane.setConstraints(passwordLabel, 0, 6);
+        passwordLabel.getStyleClass().add("body-font");
         passwordField = new PasswordField();
-        GridPane.setConstraints(passwordField, 1, 6);
+        passwordField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
+        GridPane.setConstraints(passwordLabel, dispx+0, dispy+10);
+        GridPane.setConstraints(passwordField, dispx+1, dispy+10);
+
 
         registerButton = new Button("注册");
-        GridPane.setConstraints(registerButton, 1, 7);
+        registerButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        GridPane.setConstraints(registerButton, dispx+1, dispy+12);
+        GridPane.setHalignment(registerButton, HPos.CENTER); // 水平居中对齐
 
-        backButton = new Button("返回");
-        GridPane.setConstraints(backButton, 1, 8);
-        backButton.setOnAction(e -> {
+        backButton=new Button("返回");
+        backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        GridPane.setConstraints(backButton, dispx+1, dispy+13);
+        GridPane.setHalignment(backButton, HPos.CENTER); // 水平居中对齐
+
+        backButton.setOnAction(e->{
+
             loginUI.getRoot().setCenter(loginUI.getGrid());
-        });
 
+        });
         registerButton.setOnAction(e -> {
             String truename = name.getText();
             String stuid = id.getText();
@@ -94,7 +133,7 @@ public class RegisterUI {
             }
         });
 
-        grid.getChildren().addAll(nameLabel, name, idLabel, id, genderLabel, genderComboBox, originLabel, origin, birthdayLabel, birthday, academyLabel, academy, passwordLabel, passwordField, registerButton, backButton);
+        grid.getChildren().addAll(nameLabel, name, idLabel, id, genderLabel, genderComboBox, originLabel, origin, birthdayLabel, birthday, academyLabel, academy, passwordLabel, passwordField, registerButton,backButton);
         return grid;
     }
 
@@ -105,4 +144,5 @@ public class RegisterUI {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 }

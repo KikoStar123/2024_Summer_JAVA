@@ -9,6 +9,14 @@
   <title>Animation Buttons</title>
 </head>
 <body>
-  <button class="custom-btn dynamic-button"><span>Read More</span></button>
+<!--<button class="custom-btn dynamic-button"><span>Read More</span></button>-->
+<button id="dynamicButton" class="custom-btn dynamic-button" data-text=""></button>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var button = document.getElementById('dynamicButton');
+    var buttonText = button.getAttribute('data-text');
+    button.innerHTML = '<span>' + buttonText + '</span>';
+  });
+</script>
 </body>
 </html>

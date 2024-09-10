@@ -1,0 +1,112 @@
+
+/*定义了整个应用程序的根节点的背景色*//*使用了*/
+.root {
+    -fx-border-radius: 5px; /* 设置圆角边框半径 */
+    -fx-border-width: 2.5px; /* 设置边框宽度 */
+    -fx-border-color: #009b9f; /* 设置边框颜色 */
+    -fx-background-color: rgba(205, 237, 222, 0.5); /* 设置背景颜色 */
+    -fx-background-insets: 0; /* 设置背景的内边距为0 */
+}
+
+/*定义了正文文本的字体样式，包括字体、大小和颜色*//*使用了*/
+.body-font {/*使用*/
+    -fx-font-family: 'Segoe UI', 'Roboto';
+    -fx-font-size: 14px;
+    -fx-text-fill: #003153;
+}
+
+/* 按钮规范 */
+/*定义了主要按钮的样式，包括背景色、边框颜色、圆角等*//*使用了*/
+.main-button {/*使用*/
+    -fx-background-color: rgba(220,245,240, 0.1);
+    -fx-border-color: #718771;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    transition: background-color 3s ease;
+}
+/*定义了主要按钮在鼠标悬停时的样式*/
+.main-button:hover {/*使用*/
+    -fx-background-color: rgba(255, 217, 163, 0.8);
+}
+/*定义了主要按钮在按下时的样式*/
+.main-button:pressed {/*使用*/
+    -fx-background-color: rgba(0, 155, 159, 0.3);
+    -fx-border-color: #003153;
+}
+
+/* 输入框规范 */
+/*定义了输入框的样式，包括背景色、边框颜色、圆角和阴影效果*//*使用了*/
+.input-field {/*使用*/
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #B0B0B0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 2, 0.0, 2, 2);
+}
+
+.input-field:focused {
+    -fx-border-color: rgba(0, 49, 83, 0.6);
+    -fx-border-width: 2px; /* Optional: Make border slightly thicker on focus */
+    -fx-border-radius: 3px;
+    -fx-effect: dropshadow(gaussian, #009b9f, 10, 0.0, 0, 0); /* Add a focus shadow */
+}
+
+
+/* 表格规范 */
+/* 设置 TableView 的背景颜色和边框 */
+.table-view {
+    -fx-background-color: linear-gradient(to bottom, #f9f9f9, #e6e6e6); /* 渐变背景颜色 */
+    -fx-border-color: #d3d3d3;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px; /* 圆角边框 */
+}
+
+/* 设置列标题背景的颜色和样式 */
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to bottom, rgba(0, 49, 83, 0.8), #009b9f); /* 渐变背景颜色 */
+    -fx-border-color: #2E7D32;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+/* 设置奇数行和偶数行的背景颜色 */
+.table-view .table-row-cell:odd {
+    -fx-background-color: #f2f2f2;
+}
+
+.table-view .table-row-cell:even {
+    -fx-background-color: #ffffff;
+}
+
+/* 设置表格单元格的样式 */
+.table-view .table-cell {
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+    -fx-border-color: #d3d3d3;
+    -fx-border-width: 0 0 1px 0;
+}
+
+/* 设置悬停效果 */
+.table-view .table-row-cell:hover {
+    -fx-background-color: #c8e6c9; /* 悬停时的背景颜色 */
+}
+
+/* 自定义滚动条 */
+.table-view .scroll-bar:vertical .thumb {
+    -fx-background-color: #4CAF50;
+    -fx-background-radius: 5px;
+}
+
+.table-view .scroll-bar:horizontal .thumb {
+    -fx-background-color: #4CAF50;
+    -fx-background-radius: 5px;
+}
+
+

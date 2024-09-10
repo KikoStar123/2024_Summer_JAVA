@@ -111,6 +111,30 @@ public class StuUI extends Application {
             return vbox;
 
         }else {
+            //学生只需要显示信息
+
+//            VBox vbox = new VBox(10);
+//            vbox.setAlignment(Pos.CENTER); // 设置对齐方式
+//            vbox.getStyleClass().add("card");
+//
+//            FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.USER);
+//            icon.setStyle("-fx-fill: #406ff3; -fx-font-size: 20px;");
+//
+//            Label nameLabel = new Label("姓名: 杨清淞");
+//            nameLabel.getStyleClass().add("label-title");
+//
+//            Label idLabel = new Label("学号: 09022301");
+//            idLabel.getStyleClass().add("label-content");
+//
+//            vbox.getChildren().addAll(icon, nameLabel, idLabel);
+//            navbar.getChildren().add(vbox);
+//
+//            // 加载CSS文件
+//            Scene scene = new Scene(navbar);
+//            scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+
+
             VBox vbox = new VBox(10); // 设置间距
             vbox.setAlignment(Pos.CENTER); // 设置对齐方式
 

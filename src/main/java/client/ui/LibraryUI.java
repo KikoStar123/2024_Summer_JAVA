@@ -3,6 +3,7 @@ package client.ui;
 import client.service.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -23,6 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 import com.dansoftware.pdfdisplayer.PDFDisplayer;
+import netscape.javascript.JSObject;
 
 
 import java.io.File;
@@ -30,6 +33,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.geometry.HPos;
 
 public class LibraryUI {
 
@@ -43,39 +47,94 @@ public class LibraryUI {
     }
 
 
+    public static class JavaMethod {
+        public void handleClick() {
+            System.out.println("Button clicked from JavaFX!");
+        }
+    }
+    private JavaMethod javaMethod = new JavaMethod();
+
+
     public BorderPane createLibraryView() {
+
+//        WebView webView = new WebView();//test
+//        WebEngine webEngine = webView.getEngine();//test
+//
+//        // Load your HTML file
+//        String htmlFilePath = getClass().getResource("/dynamic-button.html").toExternalForm();//test
+//        webEngine.load(htmlFilePath);//test
+//
+//        // 监听网页加载状态 //test
+//        webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
+//            if (newState == javafx.concurrent.Worker.State.SUCCEEDED) {
+//                // Bind the Java object to JavaScript
+//                JSObject window = (JSObject) webEngine.executeScript("window");
+//                window.setMember("javaMethod", javaMethod);
+//
+//                // Execute JavaScript to manipulate the button
+//
+//                webEngine.executeScript(
+//                        "var button = document.getElementById('dynamicButton');" +
+//                                "if (button) {" +
+//                                "   button.setAttribute('data-text', '查询');" + //添加文字
+//                                "   var buttonText = button.getAttribute('data-text');" +
+//                                "   button.innerHTML = '<span>' + buttonText + '</span>';" +
+//                                "   button.addEventListener('click', function() {" +
+//                                "       window.javaMethod.handleClick();" + //添加响应
+//                                "   });" +
+//                                "} else {" +
+//                                "   console.error('ID 为 dynamicButton 的元素未找到');" +
+//                                "}"
+//                );
+//            }
+//        });
+
+//        WebView webView = new WebView();
+//        //webView.setPrefSize(450, 300);// 设置 WebView 的大小
+//        String htmlFilePath=getClass().getResource("/dynamic-button.html").toExternalForm();// HTML 文件路径
+//        webView.getEngine().load(htmlFilePath);// 加载内容
 
         // 搜索栏和按钮
         TextField nameField = new TextField();
         nameField.setPromptText("输入书名或作者");
-        nameField.setFont(Font.font("Segoe UI", 14));
-        nameField.setStyle("-fx-text-fill: #4B0082;");
+        nameField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         Button searchButton = new Button("查询");
-        searchButton.setFont(Font.font("Segoe UI", 14));
-        searchButton.setStyle("-fx-text-fill: #4B0082;");
+        searchButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
         Button borrowButton = new Button("借阅记录");
-        borrowButton.setFont(Font.font("Segoe UI", 14));
-        borrowButton.setStyle("-fx-text-fill: #4B0082;");
+        borrowButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
-        HBox searchBox = new HBox(10, new Label("书名或作者:"), nameField, searchButton, borrowButton);
-        searchBox.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-text-fill: #4B0082;");
+//        //borrowButton.setMaxWidth(Region.USE_PREF_SIZE);
+//        webView.setMaxWidth(borrowButton.getMaxWidth());
+//        webView.setMinWidth(borrowButton.getMinWidth());
+//        webView.setStyle("-fx-border-radius: 5; -fx-background-radius: 5;");
+
+        Label searchLabel = new Label("书名或作者:");
+        searchLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+
+        HBox searchBox = new HBox(10, searchLabel, nameField, searchButton, borrowButton);
+        //HBox searchBox = new HBox(10, new Label("书名或作者:"), nameField, webView, borrowButton);
+
+        searchBox.setAlignment(Pos.CENTER);//居中
+        searchBox.setStyle("-fx-spacing: 40;");//设置了子节点之间的间距
+
         // 设置按钮样式
-        String buttonStyle = "-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);";
-        String buttonHoverStyle = "-fx-background-color: rgba(255, 255, 255, 0.3); -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 15, 0, 0, 0); -fx-opacity: 0.9;";
-        String buttonPressedStyle = "-fx-background-color: #D8BFD8; -fx-border-color: #6A0DAD;";
-        searchButton.setStyle(buttonStyle);
-        borrowButton.setStyle(buttonStyle);
-        searchButton.setOnMouseEntered(e -> searchButton.setStyle(buttonHoverStyle));
-        searchButton.setOnMouseExited(e -> searchButton.setStyle(buttonStyle));
-        searchButton.setOnMousePressed(e -> searchButton.setStyle(buttonPressedStyle));
-        searchButton.setOnMouseReleased(e -> searchButton.setStyle(buttonHoverStyle));
-
-        borrowButton.setOnMouseEntered(e -> borrowButton.setStyle(buttonHoverStyle));
-        borrowButton.setOnMouseExited(e -> borrowButton.setStyle(buttonStyle));
-        borrowButton.setOnMousePressed(e -> borrowButton.setStyle(buttonPressedStyle));
-        borrowButton.setOnMouseReleased(e -> borrowButton.setStyle(buttonHoverStyle));
+//        String buttonStyle = "-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);";
+//        String buttonHoverStyle = "-fx-background-color: rgba(255, 255, 255, 0.3); -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 15, 0, 0, 0); -fx-opacity: 0.9;";
+//        String buttonPressedStyle = "-fx-background-color: #D8BFD8; -fx-border-color: #6A0DAD;";
+//        searchButton.setStyle(buttonStyle);
+//        borrowButton.setStyle(buttonStyle);
+//
+//        searchButton.setOnMouseEntered(e -> searchButton.setStyle(buttonHoverStyle));
+//        searchButton.setOnMouseExited(e -> searchButton.setStyle(buttonStyle));
+//        searchButton.setOnMousePressed(e -> searchButton.setStyle(buttonPressedStyle));
+//        searchButton.setOnMouseReleased(e -> searchButton.setStyle(buttonHoverStyle));
+//
+//        borrowButton.setOnMouseEntered(e -> borrowButton.setStyle(buttonHoverStyle));
+//        borrowButton.setOnMouseExited(e -> borrowButton.setStyle(buttonStyle));
+//        borrowButton.setOnMousePressed(e -> borrowButton.setStyle(buttonPressedStyle));
+//        borrowButton.setOnMouseReleased(e -> borrowButton.setStyle(buttonHoverStyle));
 
         // 结果显示区域
         resultTable = new TableView<>();
@@ -88,7 +147,7 @@ public class LibraryUI {
         TableColumn<Book, String> curnumColumn = new TableColumn<>("剩余数");
         curnumColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getCurNumber())));
 
-// 在表格中显示图片
+        // 在表格中显示图片
         TableColumn<Book, String> imageColumn = new TableColumn<>("图片");
         imageColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getImagePath()));
         imageColumn.setCellFactory(new Callback<TableColumn<Book, String>, TableCell<Book, String>>() {
@@ -145,6 +204,7 @@ public class LibraryUI {
                 }
             }
         });
+
         return mainLayout;
     }
 

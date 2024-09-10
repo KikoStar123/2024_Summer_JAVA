@@ -5,6 +5,7 @@ import client.service.User;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
@@ -34,17 +35,21 @@ public class Bankui_stu {
         buttonsBox.setPadding(new Insets(0, 0, 10, 0));
 
         Button loginButton = new Button("登录");
-        loginButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
+        loginButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        loginButton.setStyle("-fx-min-width: 100px; -fx-min-height: 50px; -fx-padding: 10px; -fx-font-size: 16px;-fx-font-size: 22px;-fx-font-weight: bold;");// 覆盖CSS样式，使按钮变大
         loginButton.setOnAction(e -> showLoginForm());
         buttonsBox.getChildren().add(loginButton);
 
         Button registerButton = new Button("注册");
-        registerButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
+        registerButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        registerButton.setStyle("-fx-min-width: 100px; -fx-min-height: 50px; -fx-padding: 10px; -fx-font-size: 16px;-fx-font-size: 22px;-fx-font-weight: bold;");// 覆盖CSS样式，使按钮变大
         registerButton.setOnAction(e -> showRegisterForm());
         buttonsBox.getChildren().add(registerButton);
 
         // 将按钮栏放置在顶部
         bankBox.setTop(buttonsBox);
+        // 设置 buttonsBox 在 bankBox 的顶部居中对齐
+       // bankBox.setAlignment(Pos.CENTER);
 
         // 创建登录表单
         loginBox = createLoginForm(user);
@@ -60,12 +65,14 @@ public class Bankui_stu {
         HBox actionBox = new HBox(10);
 
         Button backButton = new Button("返回");
-        backButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
+        backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        //backButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
         backButton.setOnAction(e -> handleBack());
         actionBox.getChildren().add(backButton);
 
         // 将操作按钮栏放置在底部
         bankBox.setBottom(actionBox);
+
         return bankBox;
     }
 
@@ -73,14 +80,22 @@ public class Bankui_stu {
         VBox loginForm = new VBox(10);
         loginForm.setPadding(new Insets(10));
         Label welcomeLabel = new Label("登录银行账号");
+        welcomeLabel.getStyleClass().add("body-font");
         Label accountLabel = new Label("账号: " + user.getUsername()); // 显示用户名
+        accountLabel.getStyleClass().add("body-font");
         loginForm.getChildren().addAll(welcomeLabel, accountLabel);
+
         Label passwordLabel = new Label("密码:");
+        passwordLabel.getStyleClass().add("body-font");
         final PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("请输入密码");
+        passwordField.getStyleClass().add("input-field");
+
         Button confirmButton = new Button("确认");
-        confirmButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
+        confirmButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        //confirmButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
         confirmButton.setOnAction(e -> handleConfirm(user, passwordField)); // 传递 user 和 passwordField 到 handleConfirm
+
         loginForm.getChildren().addAll(passwordLabel, passwordField, confirmButton);
         return loginForm;
     }
@@ -89,20 +104,26 @@ public class Bankui_stu {
         VBox registerForm = new VBox(10);
         registerForm.setPadding(new Insets(10));
         Label welcomeLabel=new Label("注册银行账号");
+        welcomeLabel.getStyleClass().add("body-font");
 
         Label passwordLabel = new Label("密码:");
+        passwordLabel.getStyleClass().add("body-font");
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("请输入密码");
         registerForm.getChildren().addAll(welcomeLabel,passwordLabel, passwordField);
+        passwordField.getStyleClass().add("input-field");
 
 
         Label confirmPasswordLabel = new Label("确认密码:");
+        confirmPasswordLabel.getStyleClass().add("body-font");
         PasswordField confirmPasswordField = new PasswordField();
         confirmPasswordField.setPromptText("请再次输入密码");
         registerForm.getChildren().addAll(confirmPasswordLabel, confirmPasswordField);
+        confirmPasswordField.getStyleClass().add("input-field");
 
         Button confirmButtonb = new Button("确认");
-        confirmButtonb.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
+        confirmButtonb.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        //confirmButtonb.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
         confirmButtonb.setOnAction(e -> handleConfirmb(user, passwordField, confirmPasswordField));
 
         registerForm.getChildren().add(confirmButtonb);

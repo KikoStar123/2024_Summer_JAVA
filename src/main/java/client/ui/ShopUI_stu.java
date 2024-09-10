@@ -91,9 +91,13 @@ public class ShopUI_stu {
 
         // 将商品列表放入滚动面板
         ScrollPane scrollPane = new ScrollPane(productList);
-        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToWidth(true); // 设置滚动面板的宽度适应内容
+        scrollPane.setFitToHeight(true); // 设置滚动面板的高度适应内容
 
         shopLayout.getChildren().addAll(topMenu, searchBox, scrollPane);
+
+        VBox.setVgrow(scrollPane, Priority.ALWAYS); // 设置滚动面板优先填充垂直空间
+
         ShoppingProduct shoppingProduct1 = new ShoppingProduct();
         ShoppingProduct.oneProduct[] products1 = shoppingProduct1.getAllProducts("price","ASC");
         items.clear();

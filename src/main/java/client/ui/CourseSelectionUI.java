@@ -35,7 +35,7 @@ public class CourseSelectionUI {
     public BorderPane createCourseSelectionView() {
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane, 600, 400);
-        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+        //scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         topBar = new HBox(10);  // 调整为VBox，按钮垂直排列，更加紧凑
         topBar.setPadding(new Insets(10));
 

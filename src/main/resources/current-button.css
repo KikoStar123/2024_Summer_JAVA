@@ -1,0 +1,23 @@
+/* styles.css */
+.item-box {
+    -fx-alignment: center;
+    -fx-background-color: #eaeef6;
+    -fx-padding: 16px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+}
+
+.item-box:hover {
+    -fx-background-color: #ffd9a3;
+}
+
+.item-box:hover .label {
+    -fx-text-fill: #718771;
+}
+
+.label {
+    -fx-font-family: "Open Sans";
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-text-fill: #6a778e;
+}
