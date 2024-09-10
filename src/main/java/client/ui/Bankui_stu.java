@@ -36,13 +36,13 @@ public class Bankui_stu {
 
         Button loginButton = new Button("登录");
         loginButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-        loginButton.setStyle("-fx-min-width: 100px; -fx-min-height: 50px; -fx-padding: 10px; -fx-font-size: 16px;-fx-font-size: 22px;-fx-font-weight: bold;");// 覆盖CSS样式，使按钮变大
+        //loginButton.setStyle("-fx-min-width: 100px; -fx-min-height: 50px; -fx-padding: 10px; -fx-font-size: 16px;-fx-font-size: 22px;-fx-font-weight: bold;");// 覆盖CSS样式，使按钮变大
         loginButton.setOnAction(e -> showLoginForm());
         buttonsBox.getChildren().add(loginButton);
 
         Button registerButton = new Button("注册");
         registerButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-        registerButton.setStyle("-fx-min-width: 100px; -fx-min-height: 50px; -fx-padding: 10px; -fx-font-size: 16px;-fx-font-size: 22px;-fx-font-weight: bold;");// 覆盖CSS样式，使按钮变大
+        //registerButton.setStyle("-fx-min-width: 100px; -fx-min-height: 50px; -fx-padding: 10px; -fx-font-size: 16px;-fx-font-size: 22px;-fx-font-weight: bold;");// 覆盖CSS样式，使按钮变大
         registerButton.setOnAction(e -> showRegisterForm());
         buttonsBox.getChildren().add(registerButton);
 

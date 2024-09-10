@@ -4,6 +4,7 @@ import client.service.BankUser;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.geometry.Insets;
@@ -32,16 +33,26 @@ public class Bankui_Manager extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("银行管理界面");
+
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        primaryStage.getIcons().add(image);
+
         root = new BorderPane();
 
         root.setPadding(new Insets(10));
         Bank bank = new Bank(); // 创建Bank类的实例
 
         // 业务部分
+        VBox businessBox = new VBox(10);
+        businessBox.setPadding(new Insets(10));
+
         HBox searchBox = new HBox(5);
         Label searchLabel = new Label("搜索账号:");
+        searchLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField searchField = new TextField();
+        searchField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Button searchButton = new Button("搜索");
+        searchButton.getStyleClass().add("main-button");
         searchButton.setOnAction(e -> showPasswordDialog(searchField.getText(), primaryStage, root));
         searchBox.getChildren().addAll(searchLabel, searchField, searchButton);
 
@@ -54,16 +65,23 @@ public class Bankui_Manager extends Application {
 
         VBox depositBox = new VBox(5);
         Label depositLabel = new Label("存款金额:");
+        depositLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField depositField = new TextField();
+        depositField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label depositTypeLabel = new Label("存款类型:");
+        depositTypeLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         ComboBox<String> depositTypeComboBox = new ComboBox<>();
+        depositTypeComboBox.getStyleClass().add("main-button");
         depositTypeComboBox.getItems().addAll("活期", "定期");
         Label depositTermLabel = new Label("存款期限（月）:");
+        depositTermLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField depositTermField = new TextField();
+        depositTermField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Button depositButton = new Button("存款");
+        depositButton.getStyleClass().add("main-button");
         depositBox.getChildren().addAll(depositLabel, depositField, depositTypeLabel, depositTypeComboBox, depositTermLabel, depositTermField, depositButton);
 
-// 根据存款类型显示或隐藏存款期限输入框
+        // 根据存款类型显示或隐藏存款期限输入框
         depositTypeComboBox.setOnAction(e -> {
             String depositType = depositTypeComboBox.getValue();
             if ("活期".equals(depositType)) {
@@ -103,18 +121,20 @@ public class Bankui_Manager extends Application {
             }
         });
 
-
-
-
         VBox withdrawBox = new VBox(5);
         Label withdrawLabel = new Label("取款金额:");
+        withdrawLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField withdrawField = new TextField();
+        withdrawField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Button withdrawButton = new Button("取款");
+        withdrawButton.getStyleClass().add("main-button");
         withdrawBox.getChildren().addAll(withdrawLabel, withdrawField, withdrawButton);
         withdrawButton.setOnAction(e -> {
             bank.withdraw(searchField.getText(), Float.parseFloat(withdrawField.getText()));
             updateAccountInfo(bank, searchField.getText());
         });
+
+        businessBox.getChildren().addAll(searchBox, accountInfoBox, depositBox, withdrawBox);
 
         // 管理部分
         VBox managementBox = new VBox(10);
@@ -122,21 +142,31 @@ public class Bankui_Manager extends Application {
 
         // 活期利率部分
         Label currentRateLabel = new Label("当前活期利率: " + Bank.getInterestRate("活期") + "%");
-        Label hintCurrent = new Label("请输入更改后的活期利率");
+        currentRateLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+        Label hintCurrent = new Label("请输入更改后的活期利率:");
+        hintCurrent.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField newCurrentRateField = new TextField();
+        newCurrentRateField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Button confirmCurrentRateButton = new Button("确认活期利率");
+        confirmCurrentRateButton.getStyleClass().add("main-button");
         managementBox.getChildren().addAll(currentRateLabel, hintCurrent, newCurrentRateField, confirmCurrentRateButton);
 
         // 定期利率部分
         Label fixedDepositRateLabel = new Label("当前定期利率: " + Bank.getInterestRate("定期") + "%");
-        Label hintFixed = new Label("请输入更改后的定期利率");
+        fixedDepositRateLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+        Label hintFixed = new Label("请输入更改后的定期利率:");
+        hintFixed.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField newFixedRateField = new TextField();
+        newFixedRateField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Button confirmFixedRateButton = new Button("确认定期利率");
+        confirmFixedRateButton.getStyleClass().add("main-button");
         managementBox.getChildren().addAll(fixedDepositRateLabel, hintFixed, newFixedRateField, confirmFixedRateButton);
 
         // 模拟过月和模拟过年按钮
         Button simulateMonthEndButton = new Button("模拟过月");
+        simulateMonthEndButton.getStyleClass().add("main-button");
         Button simulateYearEndButton = new Button("模拟过年");
+        simulateYearEndButton.getStyleClass().add("main-button");
         managementBox.getChildren().addAll(simulateMonthEndButton, simulateYearEndButton);
 
         // 活期利率按钮事件
@@ -206,14 +236,17 @@ public class Bankui_Manager extends Application {
             }
         });
 
-        root.setCenter(new VBox(searchBox, accountInfoBox, depositBox, withdrawBox));
+        root.setCenter(businessBox);//默认打开业务页面
+
         // 将业务和管理部分添加到TabPane
         HBox hBox = new HBox();
         Button businessButton = new Button("业务");
+        businessButton.getStyleClass().add("main-button");
         businessButton.setOnAction(e -> {
-            root.setCenter(new VBox(searchBox, accountInfoBox, depositBox, withdrawBox));
+            root.setCenter(businessBox);
         });
         Button managementButton = new Button("管理");
+        managementButton.getStyleClass().add("main-button");
         managementButton.setOnAction(e -> {
             root.setCenter(managementBox);
         });
@@ -221,10 +254,15 @@ public class Bankui_Manager extends Application {
         root.setTop(hBox);
 
         Scene scene = new Scene(root, 1000, 500);
+        primaryStage.setMinWidth(1000); // 最小宽度为800像素
+        primaryStage.setMinHeight(618); // 最小高度为600像素
 
+        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+
 
     private void showPasswordDialog(String username, Stage primaryStage, BorderPane root) {
         Dialog<String> dialog = new Dialog<>();
@@ -263,8 +301,11 @@ public class Bankui_Manager extends Application {
             if (user != null) {
                 // 更新UI显示用户信息
                 userLabel.setText("用户名: " + user.getUsername());
+                userLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
                 balanceLabel.setText("总资产: " + user.getBalance());
+                balanceLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
                 currentBalanceLabel.setText("活期资产: " + user.getCurrentBalance());
+                currentBalanceLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
                 accountInfoBox.setVisible(true);
             } else {
                 // 处理用户未找到的情况

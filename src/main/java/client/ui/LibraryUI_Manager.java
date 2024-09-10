@@ -39,74 +39,41 @@ public class LibraryUI_Manager extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("图书馆管理界面");
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        primaryStage.getIcons().add(image);
+
         BorderPane root = new BorderPane();
         root.setPadding(new Insets(10));
         this.library = new Library(); // 初始化 Library 实例
 
+        Label searchTipLabel = new Label("书名或作者:");
+        searchTipLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+
         // 搜索栏和按钮
         TextField nameField = new TextField();
         nameField.setPromptText("输入书名或作者");
-        nameField.setFont(Font.font("Segoe UI", 14));
-        nameField.setStyle("-fx-text-fill: #4B0082;");
+        nameField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         Button searchButton = new Button("查询");
-        searchButton.setFont(Font.font("Segoe UI", 14));
-        searchButton.setStyle("-fx-text-fill: #4B0082;");
+        searchButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
         Button borrowButton = new Button("借阅记录");
-        borrowButton.setFont(Font.font("Segoe UI", 14));
-        borrowButton.setStyle("-fx-text-fill: #4B0082;");
-
-        HBox searchBox = new HBox(10, new Label("书名或作者:"), nameField, searchButton, borrowButton);
-        searchBox.setStyle("-fx-font-family: 'Segoe UI'; -fx-font-size: 14px; -fx-text-fill: #4B0082;");
-
-        // 设置按钮样式
-        String buttonStyle = "-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);";
-        String buttonHoverStyle = "-fx-background-color: rgba(255, 255, 255, 0.3); -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 15, 0, 0, 0); -fx-opacity: 0.9;";
-        String buttonPressedStyle = "-fx-background-color: #D8BFD8; -fx-border-color: #6A0DAD;";
-        searchButton.setStyle(buttonStyle);
-        borrowButton.setStyle(buttonStyle);
-        searchButton.setOnMouseEntered(e -> searchButton.setStyle(buttonHoverStyle));
-        searchButton.setOnMouseExited(e -> searchButton.setStyle(buttonStyle));
-        searchButton.setOnMousePressed(e -> searchButton.setStyle(buttonPressedStyle));
-        searchButton.setOnMouseReleased(e -> searchButton.setStyle(buttonHoverStyle));
-
-        borrowButton.setOnMouseEntered(e -> borrowButton.setStyle(buttonHoverStyle));
-        borrowButton.setOnMouseExited(e -> borrowButton.setStyle(buttonStyle));
-        borrowButton.setOnMousePressed(e -> borrowButton.setStyle(buttonPressedStyle));
-        borrowButton.setOnMouseReleased(e -> borrowButton.setStyle(buttonHoverStyle));
+        borrowButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
         // 管理员特有的按钮
         Button addButton = new Button("借阅/归还");
+        addButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button addbButton = new Button("添加新书");
+        addbButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button updateButton = new Button("更新数目");
+        updateButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button uploadButton = new Button("上传文件");
-        addButton.setStyle(buttonStyle);
-        addbButton.setStyle(buttonStyle);
-        updateButton.setStyle(buttonStyle);
-        uploadButton.setStyle(buttonStyle);
+        uploadButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
-        addButton.setOnMouseEntered(e -> addButton.setStyle(buttonHoverStyle));
-        addButton.setOnMouseExited(e -> addButton.setStyle(buttonStyle));
-        addButton.setOnMousePressed(e -> addButton.setStyle(buttonPressedStyle));
-        addButton.setOnMouseReleased(e -> addButton.setStyle(buttonHoverStyle));
-
-        addbButton.setOnMouseEntered(e -> addbButton.setStyle(buttonHoverStyle));
-        addbButton.setOnMouseExited(e -> addbButton.setStyle(buttonStyle));
-        addbButton.setOnMousePressed(e -> addbButton.setStyle(buttonPressedStyle));
-        addbButton.setOnMouseReleased(e -> addbButton.setStyle(buttonHoverStyle));
-
-        updateButton.setOnMouseEntered(e -> updateButton.setStyle(buttonHoverStyle));
-        updateButton.setOnMouseExited(e -> updateButton.setStyle(buttonStyle));
-        updateButton.setOnMousePressed(e -> updateButton.setStyle(buttonPressedStyle));
-        updateButton.setOnMouseReleased(e -> updateButton.setStyle(buttonHoverStyle));
-
-        uploadButton.setOnMouseEntered(e -> uploadButton.setStyle(buttonHoverStyle));
-        uploadButton.setOnMouseExited(e -> uploadButton.setStyle(buttonStyle));
-        uploadButton.setOnMousePressed(e -> uploadButton.setStyle(buttonPressedStyle));
-        uploadButton.setOnMouseReleased(e -> uploadButton.setStyle(buttonHoverStyle));
-
+        HBox searchBox = new HBox(10);
+        searchBox.getChildren().addAll(searchTipLabel, nameField, searchButton, borrowButton);
         searchBox.getChildren().addAll(addButton, addbButton, updateButton, uploadButton);
+
         addButton.setOnAction(e -> showAddDeleteWindow());
         addbButton.setOnAction(e -> showAddbWindow());
         updateButton.setOnAction(e -> showUpdateWindow());
@@ -182,7 +149,15 @@ public class LibraryUI_Manager extends Application {
 
         root.setTop(searchBox);
         root.setCenter(resultBox);
-        primaryStage.setScene(new Scene(root, 800, 600));
+
+        // 设置场景
+        Scene scene = new Scene(root, 1000, 618); // 调整尺寸以适应新布局
+        primaryStage.setMinWidth(1000); // 最小宽度为800像素
+        primaryStage.setMinHeight(618); // 最小高度为600像素
+
+        // 加载CSS样式表
+        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
@@ -205,27 +180,50 @@ public class LibraryUI_Manager extends Application {
 
     private void showAddbWindow() {
         Stage addbStage = new Stage();
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        addbStage.getIcons().add(image);
+
         addbStage.setTitle("增加书籍");
+
         Label nameLabel = new Label("书名:");
+        nameLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField nameField = new TextField();
+        nameField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label isbnLabel = new Label("ISBN:");
+        isbnLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField isbnField = new TextField();
+        isbnField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label authorLabel = new Label("作者:");
+        authorLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField authorField = new TextField();
+        authorField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label publishHouseLabel = new Label("出版社:");
+        publishHouseLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField publishHouseField = new TextField();
+        publishHouseField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label publicationYearLabel = new Label("出版日期:");
+        publicationYearLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField publicationYearField = new TextField();
+        publicationYearField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label classificationLabel = new Label("分类:");
+        classificationLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField classificationField = new TextField();
+        classificationField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label libNumberLabel = new Label("馆藏数量:");
+        libNumberLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField libNumberField = new TextField();
+        libNumberField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label curNumberLabel = new Label("现有数量:");
+        curNumberLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField curNumberField = new TextField();
+        curNumberField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label locationLabel = new Label("地点:");
+        locationLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField locationField = new TextField();
+        locationField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         Button confirmButton = new Button("确认");
+        confirmButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         confirmButton.setOnAction(e -> {
             String name = nameField.getText();
             String isbn = isbnField.getText();
@@ -247,9 +245,10 @@ public class LibraryUI_Manager extends Application {
         layout.setPadding(new Insets(10));
 
         Scene scene = new Scene(layout, 300, 650);
+        // 加载CSS样式表
+        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         addbStage.setScene(scene);
         addbStage.show();
-
     }
 
     private void showBorrowWindow() {
@@ -367,18 +366,28 @@ public class LibraryUI_Manager extends Application {
         Stage detailStage = new Stage();
         detailStage.initModality(Modality.APPLICATION_MODAL);
         detailStage.setTitle("书籍详情");
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        detailStage.getIcons().add(image);
 
         VBox vbox = new VBox();
         vbox.setSpacing(10);
 
-        vbox.getChildren().add(new Label("书名: " + book.getName()));
-        vbox.getChildren().add(new Label("作者: " + book.getAuthor()));
-        vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()));
-        vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()));
-        vbox.getChildren().add(new Label("分类: " + book.getClassification()));
-        vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()));
-        vbox.getChildren().add(new Label("馆藏数量: " + book.getLibNumber()));
-        vbox.getChildren().add(new Label("位置: " + book.getLocation()));
+        vbox.getChildren().add(new Label("书名: " + book.getName()){{
+            getStyleClass().add("body-font");}});
+        vbox.getChildren().add(new Label("作者: " + book.getAuthor()){{
+            getStyleClass().add("body-font");}});
+        vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()){{
+            getStyleClass().add("body-font");}});
+        vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()){{
+            getStyleClass().add("body-font");}});
+        vbox.getChildren().add(new Label("分类: " + book.getClassification()){{
+            getStyleClass().add("body-font");}});
+        vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()){{
+            getStyleClass().add("body-font");}});
+        vbox.getChildren().add(new Label("馆藏数量: " + book.getLibNumber()){{
+            getStyleClass().add("body-font");}});
+        vbox.getChildren().add(new Label("位置: " + book.getLocation()){{
+            getStyleClass().add("body-font");}});
 
         // 添加 ImageView 来显示书籍图片
         ImageView bookImageView = new ImageView();
@@ -398,6 +407,7 @@ public class LibraryUI_Manager extends Application {
         String pdfPath = book.getPdfPath(); // 获取PDF路径
         if (pdfPath != null && !pdfPath.isEmpty()) {
             Button previewPdfButton = new Button("预览PDF");
+            previewPdfButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
             previewPdfButton.setOnAction(e -> {
                 Stage pdfStage = new Stage();
                 pdfStage.initModality(Modality.APPLICATION_MODAL);
@@ -421,6 +431,7 @@ public class LibraryUI_Manager extends Application {
         }
 
         Scene scene = new Scene(vbox, 600, 800);
+        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         detailStage.setScene(scene);
         detailStage.show();
     }
@@ -429,18 +440,28 @@ public class LibraryUI_Manager extends Application {
     private void showAddDeleteWindow() {
         Stage addDeleteStage = new Stage();
         addDeleteStage.setTitle("借阅/归还书籍");
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        addDeleteStage.getIcons().add(image);
 
+        Label nameLabel = new Label("用户名:");
+        nameLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField usernameField = new TextField();
         usernameField.setPromptText("输入书籍ID");
+        usernameField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
+        Label bookIDLabel = new Label("书籍ID:");
+        bookIDLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField bookIdField = new TextField();
         bookIdField.setPromptText("输入书籍ID");
+        bookIdField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         Button borrowButton = new Button("借阅");
+        borrowButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button returnButton = new Button("归还");
+        returnButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
         HBox buttonBox = new HBox(10, borrowButton, returnButton);
-        VBox layout = new VBox(10, new Label("用户名:"), usernameField, new Label("书籍ID:"), bookIdField, buttonBox);
+        VBox layout = new VBox(10, nameLabel, usernameField, bookIDLabel, bookIdField, buttonBox);
         layout.setPadding(new Insets(10));
 
         borrowButton.setOnAction(e -> {
@@ -483,25 +504,31 @@ public class LibraryUI_Manager extends Application {
         });
 
         Scene scene = new Scene(layout, 300, 200);
+        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         addDeleteStage.setScene(scene);
         addDeleteStage.show();
     }
 
     private void showUploadDialog() {
         Stage dialog = new Stage();
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        dialog.getIcons().add(image);
         dialog.setTitle("上传文件");
 
         VBox dialogVBox = new VBox(10);
         dialogVBox.setPadding(new Insets(10));
 
+        Label bookIDLabel = new Label("书籍ID:");
+        bookIDLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+
         TextField bookIDField = new TextField();
         bookIDField.setPromptText("输入书籍ID");
+        bookIDField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         Button uploadImageButton = new Button("上传图片");
+        uploadImageButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button uploadPDFButton = new Button("上传PDF");
-
-        uploadImageButton.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);");
-        uploadPDFButton.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);");
+        uploadPDFButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
         uploadImageButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
@@ -541,9 +568,10 @@ public class LibraryUI_Manager extends Application {
             }
         });
 
-        dialogVBox.getChildren().addAll(new Label("书籍ID:"), bookIDField, uploadImageButton, uploadPDFButton);
+        dialogVBox.getChildren().addAll(bookIDLabel, bookIDField, uploadImageButton, uploadPDFButton);
 
         Scene dialogScene = new Scene(dialogVBox, 300, 200);
+        dialogScene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         dialog.setScene(dialogScene);
         dialog.show();
     }

@@ -1,14 +1,19 @@
-/* styles.css */
+/* current-button.css */
 .item-box {
     -fx-alignment: center;
     -fx-background-color: #eaeef6;
     -fx-padding: 16px;
-    -fx-border-radius: 10px;
+    /*-fx-border-color: #cccccc;  设置边框颜色 */
+    -fx-border-color: #6f9986; /* 设置边框颜色 */
+    -fx-border-width: 2px; /* 设置边框宽度 */
+    -fx-border-style: solid; /* 设置边框样式 */
+    -fx-border-radius: 10px; /* 设置边框圆角 */
     -fx-background-radius: 10px;
 }
 
 .item-box:hover {
     -fx-background-color: #ffd9a3;
+    -fx-border-color: #718771; /* 鼠标悬停时边框颜色变化 */
 }
 
 .item-box:hover .label {

@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -41,10 +42,17 @@ public class Admin_CourseUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("课程管理");
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        primaryStage.getIcons().add(image);
 
         BorderPane borderPane = createAdminCourseSelectionView();
 
-        Scene scene = new Scene(borderPane, 800, 600);
+        // 设置场景
+        Scene scene = new Scene(borderPane, 1000, 618); // 调整尺寸以适应新布局
+        primaryStage.setMinWidth(1000); // 最小宽度为800像素
+        primaryStage.setMinHeight(618); // 最小高度为600像素
+
+        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -67,8 +75,10 @@ public class Admin_CourseUI extends Application {
         topBar.getChildren().addAll(btnCheckCourses, btnAddCourses, btnRefresh);
 
         searchField = new TextField();
+        searchField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         searchField.setPromptText("搜索课程...");
         Button btnSearch = new Button("搜索");
+        btnSearch.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         btnSearch.setOnAction(e -> searchCourses());
 
         HBox searchBox = new HBox(10, searchField, btnSearch);

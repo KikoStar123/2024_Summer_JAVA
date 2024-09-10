@@ -119,23 +119,6 @@ public class LibraryUI {
         searchBox.setAlignment(Pos.CENTER);//居中
         searchBox.setStyle("-fx-spacing: 40;");//设置了子节点之间的间距
 
-        // 设置按钮样式
-//        String buttonStyle = "-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);";
-//        String buttonHoverStyle = "-fx-background-color: rgba(255, 255, 255, 0.3); -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 15, 0, 0, 0); -fx-opacity: 0.9;";
-//        String buttonPressedStyle = "-fx-background-color: #D8BFD8; -fx-border-color: #6A0DAD;";
-//        searchButton.setStyle(buttonStyle);
-//        borrowButton.setStyle(buttonStyle);
-//
-//        searchButton.setOnMouseEntered(e -> searchButton.setStyle(buttonHoverStyle));
-//        searchButton.setOnMouseExited(e -> searchButton.setStyle(buttonStyle));
-//        searchButton.setOnMousePressed(e -> searchButton.setStyle(buttonPressedStyle));
-//        searchButton.setOnMouseReleased(e -> searchButton.setStyle(buttonHoverStyle));
-//
-//        borrowButton.setOnMouseEntered(e -> borrowButton.setStyle(buttonHoverStyle));
-//        borrowButton.setOnMouseExited(e -> borrowButton.setStyle(buttonStyle));
-//        borrowButton.setOnMousePressed(e -> borrowButton.setStyle(buttonPressedStyle));
-//        borrowButton.setOnMouseReleased(e -> borrowButton.setStyle(buttonHoverStyle));
-
         // 结果显示区域
         resultTable = new TableView<>();
         TableColumn<Book, String> titleColumn = new TableColumn<>("书名");

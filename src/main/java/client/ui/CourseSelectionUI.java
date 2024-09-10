@@ -35,7 +35,6 @@ public class CourseSelectionUI {
     public BorderPane createCourseSelectionView() {
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane, 600, 400);
-        //scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         topBar = new HBox(10);  // 调整为VBox，按钮垂直排列，更加紧凑
         topBar.setPadding(new Insets(10));
 
@@ -43,80 +42,13 @@ public class CourseSelectionUI {
         Button btnSelectedCourses = new Button("已选课程");
         Button btnMySchedule = new Button("我的课表");
         btnAvailableCourses.getStyleClass().add("main-button");
-        // 正常状态样式
-        btnAvailableCourses.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-
-// 悬停状态（hover）样式
-        btnAvailableCourses.setOnMouseEntered(e -> {
-            btnAvailableCourses.setStyle("-fx-background-color: #FFC0CB; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
-
-// 鼠标离开后恢复到正常状态
-        btnAvailableCourses.setOnMouseExited(e -> {
-            btnAvailableCourses.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
-
-// 按下状态（pressed）样式
-        btnAvailableCourses.setOnMousePressed(e -> {
-            btnAvailableCourses.setStyle("-fx-background-color: #FF69B4; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
-
-// 按钮释放后恢复到悬停状态或正常状态
-        btnAvailableCourses.setOnMouseReleased(e -> {
-            btnAvailableCourses.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
         btnSelectedCourses.getStyleClass().add("main-button");
-        // 正常状态样式
-        btnSelectedCourses.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-
-// 悬停状态（hover）样式
-        btnSelectedCourses.setOnMouseEntered(e -> {
-            btnSelectedCourses.setStyle("-fx-background-color: #FFC0CB; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
-
-// 鼠标离开后恢复到正常状态
-        btnSelectedCourses.setOnMouseExited(e -> {
-            btnSelectedCourses.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
-
-// 按下状态（pressed）样式
-        btnSelectedCourses.setOnMousePressed(e -> {
-            btnSelectedCourses.setStyle("-fx-background-color: #FF69B4; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
-
-// 按钮释放后恢复到悬停状态或正常状态
-        btnSelectedCourses.setOnMouseReleased(e -> {
-            btnSelectedCourses.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
         btnMySchedule.getStyleClass().add("main-button");
-        // 正常状态样式
-        btnMySchedule.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
 
-// 悬停状态（hover）样式
-        btnMySchedule.setOnMouseEntered(e -> {
-            btnMySchedule.setStyle("-fx-background-color: #FFC0CB; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
-
-// 鼠标离开后恢复到正常状态
-        btnMySchedule.setOnMouseExited(e -> {
-            btnMySchedule.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
-
-// 按下状态（pressed）样式
-        btnMySchedule.setOnMousePressed(e -> {
-            btnMySchedule.setStyle("-fx-background-color: #FF69B4; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
-
-// 按钮释放后恢复到悬停状态或正常状态
-        btnMySchedule.setOnMouseReleased(e -> {
-            btnMySchedule.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px;");
-        });
-
-
-        // 调整每个按钮的最大宽度
-        btnAvailableCourses.setMaxWidth(Double.MAX_VALUE);
-        btnSelectedCourses.setMaxWidth(Double.MAX_VALUE);
-        btnMySchedule.setMaxWidth(Double.MAX_VALUE);
+//        // 调整每个按钮的最大宽度
+//        btnAvailableCourses.setMaxWidth(Double.MAX_VALUE);
+//        btnSelectedCourses.setMaxWidth(Double.MAX_VALUE);
+//        btnMySchedule.setMaxWidth(Double.MAX_VALUE);
 
         // 绑定按钮点击事件
         btnAvailableCourses.setOnAction(e -> displayCourses(courseList, "选择", btnAvailableCourses));
@@ -130,8 +62,8 @@ public class CourseSelectionUI {
         courseListView = new ListView<>();
         courseListView.setPrefHeight(300);  // 减少ListView的高度
 
-        // 将课程列表应用样式
-        courseListView.getStyleClass().add("gray-border");
+//        // 将课程列表应用样式
+//        courseListView.getStyleClass().add("gray-border");
 
         // 将 topBar 放在界面的顶部，将课程列表放在中央
         borderPane.setTop(topBar);

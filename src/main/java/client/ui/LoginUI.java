@@ -142,9 +142,9 @@ public class LoginUI extends Application {
 
         if (success) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Login");
+            alert.setTitle("登录信息");
             alert.setHeaderText(null);
-            alert.setContentText("Login successful!");
+            alert.setContentText("登录成功!");
             alert.showAndWait();
 
             // 关闭当前窗口
@@ -206,9 +206,9 @@ public class LoginUI extends Application {
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Login");
+            alert.setTitle("登录信息");
             alert.setHeaderText(null);
-            alert.setContentText("Login failed. Please try again.");
+            alert.setContentText("登录失败，请重试~");
             alert.showAndWait();
         }
     }

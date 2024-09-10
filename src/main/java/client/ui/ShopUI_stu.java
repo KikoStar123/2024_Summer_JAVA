@@ -53,8 +53,11 @@ public class ShopUI_stu {
         // 创建顶部按钮
         HBox topMenu = new HBox();
         Button btnProducts = new Button("商品");
+        btnProducts.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button btnCart = new Button("购物车");
+        btnCart.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button btnOrders = new Button("订单");
+        btnOrders.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         topMenu.getChildren().addAll(btnProducts, btnCart, btnOrders);
         btnCart.setOnAction(e -> {
             try {
@@ -75,13 +78,17 @@ public class ShopUI_stu {
         HBox searchBox = new HBox();
         TextField searchField = new TextField();
         searchField.setPromptText("搜索商品");
+        searchField.getStyleClass().add("input-field");
         ComboBox<String> sortByComboBox = new ComboBox<>();
         sortByComboBox.setItems(FXCollections.observableArrayList("按价格排序", "按好评率排序"));
         sortByComboBox.setPromptText("排序方式");
+        sortByComboBox.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         ComboBox<String> sortOrderComboBox = new ComboBox<>();
         sortOrderComboBox.setItems(FXCollections.observableArrayList("升序", "降序"));
         sortOrderComboBox.setPromptText("排序顺序");
+        sortOrderComboBox.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button searchButton = new Button("搜索");
+        searchButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         searchBox.getChildren().addAll(searchField, sortByComboBox, sortOrderComboBox, searchButton);
 
         // 创建商品列表

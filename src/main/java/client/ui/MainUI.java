@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -31,6 +32,8 @@ public class MainUI extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("主界面");
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        primaryStage.getIcons().add(image);
 
         // 创建 BorderPane 作为主布局
         borderPane = new BorderPane();
@@ -38,12 +41,12 @@ public class MainUI extends Application {
         // 创建左侧的按钮栏
         VBox leftBox = new VBox(0); // 设置间距
         leftBox.setPadding(new Insets(10)); // 设置内边距
-        leftBox.setStyle("-fx-background-color: #fff; " +
-                "-fx-padding: 16px; " +
-                "-fx-spacing: 8px; " +
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 40, 0, 0, 0);" +
-                "-fx-border-radius: 10px; " +
-                "-fx-background-radius: 10px;");
+//        leftBox.setStyle("-fx-background-color: #fff; " +
+//                "-fx-padding: 16px; " +
+//                "-fx-spacing: 8px; " +
+//                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 40, 0, 0, 0);" +
+//                "-fx-border-radius: 10px; " +
+//                "-fx-background-radius: 10px;");
 
         // 添加功能按钮
         VBox libBox = new VBox();
@@ -161,8 +164,13 @@ public class MainUI extends Application {
         borderPane.setCenter(centerBox);
 
         // 设置场景
-        Scene scene = new Scene(borderPane, 1000, 500); // 调整尺寸以适应新布局
-        //scene.getStylesheets().add(getClass().getResource("/current-buttons.css").toExternalForm());
+        Scene scene = new Scene(borderPane, 1000, 618); // 调整尺寸以适应新布局
+        primaryStage.setMinWidth(1000); // 最小宽度为800像素
+        primaryStage.setMinHeight(618); // 最小高度为600像素
+
+        // 加载CSS样式表
+        scene.getStylesheets().add("current-button.css");
+        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

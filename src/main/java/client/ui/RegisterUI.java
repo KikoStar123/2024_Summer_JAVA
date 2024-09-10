@@ -69,6 +69,10 @@ public class RegisterUI  {
         genderLabel.getStyleClass().add("body-font");
         genderComboBox = new ComboBox<>();
         genderComboBox.getItems().addAll("male", "female");
+        genderComboBox.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+//        genderComboBox.setPrefWidth(name.getPrefWidth());// 设置ComboBox的宽度与TextField相同
+//        genderComboBox.setPrefHeight(name.getPrefHeight());// 设置ComboBox的高度与TextField相同
+
         GridPane.setConstraints(genderLabel, dispx+0, dispy+6);
         GridPane.setConstraints(genderComboBox, dispx+1, dispy+6);
 

@@ -2,6 +2,7 @@ package client.ui;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,6 +27,8 @@ public class AddCourseUI {
         Stage dialogStage = new Stage();
         dialogStage.setTitle("添加新课程");
         dialogStage.initModality(Modality.APPLICATION_MODAL); // 模态对话框
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        dialogStage.getIcons().add(image);
 
         // 创建一个垂直盒布局来组织控件
         VBox vbox = new VBox(10);
@@ -39,21 +42,37 @@ public class AddCourseUI {
 
         // 创建标签和文本字段
         Label courseIDLabel = new Label("课程号:");
+        courseIDLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField courseIDTextField = new TextField();
+        courseIDTextField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label courseNameLabel = new Label("课程名:");
+        courseNameLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField courseNameTextField = new TextField();
+        courseNameTextField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label courseTeacherLabel = new Label("上课教师:");
+        courseTeacherLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField courseTeacherTextField = new TextField();
+        courseTeacherTextField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label courseCreditsLabel = new Label("学分:");
+        courseCreditsLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField courseCreditsTextField = new TextField();
+        courseCreditsTextField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label courseTimeLabel = new Label("时间:");
+        courseTimeLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField courseTimeTextField = new TextField();
+        courseTimeTextField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label courseCapacityLabel = new Label("课容量:");
+        courseCapacityLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField courseCapacityTextField = new TextField();
+        courseCapacityTextField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label courseRoomLabel = new Label("上课教室:");
+        courseRoomLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField courseRoomTextField = new TextField();
+        courseRoomTextField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         Label courseTypeLabel = new Label("课程类型:");
+        courseTypeLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
         TextField courseTypeTextField = new TextField();
+        courseTypeTextField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         // 将标签和文本字段添加到网格布局
         gridPane.add(courseIDLabel, 0, 0);
@@ -75,6 +94,7 @@ public class AddCourseUI {
 
         // 创建确认按钮
         Button confirmButton = new Button("确认添加");
+        confirmButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         confirmButton.setOnAction(e -> {
             // 获取用户输入的值
             String courseID = courseIDTextField.getText();
@@ -116,6 +136,7 @@ public class AddCourseUI {
 
         // 设置对话框的场景
         Scene dialogScene = new Scene(vbox, 400, 600);
+        dialogScene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         dialogStage.setScene(dialogScene);
 
         // 显示对话框
