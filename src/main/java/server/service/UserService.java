@@ -136,7 +136,7 @@ public class UserService {
                 int newUsername = maxUsername + 1;
 
                 // Padding with zeros to ensure 9 digits
-                allocatedId = String.format("%09d", newUsername);
+                allocatedId = String.valueOf(newUsername);
             }
         } catch (SQLException e) {
             e.printStackTrace();

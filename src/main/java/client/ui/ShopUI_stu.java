@@ -115,7 +115,7 @@ public class ShopUI_stu {
             Label lblOriginalPrice = new Label("原价: ¥" + product.getProductOriginalPrice());
             Label lblCurrentPrice = new Label("现价: ¥" + product.getProductCurrentPrice());
             Label lblSeller = new Label("商家名称: " + product.getStoreName());
-            productDetails.getChildren().addAll(lblName, lblRating, lblOriginalPrice, lblCurrentPrice, lblSeller);
+            productDetails.getChildren().addAll(productImage, lblName, lblRating, lblOriginalPrice, lblCurrentPrice, lblSeller);
 
             productItem.getChildren().addAll( productDetails);
             items.add(productItem);
@@ -156,13 +156,13 @@ public class ShopUI_stu {
                     productItem.setPadding(new Insets(10)); // 内边距为10
 
                     // 创建商品图片
-//                    ImageView productImage = new ImageView();
-//                    String relativePath = product.getProductImage().replace("uploads/", "");
-//                    Image image = new Image("http://localhost:8082/files/" + relativePath);
-//                    productImage.setImage(image);
-//                    productImage.setFitWidth(150); // 设置图片宽度
-//                    productImage.setFitHeight(150); // 设置图片高度
-//                    productImage.setPreserveRatio(true); // 保持图片比例
+                    ImageView productImage = new ImageView();
+                    String relativePath = product.getProductImage().replace("uploads/", "");
+                    Image image = new Image("http://localhost:8082/files/" + relativePath);
+                    productImage.setImage(image);
+                    productImage.setFitWidth(150); // 设置图片宽度
+                    productImage.setFitHeight(150); // 设置图片高度
+                    productImage.setPreserveRatio(true); // 保持图片比例
 
                     // 创建商品详情
                     VBox productDetails = new VBox(5); // 间距为5
@@ -171,7 +171,7 @@ public class ShopUI_stu {
                     Label lblOriginalPrice = new Label("原价: ¥" + product.getProductOriginalPrice());
                     Label lblCurrentPrice = new Label("现价: ¥" + product.getProductCurrentPrice());
                     Label lblSeller = new Label("商家名称: " + product.getStoreName());
-                    productDetails.getChildren().addAll(lblName, lblRating, lblOriginalPrice, lblCurrentPrice, lblSeller);
+                    productDetails.getChildren().addAll(productImage, lblName, lblRating, lblOriginalPrice, lblCurrentPrice, lblSeller);
 
                     productItem.getChildren().addAll( productDetails);
                     items.add(productItem);
