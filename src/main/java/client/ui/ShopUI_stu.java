@@ -685,7 +685,6 @@ public class ShopUI_stu {
                 throw new RuntimeException(ex);
             }
         });
-
         logisticsBox.getChildren().add(backButton);
         borderPane.setCenter(logisticsBox);
     }
