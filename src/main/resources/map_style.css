@@ -24,6 +24,7 @@ h1 {
 }
 
 .panel {
+    display: none; /* 隐藏文字信息面板 */
     width: 100%;
     height: 200px;
     overflow: auto;
