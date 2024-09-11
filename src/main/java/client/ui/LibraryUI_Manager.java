@@ -36,6 +36,10 @@ public class LibraryUI_Manager extends Application {
     private User user;
     private Library library;
 
+    public LibraryUI_Manager(User user) {
+        this.user = user;
+    }
+
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("图书馆管理界面");
@@ -85,6 +89,8 @@ public class LibraryUI_Manager extends Application {
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         TableColumn<Book, String> authorColumn = new TableColumn<>("作者");
         authorColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAuthor()));
+        TableColumn<Book, String> isbnColumn = new TableColumn<>("ISBN");
+        isbnColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBookID()));
         TableColumn<Book, String> libnumColumn = new TableColumn<>("馆藏数");
         libnumColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getLibNumber())));
         TableColumn<Book, String> curnumColumn = new TableColumn<>("剩余数");
@@ -118,7 +124,7 @@ public class LibraryUI_Manager extends Application {
                 };
             }
         });
-        resultTable.getColumns().addAll(imageColumn, titleColumn, authorColumn, libnumColumn, curnumColumn);
+        resultTable.getColumns().addAll(imageColumn, titleColumn, authorColumn, isbnColumn,libnumColumn, curnumColumn);
 
         VBox resultBox = new VBox(10, resultTable);
 
@@ -176,6 +182,17 @@ public class LibraryUI_Manager extends Application {
             library.updateBook(isbn, finalLibNumber);
             updateStage.close();
         });
+        // 创建一个垂直布局
+        VBox vbox = new VBox(10);
+        vbox.getChildren().addAll(isbnLabel, isbnField, finalLibNumberLabel, finalLibNumberField, confirmButton);
+
+        // 设置场景
+        Scene scene = new Scene(vbox, 300, 200);
+        updateStage.setScene(scene);
+
+        // 显示窗口
+        updateStage.show();
+
     }
 
     private void showAddbWindow() {
@@ -255,7 +272,7 @@ public class LibraryUI_Manager extends Application {
         Stage borrowStage = new Stage();
         borrowStage.setTitle("借阅记录");
 
-        Label userLabel = new Label("用户: " + user.getUsername());
+        //Label userLabel = new Label("用户: " + user.getUsername());
         TableView<LibRecord> borrowedBooksTable = new TableView<>();
 
 // 设置 titleColumn 的单元格值工厂
@@ -377,6 +394,8 @@ public class LibraryUI_Manager extends Application {
         vbox.getChildren().add(new Label("作者: " + book.getAuthor()){{
             getStyleClass().add("body-font");}});
         vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()){{
+            getStyleClass().add("body-font");}});
+        vbox.getChildren().add(new Label("ISBN: " + book.getBookID()){{
             getStyleClass().add("body-font");}});
         vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()){{
             getStyleClass().add("body-font");}});

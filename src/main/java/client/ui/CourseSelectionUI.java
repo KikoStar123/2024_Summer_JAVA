@@ -83,10 +83,22 @@ public class CourseSelectionUI {
 
     private void updateCourseList() {
         CourseSelection.oneCourseinfo[] courseInfoArray = courseSelection.GetAllCourses();
+        CourseSelection.oneCourseinfo[] enrolledCourses = courseSelection.viewEnrolledCourses(user.getUsername());
         courseList.clear();
+
         for (CourseSelection.oneCourseinfo course : courseInfoArray) {
-            // 使用 courseSelection 实例创建 CourseInfo 类的实例
-            courseList.add(new CourseInfo(course, courseSelection));
+            boolean isEnrolled = false;
+            if (enrolledCourses != null) {
+                for (CourseSelection.oneCourseinfo enrolledCourse : enrolledCourses) {
+                    if (course.getCourseID().equals(enrolledCourse.getCourseID())) {
+                        isEnrolled = true;
+                        break;
+                    }
+                }
+            }
+            if (!isEnrolled) {
+                courseList.add(new CourseInfo(course, courseSelection));
+            }
         }
     }
 
@@ -94,9 +106,8 @@ public class CourseSelectionUI {
         CourseSelection.oneCourseinfo[] enrolledCourses = courseSelection.viewEnrolledCourses(user.getUsername());
         selectedCourses.clear();
 
-        if (!(enrolledCourses == null || enrolledCourses.length == 0)) {
+        if (enrolledCourses != null && enrolledCourses.length > 0) {
             for (CourseSelection.oneCourseinfo course : enrolledCourses) {
-                // 使用 courseSelection 实例创建 CourseInfo 类的实例
                 selectedCourses.add(new CourseInfo(course, courseSelection));
             }
         }

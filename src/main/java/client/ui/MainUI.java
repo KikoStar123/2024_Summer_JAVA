@@ -138,10 +138,12 @@ public class MainUI extends Application {
         if(user.getRole()==StuInfoManager)
         {
             courseBox.setVisible(false);
-            stuBox.setVisible(false);
+            stuBox.setVisible(true);
             shopBox.setVisible(false);
             bankBox.setVisible(false);
             updateBox.setVisible(false);
+            libBox.setVisible(false);
+
         }
 
         // 添加标签

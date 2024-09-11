@@ -775,7 +775,16 @@ public class ShopUI_stu {
 
         HBox quantityBox = new HBox(decreaseButton, quantityLabel, increaseButton);
 
-        buyproductBox.getChildren().addAll(common,selectedProductOriginalPrice,selectedProductCurrentPrice,scrollPane,quantityBox,confirmButton);
+        Button backButton=new Button("返回");
+        backButton.setOnAction(e->{
+            try {
+                borderPane.setCenter(showProductDetails(product));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        buyproductBox.getChildren().addAll(common,selectedProductOriginalPrice,selectedProductCurrentPrice,scrollPane,quantityBox,confirmButton,backButton);
 
         commonproductList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -885,7 +894,15 @@ public class ShopUI_stu {
         if (!infoComboBox.getItems().isEmpty()) {
             infoComboBox.getSelectionModel().selectFirst();
         }
-        buyproductBox.getChildren().addAll(common,selectedProductOriginalPrice,selectedProductCurrentPrice,scrollPane,quantityBox,infoComboBox,confirmButton);
+        Button backButton=new Button("返回");
+        backButton.setOnAction(e->{
+            try {
+                borderPane.setCenter(showProductDetails(product));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        buyproductBox.getChildren().addAll(common,selectedProductOriginalPrice,selectedProductCurrentPrice,scrollPane,quantityBox,infoComboBox,confirmButton,backButton);
 
         commonproductList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
