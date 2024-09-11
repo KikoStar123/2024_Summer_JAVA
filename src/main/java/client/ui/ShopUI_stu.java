@@ -242,6 +242,7 @@ public class ShopUI_stu {
             // 应用CSS中的按钮样式
             Button logisticsButton=new Button("查看物流信息");
             logisticsButton.setOnAction(e->showlogistics());
+            logisticsButton.getStyleClass().add("main-button");
 
             ComboBox<String> infoComboBox = new ComboBox<>();
             for (int i = 0; i < currentUser.getAddresses().length; i++) {
@@ -914,7 +915,7 @@ public class ShopUI_stu {
         backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         backButton.setOnAction(e -> {
             try {
-                borderPane.setCenter(new VBox(getShopLayout()));
+                borderPane.setCenter(getShopLayout());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -1331,12 +1332,8 @@ public class ShopUI_stu {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             return paymentSuccess[0];
         }
-
         return false;
     }
-
-
 }
