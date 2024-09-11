@@ -13,12 +13,14 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import javax.swing.*;
+
 public class ForgetPwdUI extends Application {
     User user = new User();
 
     public ForgetPwdUI(String username) {
         //this.getusername = username;//不知道咋写
-        //user.setUsername(username);
+        user.setUsername(username);//问题就出现在这2024-9-11-20-07
     }
 
     // 显示修改密码的窗口
@@ -106,13 +108,13 @@ public class ForgetPwdUI extends Application {
                 System.out.println("新密码和确认密码不匹配！");
                 return;
             }
-
             ClientService clientService = new ClientService();
-            boolean isSuccess = clientService.updateUserPwd(user.getUsername(), null, newPassword);  // null 是旧密码的占位符
+            System.out.println(user.getUsername());
+            boolean isSuccess = clientService.forgetUserPwd(user.getUsername(),newPassword);  // null 是旧密码的占位符
             if (isSuccess) {
-                System.out.println("密码更新成功！");
+                JOptionPane.showMessageDialog(null, "密码更新成功！", "更新通知", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                System.out.println("密码更新失败！");
+                JOptionPane.showMessageDialog(null, "密码更新失败，请重试。", "错误", JOptionPane.ERROR_MESSAGE);
             }
         });
 

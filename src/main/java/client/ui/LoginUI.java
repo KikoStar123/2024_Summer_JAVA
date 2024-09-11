@@ -48,6 +48,7 @@ import java.util.Random;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
+import javax.swing.JOptionPane;
 import client.service.ClientService;
 public class LoginUI extends Application {
     private TextField usernameField;
@@ -55,20 +56,20 @@ public class LoginUI extends Application {
     private BorderPane root;
     private String instanceName = "Default";
     private GridPane grid;
-    ClientService clientService;//lzy,please change function in ClientService;
+    ClientService clientService= new ClientService();//lzy,please change function in ClientService;
 //尝试更改忘记密码功能
     String token = UUID.randomUUID().toString();
     Date expirationDate = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
     private String smtpHost = "smtp.qq.com"; // SMTP服务器地址
     private String smtpPort = "587"; // SMTP服务器端口
     //private String smtpUsername = "1782427252@qq.com"; // 发件人邮箱用户名
-    private String smtpPassword = "sqwkryakuykxdagc"; // 发件人邮箱的鉴权码
+    //private String smtpPassword = "sqwkryakuykxdagc"; // 发件人邮箱的鉴权码
     private String smtpUsername;
+    private String smtpPassword;//需要加一个授权码
     //private String smtpPassword;
     public void setInstanceName(String name) {
         instanceName = name;
     }
-
     public static void main(String[] args) {
         launch(args);
     }
@@ -147,7 +148,6 @@ public class LoginUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-
 
     private void handleLogin() {
         String username = usernameField.getText();
@@ -248,6 +248,7 @@ public class LoginUI extends Application {
         HBox accountRow = new HBox(10);
         accountRow.setAlignment(Pos.CENTER_LEFT);
         Label accountLabel = new Label("账号:");
+        accountLabel.setMinWidth(Control.USE_PREF_SIZE); // 设置Label的最小宽度
         TextField accountField = new TextField();
         accountField.setPromptText("请输入你的账号");
         accountRow.getChildren().addAll(accountLabel, accountField);
@@ -256,14 +257,25 @@ public class LoginUI extends Application {
         HBox emailRow = new HBox(10);
         emailRow.setAlignment(Pos.CENTER_LEFT);
         Label emailLabel = new Label("邮箱:");
+        emailLabel.setMinWidth(Control.USE_PREF_SIZE); // 设置Label的最小宽度
         TextField emailField = new TextField();
         emailField.setPromptText("请输入你的邮箱");
         emailRow.getChildren().addAll(emailLabel, emailField);
+
+        // 创建邮箱授权码
+        HBox pwdRow = new HBox(10);
+        pwdRow.setAlignment(Pos.CENTER_LEFT);
+        Label pwdLabel = new Label("授权码:");
+        pwdLabel.setMinWidth(Control.USE_PREF_SIZE); // 设置Label的最小宽度
+        TextField pwdField = new TextField();
+        pwdField.setPromptText("请输入你的授权码");
+        pwdRow.getChildren().addAll(pwdLabel, pwdField);
 
         // 创建验证码输入行
         HBox codeRow = new HBox(10);
         codeRow.setAlignment(Pos.CENTER_LEFT);
         Label codeLabel = new Label("验证码:");
+        codeLabel.setMinWidth(Control.USE_PREF_SIZE); // 设置Label的最小宽度
         TextField codeField = new TextField();
         codeField.setPromptText("请输入验证码");
         Button sendCodeButton = new Button("发送验证码");
@@ -274,22 +286,23 @@ public class LoginUI extends Application {
         sendCodeButton.setOnAction(e -> {
             String email = emailField.getText();
             if (!email.isEmpty()) {
-                ref.returnvalue = Forget(email);  // 调用 Forget 函数，发送验证码到邮箱
+                ref.returnvalue = Forget(email,pwdField.getText());  // 调用 Forget 函数，发送验证码到邮箱
             } else {
                 // 处理无效的邮箱输入 (可以弹出提示框)
                 Alert alert = new Alert(Alert.AlertType.ERROR, "请输入有效的邮箱地址！");
                 alert.showAndWait();
             }
         });
-
         codeRow.getChildren().addAll(codeLabel, codeField, sendCodeButton);
 
         // 创建“开始验证”按钮
         Button verifyButton = new Button("开始验证");
         verifyButton.setOnAction(e -> {//-------------------------------------
             //重要的逻辑放在这里了，匹配邮箱同时匹配发送的验证码
+            //System.out.println(emailField.getText());
+            //System.out.println(clientService.getEmailByUsername(accountField.getText()));
             if((Integer.parseInt(codeField.getText())== ref.returnvalue)&&
-                    (emailField.getText()==clientService.getEmailByUsername(accountField.getText()))){
+                    (emailField.getText().equals(clientService.getEmailByUsername(accountField.getText())))){
                 System.out.println("验证码匹配！请更改密码！" );
                 String username = accountField.getText();  // 假设通过账号获取用户信息
                 ForgetPwdUI forgetPwdUI = new ForgetPwdUI(username);
@@ -298,11 +311,10 @@ public class LoginUI extends Application {
             else{
                 System.out.println("验证码不匹配，请重新发送！！！" );
             }
-
         });
 
         // 将账号输入行、邮箱输入行、验证码行和“开始验证”按钮添加到 VBox
-        vbox.getChildren().addAll(accountRow, emailRow, codeRow, verifyButton);
+        vbox.getChildren().addAll(accountRow, emailRow, pwdRow,codeRow, verifyButton);
 
         // 设置窗口的场景
         Scene scene = new Scene(vbox, 400, 250);
@@ -310,8 +322,9 @@ public class LoginUI extends Application {
         forgetStage.show();
     }
     //完成向邮箱发送正确的验证码；
-    public int Forget(String toEmail) {
+    public int Forget(String toEmail,String toPassword) {
         smtpUsername = toEmail;//确保用户输入的邮箱与发送的邮箱保持一致。
+        smtpPassword = toPassword;//-----
         Random random = new Random();
         int verificationCode = 100000 + random.nextInt(900000); // 900000 表
         //System.out.println("Verification Code: " + verificationCode);//------打印验证码
@@ -328,8 +341,12 @@ public class LoginUI extends Application {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(smtpUsername, smtpPassword);
             }
+//          @Override
+//          protected PasswordAuthentication getPasswordAuthentication() {
+//              // 返回null，表示不进行身份验证
+//              return null;
+//          }
         });
-
         try {
             // 创建邮件消息
             Message message = new MimeMessage(session);
