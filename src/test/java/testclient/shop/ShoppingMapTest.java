@@ -19,13 +19,14 @@ public class ShoppingMapTest {
             System.out.println("2. 删除地图记录");
             System.out.println("3. 更新地图记录");
             System.out.println("4. 查看所有地图记录");
-            System.out.println("5. 退出");
+            System.out.println("5. 根据商品ID查询地图记录");
+            System.out.println("6. 退出");
             System.out.print("请选择操作: ");
 
             int choice = scanner.nextInt();
             scanner.nextLine();  // 处理换行符
 
-            if (choice == 5) {
+            if (choice == 6) {
                 break;
             }
 
@@ -81,6 +82,23 @@ public class ShoppingMapTest {
                             System.out.println("起始位置: " + record.getString("mapStart"));
                             System.out.println("终止位置: " + record.getString("mapEnd"));
                             System.out.println("------------");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case 5:  // 根据商品ID查询地图记录
+                    System.out.print("请输入商品ID: ");
+                    String queryProductID = scanner.nextLine();
+                    try {
+                        JSONObject record = shoppingMap.getMapRecordByProductID(queryProductID);
+                        if (record.optString("status").equals("success")) {
+                            System.out.println("商品ID: " + queryProductID);
+                            System.out.println("起始位置: " + record.getString("mapStart"));
+                            System.out.println("终止位置: " + record.getString("mapEnd"));
+                        } else {
+                            System.out.println("未找到商品ID为 " + queryProductID + " 的记录。");
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
