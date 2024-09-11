@@ -861,6 +861,7 @@ public class ShopUI_stu {
                                 try {
                                     ShoppingProduct.oneProduct oneProduct1 = ShoppingProduct.getProductDetails(productId);
                                     ShoppingMap.addMapRecord(productId, oneProduct1.getProductAddress(), address);
+
                                 } catch (IOException ex) {
                                     throw new RuntimeException(ex);
                                 }
