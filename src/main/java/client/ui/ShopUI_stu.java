@@ -669,6 +669,7 @@ public class ShopUI_stu {
             }
         });
 
+
         VBox logisticsBox = new VBox(10);
         logisticsBox.setPadding(new Insets(10));
 
