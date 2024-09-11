@@ -3,17 +3,16 @@ package client.ui;
 import client.service.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -23,6 +22,8 @@ import com.dansoftware.pdfdisplayer.PDFDisplayer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.paint.Color;
 
 public class LibraryUI {
 
@@ -46,17 +47,61 @@ public class LibraryUI {
 
     public BorderPane createCover(){
         ImageView photo = new ImageView(new Image(getClass().getResource("/background-seu-2.jpg").toExternalForm()));
-        photo.setFitWidth(800); // 你可以根据窗口大小调整这个值
-        photo.setFitHeight(600); // 你可以根据窗口大小调整这个值
-        photo.setPreserveRatio(true);
+        photo.setFitWidth(400); // 你可以根据窗口大小调整这个值
+        photo.setFitHeight(550); // 你可以根据窗口大小调整这个值
+        //photo.setPreserveRatio(true);//保持图片的宽高比例不变
+
         Button loginButton=new Button("进入图书馆");
         loginButton.setOnAction(e->{
             MainUI.borderPane.setCenter(createLibraryView());
         });
+
+//        VBox vbox = new VBox(photo);
+//        vbox.setAlignment(Pos.CENTER); // 将图片在VBox中居中
+//
+//        BorderPane Pane = new BorderPane();
+//        Pane.setLeft(vbox); // 将VBox放置在左侧
+//        Pane.setBottom(loginButton);
+//        BorderPane.setAlignment(loginButton, Pos.CENTER_RIGHT);
+
+        StackPane stackPane = new StackPane(photo);
+        stackPane.setPrefSize(200, 100); // 设置小框框的大小
+        //stackPane.setClip(new Rectangle(450, 600)); // 只显示框框内的图片部分
+
+        // 设置边框和圆角
+        stackPane.setBorder(new Border(new BorderStroke(
+                Color.BLACK, // 边框颜色
+                BorderStrokeStyle.SOLID, // 边框样式
+                new CornerRadii(10), // 圆角半径
+                new BorderWidths(2) // 边框宽度
+        )));
+
+//        BorderPane Pane = new BorderPane();
+//        Pane.setLeft(stackPane); // 将StackPane放置在左侧
+//        Pane.setBottom(loginButton);
+//        BorderPane.setAlignment(loginButton, Pos.CENTER_RIGHT);
+//        //Pane.setPadding(new Insets(20)); // 所有边距设置为20像素
+
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER); // 设置GridPane居中
+        gridPane.setHgap(20);
+        gridPane.setVgap(20);
+        gridPane.setPadding(new Insets(10, 10, 10, 10));
+
+        // 将photo放置在GridPane的第一列第一行，并居中
+        GridPane.setConstraints(stackPane, 0, 0);
+        GridPane.setHalignment(stackPane, HPos.LEFT);
+        GridPane.setValignment(stackPane, VPos.CENTER);
+        gridPane.getChildren().add(stackPane);
+
+        // 将loginButton放置在GridPane的第二列第一行，并靠右
+        GridPane.setConstraints(loginButton, 1, 0);
+        GridPane.setHalignment(loginButton, HPos.RIGHT);
+        gridPane.getChildren().add(loginButton);
+
         BorderPane Pane = new BorderPane();
-        Pane.setCenter(photo);
-        Pane.setBottom(loginButton);
-        BorderPane.setAlignment(loginButton, Pos.CENTER);
+        Pane.setCenter(gridPane); // 将GridPane放置在BorderPane的中心
+
         return Pane;
     }
     public BorderPane createLibraryView() {

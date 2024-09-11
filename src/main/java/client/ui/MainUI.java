@@ -19,6 +19,8 @@ import java.io.IOException;
 import static client.service.Role.Librarian;
 import static client.service.Role.StuInfoManager;
 import javafx.scene.shape.Circle;
+import org.kordamp.ikonli.fontawesome.FontAwesome;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 
 public class MainUI extends Application {
@@ -51,8 +53,9 @@ public class MainUI extends Application {
         // 添加功能按钮
         VBox libBox = new VBox();
         libBox.getStyleClass().add("item-box");
-        Circle libicon = new Circle(10, Color.web("#009b9f"));
-        //libicon.setOpacity(0.5); //设置透明度为0.5
+        FontIcon libicon = new FontIcon(FontAwesome.BANK);
+        libicon.setIconSize(20); // 设置图标大小
+        libicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
         Label liblabel = new Label("图书馆");
         liblabel.getStyleClass().add("label");
         Tooltip libtip = new Tooltip("图书馆");
@@ -63,8 +66,9 @@ public class MainUI extends Application {
 
         VBox courseBox = new VBox();
         courseBox.getStyleClass().add("item-box");
-        Circle courseicon = new Circle(10, Color.web("#009b9f"));
-        //libicon.setOpacity(0.5); //设置透明度为0.5
+        FontIcon courseicon = new FontIcon(FontAwesome.LIST);
+        courseicon.setIconSize(20); // 设置图标大小
+        courseicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
         Label courselabel = new Label("选课系统");
         courselabel.getStyleClass().add("label");
         Tooltip coursetip = new Tooltip("选课系统");
@@ -75,8 +79,9 @@ public class MainUI extends Application {
 
         VBox stuBox = new VBox();
         stuBox.getStyleClass().add("item-box");
-        Circle stuicon = new Circle(10, Color.web("#009b9f"));
-        //libicon.setOpacity(0.5); //设置透明度为0.5
+        FontIcon stuicon = new FontIcon(FontAwesome.USER);
+        stuicon.setIconSize(20); // 设置图标大小
+        stuicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
         Label stulabel = new Label("学籍管理");
         stulabel.getStyleClass().add("label");
         Tooltip stutip = new Tooltip("学籍管理");
@@ -87,8 +92,9 @@ public class MainUI extends Application {
 
         VBox shopBox = new VBox();
         shopBox.getStyleClass().add("item-box");
-        Circle shopicon = new Circle(10, Color.web("#009b9f"));
-        //libicon.setOpacity(0.5); //设置透明度为0.5
+        FontIcon shopicon = new FontIcon(FontAwesome.SHOPPING_BAG);
+        shopicon.setIconSize(20); // 设置图标大小
+        shopicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
         Label shoplabel = new Label("商店");
         shoplabel.getStyleClass().add("label");
         Tooltip shoptip = new Tooltip("商店");
@@ -105,8 +111,9 @@ public class MainUI extends Application {
 
         VBox bankBox = new VBox();
         bankBox.getStyleClass().add("item-box");
-        Circle bankicon = new Circle(10, Color.web("#009b9f"));
-        //libicon.setOpacity(0.5); //设置透明度为0.5
+        FontIcon bankicon = new FontIcon(FontAwesome.BANK);// 使用 Ikonli FontIcon 替代 Circle
+        bankicon.setIconSize(20); // 设置图标大小
+        bankicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
         Label banklabel = new Label("银行");
         banklabel.getStyleClass().add("label");
         Tooltip banktip = new Tooltip("银行");
@@ -117,8 +124,9 @@ public class MainUI extends Application {
 
         VBox updateBox = new VBox();
         updateBox.getStyleClass().add("item-box");
-        Circle updateicon = new Circle(10, Color.web("#009b9f"));
-        //libicon.setOpacity(0.5); //设置透明度为0.5
+        FontIcon updateicon = new FontIcon(FontAwesome.LOCK);// 使用 Ikonli FontIcon 替代 Circle
+        updateicon.setIconSize(20); // 设置图标大小
+        updateicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
         Label updatelabel = new Label("修改密码");
         updatelabel.getStyleClass().add("label");
         Tooltip updatetip = new Tooltip("修改密码");
