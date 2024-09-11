@@ -278,4 +278,94 @@ public class UserService {
 
         return jsonResponse.toString();
     }
+
+    public JSONObject forgetPwd(String username, String newPwd) {
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        lock.lock();
+
+        try {
+            String query = "UPDATE tblUser SET pwd = ? WHERE username = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, newPwd);
+            stmt.setString(2, username);
+
+            int rowsUpdated = stmt.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                response.put("status", "success");
+                response.put("message", "Password reset successfully.");
+            } else {
+                response.put("status", "error");
+                response.put("message", "Username not found.");
+            }
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+            lock.unlock();
+        }
+
+        return response;
+    }
+
+
+    public JSONObject getEmailByUsername(String username) {
+        JSONObject response = new JSONObject();
+        DatabaseConnection dbConnection = new DatabaseConnection();
+        Connection conn = dbConnection.connect();
+
+        if (conn == null) {
+            response.put("status", "error");
+            response.put("message", "Failed to connect to the database.");
+            return response;
+        }
+
+        try {
+            String query = "SELECT email FROM tblUser WHERE username = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, username);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                response.put("status", "success");
+                response.put("email", rs.getString("email"));
+            } else {
+                response.put("status", "error");
+                response.put("message", "Username not found.");
+            }
+        } catch (Exception e) {
+            response.put("status", "error");
+            response.put("message", e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                response.put("status", "error");
+                response.put("message", ex.getMessage());
+            }
+        }
+
+        return response;
+    }
+
 }

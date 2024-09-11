@@ -305,4 +305,37 @@ public class ClientService {
         }
         return email;
     }
+
+    public boolean forgetUserPwd(String username, String newPwd) {
+        boolean isSuccess = false;
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "forgetUserPwd");
+            request.put("parameters", new JSONObject()
+                    .put("username", username)
+                    .put("newPwd", newPwd));
+
+            System.out.println(request.toString());
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            System.out.println(jsonResponse.toString());
+
+            isSuccess = jsonResponse.getString("status").equals("success");
+            if (isSuccess) {
+                System.out.println("密码重置成功！");
+            } else {
+                System.out.println("密码重置失败：" + jsonResponse.getString("message"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return isSuccess;
+    }
+
 }
