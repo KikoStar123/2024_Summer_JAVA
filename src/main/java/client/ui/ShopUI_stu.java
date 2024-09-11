@@ -238,7 +238,10 @@ public class ShopUI_stu {
             Button commentbutton=new Button("评论");
             commentbutton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
             Button paybutton=new Button("支付");
-            paybutton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+            paybutton.getStyleClass().add("main-button");
+            // 应用CSS中的按钮样式
+            Button logisticsButton=new Button("查看物流信息");
+            logisticsButton.setOnAction(e->showlogistics());
 
             ComboBox<String> infoComboBox = new ComboBox<>();
             for (int i = 0; i < currentUser.getAddresses().length; i++) {
@@ -257,12 +260,17 @@ public class ShopUI_stu {
                 paybutton.setText("已支付");
                 paybutton.setDisable(true);
             }
+            else
+            {
+                //未支付不可评论
+                commentbutton.setDisable(true);
+            }
             if(ShoppingOrder.getOrderCommentStatus(order.getOrderID()))
             {
                 commentbutton.setText("已评论");
                 commentbutton.setDisable(true);
             }
-            orderbox.getChildren().addAll(orderid,productname,paidMoney,infoComboBox,commentbutton,paybutton);
+            orderbox.getChildren().addAll(orderid,productname,paidMoney,infoComboBox,commentbutton,paybutton,logisticsButton);
             items.add(orderbox);
             paybutton.setOnAction(e-> {
                 List<String> orderIds = new ArrayList<>();
@@ -318,43 +326,52 @@ public class ShopUI_stu {
                 confirmButton.setOnAction(confirmEvent ->{
                     int commentAttitude = attitudeComboBox.getSelectionModel().getSelectedIndex()+1;
                     String commentContent = commentField.getText();
-                    boolean result = false;
-                    try {
-                        result = ShoppingComment.addComment(user.getUsername(), order.getProductID(), commentAttitude, commentContent, order.getOrderID());
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    if (result) {
-                        commentbutton.setText("已评论");
-                        commentbutton.setDisable(true);
-                        try {
-                            ShoppingOrder.updateCommentStatus(order.getOrderID(),true);
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("提示");
+                    if (attitudeComboBox.getValue() == null || commentField.getText().isEmpty()) {
+                        // 提示用户选择态度和输入评论内容
+                        Alert alert = new Alert(Alert.AlertType.WARNING);
+                        alert.setTitle("警告");
                         alert.setHeaderText(null);
-                        alert.setContentText("评论成功！");
+                        alert.setContentText("请选择评论态度并输入评论内容！");
                         alert.showAndWait();
+                    }
+                    else{
+                        boolean result = false;
                         try {
-                            borderPane.setCenter(new VBox(showOrders()));
+                            result = ShoppingComment.addComment(user.getUsername(), order.getProductID(), commentAttitude, commentContent, order.getOrderID());
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
-                    } else {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("提示");
-                        alert.setHeaderText(null);
-                        alert.setContentText("评论失败！");
-                        alert.showAndWait();
-                        try {
-                            borderPane.setCenter(new VBox(showOrders()));
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
+                        if (result) {
+                            commentbutton.setText("已评论");
+                            commentbutton.setDisable(true);
+                            try {
+                                ShoppingOrder.updateCommentStatus(order.getOrderID(),true);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("提示");
+                            alert.setHeaderText(null);
+                            alert.setContentText("评论成功！");
+                            alert.showAndWait();
+                            try {
+                                borderPane.setCenter(new VBox(showOrders()));
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        } else {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("提示");
+                            alert.setHeaderText(null);
+                            alert.setContentText("评论失败！");
+                            alert.showAndWait();
+                            try {
+                                borderPane.setCenter(new VBox(showOrders()));
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
                         }
                     }
-
                 });
                 // 将所有控件添加到VBox中
                 commentbox.getChildren().addAll(orderid, productname, paidMoney, attitudeComboBox, commentField, confirmButton, backButton);
@@ -615,6 +632,13 @@ public class ShopUI_stu {
         return ordersBox;
 
     }
+
+    private void showlogistics() {
+
+
+
+    }
+
     //购物车页
     private void showShoppingCart(User user) throws IOException {
         ListView<VBox> cartelementList = new ListView<>();
@@ -1151,7 +1175,7 @@ public class ShopUI_stu {
             }
         });
         ComboBox<String> selectByComboBox = new ComboBox<>();
-        selectByComboBox.setItems(FXCollections.observableArrayList("0","1","2","3"));
+        selectByComboBox.setItems(FXCollections.observableArrayList("查看全部评论","差评","中评","好评"));
         selectByComboBox.setPromptText("选择评论态度");
         Button selectButton=new Button("查看");
         select.getChildren().addAll(backButton,selectByComboBox,selectButton);
@@ -1163,11 +1187,18 @@ public class ShopUI_stu {
 
         selectButton.setOnAction(e->{
             ShoppingComment shoppingComment=new ShoppingComment();
-            String attitude = selectByComboBox.getValue();
-            if(attitude == null)
-            {
+            String attitude=null;
+            String Attitude=selectByComboBox.getValue();
+            if(Attitude==null)
                 attitude="0";
-            }
+            if(Attitude=="查看全部评论")
+                attitude="0";
+            if(Attitude=="差评")
+                attitude="1";
+            if(Attitude=="中评")
+                attitude="2";
+            if(Attitude=="好评")
+                attitude="3";
             ShoppingComment.oneComment[]comments= null;
             try {
                 comments = shoppingComment.getProductComments(product.getProductID(), Integer.parseInt(attitude));
