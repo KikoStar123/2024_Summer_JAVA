@@ -79,7 +79,6 @@ public class UserService {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     System.out.println("User authenticated successfully.");
-
                     userJson = new JSONObject();
                     userJson.put("username", resultSet.getString("username"));
                     userJson.put("truename", resultSet.getString("truename"));
@@ -115,6 +114,7 @@ public class UserService {
         String academy = parameters.getString("academy");
         String studentId = parameters.getString("stuid");
         int age = parameters.getInt("age");
+        String email = parameters.getString("email");
 
         String allocatedId = null;
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -151,13 +151,14 @@ public class UserService {
             lock.unlock();
         }
 
-        boolean newUser = createUser(allocatedId, truename, "student", age, pwd, gender);
+        boolean newUser = createUser(allocatedId, truename, "student", age, pwd, gender,email);
 
         StudentInformationService studentInformationService = new StudentInformationService();
         boolean newStudent = studentInformationService.createStudent(studentId, origin, birthday, academy, allocatedId);
 
         JSONObject userJson = new JSONObject();
-
+        System.out.println("newuser:"+(newUser ? "yes" : "no") );
+        System.out.println("newstu:"+(newStudent ? "yes" : "no" ));
         if(newUser && newStudent){
             userJson.put("username", allocatedId);
             userJson.put("truename", truename);
@@ -165,12 +166,13 @@ public class UserService {
             userJson.put("gender", gender);
             userJson.put("pwd", pwd);
             userJson.put("age", pwd);
+            userJson.put("email", email);
         }
 
         return userJson;
     }
 
-    private boolean createUser(String username, String truename, String role, int age, String pwd, String gender) {
+    private boolean createUser(String username, String truename, String role, int age, String pwd, String gender,String email) {
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
 
@@ -179,7 +181,7 @@ public class UserService {
             return false;
         }
 
-        String query = "INSERT INTO tblUser (username, truename, role, age, pwd, gender) VALUES (?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO tblUser (username, truename, role, age, pwd, gender,email) VALUES (?, ?, ?, ?, ?, ?,?)";
 
         lock.lock();
 
@@ -190,6 +192,7 @@ public class UserService {
             preparedStatement.setInt(4, age);
             preparedStatement.setString(5, pwd);
             preparedStatement.setString(6, gender);
+            preparedStatement.setString(7, email);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {

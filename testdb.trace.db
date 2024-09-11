@@ -2701,3 +2701,9 @@ INSERT INTO "PUBLIC"."TBLSHOPPINGPRODUCT"("PRODUCTID","PRODUCTNAME","PRODUCTDETA
 2024-09-04 11:14:58 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'test' (TBLSHOPPINGPRODUCT: ""PRODUCTINVENTORY"" INTEGER)"; SQL statement:
 INSERT INTO "PUBLIC"."TBLSHOPPINGPRODUCT"("PRODUCTID","PRODUCTNAME","PRODUCTDETAIL","PRODUCTIMAGE","PRODUCTORIGINALPRICE","PRODUCTCURRENTPRICE","PRODUCTINVENTORY","PRODUCTADDRESS","PRODUCTCOMMENTRATE","PRODUCTSTATUS")VALUES(?,?,?,?,?,?,?,?,?,?) [22018-214]
+2024-09-11 22:02:05 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO tblUser (username, truename, role, age, pwd, gender[*]，email) VALUES (?, ?, ?, ?, ?, ?,?)"; SQL statement:
+INSERT INTO tblUser (username, truename, role, age, pwd, gender，email) VALUES (?, ?, ?, ?, ?, ?,?) [42000-214]
+2024-09-11 22:02:20 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "INSERT INTO tblUser (username, truename, role, age, pwd, gender[*]，email) VALUES (?, ?, ?, ?, ?, ?, ?)"; SQL statement:
+INSERT INTO tblUser (username, truename, role, age, pwd, gender，email) VALUES (?, ?, ?, ?, ?, ?, ?) [42000-214]

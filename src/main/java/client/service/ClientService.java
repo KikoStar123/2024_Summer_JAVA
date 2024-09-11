@@ -107,7 +107,7 @@ public class ClientService {
             return -1; // Return -1 or throw an exception to indicate an error
         }
     }
-    public static JSONObject register(String truename, Gender gender, String stuid, String origin, String birthday, String academy, String password) {
+    public static JSONObject register(String truename, Gender gender, String stuid, String origin, String birthday, String academy, String password, String email) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
             // 创建请求
             int age =calculateAge(birthday);
@@ -122,6 +122,7 @@ public class ClientService {
                     .put("academy", academy) // 用户所在的学院
                     .put("password", password) // 用户的密码
                     .put("age", age)
+                    .put("email", email)
             );
 
             // 发送请求

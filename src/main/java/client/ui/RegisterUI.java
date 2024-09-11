@@ -31,6 +31,8 @@ public class RegisterUI  {
     private TextField birthday;
     private TextField academy;
     private PasswordField passwordField;
+    private TextField emailField;
+    private TextArea introduction;
     private Button registerButton;
     private Button backButton;
 
@@ -104,14 +106,21 @@ public class RegisterUI  {
         GridPane.setConstraints(passwordLabel, dispx+0, dispy+10);
         GridPane.setConstraints(passwordField, dispx+1, dispy+10);
 
+        Label emailLabel = new Label("邮箱:");
+        emailLabel.getStyleClass().add("body-font");
+        emailField = new TextField();
+        emailField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
+        GridPane.setConstraints(emailLabel, dispx+0, dispy+11);
+        GridPane.setConstraints(emailField, dispx+1, dispy+11);
+
         registerButton = new Button("注册");
         registerButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-        GridPane.setConstraints(registerButton, dispx+1, dispy+12);
+        GridPane.setConstraints(registerButton, dispx+1, dispy+13);
         GridPane.setHalignment(registerButton, HPos.CENTER); // 水平居中对齐
 
         backButton=new Button("返回");
         backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-        GridPane.setConstraints(backButton, dispx+1, dispy+13);
+        GridPane.setConstraints(backButton, dispx+1, dispy+14);
         GridPane.setHalignment(backButton, HPos.CENTER); // 水平居中对齐
 
         backButton.setOnAction(e->{
@@ -127,16 +136,19 @@ public class RegisterUI  {
             String birthdayText = birthday.getText();
             String academyText = academy.getText();
             String passwordText = passwordField.getText();
+            String emailText = emailField.getText();
 
-            JSONObject result = ClientService.register(truename, Gender.valueOf(gender.toLowerCase()), stuid, originText, birthdayText, academyText, passwordText);
+            JSONObject result = ClientService.register(truename, Gender.valueOf(gender.toLowerCase()), stuid, originText, birthdayText, academyText, passwordText,emailText);
+            System.out.println(result.toString());
             if (result.getString("status").equals("success")) {
                 showAlert(Alert.AlertType.INFORMATION, "注册成功", "注册成功！你的账号是：" + result.getString("username"));
+                System.out.println(result.toString());
             } else {
                 showAlert(Alert.AlertType.ERROR, "注册失败", "注册失败，请重试。");
             }
         });
 
-        grid.getChildren().addAll(nameLabel, name, idLabel, id, genderLabel, genderComboBox, originLabel, origin, birthdayLabel, birthday, academyLabel, academy, passwordLabel, passwordField, registerButton,backButton);
+        grid.getChildren().addAll(nameLabel, name, idLabel, id, genderLabel, genderComboBox, originLabel, origin, birthdayLabel, birthday, academyLabel, academy, passwordLabel, passwordField, emailLabel, emailField, registerButton,backButton);
         return grid;
     }
 
