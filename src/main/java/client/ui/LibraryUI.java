@@ -26,6 +26,7 @@ import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 import com.dansoftware.pdfdisplayer.PDFDisplayer;
 import netscape.javascript.JSObject;
+import javafx.concurrent.Worker;
 
 
 import java.io.File;
@@ -379,7 +380,7 @@ public class LibraryUI {
         vbox.getChildren().add(new Label("书名: " + book.getName()));
         vbox.getChildren().add(new Label("作者: " + book.getAuthor()));
         vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()));
-        vbox.getChildren().add(new Label("ISBN: "+book.getBookID()));
+        vbox.getChildren().add(new Label("ISBN: " + book.getBookID()));
         vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()));
         vbox.getChildren().add(new Label("分类: " + book.getClassification()));
         vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()));
@@ -409,17 +410,41 @@ public class LibraryUI {
                 pdfStage.initModality(Modality.APPLICATION_MODAL);
                 pdfStage.setTitle("PDF预览");
 
-                PDFDisplayer pdfDisplayer = new PDFDisplayer();
-                // 去掉前缀 "uploads/"
-                String relativePdfPath = pdfPath.replace("uploads/", "");
-                try {
-                    System.out.printf("http://localhost:8082/files/" + relativePdfPath);
-                    pdfDisplayer.loadPDF(new URL("http://localhost:8082/files/" + relativePdfPath));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                WebView webView = new WebView();
+                WebEngine webEngine = webView.getEngine();
 
-                Scene pdfScene = new Scene(pdfDisplayer.toNode());
+                // 捕获JavaScript的console.log输出
+                webEngine.setOnAlert(event -> {
+                    System.out.println("JS Alert: " + event.getData());
+                });
+
+                // 加载HTML文件
+                webEngine.load(getClass().getResource("/pdf_viewer.html").toExternalForm());
+
+                // 页面加载完成时调用JavaScript函数
+                webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue == Worker.State.SUCCEEDED) {
+                        // 在JavaScript中重写console.log以输出到Java控制台
+                        webEngine.executeScript(
+                                "console.log = (function(oldLog) {" +
+                                        "  return function(message) {" +
+                                        "    oldLog(message);" +
+                                        "    alert(message);" + // 使用alert输出到Java控制台
+                                        "  };" +
+                                        "})(console.log);"
+                        );
+
+                        // 去掉前缀 "uploads/"
+                        String relativePdfPath = pdfPath.replace("uploads/", "");
+                        webEngine.executeScript("displayPdf('http://localhost:8082/files/" + relativePdfPath + "');");
+                    }
+                });
+
+                VBox pdfBox = new VBox(10);
+                pdfBox.setPadding(new Insets(10));
+                pdfBox.getChildren().add(webView);
+
+                Scene pdfScene = new Scene(pdfBox, 800, 600);
                 pdfStage.setScene(pdfScene);
                 pdfStage.show();
             });

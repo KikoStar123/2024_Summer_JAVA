@@ -24,7 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.web.WebView;
 import javafx.scene.web.WebEngine;
 import com.dansoftware.pdfdisplayer.PDFDisplayer;
-
+import javafx.concurrent.Worker;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -383,30 +383,39 @@ public class LibraryUI_Manager extends Application {
         Stage detailStage = new Stage();
         detailStage.initModality(Modality.APPLICATION_MODAL);
         detailStage.setTitle("书籍详情");
-        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png")); // 加载图标
         detailStage.getIcons().add(image);
 
         VBox vbox = new VBox();
         vbox.setSpacing(10);
 
-        vbox.getChildren().add(new Label("书名: " + book.getName()){{
-            getStyleClass().add("body-font");}});
-        vbox.getChildren().add(new Label("作者: " + book.getAuthor()){{
-            getStyleClass().add("body-font");}});
-        vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()){{
-            getStyleClass().add("body-font");}});
-        vbox.getChildren().add(new Label("ISBN: " + book.getBookID()){{
-            getStyleClass().add("body-font");}});
-        vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()){{
-            getStyleClass().add("body-font");}});
-        vbox.getChildren().add(new Label("分类: " + book.getClassification()){{
-            getStyleClass().add("body-font");}});
-        vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()){{
-            getStyleClass().add("body-font");}});
-        vbox.getChildren().add(new Label("馆藏数量: " + book.getLibNumber()){{
-            getStyleClass().add("body-font");}});
-        vbox.getChildren().add(new Label("位置: " + book.getLocation()){{
-            getStyleClass().add("body-font");}});
+        vbox.getChildren().add(new Label("书名: " + book.getName()) {{
+            getStyleClass().add("body-font");
+        }});
+        vbox.getChildren().add(new Label("作者: " + book.getAuthor()) {{
+            getStyleClass().add("body-font");
+        }});
+        vbox.getChildren().add(new Label("出版社: " + book.getPublishHouse()) {{
+            getStyleClass().add("body-font");
+        }});
+        vbox.getChildren().add(new Label("ISBN: " + book.getBookID()) {{
+            getStyleClass().add("body-font");
+        }});
+        vbox.getChildren().add(new Label("出版年份: " + book.getPublicationYear()) {{
+            getStyleClass().add("body-font");
+        }});
+        vbox.getChildren().add(new Label("分类: " + book.getClassification()) {{
+            getStyleClass().add("body-font");
+        }});
+        vbox.getChildren().add(new Label("当前数量: " + book.getCurNumber()) {{
+            getStyleClass().add("body-font");
+        }});
+        vbox.getChildren().add(new Label("馆藏数量: " + book.getLibNumber()) {{
+            getStyleClass().add("body-font");
+        }});
+        vbox.getChildren().add(new Label("位置: " + book.getLocation()) {{
+            getStyleClass().add("body-font");
+        }});
 
         // 添加 ImageView 来显示书籍图片
         ImageView bookImageView = new ImageView();
@@ -426,23 +435,41 @@ public class LibraryUI_Manager extends Application {
         String pdfPath = book.getPdfPath(); // 获取PDF路径
         if (pdfPath != null && !pdfPath.isEmpty()) {
             Button previewPdfButton = new Button("预览PDF");
-            previewPdfButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
             previewPdfButton.setOnAction(e -> {
                 Stage pdfStage = new Stage();
                 pdfStage.initModality(Modality.APPLICATION_MODAL);
                 pdfStage.setTitle("PDF预览");
 
-                PDFDisplayer pdfDisplayer = new PDFDisplayer();
-                // 去掉前缀 "uploads/"
-                String relativePdfPath = pdfPath.replace("uploads/", "");
-                try {
-                    System.out.printf("http://localhost:8082/files/" + relativePdfPath);
-                    pdfDisplayer.loadPDF(new URL("http://localhost:8082/files/" + relativePdfPath));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                WebView webView = new WebView();
+                WebEngine webEngine = webView.getEngine();
 
-                Scene pdfScene = new Scene(pdfDisplayer.toNode());
+                // 加载HTML文件
+                webEngine.load(getClass().getResource("/pdf_viewer.html").toExternalForm());
+
+                // 页面加载完成时调用JavaScript函数
+                webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+                    if (newValue == Worker.State.SUCCEEDED) {
+                        // 在JavaScript中重写console.log以输出到Java控制台
+                        webEngine.executeScript(
+                                "console.log = (function(oldLog) {" +
+                                        "  return function(message) {" +
+                                        "    oldLog(message);" +
+                                        "    alert(message);" + // 使用alert输出到Java控制台
+                                        "  };" +
+                                        "})(console.log);"
+                        );
+
+                        // 去掉前缀 "uploads/"
+                        String relativePdfPath = pdfPath.replace("uploads/", "");
+                        webEngine.executeScript("displayPdf('http://localhost:8082/files/" + relativePdfPath + "');");
+                    }
+                });
+
+                VBox pdfBox = new VBox(10);
+                pdfBox.setPadding(new Insets(10));
+                pdfBox.getChildren().add(webView);
+
+                Scene pdfScene = new Scene(pdfBox, 800, 600);
                 pdfStage.setScene(pdfScene);
                 pdfStage.show();
             });
@@ -450,10 +477,10 @@ public class LibraryUI_Manager extends Application {
         }
 
         Scene scene = new Scene(vbox, 600, 800);
-        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         detailStage.setScene(scene);
         detailStage.show();
     }
+
 
 
     private void showAddDeleteWindow() {
