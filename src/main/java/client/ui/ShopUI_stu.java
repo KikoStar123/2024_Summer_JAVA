@@ -670,6 +670,7 @@ public class ShopUI_stu {
             }
         });
 
+
         VBox logisticsBox = new VBox(10);
         logisticsBox.setPadding(new Insets(10));
 
@@ -686,7 +687,6 @@ public class ShopUI_stu {
                 throw new RuntimeException(ex);
             }
         });
-
         logisticsBox.getChildren().add(backButton);
         borderPane.setCenter(logisticsBox);
     }
