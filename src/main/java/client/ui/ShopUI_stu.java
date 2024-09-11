@@ -3,6 +3,7 @@ package client.ui;
 import client.service.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -18,6 +19,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.application.Platform;
@@ -634,10 +637,60 @@ public class ShopUI_stu {
     }
 
     private void showlogistics() {
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+
+        // 捕获 JavaScript 的 Alert 用于调试
+        webEngine.setOnAlert(event -> {
+            System.out.println("JS Alert: " + event.getData());
+        });
+
+        // 加载 HTML 文件
+        webEngine.load(getClass().getResource("/map_navigation.html").toExternalForm());
+
+        // 页面加载完成时注入自定义的 console.log
+        webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == Worker.State.SUCCEEDED) {
+                // 在 JavaScript 中重写 console.log 以输出到 Java 控制台
+                webEngine.executeScript(
+                        "console.log = (function(oldLog) {" +
+                                "  return function(message) {" +
+                                "    oldLog(message);" +
+                                "    alert(message);" + // 使用 alert 输出到 Java 控制台
+                                "  };" +
+                                "})(console.log);"
+                );
 
 
+                // 调用 JavaScript 函数，传递两个地址而不是坐标
+                String startAddress = "北京市朝阳区阜通东大街6号"; // 起始地址
+                String endAddress = "上海市黄浦区人民大道"; // 终点地址
+                webEngine.executeScript("displayRoute('" + startAddress + "', '" + endAddress + "');");
+            }
+        });
 
+        VBox logisticsBox = new VBox(10);
+        logisticsBox.setPadding(new Insets(10));
+
+        Label logisticsStatusLabel = new Label("物流状态: 正在运输");
+        Label estimatedArrivalLabel = new Label("预计到达时间: 2天后");
+
+        logisticsBox.getChildren().addAll(webView, logisticsStatusLabel, estimatedArrivalLabel);
+
+        Button backButton = new Button("返回");
+        backButton.setOnAction(e -> {
+            try {
+                borderPane.setCenter(showOrders());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        logisticsBox.getChildren().add(backButton);
+        borderPane.setCenter(logisticsBox);
     }
+
+
 
     //购物车页
     private void showShoppingCart(User user) throws IOException {
