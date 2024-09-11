@@ -123,7 +123,7 @@ public class ShoppingMap {
     }
 
     //根据product查询begin和end
-    public JSONObject getMapRecordByProductID(String productID) throws IOException {
+    public static JSONObject getMapRecordByProductID(String productID) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {

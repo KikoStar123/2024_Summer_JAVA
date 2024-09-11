@@ -28,6 +28,8 @@ import javafx.concurrent.Task;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
@@ -244,7 +246,9 @@ public class ShopUI_stu {
             paybutton.getStyleClass().add("main-button");
             // 应用CSS中的按钮样式
             Button logisticsButton=new Button("查看物流信息");
-            logisticsButton.setOnAction(e->showlogistics());
+            JSONObject record = ShoppingMap.getMapRecordByProductID(order.getOrderID());
+            System.out.println(record.toString());
+            logisticsButton.setOnAction(e->showlogistics(record.getString("mapStart"),record.getString("mapEnd")));
             logisticsButton.getStyleClass().add("main-button");
 
             ComboBox<String> infoComboBox = new ComboBox<>();
@@ -446,7 +450,8 @@ public class ShopUI_stu {
                                 System.out.println("选中的地址: " + address);
                             }
                             try {
-                                ShoppingMap.addMapRecord(order.getProductID(), oneProduct.getProductAddress(), address);
+                                System.out.println("orderID: " + order.getOrderID());
+                                ShoppingMap.addMapRecord(order.getOrderID(), oneProduct.getProductAddress(), address);
                             } catch (IOException ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -637,7 +642,7 @@ public class ShopUI_stu {
 
     }
 
-    private void showlogistics() {
+    private void showlogistics(String startAddress,String endAddress) {
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
 
@@ -664,8 +669,7 @@ public class ShopUI_stu {
 
 
                 // 调用 JavaScript 函数，传递两个地址而不是坐标
-                String startAddress = "北京市朝阳区阜通东大街6号"; // 起始地址
-                String endAddress = "上海市黄浦区人民大道"; // 终点地址
+
                 webEngine.executeScript("displayRoute('" + startAddress + "', '" + endAddress + "');");
             }
         });
@@ -1183,7 +1187,7 @@ public class ShopUI_stu {
                             address = parts[0].replace("地址: ", "");
                             System.out.println("选中的地址: " + address);
                         }
-                        ShoppingMap.addMapRecord(product.getProductID(), product.getProductAddress(), address);
+                        ShoppingMap.addMapRecord(orderid, product.getProductAddress(), address);
                         borderPane.setCenter(new VBox(getShopLayout()));
                     }
 

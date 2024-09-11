@@ -19,7 +19,7 @@ public class ShoppingMapService {
         mapLock.lock();
         JSONObject response = new JSONObject();
         try {
-            String query = "INSERT INTO tblMap (productID, mapStart, mapEnd) VALUES (?, ?, ?)";
+            String query = "INSERT INTO tblMap (orderID, mapStart, mapEnd) VALUES (?, ?, ?)";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -57,7 +57,7 @@ public class ShoppingMapService {
         mapLock.lock();
         JSONObject response = new JSONObject();
         try {
-            String query = "DELETE FROM tblMap WHERE productID = ?";
+            String query = "DELETE FROM tblMap WHERE orderID = ?";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -93,7 +93,7 @@ public class ShoppingMapService {
         mapLock.lock();
         JSONObject response = new JSONObject();
         try {
-            String query = "UPDATE tblMap SET mapStart = ?, mapEnd = ? WHERE productID = ?";
+            String query = "UPDATE tblMap SET mapStart = ?, mapEnd = ? WHERE orderID = ?";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -174,7 +174,7 @@ public class ShoppingMapService {
         mapLock.lock();
         JSONObject response = new JSONObject();
         try {
-            String query = "SELECT mapStart, mapEnd FROM tblMap WHERE productID = ?";
+            String query = "SELECT mapStart, mapEnd FROM tblMap WHERE orderID = ?";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
