@@ -121,4 +121,33 @@ public class ShoppingMap {
             }
         }
     }
+
+    //根据product查询begin和end
+    public static JSONObject getMapRecordByProductID(String productID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+
+            // 构建请求
+            JSONObject request = new JSONObject();
+            request.put("requestType", "map");
+            request.put("parameters", new JSONObject()
+                    .put("action", "getRecordByProductID")
+                    .put("productID", productID));
+
+            // 发送请求
+            out.println(request);
+
+            // 读取响应
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            // 输出响应，便于调试
+            System.out.println("响应: " + jsonResponse.toString());
+
+            // 返回查询的结果
+            return jsonResponse;
+        }
+    }
+
 }

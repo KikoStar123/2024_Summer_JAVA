@@ -75,7 +75,7 @@ public class ShoppingOrderService {
                     System.out.println(ex.getMessage());
                 }
             }
-
+            System.out.println("create order: " + response.toString());
             return response;
         } finally {
             createOrderLock.unlock();

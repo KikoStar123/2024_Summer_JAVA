@@ -3,7 +3,6 @@ package client.ui;
 import client.service.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -15,25 +14,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.web.WebView;
-import javafx.scene.web.WebEngine;
 import com.dansoftware.pdfdisplayer.PDFDisplayer;
-import netscape.javascript.JSObject;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import javafx.geometry.HPos;
 
 public class LibraryUI {
 
@@ -55,6 +44,21 @@ public class LibraryUI {
     private JavaMethod javaMethod = new JavaMethod();
 
 
+    public BorderPane createCover(){
+        ImageView photo = new ImageView(new Image(getClass().getResource("/background-seu-2.jpg").toExternalForm()));
+        photo.setFitWidth(800); // 你可以根据窗口大小调整这个值
+        photo.setFitHeight(600); // 你可以根据窗口大小调整这个值
+        photo.setPreserveRatio(true);
+        Button loginButton=new Button("进入图书馆");
+        loginButton.setOnAction(e->{
+            MainUI.borderPane.setCenter(createLibraryView());
+        });
+        BorderPane Pane = new BorderPane();
+        Pane.setCenter(photo);
+        Pane.setBottom(loginButton);
+        BorderPane.setAlignment(loginButton, Pos.CENTER);
+        return Pane;
+    }
     public BorderPane createLibraryView() {
 
 //        WebView webView = new WebView();//test
@@ -160,7 +164,10 @@ public class LibraryUI {
         });
         resultTable.getColumns().addAll(imageColumn, titleColumn, authorColumn, libnumColumn, curnumColumn);
 
-        VBox resultBox = new VBox(10, resultTable);
+        Region spacer = new Region();
+        spacer.setMinHeight(2); // 设置你想要的距离
+
+        VBox resultBox = new VBox(spacer, resultTable);
 
         // 布局
         BorderPane mainLayout = new BorderPane();
@@ -282,7 +289,6 @@ public class LibraryUI {
             TableColumn<LibRecord, Void> renewColumn = new TableColumn<>("续借");
             renewColumn.setCellFactory(col -> new TableCell<LibRecord, Void>() {
                 private final Button renewButton = new Button("续借");
-
                 {
                     renewButton.setOnAction(e -> {
                         LibRecord record = getTableView().getItems().get(getIndex());
@@ -295,15 +301,14 @@ public class LibraryUI {
                         }
                     });
                 }
-
-                @Override
                 protected void updateItem(Void item, boolean empty) {
                     super.updateItem(item, empty);
                     if (empty) {
                         setGraphic(null);
                     } else {
                         LibRecord record = getTableView().getItems().get(getIndex());
-                        renewButton.setDisable(!record.getRenewable()); // 根据是否可续借设置按钮状态
+                        boolean isReturned = "已还".equals(record.getRecordStatus());
+                        renewButton.setDisable(!record.getRenewable() || isReturned); // 根据是否可续借设置按钮状态
                         setGraphic(renewButton);
                     }
                 }
