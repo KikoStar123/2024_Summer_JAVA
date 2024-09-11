@@ -3,6 +3,7 @@ package client.ui;
 import client.service.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -18,6 +19,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.application.Platform;
@@ -25,6 +28,8 @@ import javafx.concurrent.Task;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
@@ -210,6 +215,13 @@ public class ShopUI_stu {
     }
 
     private VBox showOrders() throws IOException {
+
+        // 创建搜索栏
+        TextField searchField = new TextField();
+        searchField.setPromptText("搜索订单...");
+        Button searchButton = new Button("搜索");
+        HBox searchBox = new HBox(10, searchField, searchButton);
+
         ListView<VBox> orderList = new ListView<>();
         ObservableList<VBox> items = FXCollections.observableArrayList();
         orderList.setItems(items);
@@ -231,7 +243,13 @@ public class ShopUI_stu {
             Button commentbutton=new Button("评论");
             commentbutton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
             Button paybutton=new Button("支付");
-            paybutton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+            paybutton.getStyleClass().add("main-button");
+            // 应用CSS中的按钮样式
+            Button logisticsButton=new Button("查看物流信息");
+            JSONObject record = ShoppingMap.getMapRecordByProductID(order.getOrderID());
+            System.out.println(record.toString());
+            logisticsButton.setOnAction(e->showlogistics(record.getString("mapStart"),record.getString("mapEnd")));
+            logisticsButton.getStyleClass().add("main-button");
 
             ComboBox<String> infoComboBox = new ComboBox<>();
             for (int i = 0; i < currentUser.getAddresses().length; i++) {
@@ -250,12 +268,17 @@ public class ShopUI_stu {
                 paybutton.setText("已支付");
                 paybutton.setDisable(true);
             }
+            else
+            {
+                //未支付不可评论
+                commentbutton.setDisable(true);
+            }
             if(ShoppingOrder.getOrderCommentStatus(order.getOrderID()))
             {
                 commentbutton.setText("已评论");
                 commentbutton.setDisable(true);
             }
-            orderbox.getChildren().addAll(orderid,productname,paidMoney,infoComboBox,commentbutton,paybutton);
+            orderbox.getChildren().addAll(orderid,productname,paidMoney,infoComboBox,commentbutton,paybutton,logisticsButton);
             items.add(orderbox);
             paybutton.setOnAction(e-> {
                 List<String> orderIds = new ArrayList<>();
@@ -278,7 +301,7 @@ public class ShopUI_stu {
                         System.out.println("选中的地址: " + address);
                     }
                     try {
-                        ShoppingMap.addMapRecord(order.getProductID(), oneProduct.getProductAddress(), address);
+                        ShoppingMap.addMapRecord(order.getOrderID(), oneProduct.getProductAddress(), address);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -286,7 +309,6 @@ public class ShopUI_stu {
 
             });
             commentbutton.setOnAction(e->{
-                System.out.println("HERe");
                 VBox commentbox = new VBox();
                 // 创建下拉框用于选择评论态度
                 ComboBox<String> attitudeComboBox = new ComboBox<>();
@@ -301,55 +323,215 @@ public class ShopUI_stu {
                 Button confirmButton = new Button("确认");
                 confirmButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
                 Button backButton = new Button("返回");
+                backButton.setOnAction(event1->{
+                    try {
+                        borderPane.setCenter(showOrders());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
                 backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
                 confirmButton.setOnAction(confirmEvent ->{
                     int commentAttitude = attitudeComboBox.getSelectionModel().getSelectedIndex()+1;
                     String commentContent = commentField.getText();
-                    boolean result = false;
-                    try {
-                        result = ShoppingComment.addComment(user.getUsername(), order.getProductID(), commentAttitude, commentContent, order.getOrderID());
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    if (result) {
-                        commentbutton.setText("已评论");
-                        commentbutton.setDisable(true);
-                        try {
-                            ShoppingOrder.updateCommentStatus(order.getOrderID(),true);
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("提示");
+                    if (attitudeComboBox.getValue() == null || commentField.getText().isEmpty()) {
+                        // 提示用户选择态度和输入评论内容
+                        Alert alert = new Alert(Alert.AlertType.WARNING);
+                        alert.setTitle("警告");
                         alert.setHeaderText(null);
-                        alert.setContentText("评论成功！");
+                        alert.setContentText("请选择评论态度并输入评论内容！");
                         alert.showAndWait();
+                    }
+                    else{
+                        boolean result = false;
                         try {
-                            borderPane.setCenter(new VBox(showOrders()));
+                            result = ShoppingComment.addComment(user.getUsername(), order.getProductID(), commentAttitude, commentContent, order.getOrderID());
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
-                    } else {
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                        alert.setTitle("提示");
-                        alert.setHeaderText(null);
-                        alert.setContentText("评论失败！");
-                        alert.showAndWait();
-                        try {
-                            borderPane.setCenter(new VBox(showOrders()));
-                        } catch (IOException ex) {
-                            throw new RuntimeException(ex);
+                        if (result) {
+                            commentbutton.setText("已评论");
+                            commentbutton.setDisable(true);
+                            try {
+                                ShoppingOrder.updateCommentStatus(order.getOrderID(),true);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("提示");
+                            alert.setHeaderText(null);
+                            alert.setContentText("评论成功！");
+                            alert.showAndWait();
+                            try {
+                                borderPane.setCenter(new VBox(showOrders()));
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        } else {
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("提示");
+                            alert.setHeaderText(null);
+                            alert.setContentText("评论失败！");
+                            alert.showAndWait();
+                            try {
+                                borderPane.setCenter(new VBox(showOrders()));
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
                         }
                     }
-
                 });
-
-
                 // 将所有控件添加到VBox中
                 commentbox.getChildren().addAll(orderid, productname, paidMoney, attitudeComboBox, commentField, confirmButton, backButton);
                 borderPane.setCenter(commentbox);
             });
         }
+
+        searchButton.setOnAction(e -> {
+            try {
+                String searchText = searchField.getText();
+                ShoppingOrder.oneOrder[] filteredOrders = shoppingOrder.searchOrdersByUser(user.getUsername(), searchText);
+                ObservableList<VBox> filteredItems = FXCollections.observableArrayList();
+                for (ShoppingOrder.oneOrder order : filteredOrders) {
+                    VBox orderbox=new VBox();
+                    Label orderid=new Label("订单id: "+order.getOrderID());
+                    orderid.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+                    Label productname=new Label("商品名称: "+order.productName());
+                    productname.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+                    Label paidMoney=new Label("支付金额: "+order.getPaidMoney());
+                    paidMoney.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
+                    Button commentbutton=new Button("评论");
+                    commentbutton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+                    Button paybutton=new Button("支付");
+                    paybutton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+
+                    ComboBox<String> infoComboBox = new ComboBox<>();
+                    for (int i = 0; i < currentUser.getAddresses().length; i++) {
+                        String address = currentUser.getAddresses()[i];
+                        String telephone = currentUser.getTelephones()[i];
+                        infoComboBox.getItems().add("地址: " + address + " 电话: " + telephone);
+                    }
+                    infoComboBox.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+                    infoComboBox.setPromptText("选择收货信息");
+                    // 默认选择第一个收货信息
+                    if (!infoComboBox.getItems().isEmpty()) {
+                        infoComboBox.getSelectionModel().selectFirst();
+                    }
+                    if(order.getpaidStatus())
+                    {
+                        paybutton.setText("已支付");
+                        paybutton.setDisable(true);
+                    }
+                    if(ShoppingOrder.getOrderCommentStatus(order.getOrderID()))
+                    {
+                        commentbutton.setText("已评论");
+                        commentbutton.setDisable(true);
+                    }
+                    orderbox.getChildren().addAll(orderid,productname,paidMoney,infoComboBox,commentbutton,paybutton);
+                    filteredItems.add(orderbox);
+                    paybutton.setOnAction(event-> {
+                        List<String> orderIds = new ArrayList<>();
+                        orderIds.add(order.getOrderID());
+                        float totalAmount = order.getPaidMoney();
+                        boolean result = handlePayment(orderIds, totalAmount);
+                        if (result) {
+                            ShoppingProduct.oneProduct oneProduct;
+                            try {
+                                oneProduct = ShoppingProduct.getProductDetails(order.getProductID());
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            String selectedInfo = infoComboBox.getSelectionModel().getSelectedItem();
+                            String address = null;
+                            if (selectedInfo != null) {
+                                // 假设格式为 "地址: xxx 电话: xxx"
+                                String[] parts = selectedInfo.split(" 电话: ");
+                                address = parts[0].replace("地址: ", "");
+                                System.out.println("选中的地址: " + address);
+                            }
+                            try {
+                                System.out.println("orderID: " + order.getOrderID());
+                                ShoppingMap.addMapRecord(order.getOrderID(), oneProduct.getProductAddress(), address);
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+
+                    });
+                    commentbutton.setOnAction(event->{
+                        VBox commentbox = new VBox();
+                        // 创建下拉框用于选择评论态度
+                        ComboBox<String> attitudeComboBox = new ComboBox<>();
+                        attitudeComboBox.getItems().addAll("差评", "中评", "好评");
+                        attitudeComboBox.setPromptText("选择评论态度");
+
+                        // 创建输入框用于输入评论内容
+                        TextField commentField = new TextField();
+                        commentField.setPromptText("输入评论内容");
+
+                        // 创建确认和返回按钮
+                        Button confirmButton = new Button("确认");
+                        confirmButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+                        Button backButton = new Button("返回");
+                        backButton.setOnAction(event1->{
+                            try {
+                                borderPane.setCenter(showOrders());
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
+                        backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+                        confirmButton.setOnAction(confirmEvent ->{
+                            int commentAttitude = attitudeComboBox.getSelectionModel().getSelectedIndex()+1;
+                            String commentContent = commentField.getText();
+                            boolean result = false;
+                            try {
+                                result = ShoppingComment.addComment(user.getUsername(), order.getProductID(), commentAttitude, commentContent, order.getOrderID());
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            if (result) {
+                                commentbutton.setText("已评论");
+                                commentbutton.setDisable(true);
+                                try {
+                                    ShoppingOrder.updateCommentStatus(order.getOrderID(),true);
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("提示");
+                                alert.setHeaderText(null);
+                                alert.setContentText("评论成功！");
+                                alert.showAndWait();
+                                try {
+                                    borderPane.setCenter(new VBox(showOrders()));
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            } else {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("提示");
+                                alert.setHeaderText(null);
+                                alert.setContentText("评论失败！");
+                                alert.showAndWait();
+                                try {
+                                    borderPane.setCenter(new VBox(showOrders()));
+                                } catch (IOException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                            }
+
+                        });
+                        // 将所有控件添加到VBox中
+                        commentbox.getChildren().addAll(orderid, productname, paidMoney, attitudeComboBox, commentField, confirmButton, backButton);
+                        borderPane.setCenter(commentbox);
+                    });
+                }
+                orderList.setItems(filteredItems);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
         VBox ordersBox=new VBox();
         ordersBox.getChildren().addAll(scrollPane);
         Button backButton=new Button("返回");
@@ -454,11 +636,67 @@ public class ShopUI_stu {
         });
 
         ordersBox.getChildren().clear(); // 清除之前的子节点
-        ordersBox.getChildren().addAll(scrollPane, adduserButton, deleteButton, backButton);
+        ordersBox.getChildren().addAll(searchBox,scrollPane, adduserButton, deleteButton, backButton);
         borderPane.setCenter(ordersBox);
         return ordersBox;
 
     }
+
+    private void showlogistics(String startAddress,String endAddress) {
+        WebView webView = new WebView();
+        WebEngine webEngine = webView.getEngine();
+
+        // 捕获 JavaScript 的 Alert 用于调试
+        webEngine.setOnAlert(event -> {
+            System.out.println("JS Alert: " + event.getData());
+        });
+
+        // 加载 HTML 文件
+        webEngine.load(getClass().getResource("/map_navigation.html").toExternalForm());
+
+        // 页面加载完成时注入自定义的 console.log
+        webEngine.getLoadWorker().stateProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == Worker.State.SUCCEEDED) {
+                // 在 JavaScript 中重写 console.log 以输出到 Java 控制台
+                webEngine.executeScript(
+                        "console.log = (function(oldLog) {" +
+                                "  return function(message) {" +
+                                "    oldLog(message);" +
+                                "    alert(message);" + // 使用 alert 输出到 Java 控制台
+                                "  };" +
+                                "})(console.log);"
+                );
+
+
+                // 调用 JavaScript 函数，传递两个地址而不是坐标
+
+                webEngine.executeScript("displayRoute('" + startAddress + "', '" + endAddress + "');");
+            }
+        });
+
+
+        VBox logisticsBox = new VBox(10);
+        logisticsBox.setPadding(new Insets(10));
+
+        Label logisticsStatusLabel = new Label("物流状态: 正在运输");
+        Label estimatedArrivalLabel = new Label("预计到达时间: 2天后");
+
+        logisticsBox.getChildren().addAll(webView, logisticsStatusLabel, estimatedArrivalLabel);
+
+        Button backButton = new Button("返回");
+        backButton.setOnAction(e -> {
+            try {
+                borderPane.setCenter(showOrders());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        logisticsBox.getChildren().add(backButton);
+        borderPane.setCenter(logisticsBox);
+    }
+
+
+
     //购物车页
     private void showShoppingCart(User user) throws IOException {
         ListView<VBox> cartelementList = new ListView<>();
@@ -627,6 +865,7 @@ public class ShopUI_stu {
                                 try {
                                     ShoppingProduct.oneProduct oneProduct1 = ShoppingProduct.getProductDetails(productId);
                                     ShoppingMap.addMapRecord(productId, oneProduct1.getProductAddress(), address);
+
                                 } catch (IOException ex) {
                                     throw new RuntimeException(ex);
                                 }
@@ -734,7 +973,7 @@ public class ShopUI_stu {
         backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         backButton.setOnAction(e -> {
             try {
-                borderPane.setCenter(new VBox(getShopLayout()));
+                borderPane.setCenter(getShopLayout());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -948,7 +1187,7 @@ public class ShopUI_stu {
                             address = parts[0].replace("地址: ", "");
                             System.out.println("选中的地址: " + address);
                         }
-                        ShoppingMap.addMapRecord(product.getProductID(), product.getProductAddress(), address);
+                        ShoppingMap.addMapRecord(orderid, product.getProductAddress(), address);
                         borderPane.setCenter(new VBox(getShopLayout()));
                     }
 
@@ -995,7 +1234,7 @@ public class ShopUI_stu {
             }
         });
         ComboBox<String> selectByComboBox = new ComboBox<>();
-        selectByComboBox.setItems(FXCollections.observableArrayList("0","1","2","3"));
+        selectByComboBox.setItems(FXCollections.observableArrayList("查看全部评论","差评","中评","好评"));
         selectByComboBox.setPromptText("选择评论态度");
         Button selectButton=new Button("查看");
         select.getChildren().addAll(backButton,selectByComboBox,selectButton);
@@ -1007,11 +1246,18 @@ public class ShopUI_stu {
 
         selectButton.setOnAction(e->{
             ShoppingComment shoppingComment=new ShoppingComment();
-            String attitude = selectByComboBox.getValue();
-            if(attitude == null)
-            {
+            String attitude=null;
+            String Attitude=selectByComboBox.getValue();
+            if(Attitude==null)
                 attitude="0";
-            }
+            if(Attitude=="查看全部评论")
+                attitude="0";
+            if(Attitude=="差评")
+                attitude="1";
+            if(Attitude=="中评")
+                attitude="2";
+            if(Attitude=="好评")
+                attitude="3";
             ShoppingComment.oneComment[]comments= null;
             try {
                 comments = shoppingComment.getProductComments(product.getProductID(), Integer.parseInt(attitude));
@@ -1144,12 +1390,8 @@ public class ShopUI_stu {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             return paymentSuccess[0];
         }
-
         return false;
     }
-
-
 }

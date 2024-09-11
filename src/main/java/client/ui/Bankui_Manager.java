@@ -134,7 +134,7 @@ public class Bankui_Manager extends Application {
             updateAccountInfo(bank, searchField.getText());
         });
 
-        businessBox.getChildren().addAll(searchBox, accountInfoBox, depositBox, withdrawBox);
+        businessBox.getChildren().addAll(accountInfoBox,searchBox, depositBox, withdrawBox);
 
         // 管理部分
         VBox managementBox = new VBox(10);

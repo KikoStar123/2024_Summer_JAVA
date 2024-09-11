@@ -48,6 +48,16 @@ public class ShoppingMapRequestHandler implements RequestHandler {
                 }
                 break;
 
+            case "getRecordByProductID":  // 根据productID获取记录
+                String queryProductID = parameters.optString("productID", null);
+
+                if (queryProductID == null) {
+                    response.put("status", "fail").put("message", "缺少产品ID");
+                } else {
+                    response = mapService.getMapRecordByProductID(queryProductID);
+                }
+                break;
+
             case "getAllRecords":  // 获取所有记录
             default:
                 response = mapService.getAllMapRecords();

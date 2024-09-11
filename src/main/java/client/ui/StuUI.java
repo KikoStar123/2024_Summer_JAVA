@@ -13,6 +13,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -132,8 +135,11 @@ public class StuUI extends Application {
 //            // 加载CSS文件
 //            Scene scene = new Scene(navbar);
 //            scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-
-
+            HBox hBox=new HBox();
+            ImageView photo = new ImageView(new Image(getClass().getResource("/background-seu-2.jpg").toExternalForm()));
+            photo.setFitWidth(400); // 你可以根据窗口大小调整这个值
+            photo.setFitHeight(200); // 你可以根据窗口大小调整这个值
+            photo.setPreserveRatio(true);
 
             VBox vbox = new VBox(10); // 设置间距
             vbox.setAlignment(Pos.CENTER); // 设置对齐方式
@@ -165,8 +171,9 @@ public class StuUI extends Application {
             Label academyLabel = new Label("院系: " + student.getAcademy());
             vbox.getChildren().add(academyLabel);
 
-            return vbox;
-
+            hBox.getChildren().addAll(photo,vbox);
+            VBox Vboxxx=new VBox(hBox);
+            return Vboxxx;
         }
     }
     //学籍修改成功后显示提示框

@@ -19,7 +19,7 @@ public class ShoppingMapService {
         mapLock.lock();
         JSONObject response = new JSONObject();
         try {
-            String query = "INSERT INTO tblMap (productID, mapStart, mapEnd) VALUES (?, ?, ?)";
+            String query = "INSERT INTO tblMap (orderID, mapStart, mapEnd) VALUES (?, ?, ?)";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -57,7 +57,7 @@ public class ShoppingMapService {
         mapLock.lock();
         JSONObject response = new JSONObject();
         try {
-            String query = "DELETE FROM tblMap WHERE productID = ?";
+            String query = "DELETE FROM tblMap WHERE orderID = ?";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -93,7 +93,7 @@ public class ShoppingMapService {
         mapLock.lock();
         JSONObject response = new JSONObject();
         try {
-            String query = "UPDATE tblMap SET mapStart = ?, mapEnd = ? WHERE productID = ?";
+            String query = "UPDATE tblMap SET mapStart = ?, mapEnd = ? WHERE orderID = ?";
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
@@ -168,5 +168,44 @@ public class ShoppingMapService {
         }
         return response;
     }
+
+    // 根据productID获取起始位置和终止位置
+    public JSONObject getMapRecordByProductID(String productID) {
+        mapLock.lock();
+        JSONObject response = new JSONObject();
+        try {
+            String query = "SELECT mapStart, mapEnd FROM tblMap WHERE orderID = ?";
+
+            DatabaseConnection dbConnection = new DatabaseConnection();
+            Connection conn = dbConnection.connect();
+
+            if (conn == null) {
+                response.put("status", "fail").put("message", "数据库连接失败");
+                return response;
+            }
+
+            try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, productID);
+                ResultSet resultSet = preparedStatement.executeQuery();
+
+                if (resultSet.next()) {
+                    response.put("status", "success");
+                    response.put("mapStart", resultSet.getString("mapStart"));
+                    response.put("mapEnd", resultSet.getString("mapEnd"));
+                } else {
+                    response.put("status", "fail").put("message", "记录未找到");
+                }
+            } finally {
+                conn.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            response.put("status", "fail").put("message", "SQL错误: " + e.getMessage());
+        } finally {
+            mapLock.unlock();
+        }
+        return response;
+    }
+
 
 }
