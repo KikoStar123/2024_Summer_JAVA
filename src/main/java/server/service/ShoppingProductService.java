@@ -167,6 +167,7 @@ public class ShoppingProductService {
     // 检索商品
     public JSONObject searchProducts(String searchTerm, String sortBy, String sortOrder) {
         searchProductsLock.lock();
+        System.out.println("sortOrder: " + sortOrder);
         try {
             JSONObject response = new JSONObject();
             JSONArray productsArray = new JSONArray();
@@ -187,9 +188,13 @@ public class ShoppingProductService {
 
             String order = "ASC".equalsIgnoreCase(sortOrder) ? "ASC" : "DESC";
 
+            System.out.println("order: " + order);
+
             String query = "SELECT * FROM tblShoppingProduct p JOIN tblStore s ON p.storeID = s.storeID WHERE productStatus = true " +
                     "AND (productName LIKE ? OR productID LIKE ? OR productDetail LIKE ?) " +
                     "ORDER BY " + orderByColumn + " " + order;
+
+            System.out.println("query: " + query);
 
             DatabaseConnection dbConnection = new DatabaseConnection();
             Connection conn = dbConnection.connect();
