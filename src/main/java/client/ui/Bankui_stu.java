@@ -20,6 +20,7 @@ public class Bankui_stu {
     private static HBox buttonsBox;
     private static VBox loginBox;
     private static VBox registerBox;
+    private static HBox actionBox;
     private static User user;
 
     public Bankui_stu(User user) {
@@ -62,17 +63,16 @@ public class Bankui_stu {
         registerBox.setVisible(false);
 
         // 创建确认和返回按钮
-        HBox actionBox = new HBox(10);
+        actionBox = new HBox(10);
 
         Button backButton = new Button("返回");
         backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         //backButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
         backButton.setOnAction(e -> handleBack());
         actionBox.getChildren().add(backButton);
-
         // 将操作按钮栏放置在底部
         bankBox.setBottom(actionBox);
-
+        actionBox.setVisible(false);
         return bankBox;
     }
 
@@ -214,6 +214,7 @@ public class Bankui_stu {
         bankMainView.getChildren().addAll(usernameLabel,welcomeLabel,balanceLabel,currentBalanceLabel, bankrecord,pwdchange, currentRateLabel, fixedDepositRateLabel);
         bankrecord.setOnAction(e -> showBankRecord(user));
         pwdchange.setOnAction(e->showChangepwd(user));
+        actionBox.setVisible(true);
         return bankMainView;
     }
 
@@ -269,8 +270,6 @@ public class Bankui_stu {
         stage.setScene(scene);
         stage.show();
     }
-
-
     private static void showBankRecord(BankUser user) {
 
         Stage recordStage = new Stage();
@@ -300,12 +299,10 @@ public class Bankui_stu {
         recordStage.show();
 
     }
-
-
     private static void handleBack() {
         // 处理返回逻辑
         buttonsBox.setVisible(true);
-        loginBox.setVisible(false);
+        loginBox.setVisible(true);
         registerBox.setVisible(false);
         bankBox.setCenter(null);
     }

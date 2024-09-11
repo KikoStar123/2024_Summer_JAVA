@@ -23,7 +23,7 @@ import javafx.scene.shape.Circle;
 
 public class MainUI extends Application {
     private User user;
-    private BorderPane borderPane;
+    public static BorderPane borderPane;
 
     public MainUI(User user) {
         this.user = user;
@@ -207,7 +207,7 @@ public class MainUI extends Application {
     private void handleLibrary(String username) {
         Platform.runLater(() -> {
             LibraryUI libraryUI = new LibraryUI(user);
-           BorderPane library=libraryUI.createLibraryView();
+           BorderPane library=libraryUI.createCover();
            borderPane.setCenter(library);
         });
     }

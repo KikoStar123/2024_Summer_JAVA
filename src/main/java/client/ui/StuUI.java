@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -132,8 +133,7 @@ public class StuUI extends Application {
 //            // 加载CSS文件
 //            Scene scene = new Scene(navbar);
 //            scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-
-
+            HBox hBox=new HBox();
 
             VBox vbox = new VBox(10); // 设置间距
             vbox.setAlignment(Pos.CENTER); // 设置对齐方式
@@ -166,7 +166,6 @@ public class StuUI extends Application {
             vbox.getChildren().add(academyLabel);
 
             return vbox;
-
         }
     }
     //学籍修改成功后显示提示框
