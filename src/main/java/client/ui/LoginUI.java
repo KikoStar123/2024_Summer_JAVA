@@ -145,7 +145,7 @@ public class LoginUI extends Application {
             else if(user.getRole()==Librarian)
             {
                 Platform.runLater(() -> {
-                    LibraryUI_Manager librarymanagerui=new LibraryUI_Manager();
+                    LibraryUI_Manager librarymanagerui=new LibraryUI_Manager(user);
                     try {
                         librarymanagerui.start(new Stage());
                     } catch (Exception e) {

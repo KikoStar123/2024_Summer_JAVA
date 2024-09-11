@@ -36,6 +36,9 @@ public class LibraryUI_Manager extends Application {
     private User user;
     private Library library;
 
+    public LibraryUI_Manager(User user){
+        this.user=user;
+    }
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("图书馆管理界面");
