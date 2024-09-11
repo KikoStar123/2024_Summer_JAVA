@@ -28,6 +28,47 @@ function geocodeAddress(address, callback) {
         });
 }
 
+// 添加标记点函数，使用不同的图标
+function addMarker(location, title, iconUrl) {
+    const [lng, lat] = location.split(',').map(parseFloat);
+
+    // 自定义标记点图标
+    var icon = new AMap.Icon({
+        size: new AMap.Size(24, 34), // 图标大小
+        image: iconUrl, // 自定义图标
+        imageSize: new AMap.Size(24, 34) // 图标图片大小
+    });
+
+    var marker = new AMap.Marker({
+        position: [lng, lat],
+        title: title,
+        map: map,
+        icon: icon, // 使用自定义图标
+        offset: new AMap.Pixel(-12, -34), // 图标偏移量，确保图标底部与坐标对齐
+        zooms: [10, 20], // 缩放级别
+        cursor: 'pointer'
+    });
+
+    // 鼠标悬停时放大效果
+    marker.on('mouseover', function() {
+        marker.setAnimation('AMAP_ANIMATION_BOUNCE'); // 跳动效果
+    });
+
+    marker.on('mouseout', function() {
+        marker.setAnimation(''); // 停止动画
+    });
+
+    // 点击时显示地址信息
+    marker.on('click', function() {
+        var infoWindow = new AMap.InfoWindow({
+            content: `<strong>${title}</strong>`,
+            offset: new AMap.Pixel(0, -30),
+            position: [lng, lat]
+        });
+        infoWindow.open(map, marker.getPosition());
+    });
+}
+
 // 定义从 Java 传递的起点和终点文字地址，并进行地理编码
 window.displayRoute = function(startAddress, endAddress) {
     console.log('显示路线从 ' + startAddress + ' 到 ' + endAddress);
@@ -64,8 +105,9 @@ window.displayRoute = function(startAddress, endAddress) {
                         // 调整地图视野，使路线全部展示在视野内
                         map.setFitView([routeLine]);
 
-                        // 显示路线的详细信息到 panel
-                        document.getElementById('panel').innerHTML = data.route.paths[0].steps.map(step => step.instruction).join('<br/>');
+                        // 添加起点和终点的标记点，使用相对路径
+                        addMarker(startLocation, '起点: ' + startAddress, './flag1.png');
+                        addMarker(endLocation, '终点: ' + endAddress, './flag2.png');
 
                     } else {
                         console.error('路线规划失败:', data);
