@@ -32,25 +32,39 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
-
 import static client.service.Role.BankManager;
 import static client.service.Role.Librarian;
-
 import java.net.URL;
-
 import static client.service.Role.BankManager;
 import static client.service.Role.Librarian;
 import static client.service.Role.CourseManager;
-
+import java.util.Date;
+import java.util.UUID;
+import java.util.Random;
+import java.util.Properties;
+import javax.mail.*;
+import javax.mail.internet.*;
+import client.service.ClientService;
 public class LoginUI extends Application {
     private TextField usernameField;
     private PasswordField passwordField;
     private BorderPane root;
     private String instanceName = "Default";
     private GridPane grid;
-
+    ClientService clientService;//lzy,please change function in ClientService;
+//尝试更改忘记密码功能
+    String token = UUID.randomUUID().toString();
+    Date expirationDate = new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+    private String smtpHost = "smtp.qq.com"; // SMTP服务器地址
+    private String smtpPort = "587"; // SMTP服务器端口
+    //private String smtpUsername = "1782427252@qq.com"; // 发件人邮箱用户名
+    private String smtpPassword = "sqwkryakuykxdagc"; // 发件人邮箱的鉴权码
+    private String smtpUsername;
+    //private String smtpPassword;
     public void setInstanceName(String name) {
         instanceName = name;
     }
@@ -101,15 +115,17 @@ public class LoginUI extends Application {
         loginButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button registerButton = new Button("注册");
         registerButton.getStyleClass().add("main-button");
+        Button forgetButton = new Button("忘记密码");
+        forgetButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
         loginButton.setOnAction(e -> handleLogin());
         registerButton.setOnAction(e -> handleRegister());
-
+        forgetButton.setOnAction(e-> handleforget());
         HBox buttonBox = new HBox(80); // 间距为10
         buttonBox.setAlignment(Pos.CENTER); // 水平居中
 
         // 将按钮添加到buttonBox
-        buttonBox.getChildren().addAll(loginButton, registerButton);
+        buttonBox.getChildren().addAll(loginButton, registerButton,forgetButton);
 
         // 将组件添加到网格中
         grid.add(title, 0, 0, 2, 1); // 标题居中
@@ -217,6 +233,127 @@ public class LoginUI extends Application {
         RegisterUI registerUI = new RegisterUI();
         GridPane grid = registerUI.showRegisterUI(this);
         root.setCenter(grid);
+    }
+    private void handleforget() {
+        // 创建一个新的弹出窗口 (Stage)
+        Stage forgetStage = new Stage();
+        forgetStage.setTitle("忘记密码");
+
+        // 创建一个垂直布局 VBox
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(20));
+        vbox.setAlignment(Pos.CENTER);
+
+        // 创建账号输入行
+        HBox accountRow = new HBox(10);
+        accountRow.setAlignment(Pos.CENTER_LEFT);
+        Label accountLabel = new Label("账号:");
+        TextField accountField = new TextField();
+        accountField.setPromptText("请输入你的账号");
+        accountRow.getChildren().addAll(accountLabel, accountField);
+
+        // 创建邮箱输入行
+        HBox emailRow = new HBox(10);
+        emailRow.setAlignment(Pos.CENTER_LEFT);
+        Label emailLabel = new Label("邮箱:");
+        TextField emailField = new TextField();
+        emailField.setPromptText("请输入你的邮箱");
+        emailRow.getChildren().addAll(emailLabel, emailField);
+
+        // 创建验证码输入行
+        HBox codeRow = new HBox(10);
+        codeRow.setAlignment(Pos.CENTER_LEFT);
+        Label codeLabel = new Label("验证码:");
+        TextField codeField = new TextField();
+        codeField.setPromptText("请输入验证码");
+        Button sendCodeButton = new Button("发送验证码");
+        var ref = new Object() {
+            int returnvalue = 0;
+        };
+        // 发送验证码按钮事件
+        sendCodeButton.setOnAction(e -> {
+            String email = emailField.getText();
+            if (!email.isEmpty()) {
+                ref.returnvalue = Forget(email);  // 调用 Forget 函数，发送验证码到邮箱
+            } else {
+                // 处理无效的邮箱输入 (可以弹出提示框)
+                Alert alert = new Alert(Alert.AlertType.ERROR, "请输入有效的邮箱地址！");
+                alert.showAndWait();
+            }
+        });
+
+        codeRow.getChildren().addAll(codeLabel, codeField, sendCodeButton);
+
+        // 创建“开始验证”按钮
+        Button verifyButton = new Button("开始验证");
+        verifyButton.setOnAction(e -> {//-------------------------------------
+            //重要的逻辑放在这里了，匹配邮箱同时匹配发送的验证码
+            if((Integer.parseInt(codeField.getText())== ref.returnvalue)&&
+                    (emailField.getText()==clientService.getEmailByUsername(accountField.getText()))){
+                System.out.println("验证码匹配！请更改密码！" );
+                String username = accountField.getText();  // 假设通过账号获取用户信息
+                ForgetPwdUI forgetPwdUI = new ForgetPwdUI(username);
+                forgetPwdUI.showUpdatePwdWindow(); // 显示新窗口
+            }
+            else{
+                System.out.println("验证码不匹配，请重新发送！！！" );
+            }
+
+        });
+
+        // 将账号输入行、邮箱输入行、验证码行和“开始验证”按钮添加到 VBox
+        vbox.getChildren().addAll(accountRow, emailRow, codeRow, verifyButton);
+
+        // 设置窗口的场景
+        Scene scene = new Scene(vbox, 400, 250);
+        forgetStage.setScene(scene);
+        forgetStage.show();
+    }
+    //完成向邮箱发送正确的验证码；
+    public int Forget(String toEmail) {
+        smtpUsername = toEmail;//确保用户输入的邮箱与发送的邮箱保持一致。
+        Random random = new Random();
+        int verificationCode = 100000 + random.nextInt(900000); // 900000 表
+        //System.out.println("Verification Code: " + verificationCode);//------打印验证码
+        // 设置邮件服务器的属性
+        Properties props = new Properties();
+        props.put("mail.smtp.host", smtpHost);
+        props.put("mail.smtp.port", smtpPort);
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true"); // 启用TLS
+
+        // 创建Session并配置用户名和密码
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(smtpUsername, smtpPassword);
+            }
+        });
+
+        try {
+            // 创建邮件消息
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(smtpUsername));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject("重置密码验证码");
+            message.setText("您的验证码是：" + verificationCode);
+
+            // 发送邮件
+            Transport.send(message);
+
+            // 将验证码缓存起来，以便后续验证
+            // 这里可以使用任何你喜欢的缓存机制，例如Ehcache、Redis等
+            // cache.put(toEmail, verificationCode, 3600); // 假设方法，实际代码需要替换
+
+            System.out.println("验证码已发送到：" + toEmail);
+            //if(verificationCode==codeField)
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("发送验证码失败。");
+            System.out.println("Error message: " + e.getMessage());
+        }
+        return verificationCode;
     }
 
     public void showLoginUI() {

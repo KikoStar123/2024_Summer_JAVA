@@ -244,6 +244,7 @@ public class ClientService {
         }
 
     }
+    //修改密码调用的函数
     public boolean updateUserPwd(String username, String oldPwd, String newPwd) {
         boolean isSuccess = false;
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
@@ -275,5 +276,33 @@ public class ClientService {
             e.printStackTrace();
         }
         return isSuccess;
+    }
+    //通过用户名来获取邮箱函数----方便重置密码
+    public String getEmailByUsername(String username) {
+        //lzy,here;
+        String email = null;
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT)) {
+            JSONObject request = new JSONObject();
+            request.put("requestType", "getEmailByUsername");
+            request.put("parameters", new JSONObject()
+                    .put("username", username));
+
+            System.out.println(request.toString());
+
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(request.toString());
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String response = in.readLine();
+            JSONObject jsonResponse = new JSONObject(response);
+
+            System.out.println(jsonResponse.toString());
+
+            email=jsonResponse.getString("email");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return email;
     }
 }

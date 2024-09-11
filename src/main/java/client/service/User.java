@@ -7,6 +7,7 @@ public class User {
     private String pwd;//password
     private int age;
     private Gender gender;
+    private String EmailAddress;//邮箱//不需要更改其他函数吧
 
     public User(String userName, Role role, int age, Gender gender,String pwd) {
         this.username = userName;
