@@ -72,12 +72,24 @@ public class LibraryUI {
 //        Pane.setBottom(loginButton);
 //        BorderPane.setAlignment(loginButton, Pos.CENTER_RIGHT);
 
-        StackPane stackPane = new StackPane(photo);
-        stackPane.setPrefSize(200, 100); // 设置小框框的大小
+        StackPane stackPaneLeft = new StackPane(photo);
+        stackPaneLeft.setPrefSize(400, 550); // 设置小框框的大小
         //stackPane.setClip(new Rectangle(450, 600)); // 只显示框框内的图片部分
+//        stackPaneLeft.getStyleClass().add("my-stack-pane-style");
+
+        StackPane stackPaneRight = new StackPane(loginButton);
+        stackPaneRight.setPrefSize(400, 550); // 设置小框框的大小
+//        stackPaneRight.getStyleClass().add("my-stack-pane-style");
+
 
         // 设置边框和圆角
-        stackPane.setBorder(new Border(new BorderStroke(
+        stackPaneLeft.setBorder(new Border(new BorderStroke(
+                Color.BLACK, // 边框颜色
+                BorderStrokeStyle.SOLID, // 边框样式
+                new CornerRadii(10), // 圆角半径
+                new BorderWidths(2) // 边框宽度
+        )));
+        stackPaneRight.setBorder(new Border(new BorderStroke(
                 Color.BLACK, // 边框颜色
                 BorderStrokeStyle.SOLID, // 边框样式
                 new CornerRadii(10), // 圆角半径
@@ -97,15 +109,16 @@ public class LibraryUI {
         gridPane.setPadding(new Insets(10, 10, 10, 10));
 
         // 将photo放置在GridPane的第一列第一行，并居中
-        GridPane.setConstraints(stackPane, 0, 0);
-        GridPane.setHalignment(stackPane, HPos.LEFT);
-        GridPane.setValignment(stackPane, VPos.CENTER);
-        gridPane.getChildren().add(stackPane);
+        GridPane.setConstraints(stackPaneLeft, 0, 0);
+        GridPane.setHalignment(stackPaneLeft, HPos.LEFT);
+        GridPane.setValignment(stackPaneLeft, VPos.CENTER);
+        gridPane.getChildren().add(stackPaneLeft);
 
         // 将loginButton放置在GridPane的第二列第一行，并靠右
-        GridPane.setConstraints(loginButton, 1, 0);
-        GridPane.setHalignment(loginButton, HPos.RIGHT);
-        gridPane.getChildren().add(loginButton);
+        GridPane.setConstraints(stackPaneRight, 1, 0);
+        GridPane.setHalignment(stackPaneRight, HPos.RIGHT);
+        GridPane.setValignment(stackPaneLeft, VPos.CENTER);
+        gridPane.getChildren().add(stackPaneRight);
 
         BorderPane Pane = new BorderPane();
         Pane.setCenter(gridPane); // 将GridPane放置在BorderPane的中心
