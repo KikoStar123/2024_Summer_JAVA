@@ -92,7 +92,7 @@ window.displayRoute = function(startAddress, endAddress) {
                         // 创建路线
                         const routeLine = new AMap.Polyline({
                             path: path, // 路线坐标
-                            borderWeight: 2, // 线宽
+                            borderWeight: 4, // 线宽
                             strokeColor: '#FF0000', // 线颜色
                             lineJoin: 'round', // 折线拐点圆角处理
                             strokeWidth: 5, // 线宽度
