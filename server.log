@@ -4187,3 +4187,41 @@ java.net.BindException: Address already in use: bind
 信息: Accepted new client connection from /127.0.0.1
 9月 12, 2024 3:39:22 下午 server.MainServer main
 信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:39:58 下午 server.MainServer main
+信息: Server is starting...
+9月 12, 2024 3:39:59 下午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 12, 2024 3:40:14 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:40:15 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:40:15 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:46:12 下午 server.MainServer main
+信息: Server is starting...
+9月 12, 2024 3:46:12 下午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 12, 2024 3:46:47 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:46:48 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:46:48 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:47:17 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:47:18 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:47:18 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:47:35 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:47:36 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:47:36 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:48:02 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:48:04 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 3:48:04 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
