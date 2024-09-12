@@ -15,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class Admin_CourseUI extends Application {
@@ -49,8 +50,6 @@ public class Admin_CourseUI extends Application {
         BorderPane borderPane = new BorderPane(); // 确保每次调用都创建新的实例
         topBar = new HBox(30);
         topBar.setPadding(new Insets(10));
-        Button btnCheckCourses = new Button("查看课程");
-        btnCheckCourses.getStyleClass().add("main-button");
         Button btnAddCourses = new Button("添加课程");
         btnAddCourses.getStyleClass().add("main-button");
         Button btnRefresh = new Button("刷新");
@@ -59,12 +58,13 @@ public class Admin_CourseUI extends Application {
         logoutButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
         logoutButton.setOnAction(e -> handleLogout(primaryStage)); // 添加登出逻辑
-        btnCheckCourses.setOnAction(e -> displayCourses());
         btnAddCourses.setOnAction(e -> showAddCourseDialog());
         btnRefresh.setOnAction(e -> refreshCourses());
+
+        topBar.getChildren().addAll(btnAddCourses, btnRefresh);
         Region region = new Region();
         region.setMinWidth(600);
-        topBar.getChildren().addAll(btnCheckCourses, btnAddCourses, btnRefresh, region, logoutButton);
+        topBar.getChildren().addAll(btnAddCourses, btnRefresh, region, logoutButton);
 
         searchField = new TextField();
         searchField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
@@ -105,8 +105,102 @@ public class Admin_CourseUI extends Application {
         courseCapacityColumn.setCellValueFactory(cellData -> new ReadOnlyIntegerWrapper(cellData.getValue().getCourseCapacity()));
         selectedCountColumn.setCellValueFactory(cellData -> new ReadOnlyIntegerWrapper(cellData.getValue().getSelectedCount()));
 
-        courseTableView.getColumns().addAll(courseIDColumn, courseNameColumn, courseTeacherColumn, courseCapacityColumn, selectedCountColumn);
+        // 创建动作列
+        TableColumn<CourseSelection.oneCourseinfo, Void> actionColumn = new TableColumn<>("操作");
+        actionColumn.setCellFactory(column -> {
+            return new TableCell<CourseSelection.oneCourseinfo, Void>() {
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                        setText(null);
+                    } else {
+                        Button btn = new Button("查看");
+                        btn.setOnAction(event -> {
+                            int index = getIndex();
+                            CourseSelection.oneCourseinfo course = getTableView().getItems().get(index);
+                            showCourseDetailsDialog(course);
+                        });
+                        setGraphic(btn);
+                        setText(null);
+                    }
+                };
+            };
+        });
+
+        actionColumn.prefWidthProperty().bind(courseTableView.widthProperty().divide(4)); // 设置动作列的宽度
+
+        courseTableView.getColumns().addAll(courseIDColumn, courseNameColumn, courseTeacherColumn, courseCapacityColumn, selectedCountColumn, actionColumn);
         courseTableView.setItems(courseList);
+    }
+
+    private void showCourseDetailsDialog(CourseSelection.oneCourseinfo course) {
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.setTitle("课程详细信息");
+
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(20));
+
+        // 创建并添加标签以显示课程信息
+        Label courseIDLabel = new Label("课程号: " + course.getCourseID());
+        Label courseNameLabel = new Label("课程名: " + course.getCourseName());
+        Label courseTeacherLabel = new Label("教师: " + course.getCourseTeacher());
+        Label courseCreditLabel = new Label("学分: " + course.getCourseCredits());
+
+        // 调用 parseCourseTime 方法来解析课程时间
+        String formattedCourseTime = formatCourseTime(course.getCourseTime());
+        Label courseTimeLabel = new Label("上课时间: " + formattedCourseTime);
+
+        Label courseCapacityLabel = new Label("课容量: " + course.getCourseCapacity());
+        Label courseSelectLabel = new Label("已选人数: " + course.getSelectedCount());
+        Label courseRoomLabel = new Label("上课教室: " + course.getCourseRoom());
+        Label courseTypeLabel = new Label("课程类型: " + course.getCourseType());
+
+        vbox.getChildren().addAll(courseIDLabel, courseNameLabel, courseTeacherLabel, courseCreditLabel, courseTimeLabel, courseCapacityLabel, courseSelectLabel, courseRoomLabel, courseTypeLabel);
+
+        Scene dialogScene = new Scene(vbox, 300, 500);
+        dialogStage.setScene(dialogScene);
+        dialogStage.showAndWait();
+    }
+
+    private String formatCourseTime(CourseSelection.onePeriod[] periods) {
+        StringBuilder timeStringBuilder = new StringBuilder();
+        for (int i = 0; i < periods.length; i++) {
+            CourseSelection.onePeriod period = periods[i];
+            // 拼接单个时间段的字符串表示
+            String singlePeriodTime = period.getStaWeek() + "-" + period.getEndWeek() + " 周 "
+                    + getDayOfWeek(period.getDay()) + " "
+                    + period.getStasection() + "-" + period.getEndsection() + "节";
+            // 将单个时间段的字符串添加到总的字符串构建器中
+            timeStringBuilder.append(singlePeriodTime);
+            // 如果不是最后一个时间段，添加分隔符
+            if (i < periods.length - 1) {
+                timeStringBuilder.append("; ");
+            }
+        }
+        return timeStringBuilder.toString();
+    }
+    private String getDayOfWeek(int day) {
+        switch (day) {
+            case 1:
+                return "周一";
+            case 2:
+                return "周二";
+            case 3:
+                return "周三";
+            case 4:
+                return "周四";
+            case 5:
+                return "周五";
+            case 6:
+                return "周六";
+            case 7:
+                return "周日";
+            default:
+                return "未知";
+        }
     }
 
     private void displayCourses() {

@@ -2,13 +2,12 @@ package client.ui;
 
 import client.service.CourseSelection;
 import client.service.User;
-import com.sun.javafx.stage.EmbeddedWindow;
-import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -20,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.HashSet;
@@ -37,6 +37,7 @@ public class CourseSelectionUI {
     private ObservableList<CourseInfo> selectedCourses;
     private HBox topBar; // 保存顶部栏的引用，以便重新显示
     private Random random;
+    private List<String> colors; // 颜色列表
 
     public CourseSelectionUI(User user) {
         this.user = user;
@@ -44,6 +45,7 @@ public class CourseSelectionUI {
         this.courseList = FXCollections.observableArrayList();
         this.selectedCourses = FXCollections.observableArrayList();
         this.random = new Random();
+        this.colors = Arrays.asList("#add8e6", "#FF0000", "#FFFF00", "#90EE90", "#00FFFF"); // 蓝色，红色，黄色，浅绿色，青色
         updateCourseList();
         updateSelectedCourses();
     }
@@ -184,14 +186,14 @@ public class CourseSelectionUI {
         vbox.setPadding(new Insets(10));
         vbox.setSpacing(5);
 
-        Scene scene = new Scene(vbox, 600, 400);
+        Scene scene = new Scene(vbox, 680, 450);
         scheduleStage.setScene(scene);
         scheduleStage.showAndWait();
     }
     private GridPane createScheduleView() {
         GridPane gridPane = new GridPane();
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
+        gridPane.setHgap(15);
+        gridPane.setVgap(15);
         gridPane.setPadding(new Insets(10));
         gridPane.setStyle("-fx-background-color: #f0f0f0;"); // 设置背景色
 
@@ -202,16 +204,6 @@ public class CourseSelectionUI {
             periodLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
             gridPane.add(periodLabel, 0, i + 1);
 
-            // 在每个时间段之间添加水平分割线
-            if (i < periods.length - 1) {
-                Line horizontalLine = new Line();
-                horizontalLine.setStroke(Color.LIGHTGRAY);
-                horizontalLine.setStartX(0);
-                horizontalLine.setEndX(gridPane.getWidth()); // 设置分割线宽度为 GridPane 的宽度
-                horizontalLine.setStartY(30 * (i + 2)); // 设置分割线的起始 Y 位置
-                horizontalLine.setEndY(30 * (i + 2)); // 设置分割线的结束 Y 位置
-                gridPane.add(horizontalLine, 0, i + 2, 1, 1); // 修正跨度设置
-            }
         }
 
         // 添加星期标签
@@ -220,12 +212,13 @@ public class CourseSelectionUI {
             Label dayLabel = new Label(days[i]);
             dayLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
             gridPane.add(dayLabel, i + 1, 0); // 将星期标签添加到第一列
+            ColumnConstraints column = new ColumnConstraints();
+            column.setPrefWidth(70);
+            gridPane.getColumnConstraints().add(column);
+            GridPane.setHalignment(dayLabel, HPos.CENTER);
+            GridPane.setValignment(dayLabel, VPos.CENTER);
+        }// 设置列的固定宽度
 
-            // 在每天的课程之间添加垂直分割线
-            Line verticalLine = new Line(0, 0, 0, 400); // 调整长度和位置
-            verticalLine.setStroke(Color.LIGHTGRAY);
-            gridPane.add(verticalLine, i + 1, 0, 1, periods.length + 2); // 跨足整个行
-        }
 
         // 获取已选课程信息并填充课程表
         ObservableList<CourseSelection.oneCourseinfo> enrolledCourses = FXCollections.observableArrayList(
@@ -233,6 +226,8 @@ public class CourseSelectionUI {
         );
 
         Set<String> addedCourses = new HashSet<>();
+
+        int colorIndex = 0; // 颜色索引
 
         for (CourseSelection.oneCourseinfo course : enrolledCourses) {
             if (addedCourses.contains(course.getCourseID())) {
@@ -250,7 +245,7 @@ public class CourseSelectionUI {
             BorderPane borderPane = new BorderPane();
             borderPane.setCenter(courseLabel);
             // 设置圆角和背景色
-            String backgroundColor = getRandomBackgroundColor();
+            String backgroundColor = colors.get(colorIndex % colors.size());
             borderPane.setStyle(String.format("-fx-border-color: black; -fx-border-radius: 10; -fx-border-width: 1px; -fx-background-color: %s;", backgroundColor));
 
             // 确保只添加一次，并设置正确的位置和跨度
@@ -262,37 +257,24 @@ public class CourseSelectionUI {
             }
 
             addedCourses.add(course.getCourseID());
+            colorIndex++; // 更新颜色索引
         }
-
-        // 使用 BorderPane 为整个 GridPane 添加边框
         BorderPane borderPane = new BorderPane();
         borderPane.setStyle("-fx-border-color: black; -fx-border-width: 3px; -fx-border-style: solid;");
         borderPane.setCenter(gridPane);
 
-        // 将 BorderPane 添加到 GridPane 中
+        // 将 BorderPane 放入一个新的 GridPane 中
         GridPane finalGridPane = new GridPane();
-        finalGridPane.add(borderPane, 0, 0);
-        return finalGridPane;
-    }
-
-
-    private String getRandomBackgroundColor() {
-        // 生成随机的背景颜色
-        int r = random.nextInt(256);
-        int g = random.nextInt(256);
-        int b = random.nextInt(256);
-        return String.format("#%02X%02X%02X", r, g, b);
+        finalGridPane.add(borderPane, 0, 0); // 将 BorderPane 添加到新的 GridPane 中
+        return finalGridPane; // 返回包含边框的 GridPane
     }
 
     private void displayCourses(ObservableList<CourseInfo> courses, String selectButtonLabel, Button activeButton) {
         courseListView.setItems(FXCollections.observableArrayList(courses));
         courseListView.setCellFactory(listView -> new ListCell<CourseInfo>() {
             private final HBox hbox = new HBox(5);
-            private Label courseLabel = new Label();
-            Button viewButton = new Button("查看");
-            //viewButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-            //System.out.println("111");
-
+            private final Label courseLabel = new Label();
+            private final Button viewButton = new Button("查看");
             private final Button selectButton = new Button(selectButtonLabel);
 
             {
