@@ -86,3 +86,9 @@
     -fx-border-radius: 4px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 1, 0.0, 1, 1);
 }
+.background-image {
+    -fx-background-image: url("/table.png"); /* 指定图片路径 */
+    -fx-background-repeat: no-repeat; /* 不重复 */
+    -fx-background-position: center center; /* 居中显示 */
+    -fx-background-size: cover; /* 覆盖整个区域 */
+}

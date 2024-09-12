@@ -155,7 +155,9 @@ public class Admin_CourseUI extends Application {
         Label courseCapacityLabel = new Label("课容量: " + course.getCourseCapacity());
         Label courseSelectLabel = new Label("已选人数: " + course.getSelectedCount());
         Label courseRoomLabel = new Label("上课教室: " + course.getCourseRoom());
-        Label courseTypeLabel = new Label("课程类型: " + course.getCourseType());
+        String courseType = course.getCourseType();
+        String courseTypeLabelText = "课程类型: " + (courseType.equals("required") ? "必修" : "选修");
+        Label courseTypeLabel = new Label(courseTypeLabelText);
 
         vbox.getChildren().addAll(courseIDLabel, courseNameLabel, courseTeacherLabel, courseCreditLabel, courseTimeLabel, courseCapacityLabel, courseSelectLabel, courseRoomLabel, courseTypeLabel);
 
