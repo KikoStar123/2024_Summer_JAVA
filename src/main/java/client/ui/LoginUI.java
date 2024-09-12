@@ -244,8 +244,6 @@ public class LoginUI extends Application {
             alert.showAndWait();
         }
     }
-
-
     private void handleRegister() {
         RegisterUI registerUI = new RegisterUI();
         GridPane grid = registerUI.showRegisterUI(this);
