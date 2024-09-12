@@ -137,7 +137,9 @@ public class MainUI extends Application {
         // 添加登出按钮
         VBox logoutBox = new VBox();
         logoutBox.getStyleClass().add("item-box");
-        Circle logoutIcon = new Circle(10, Color.web("#009b9f"));
+        FontIcon logoutIcon = new FontIcon(FontAwesome.SIGN_OUT);// 使用 Ikonli FontIcon 替代 Circle
+        logoutIcon.setIconSize(20); // 设置图标大小
+        logoutIcon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
         Label logoutLabel = new Label("登出");
         logoutLabel.getStyleClass().add("label");
         Tooltip logoutTip = new Tooltip("登出");

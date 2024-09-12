@@ -15,7 +15,7 @@ function loadPdf(url) {
     loadingTask.promise.then(function(pdf) {
         console.log('PDF加载成功');
         pdfDoc = pdf;
-        var numPages = Math.min(pdf.numPages, 20); // 只渲染前20页
+        var numPages = Math.min(pdf.numPages, 10); // 只渲染前20页
         console.log('总页数: ' + pdf.numPages + ', 渲染页数: ' + numPages);
 
         // 清空之前的内容

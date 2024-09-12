@@ -84,6 +84,11 @@ public class LibraryUI_Manager extends Application {
         Region region=new Region();
         region.setMinWidth(160);
         searchBox.getChildren().addAll(region,logoutButton);
+
+        Region spacersearchBoxPro = new Region();//设置间隔
+        spacersearchBoxPro.setMinHeight(2);  // 设置宽度为2
+        VBox searchBoxPro = new VBox(searchBox, spacersearchBoxPro);
+
         logoutButton.setAlignment(Pos.TOP_RIGHT);//fuck
         addButton.setOnAction(e -> showAddDeleteWindow());
         addbButton.setOnAction(e -> showAddbWindow());
@@ -137,7 +142,7 @@ public class LibraryUI_Manager extends Application {
 
         // 布局
         BorderPane mainLayout = new BorderPane();
-        mainLayout.setTop(searchBox);
+        mainLayout.setTop(searchBoxPro);
         mainLayout.setCenter(resultBox);
 
         //mainLayout.setRight(logoutBox); // 将登出按钮添加到右上角
@@ -161,7 +166,7 @@ public class LibraryUI_Manager extends Application {
             }
         });
 
-        root.setTop(searchBox);
+        root.setTop(searchBoxPro);
         root.setCenter(resultBox);
         //root.setRight(logoutBox);
         //root.setRight(logoutButton);
