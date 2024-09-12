@@ -4013,10 +4013,10 @@ java.net.BindException: Address already in use: bind
 Д©║Ф│╞: Accepted new client connection from /127.0.0.1
 9Ф°┬ 11, 2024 10:52:16 Д╦▀Е█┬ server.MainServer main
 Д©║Ф│╞: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:07:44 обнГ server.MainServer main
-пео╒: Server is starting...
-9тб 11, 2024 7:07:44 обнГ server.MainServer main
-яожь: Server encountered an error: 
+9О©╫О©╫ 11, 2024 7:07:44 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Server is starting...
+9О©╫О©╫ 11, 2024 7:07:44 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫О©╫О©╫: Server encountered an error: 
 java.net.BindException: Address already in use: bind
 	at java.base/sun.nio.ch.Net.bind0(Native Method)
 	at java.base/sun.nio.ch.Net.bind(Net.java:555)
@@ -4028,56 +4028,56 @@ java.net.BindException: Address already in use: bind
 	at main.MainClass.lambda$start$0(MainClass.java:25)
 	at java.base/java.lang.Thread.run(Thread.java:842)
 
-9тб 11, 2024 7:07:44 обнГ server.MainServer main
-пео╒: Server is shutting down...
-9тб 11, 2024 7:10:01 обнГ server.MainServer main
-пео╒: Server is starting...
-9тб 11, 2024 7:10:02 обнГ server.MainServer main
-пео╒: Server is running and listening on port 8080...
-9тб 11, 2024 7:10:08 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:14 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:14 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:16 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
-9тб 11, 2024 7:10:17 обнГ server.MainServer main
-пео╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:07:44 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Server is shutting down...
+9О©╫О©╫ 11, 2024 7:10:01 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Server is starting...
+9О©╫О©╫ 11, 2024 7:10:02 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Server is running and listening on port 8080...
+9О©╫О©╫ 11, 2024 7:10:08 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:14 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:14 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:16 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
+9О©╫О©╫ 11, 2024 7:10:17 О©╫О©╫О©╫О©╫ server.MainServer main
+О©╫О©╫о╒: Accepted new client connection from /127.0.0.1
 9Ф°┬ 11, 2024 7:46:54 Д╦▀Е█┬ server.MainServer main
 Д©║Ф│╞: Server is starting...
 9Ф°┬ 11, 2024 7:46:54 Д╦▀Е█┬ server.MainServer main
