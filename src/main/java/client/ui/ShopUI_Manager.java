@@ -4,6 +4,8 @@ import client.service.ShoppingStore;
 import javafx.application.Application;
 import client.service.ShoppingProduct;
 import client.service.ShoppingOrder;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -548,70 +550,41 @@ public class ShopUI_Manager extends Application {
         // 创建评论界面
         System.out.println("显示评论: " + productID); // 调试日志
         commentView = new BorderPane();
-        VBox commentsVBox = new VBox(10); // 间距为10
-        commentsVBox.setPadding(new Insets(10)); // 内边距为10
-
         // 添加返回按钮
         Button backButton = new Button("返回");
         backButton.getStyleClass().add("main-button");
         backButton.setOnAction(e -> {
             System.out.println("返回到商品页面");  // 调试日志
-            productsTab.setContent(productView);
-            //mainPane.getChildren().remove(commentView);
+            root.setCenter(createProductsPane());
         });
+
+
+        ListView<VBox> commentList = new ListView<>();
+        ObservableList<VBox> items = FXCollections.observableArrayList();
+        commentList.setItems(items);
+        ScrollPane scrollPane = new ScrollPane(commentList);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+
+
+        commentView.setBottom(backButton);
+        commentView.setCenter(scrollPane);
+        BorderPane.setAlignment(backButton, Pos.CENTER);
 
         try {
             ShoppingComment.oneComment[] comments = shoppingComment.getProductComments(productID, 0);
+            items.clear();
             if (comments != null && comments.length > 0) {
                 for (ShoppingComment.oneComment comment : comments) {
-                    // 创建单个评论的视图
-                    AnchorPane commentPane = new AnchorPane();
-                    commentPane.setPrefSize(400, 100); // 设置视图的尺寸
-
-                    // 创建并添加用户名标签
-                    Label usernameLabel = new Label("用户: " + comment.getUsername());
-                    usernameLabel.setLayoutX(10);
-                    usernameLabel.setLayoutY(10);
-                    commentPane.getChildren().add(usernameLabel);
-
-                    // 创建并添加评论内容标签
-                    Label contentLabel = new Label("评论内容: " + comment.getCommentContent());
-                    contentLabel.setLayoutX(10);
-                    contentLabel.setLayoutY(40);
-                    contentLabel.setPrefWidth(380);
-                    contentLabel.setWrapText(true);
-                    commentPane.getChildren().add(contentLabel);
-
-                    // 显示评分
-                    Label attitudeLabel = new Label();
-                    switch (comment.getCommentAttitude()) {
-                        case 1:
-                            attitudeLabel.setText("评分: 差评");
-                            break;
-                        case 2:
-                            attitudeLabel.setText("评分: 中评");
-                            break;
-                        case 3:
-                            attitudeLabel.setText("评分: 好评");
-                            break;
-                        default:
-                            attitudeLabel.setText("评分: 未知");
-                    }
-                    attitudeLabel.setLayoutX(10);
-                    attitudeLabel.setLayoutY(70);
-                    commentPane.getChildren().add(attitudeLabel);
-
-                    // 添加单个评论到 VBox
-                    commentsVBox.getChildren().add(commentPane);
-                    System.out.println("已找到相关评论");
-                    // 将返回按钮和评论VBox添加到评论界面
-                    commentView.setTop(backButton);
-                    commentView.setCenter(commentsVBox);
-
-                    // 显示评论界面，添加到主StackPane
-                    productsTab.setContent(commentView);
-
+                    VBox commentItem=new VBox();
+                    Label username=new Label("用户账号: "+comment.getUsername());
+                    Label commentAttitude=new Label("评论态度: "+comment.getCommentAttitude());
+                    Label commentContent=new Label("评论内容: "+comment.getCommentContent());
+                    commentItem.getChildren().addAll(username,commentAttitude,commentContent);
+                    items.add(commentItem);
                 }
+                root.setCenter(commentView);
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "没有找到评论或者无法加载评论。");
                 alert.showAndWait();
