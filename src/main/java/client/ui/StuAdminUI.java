@@ -16,10 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -109,8 +106,14 @@ public class StuAdminUI extends Application {
         table.getColumns().addAll(nameColumn, idColumn, genderColumn, originColumn, birthdayColumn, academyColumn);
         table.setItems(FXCollections.observableArrayList(students));
 
+        ScrollPane scrollPane=new ScrollPane(table);
         VBox vbox = new VBox();
-        vbox.getChildren().add(table);
+        vbox.getChildren().add(scrollPane);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true); // 使 ListView 高度适应 ScrollPane
+
+// 确保 ListView 填充 ScrollPane
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
         return vbox;
     }
 
