@@ -42,7 +42,8 @@ public class Bankui_stu {
 
         // 创建按钮栏，结构为HBox
         buttonsBox = new HBox(10);
-        buttonsBox.setPadding(new Insets(0, 0, 10, 0));
+        buttonsBox.setPadding(new Insets(5, 0, 10, 10));
+        buttonsBox.setAlignment(Pos.CENTER);
 
         Button loginButton = new Button("登录");
         loginButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
@@ -59,15 +60,17 @@ public class Bankui_stu {
         // 将按钮栏放置在顶部
         rightBox.setTop(buttonsBox);
         // 设置 buttonsBox 在 rightBox 的顶部居中对齐
-        BorderPane.setAlignment(buttonsBox, Pos.CENTER);
+        //BorderPane.setAlignment(buttonsBox, Pos.CENTER);
 
         // 创建登录表单，结构为VBox
         loginBox = createLoginForm(user);
         // 将登录表单放置在中心
         rightBox.setCenter(loginBox);
+        BorderPane.setAlignment(loginBox, Pos.CENTER);
 
         // 创建注册表单，结构为VBox
         registerBox = createRegisterForm();
+        BorderPane.setAlignment(registerBox, Pos.CENTER);
         // 初始时隐藏注册表单
         registerBox.setVisible(false);
 
@@ -126,11 +129,13 @@ public class Bankui_stu {
     private static VBox createLoginForm(User user) {
         VBox loginForm = new VBox(10);
         loginForm.setPadding(new Insets(10));
+        Region region=new Region();
+        region.setMinHeight(30);
         Label welcomeLabel = new Label("登录银行账号");
         welcomeLabel.getStyleClass().add("body-font");
         Label accountLabel = new Label("账号: " + user.getUsername()); // 显示用户名
         accountLabel.getStyleClass().add("body-font");
-        loginForm.getChildren().addAll(welcomeLabel, accountLabel);
+        loginForm.getChildren().addAll(region,welcomeLabel, accountLabel);
 
         Label passwordLabel = new Label("密码:");
         passwordLabel.getStyleClass().add("body-font");
@@ -153,11 +158,14 @@ public class Bankui_stu {
         Label welcomeLabel=new Label("注册银行账号");
         welcomeLabel.getStyleClass().add("body-font");
 
+        Region region=new Region();
+        region.setMinHeight(30);
+
         Label passwordLabel = new Label("密码:");
         passwordLabel.getStyleClass().add("body-font");
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("请输入密码");
-        registerForm.getChildren().addAll(welcomeLabel,passwordLabel, passwordField);
+        registerForm.getChildren().addAll(region,welcomeLabel,passwordLabel, passwordField);
         passwordField.getStyleClass().add("input-field");
 
 

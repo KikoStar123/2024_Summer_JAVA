@@ -216,10 +216,16 @@ public class LibraryUI {
         });
         resultTable.getColumns().addAll(imageColumn, titleColumn, authorColumn, libnumColumn, curnumColumn);
 
+        ScrollPane scrollPane=new ScrollPane(resultTable);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true); // 使 ListView 高度适应 ScrollPane
+
         Region spacer = new Region();
         spacer.setMinHeight(2); // 设置你想要的距离
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
-        VBox resultBox = new VBox(spacer, resultTable);
+
+        VBox resultBox = new VBox(spacer, scrollPane);
 
         // 布局
         BorderPane mainLayout = new BorderPane();

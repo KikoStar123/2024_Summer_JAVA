@@ -5,13 +5,16 @@ import client.service.User;
 import com.sun.javafx.stage.EmbeddedWindow;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -32,6 +35,68 @@ public class CourseSelectionUI {
         updateSelectedCourses();
     }
 
+    public BorderPane createCover(){
+        ImageView photo = new ImageView(new Image(getClass().getResource("/cover-library.jpg").toExternalForm()));
+        photo.setFitWidth(440); // 你可以根据窗口大小调整这个值
+        photo.setFitHeight(550); // 你可以根据窗口大小调整这个值
+        //photo.setPreserveRatio(true);//保持图片的宽高比例不变
+
+        Button loginButton=new Button("进 入 选 课 系 统");
+        loginButton.getStyleClass().add("cover-button"); // 应用CSS中的按钮样式
+        loginButton.setOnAction(e->{
+            MainUI.borderPane.setCenter(createCourseSelectionView());
+        });
+
+        StackPane stackPaneLeft = new StackPane(photo);
+        stackPaneLeft.setPrefSize(440, 550); // 设置小框框的大小
+
+        StackPane stackPaneRight = new StackPane(loginButton);
+        stackPaneRight.setPrefSize(440, 550); // 设置小框框的大小
+
+        // 设置边框和圆角
+        stackPaneLeft.setBorder(new Border(new BorderStroke(
+                Color.rgb(205, 237, 222), // 边框颜色
+                BorderStrokeStyle.SOLID, // 边框样式
+                new CornerRadii(10), // 圆角半径
+                new BorderWidths(4) // 边框宽度
+        )));
+        stackPaneRight.setBorder(new Border(new BorderStroke(
+                Color.rgb(205, 237, 222), // 边框颜色
+                BorderStrokeStyle.SOLID, // 边框样式
+                new CornerRadii(10), // 圆角半径
+                new BorderWidths(4) // 边框宽度
+        )));
+
+        // 设置背景颜色为浅灰色
+        stackPaneRight.setBackground(new Background(new BackgroundFill(
+                Color.rgb(245, 245, 245), // 背景颜色
+                new CornerRadii(10), // 圆角半径
+                Insets.EMPTY // 内边距
+        )));
+
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER); // 设置GridPane居中
+        gridPane.setHgap(20);
+        gridPane.setVgap(20);
+        gridPane.setPadding(new Insets(10, 10, 10, 10));
+
+        // 将photo放置在GridPane的第一列第一行，并居中
+        GridPane.setConstraints(stackPaneLeft, 0, 0);
+        GridPane.setHalignment(stackPaneLeft, HPos.LEFT);
+        GridPane.setValignment(stackPaneLeft, VPos.CENTER);
+        gridPane.getChildren().add(stackPaneLeft);
+
+        // 将loginButton放置在GridPane的第二列第一行，并靠右
+        GridPane.setConstraints(stackPaneRight, 1, 0);
+        GridPane.setHalignment(stackPaneRight, HPos.RIGHT);
+        GridPane.setValignment(stackPaneLeft, VPos.CENTER);
+        gridPane.getChildren().add(stackPaneRight);
+
+        BorderPane Pane = new BorderPane();
+        Pane.setCenter(gridPane); // 将GridPane放置在BorderPane的中心
+
+        return Pane;
+    }
     public BorderPane createCourseSelectionView() {
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane, 600, 400);

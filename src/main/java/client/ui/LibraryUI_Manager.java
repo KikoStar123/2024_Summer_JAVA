@@ -10,10 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -138,12 +135,17 @@ public class LibraryUI_Manager extends Application {
         });
         resultTable.getColumns().addAll(imageColumn, titleColumn, authorColumn, isbnColumn,libnumColumn, curnumColumn);
 
-        VBox resultBox = new VBox(10, resultTable);
+        ScrollPane scrollPane=new ScrollPane(resultTable);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true); // 使 ListView 高度适应 ScrollPane
+
+// 确保 ListView 填充 ScrollPane
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
         // 布局
         BorderPane mainLayout = new BorderPane();
         mainLayout.setTop(searchBoxPro);
-        mainLayout.setCenter(resultBox);
+        mainLayout.setCenter(scrollPane);
 
         //mainLayout.setRight(logoutBox); // 将登出按钮添加到右上角
         // 查询按钮事件
@@ -167,7 +169,7 @@ public class LibraryUI_Manager extends Application {
         });
 
         root.setTop(searchBoxPro);
-        root.setCenter(resultBox);
+        root.setCenter(scrollPane);
         //root.setRight(logoutBox);
         //root.setRight(logoutButton);
 
