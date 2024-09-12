@@ -20,6 +20,11 @@
     -fx-text-fill: #718771;
 }
 
+.item-box:pressed {
+    -fx-background-color: rgba(0, 155, 159, 0.3);
+    -fx-border-color: rgba(0, 49, 83, 0.8);
+}
+
 .label {
     -fx-font-family: "Open Sans";
     -fx-font-weight: bold;

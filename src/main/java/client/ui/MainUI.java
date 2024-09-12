@@ -42,8 +42,10 @@ public class MainUI extends Application {
         borderPane = new BorderPane();
 
         // 创建左侧的按钮栏
-        VBox leftBox = new VBox(); // 设置间距
+        VBox leftBox = new VBox(5); // 设置间距
         leftBox.setPadding(new Insets(10)); // 设置内边距
+        leftBox.setStyle("-fx-border-color: #009b9f; -fx-border-width: 1.5; " +
+                "-fx-border-style: solid; -fx-padding: 10; -fx-background-color: rgba(205, 237, 222, 0.8);-fx-border-radius: 2px;");
 
         // 添加功能按钮
         VBox libBox = new VBox();
@@ -169,8 +171,8 @@ public class MainUI extends Application {
 
         // 设置场景
         Scene scene = new Scene(borderPane, 1000, 618); // 调整尺寸以适应新布局
-        primaryStage.setMinWidth(1000); // 最小宽度为800像素
-        primaryStage.setMinHeight(618); // 最小高度为600像素
+        primaryStage.setMinWidth(1050); // 最小宽度为800像素
+        primaryStage.setMinHeight(650); // 最小高度为600像素
 
         // 加载CSS样式表
         scene.getStylesheets().add("current-button.css");

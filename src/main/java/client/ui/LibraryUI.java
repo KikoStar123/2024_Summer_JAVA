@@ -61,23 +61,11 @@ public class LibraryUI {
             MainUI.borderPane.setCenter(createLibraryView());
         });
 
-//        VBox vbox = new VBox(photo);
-//        vbox.setAlignment(Pos.CENTER); // 将图片在VBox中居中
-//
-//        BorderPane Pane = new BorderPane();
-//        Pane.setLeft(vbox); // 将VBox放置在左侧
-//        Pane.setBottom(loginButton);
-//        BorderPane.setAlignment(loginButton, Pos.CENTER_RIGHT);
-
         StackPane stackPaneLeft = new StackPane(photo);
         stackPaneLeft.setPrefSize(440, 550); // 设置小框框的大小
-        //stackPane.setClip(new Rectangle(450, 600)); // 只显示框框内的图片部分
-//        stackPaneLeft.getStyleClass().add("my-stack-pane-style");
 
         StackPane stackPaneRight = new StackPane(loginButton);
         stackPaneRight.setPrefSize(440, 550); // 设置小框框的大小
-//        stackPaneRight.getStyleClass().add("my-stack-pane-style");
-
 
         // 设置边框和圆角
         stackPaneLeft.setBorder(new Border(new BorderStroke(
@@ -99,13 +87,6 @@ public class LibraryUI {
                 new CornerRadii(10), // 圆角半径
                 Insets.EMPTY // 内边距
         )));
-
-
-//        BorderPane Pane = new BorderPane();
-//        Pane.setLeft(stackPane); // 将StackPane放置在左侧
-//        Pane.setBottom(loginButton);
-//        BorderPane.setAlignment(loginButton, Pos.CENTER_RIGHT);
-//        //Pane.setPadding(new Insets(20)); // 所有边距设置为20像素
 
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER); // 设置GridPane居中
@@ -342,7 +323,7 @@ public class LibraryUI {
         Label userLabel = new Label("用户: " + user.getUsername());
         TableView<LibRecord> borrowedBooksTable = new TableView<>();
 
-// 设置 titleColumn 的单元格值工厂
+        // 设置 titleColumn 的单元格值工厂
         TableColumn<LibRecord, String> titleColumn = new TableColumn<>("书名");
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         TableColumn<LibRecord, String> isbnColumn = new TableColumn<>("ISBN");
