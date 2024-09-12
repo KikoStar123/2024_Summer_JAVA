@@ -35,106 +35,7 @@ public class StuUI extends Application {
     }
 
     public VBox createStudentInfoView() {
-        if(user.getRole()== Role.StuInfoManager) {
-            StudentInformation.oneStudentInformation[] students = StudentInformation.viewAllStudentInfo();
 
-            TableView<StudentInformation.oneStudentInformation> table = new TableView<>();
-
-            table.setEditable(true); // 设置表格为可编辑
-            // 清除现有的列，防止重复添加
-            table.getColumns().clear();
-
-            TableColumn<StudentInformation.oneStudentInformation, String> nameColumn = new TableColumn<>("Name");
-            TableColumn<StudentInformation.oneStudentInformation, String> idColumn = new TableColumn<>("ID");
-            TableColumn<StudentInformation.oneStudentInformation, String> genderColumn = new TableColumn<>("Gender");
-            TableColumn<StudentInformation.oneStudentInformation, String> originColumn = new TableColumn<>("Origin");
-            TableColumn<StudentInformation.oneStudentInformation, String> birthdayColumn = new TableColumn<>("Birthday");
-            TableColumn<StudentInformation.oneStudentInformation, String> academyColumn = new TableColumn<>("Academy");
-
-            nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-            idColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getId()));
-            genderColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGender()));
-            originColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getOrigin()));
-            birthdayColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getBirthday()));
-            academyColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAcademy()));
-
-// 设置列为可编辑
-            nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-            nameColumn.setOnEditCommit(event -> {
-                StudentInformation.oneStudentInformation student = event.getRowValue();
-                student.setName(event.getNewValue());
-                boolean success = modifyOneStudentInfo(student.getId(), student);
-                showAlert(success, student.getId());
-            });
-
-            idColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-            idColumn.setOnEditCommit(event -> {
-                StudentInformation.oneStudentInformation student = event.getRowValue();
-                student.setId(event.getNewValue());
-                boolean success = modifyOneStudentInfo(student.getId(), student);
-                showAlert(success, student.getId());
-            });
-
-            genderColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-            genderColumn.setOnEditCommit(event -> {
-                StudentInformation.oneStudentInformation student = event.getRowValue();
-                student.setGender(event.getNewValue());
-                boolean success = modifyOneStudentInfo(student.getId(), student);
-                showAlert(success, student.getId());
-            });
-
-            originColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-            originColumn.setOnEditCommit(event -> {
-                StudentInformation.oneStudentInformation student = event.getRowValue();
-                student.setOrigin(event.getNewValue());
-                boolean success = modifyOneStudentInfo(student.getId(), student);
-                showAlert(success, student.getId());
-            });
-
-            birthdayColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-            birthdayColumn.setOnEditCommit(event -> {
-                StudentInformation.oneStudentInformation student = event.getRowValue();
-                student.setBirthday(event.getNewValue());
-                boolean success = modifyOneStudentInfo(student.getId(), student);
-                showAlert(success, student.getId());
-            });
-
-            academyColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-            academyColumn.setOnEditCommit(event -> {
-                StudentInformation.oneStudentInformation student = event.getRowValue();
-                student.setAcademy(event.getNewValue());
-                boolean success = modifyOneStudentInfo(student.getId(), student);
-                showAlert(success, student.getId());
-            });
-            table.getColumns().addAll(nameColumn, idColumn, genderColumn, originColumn, birthdayColumn, academyColumn);
-            table.setItems(FXCollections.observableArrayList(students));
-
-            VBox vbox = new VBox();
-            vbox.getChildren().add(table);
-            return vbox;
-
-        }else {
-            //学生只需要显示信息
-
-//            VBox vbox = new VBox(10);
-//            vbox.setAlignment(Pos.CENTER); // 设置对齐方式
-//            vbox.getStyleClass().add("card");
-//
-//            FontAwesomeIconView icon = new FontAwesomeIconView(FontAwesomeIcon.USER);
-//            icon.setStyle("-fx-fill: #406ff3; -fx-font-size: 20px;");
-//
-//            Label nameLabel = new Label("姓名: 杨清淞");
-//            nameLabel.getStyleClass().add("label-title");
-//
-//            Label idLabel = new Label("学号: 09022301");
-//            idLabel.getStyleClass().add("label-content");
-//
-//            vbox.getChildren().addAll(icon, nameLabel, idLabel);
-//            navbar.getChildren().add(vbox);
-//
-//            // 加载CSS文件
-//            Scene scene = new Scene(navbar);
-//            scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
             HBox hBox=new HBox();
             ImageView photo = new ImageView(new Image(getClass().getResource("/background-seu-2.jpg").toExternalForm()));
             photo.setFitWidth(400); // 你可以根据窗口大小调整这个值
@@ -175,23 +76,7 @@ public class StuUI extends Application {
             VBox Vboxxx=new VBox(hBox);
             return Vboxxx;
         }
-    }
-    //学籍修改成功后显示提示框
-    private void showAlert(boolean success, String id) {
-        Alert alert;
-        if (success) {
-            alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("修改成功");
-            alert.setHeaderText(null);
-            alert.setContentText("学生信息修改成功，ID: " + id);
-        } else {
-            alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("修改失败");
-            alert.setHeaderText(null);
-            alert.setContentText("学生信息修改失败，ID: " + id);
-        }
-        alert.showAndWait();
-    }
+
     public static void main(String[]args){
         launch(args);
     }

@@ -12819,3 +12819,23 @@ java.net.BindException: Address already in use: bind
 信息: Accepted new client connection from /127.0.0.1
 9月 12, 2024 11:07:09 上午 server.MainServer main
 信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 11:11:33 上午 server.MainServer main
+信息: Server is starting...
+9月 12, 2024 11:11:34 上午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 12, 2024 11:11:48 上午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 11:11:50 上午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 11:11:51 上午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 11:38:16 上午 server.MainServer main
+信息: Server is starting...
+9月 12, 2024 11:38:16 上午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 12, 2024 11:38:36 上午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 11:38:37 上午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 11:38:37 上午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
