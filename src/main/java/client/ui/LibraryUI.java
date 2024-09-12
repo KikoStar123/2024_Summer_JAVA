@@ -84,10 +84,10 @@ public class LibraryUI {
 
         // 设置边框和圆角
         stackPaneLeft.setBorder(new Border(new BorderStroke(
-                Color.BLACK, // 边框颜色
+                Color.rgb(205, 237, 222), // 边框颜色
                 BorderStrokeStyle.SOLID, // 边框样式
                 new CornerRadii(10), // 圆角半径
-                new BorderWidths(2) // 边框宽度
+                new BorderWidths(4) // 边框宽度
         )));
         stackPaneRight.setBorder(new Border(new BorderStroke(
                 Color.BLACK, // 边框颜色
@@ -95,6 +95,7 @@ public class LibraryUI {
                 new CornerRadii(10), // 圆角半径
                 new BorderWidths(2) // 边框宽度
         )));
+
 
 //        BorderPane Pane = new BorderPane();
 //        Pane.setLeft(stackPane); // 将StackPane放置在左侧
