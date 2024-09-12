@@ -1,5 +1,6 @@
 package client.ui;
 
+import client.service.Role;
 import client.service.User;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -157,7 +158,6 @@ public class MainUI extends Application {
         // 添加标签
         Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
 
-
         // 将左侧按钮栏添加到 BorderPane 的左侧
         borderPane.setLeft(leftBox);
 
@@ -223,8 +223,14 @@ public class MainUI extends Application {
     private void handleStudent(String username) {
         Platform.runLater(() -> {
                     StuUI stuUI = new StuUI(user);
-            VBox studentInfoView = stuUI.createStudentInfoView();
-            borderPane.setCenter(studentInfoView); // 假设 borderPane 是 MainUI 的一部分
+            if(user.getRole()== Role.StuInfoManager){//管理员
+                VBox studentInfoView = stuUI.createStudentInfoView_StuInfoManager();
+                borderPane.setCenter(studentInfoView); // 假设 borderPane 是 MainUI 的一部分
+            }
+            else{//学生
+                BorderPane stu_studentInfoView= stuUI.createStudentInfoView_Student();
+                borderPane.setCenter(stu_studentInfoView); // 假设 borderPane 是 MainUI 的一部分
+            }
         });
     }
 

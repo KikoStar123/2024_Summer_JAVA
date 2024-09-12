@@ -27,7 +27,7 @@
     -fx-text-fill: #003153;
 }
 
-/* 按钮规范 */
+/* 主要按钮规范 */
 /*定义了主要按钮的样式，包括背景色、边框颜色、圆角等*//*使用了*/
 .main-button {/*使用*/
     -fx-background-color: rgba(220,245,240, 0.1);
@@ -43,6 +43,31 @@
 }
 /*定义了主要按钮在按下时的样式*/
 .main-button:pressed {/*使用*/
+    -fx-background-color: rgba(0, 155, 159, 0.3);
+    -fx-border-color: #003153;
+}
+
+/* 封面按钮规范 */
+/*定义了封面按钮的样式，包括背景色、边框颜色、圆角等*//*使用了*/
+.cover-button {
+    -fx-font-family: "微软雅黑"; /* 字体 */
+    -fx-font-size: 24px; /* 设置字体大小 */
+    -fx-text-fill: #003153; /* 字体颜色 */
+    -fx-font-weight: bold; /* 设置字体加粗 */
+    -fx-background-color: rgba(220,245,240, 0.1);
+    -fx-border-color: #718771;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    transition: background-color 3s ease;
+    -fx-padding: 20px 80px; /* 设置内边距，增加左右间距，10px 是上下的内边距，40px 是左右的内边距 */
+}
+/*定义了封面按钮在鼠标悬停时的样式*/
+.cover-button:hover {
+    -fx-background-color: rgba(255, 217, 163, 0.8);
+}
+/*定义了封面按钮在按下时的样式*/
+.cover-button:pressed {
     -fx-background-color: rgba(0, 155, 159, 0.3);
     -fx-border-color: #003153;
 }

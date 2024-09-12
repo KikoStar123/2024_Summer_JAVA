@@ -4,31 +4,28 @@ import client.service.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import java.io.IOException;
-import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -36,10 +33,7 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 import java.util.ArrayList;
-import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static client.service.Bank.payment;
 import static client.service.ShoppingOrder.createOrder;
@@ -54,11 +48,12 @@ public class ShopUI_stu {
         this.borderPane = borderPane;
     }
     public BorderPane createCover(){
-        ImageView photo = new ImageView(new Image(getClass().getResource("/background-seu-2.jpg").toExternalForm()));
-        photo.setFitWidth(800); // 你可以根据窗口大小调整这个值
-        photo.setFitHeight(600); // 你可以根据窗口大小调整这个值
-        photo.setPreserveRatio(true);
-        Button loginButton=new Button("进入商店");
+        ImageView photo = new ImageView(new Image(getClass().getResource("/cover-shop.jpg").toExternalForm()));
+        photo.setFitWidth(440); // 你可以根据窗口大小调整这个值
+        photo.setFitHeight(550); // 你可以根据窗口大小调整这个值
+        //photo.setPreserveRatio(true);
+        Button loginButton=new Button("进 入 商 店");
+        loginButton.getStyleClass().add("cover-button"); // 应用CSS中的按钮样式
         loginButton.setOnAction(e->{
             try {
                 MainUI.borderPane.setCenter(getShopLayout());
@@ -66,10 +61,55 @@ public class ShopUI_stu {
                 throw new RuntimeException(ex);
             }
         });
+
+        StackPane stackPaneLeft = new StackPane(photo);
+        stackPaneLeft.setPrefSize(440, 550); // 设置小框框的大小
+
+        StackPane stackPaneRight = new StackPane(loginButton);
+        stackPaneRight.setPrefSize(440, 550); // 设置小框框的大小
+
+        // 设置边框和圆角
+        stackPaneLeft.setBorder(new Border(new BorderStroke(
+                Color.rgb(205, 237, 222), // 边框颜色
+                BorderStrokeStyle.SOLID, // 边框样式
+                new CornerRadii(10), // 圆角半径
+                new BorderWidths(4) // 边框宽度
+        )));
+        stackPaneRight.setBorder(new Border(new BorderStroke(
+                Color.rgb(205, 237, 222), // 边框颜色
+                BorderStrokeStyle.SOLID, // 边框样式
+                new CornerRadii(10), // 圆角半径
+                new BorderWidths(4) // 边框宽度
+        )));
+
+        // 设置背景颜色为浅灰色
+        stackPaneRight.setBackground(new Background(new BackgroundFill(
+                Color.rgb(245, 245, 245), // 背景颜色
+                new CornerRadii(10), // 圆角半径
+                Insets.EMPTY // 内边距
+        )));
+
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER); // 设置GridPane居中
+        gridPane.setHgap(20);
+        gridPane.setVgap(20);
+        gridPane.setPadding(new Insets(10, 10, 10, 10));
+
+        // 将photo放置在GridPane的第一列第一行，并居中
+        GridPane.setConstraints(stackPaneLeft, 0, 0);
+        GridPane.setHalignment(stackPaneLeft, HPos.LEFT);
+        GridPane.setValignment(stackPaneLeft, VPos.CENTER);
+        gridPane.getChildren().add(stackPaneLeft);
+
+        // 将loginButton放置在GridPane的第二列第一行，并靠右
+        GridPane.setConstraints(stackPaneRight, 1, 0);
+        GridPane.setHalignment(stackPaneRight, HPos.RIGHT);
+        GridPane.setValignment(stackPaneLeft, VPos.CENTER);
+        gridPane.getChildren().add(stackPaneRight);
+
         BorderPane Pane = new BorderPane();
-        Pane.setCenter(photo);
-        Pane.setBottom(loginButton);
-        BorderPane.setAlignment(loginButton, Pos.CENTER);
+        Pane.setCenter(gridPane); // 将GridPane放置在BorderPane的中心
+
         return Pane;
     }
     public VBox getShopLayout() throws IOException {

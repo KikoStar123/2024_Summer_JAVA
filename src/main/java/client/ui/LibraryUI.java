@@ -22,15 +22,11 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import com.dansoftware.pdfdisplayer.PDFDisplayer;
-import netscape.javascript.JSObject;
 import javafx.concurrent.Worker;
 
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
-import javafx.scene.shape.Rectangle;
+
 import javafx.scene.paint.Color;
 
 public class LibraryUI {
@@ -54,12 +50,13 @@ public class LibraryUI {
 
 
     public BorderPane createCover(){
-        ImageView photo = new ImageView(new Image(getClass().getResource("/background-seu-2.jpg").toExternalForm()));
-        photo.setFitWidth(400); // 你可以根据窗口大小调整这个值
+        ImageView photo = new ImageView(new Image(getClass().getResource("/cover-library.jpg").toExternalForm()));
+        photo.setFitWidth(440); // 你可以根据窗口大小调整这个值
         photo.setFitHeight(550); // 你可以根据窗口大小调整这个值
         //photo.setPreserveRatio(true);//保持图片的宽高比例不变
 
-        Button loginButton=new Button("进入图书馆");
+        Button loginButton=new Button("进 入 图 书 馆");
+        loginButton.getStyleClass().add("cover-button"); // 应用CSS中的按钮样式
         loginButton.setOnAction(e->{
             MainUI.borderPane.setCenter(createLibraryView());
         });
@@ -73,12 +70,12 @@ public class LibraryUI {
 //        BorderPane.setAlignment(loginButton, Pos.CENTER_RIGHT);
 
         StackPane stackPaneLeft = new StackPane(photo);
-        stackPaneLeft.setPrefSize(400, 550); // 设置小框框的大小
+        stackPaneLeft.setPrefSize(440, 550); // 设置小框框的大小
         //stackPane.setClip(new Rectangle(450, 600)); // 只显示框框内的图片部分
 //        stackPaneLeft.getStyleClass().add("my-stack-pane-style");
 
         StackPane stackPaneRight = new StackPane(loginButton);
-        stackPaneRight.setPrefSize(400, 550); // 设置小框框的大小
+        stackPaneRight.setPrefSize(440, 550); // 设置小框框的大小
 //        stackPaneRight.getStyleClass().add("my-stack-pane-style");
 
 
@@ -90,10 +87,17 @@ public class LibraryUI {
                 new BorderWidths(4) // 边框宽度
         )));
         stackPaneRight.setBorder(new Border(new BorderStroke(
-                Color.BLACK, // 边框颜色
+                Color.rgb(205, 237, 222), // 边框颜色
                 BorderStrokeStyle.SOLID, // 边框样式
                 new CornerRadii(10), // 圆角半径
-                new BorderWidths(2) // 边框宽度
+                new BorderWidths(4) // 边框宽度
+        )));
+
+        // 设置背景颜色为浅灰色
+        stackPaneRight.setBackground(new Background(new BackgroundFill(
+                Color.rgb(245, 245, 245), // 背景颜色
+                new CornerRadii(10), // 圆角半径
+                Insets.EMPTY // 内边距
         )));
 
 

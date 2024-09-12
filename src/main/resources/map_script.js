@@ -3,7 +3,9 @@ console.log('初始化地图开始');
 // 初始化地图
 var map = new AMap.Map('map', {
     center: [116.407395, 39.904211], // 北京的默认中心点
-    zoom: 10 // 缩放级别
+    zoom: 10, // 缩放级别
+    zooms: [3, 20], // 支持的缩放级别范围，增加到20级更高清
+    resizeEnable: true // 自动适应屏幕大小
 });
 
 console.log('高德地图对象创建成功');
@@ -28,28 +30,28 @@ function geocodeAddress(address, callback) {
         });
 }
 
-// 添加标记点函数，使用不同的图标
+// 添加标记点函数，使用自定义的图标
 function addMarker(location, title, iconUrl) {
     const [lng, lat] = location.split(',').map(parseFloat);
 
-    // 自定义标记点图标
+    // 创建自定义图标
     var icon = new AMap.Icon({
-        size: new AMap.Size(24, 34), // 图标大小
-        image: iconUrl, // 自定义图标
-        imageSize: new AMap.Size(24, 34) // 图标图片大小
+        size: new AMap.Size(40, 30), // 设置图标的大小
+        image: iconUrl, // 设置自定义图标的 URL
+        imageSize: new AMap.Size(40, 30) // 图片实际显示的大小
     });
 
+    // 创建标记点，并应用自定义图标
     var marker = new AMap.Marker({
         position: [lng, lat],
         title: title,
         map: map,
         icon: icon, // 使用自定义图标
-        offset: new AMap.Pixel(-12, -34), // 图标偏移量，确保图标底部与坐标对齐
-        zooms: [10, 20], // 缩放级别
+        offset: new AMap.Pixel(-40, -30), // 设置图标偏移量，确保图标底部中心对齐坐标点
         cursor: 'pointer'
     });
 
-    // 鼠标悬停时放大效果
+    // 鼠标悬停时跳动效果
     marker.on('mouseover', function() {
         marker.setAnimation('AMAP_ANIMATION_BOUNCE'); // 跳动效果
     });
@@ -62,14 +64,14 @@ function addMarker(location, title, iconUrl) {
     marker.on('click', function() {
         var infoWindow = new AMap.InfoWindow({
             content: `<strong>${title}</strong>`,
-            offset: new AMap.Pixel(0, -30),
+            offset: new AMap.Pixel(0, -30), // 信息窗口的偏移量，保持在标记点上方显示
             position: [lng, lat]
         });
         infoWindow.open(map, marker.getPosition());
     });
 }
 
-// 定义从 Java 传递的起点和终点文字地址，并进行地理编码
+// 显示路线函数，生成带有自定义标记图标的动态地图
 window.displayRoute = function(startAddress, endAddress) {
     console.log('显示路线从 ' + startAddress + ' 到 ' + endAddress);
 
@@ -105,7 +107,7 @@ window.displayRoute = function(startAddress, endAddress) {
                         // 调整地图视野，使路线全部展示在视野内
                         map.setFitView([routeLine]);
 
-                        // 添加起点和终点的标记点，使用相对路径
+                        // 添加起点和终点的标记点，使用自定义图标
                         addMarker(startLocation, '起点: ' + startAddress, './flag1.png');
                         addMarker(endLocation, '终点: ' + endAddress, './flag2.png');
 
@@ -124,3 +126,5 @@ window.displayRoute = function(startAddress, endAddress) {
 map.on('complete', function () {
     console.log('地图加载成功');
 });
+
+
