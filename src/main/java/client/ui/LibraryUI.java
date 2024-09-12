@@ -113,43 +113,6 @@ public class LibraryUI {
     }
     public BorderPane createLibraryView() {
 
-//        WebView webView = new WebView();//test
-//        WebEngine webEngine = webView.getEngine();//test
-//
-//        // Load your HTML file
-//        String htmlFilePath = getClass().getResource("/dynamic-button.html").toExternalForm();//test
-//        webEngine.load(htmlFilePath);//test
-//
-//        // 监听网页加载状态 //test
-//        webEngine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
-//            if (newState == javafx.concurrent.Worker.State.SUCCEEDED) {
-//                // Bind the Java object to JavaScript
-//                JSObject window = (JSObject) webEngine.executeScript("window");
-//                window.setMember("javaMethod", javaMethod);
-//
-//                // Execute JavaScript to manipulate the button
-//
-//                webEngine.executeScript(
-//                        "var button = document.getElementById('dynamicButton');" +
-//                                "if (button) {" +
-//                                "   button.setAttribute('data-text', '查询');" + //添加文字
-//                                "   var buttonText = button.getAttribute('data-text');" +
-//                                "   button.innerHTML = '<span>' + buttonText + '</span>';" +
-//                                "   button.addEventListener('click', function() {" +
-//                                "       window.javaMethod.handleClick();" + //添加响应
-//                                "   });" +
-//                                "} else {" +
-//                                "   console.error('ID 为 dynamicButton 的元素未找到');" +
-//                                "}"
-//                );
-//            }
-//        });
-
-//        WebView webView = new WebView();
-//        //webView.setPrefSize(450, 300);// 设置 WebView 的大小
-//        String htmlFilePath=getClass().getResource("/dynamic-button.html").toExternalForm();// HTML 文件路径
-//        webView.getEngine().load(htmlFilePath);// 加载内容
-
         // 搜索栏和按钮
         TextField nameField = new TextField();
         nameField.setPromptText("输入书名或作者");
