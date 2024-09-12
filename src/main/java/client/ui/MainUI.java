@@ -45,8 +45,9 @@ public class MainUI extends Application {
         // 创建左侧的按钮栏
         VBox leftBox = new VBox(5); // 设置间距
         leftBox.setPadding(new Insets(10)); // 设置内边距
-        leftBox.setStyle("-fx-border-color: #009b9f; -fx-border-width: 1.5; " +
-                "-fx-border-style: solid; -fx-padding: 10; -fx-background-color: rgba(205, 237, 222, 0.8);-fx-border-radius: 2px;");
+//        leftBox.setStyle("-fx-border-color: #009b9f; -fx-border-width: 1.5; " +
+//                "-fx-border-style: solid; -fx-padding: 10; -fx-background-color: rgba(205, 237, 222, 0.8);-fx-border-radius: 2px;");
+        leftBox.setStyle("-fx-border-style: none; -fx-padding: 10; -fx-background-color: rgba(205, 237, 222, 0.8);");
 
         // 添加功能按钮
         VBox libBox = new VBox();
@@ -155,22 +156,27 @@ public class MainUI extends Application {
         // 添加标签
         Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
 
-        // 将左侧按钮栏添加到 BorderPane 的左侧
-//        Region spacer = new Region();//设置间隔
-//        spacer.setMinWidth(2);  // 设置宽度为2
-//        HBox leftBoxPro = new HBox(leftBox, spacer);
-//        borderPane.setLeft(leftBoxPro);
-        borderPane.setLeft(leftBox);
+        // 将左侧按钮栏添加到 BorderPane 的左侧（设置分割线和与右侧间隔）
+        Separator verticalSeparator = new Separator();//设置竖向分割线
+        verticalSeparator.setOrientation(javafx.geometry.Orientation.VERTICAL);
+        verticalSeparator.setPrefHeight(200); // 设置分隔线的高度
+        Region spacer = new Region();//设置间隔
+        spacer.setMinWidth(2);  // 设置宽度为2
+        leftBox.getChildren().add(verticalSeparator);
+        HBox leftBoxPro = new HBox(leftBox, verticalSeparator, spacer);
+        borderPane.setLeft(leftBoxPro);
+        // borderPane.setLeft(leftBox);
+
+
+
 
         // 将搜索栏添加到 BorderPane 的顶部（并添加分割线）
-//        borderPane.setBottom(welcomeLabel);
-        Separator separator = new Separator();
-        separator.setOrientation(javafx.geometry.Orientation.HORIZONTAL);
-        separator.setPrefWidth(200); // 设置分隔线的宽度
-//        separator.setStyle("-fx-background-color: #fd1212; -fx-padding: 1px 0;"); // 设置分隔线的颜色和粗细
-        VBox welcomeLabelPro = new VBox(separator, welcomeLabel);
+        Separator separatorUnderMain = new Separator();
+        separatorUnderMain.setOrientation(javafx.geometry.Orientation.HORIZONTAL);
+        VBox welcomeLabelPro = new VBox(separatorUnderMain, welcomeLabel);
         borderPane.setBottom(welcomeLabelPro);
-        // 添加分割线
+
+        // 添加左侧导航栏按钮的分割线
         Separator separatorUnderButton = new Separator();
         separatorUnderButton.setOrientation(javafx.geometry.Orientation.HORIZONTAL);
         leftBox.getChildren().add(separatorUnderButton);
