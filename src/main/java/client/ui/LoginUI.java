@@ -121,6 +121,11 @@ public class LoginUI extends Application {
         // 创建"忘记密码"标签
         Label forgetLabel = new Label("忘记密码");
         forgetLabel.getStyleClass().add("link-label"); // 使用CSS样式模拟链接效果
+        forgetLabel.setStyle(
+                "-fx-text-fill: #003153;" //+ // 设置文本颜色为红色
+                        //"-fx-background-color: lightgray;" + // 设置背景颜色为浅灰色
+                        //"-fx-font-size: 16px;" // 设置字体大小为 16px
+        );
         forgetLabel.setOnMouseClicked(e -> handleforget());
 
         loginButton.setOnAction(e -> handleLogin());
