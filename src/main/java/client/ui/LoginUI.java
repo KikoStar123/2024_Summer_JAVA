@@ -362,40 +362,40 @@ public class LoginUI extends Application {
         props.put("mail.smtp.starttls.enable", "true"); // 启用TLS
 
         // 创建Session并配置用户名和密码
-//        Session session = Session.getInstance(props, new Authenticator() {
-//            @Override
-//            protected PasswordAuthentication getPasswordAuthentication() {
-//                return new PasswordAuthentication(smtpUsername, smtpPassword);
-//            }
-////          @Override
-////          protected PasswordAuthentication getPasswordAuthentication() {
-////              // 返回null，表示不进行身份验证
-////              return null;
-////          }
-//        });
-        //try {
+        Session session = Session.getInstance(props, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(smtpUsername, smtpPassword);
+            }
+//          @Override
+//          protected PasswordAuthentication getPasswordAuthentication() {
+//              // 返回null，表示不进行身份验证
+//              return null;
+//          }
+        });
+        try {
             // 创建邮件消息
-//            Message message = new MimeMessage(session);
-//            message.setFrom(new InternetAddress(smtpUsername));
-//            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-//            message.setSubject("重置密码验证码");
-//            message.setText("您的验证码是：" + verificationCode);
-//
-//            // 发送邮件
-//            Transport.send(message);
-//
-//            // 将验证码缓存起来，以便后续验证
-//            // 这里可以使用任何你喜欢的缓存机制，例如Ehcache、Redis等
-//            // cache.put(toEmail, verificationCode, 3600); // 假设方法，实际代码需要替换
-//
-//            System.out.println("验证码已发送到：" + toEmail);
-//            //if(verificationCode==codeField)
-//
-//        } catch (MessagingException e) {
-//            e.printStackTrace();
-//            System.out.println("发送验证码失败。");
-//            System.out.println("Error message: " + e.getMessage());
-//        }
+            Message message = new MimeMessage((MimeMessage) session);
+            message.setFrom(new InternetAddress(smtpUsername));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject("重置密码验证码");
+            message.setText("您的验证码是：" + verificationCode);
+
+            // 发送邮件
+            Transport.send(message);
+
+            // 将验证码缓存起来，以便后续验证
+            // 这里可以使用任何你喜欢的缓存机制，例如Ehcache、Redis等
+            // cache.put(toEmail, verificationCode, 3600); // 假设方法，实际代码需要替换
+
+            System.out.println("验证码已发送到：" + toEmail);
+            //if(verificationCode==codeField)
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("发送验证码失败。");
+            System.out.println("Error message: " + e.getMessage());
+        }
             return verificationCode;
         }
 

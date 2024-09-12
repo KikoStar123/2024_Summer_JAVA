@@ -4,10 +4,7 @@ import client.service.ClientService;
 import client.service.User;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
@@ -122,15 +119,28 @@ public class UpdatePwdUI extends Application {
             String confirmPassword = confirmPasswordField.isVisible() ? confirmPasswordField.getText() : confirmPasswordVisibleField.getText();
 
             if (!newPassword.equals(confirmPassword)) {
-                System.out.println("新密码和确认密码不匹配！");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("密码修改");
+                alert.setHeaderText(null);
+                alert.setContentText("新密码和确认密码不匹配！!");
+                alert.showAndWait();
                 return;
             }
-          ClientService clientService=new ClientService();
-           boolean issuccess = clientService.updateUserPwd(user.getUsername(),oldPassword,newPassword);
-            if(issuccess){System.out.println("密码更新成功！");}
-            else{System.out.println("密码更新失败！");}
-
+            ClientService clientService=new ClientService();
+            boolean issuccess = clientService.updateUserPwd(user.getUsername(),oldPassword,newPassword);
+            if(issuccess){
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("密码修改");
+                alert.setHeaderText(null);
+                alert.setContentText("密码修改成功!");
+                alert.showAndWait();}
+            else{ Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("密码修改");
+                alert.setHeaderText(null);
+                alert.setContentText("密码修改失败!");
+                alert.showAndWait();}
         });
+
 
         int dispx=5;
         int dispy=3;
