@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
@@ -45,19 +46,6 @@ public class Admin_CourseUI extends Application {
         Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
         primaryStage.getIcons().add(image);
 
-        BorderPane borderPane = createAdminCourseSelectionView();
-
-        // 设置场景
-        Scene scene = new Scene(borderPane, 1000, 618); // 调整尺寸以适应新布局
-        primaryStage.setMinWidth(1000); // 最小宽度为800像素
-        primaryStage.setMinHeight(618); // 最小高度为600像素
-
-        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
-
-    public BorderPane createAdminCourseSelectionView() {
         BorderPane borderPane = new BorderPane(); // 确保每次调用都创建新的实例
         topBar = new HBox(30);
         topBar.setPadding(new Insets(10));
@@ -67,12 +55,16 @@ public class Admin_CourseUI extends Application {
         btnAddCourses.getStyleClass().add("main-button");
         Button btnRefresh = new Button("刷新");
         btnRefresh.getStyleClass().add("main-button");
+        Button logoutButton = new Button("登出");
+        logoutButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
+        logoutButton.setOnAction(e -> handleLogout(primaryStage)); // 添加登出逻辑
         btnCheckCourses.setOnAction(e -> displayCourses());
         btnAddCourses.setOnAction(e -> showAddCourseDialog());
         btnRefresh.setOnAction(e -> refreshCourses());
-
-        topBar.getChildren().addAll(btnCheckCourses, btnAddCourses, btnRefresh);
+        Region region = new Region();
+        region.setMinWidth(600);
+        topBar.getChildren().addAll(btnCheckCourses, btnAddCourses, btnRefresh, region, logoutButton);
 
         searchField = new TextField();
         searchField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
@@ -90,7 +82,14 @@ public class Admin_CourseUI extends Application {
         VBox vBox = new VBox(20, topBar, searchBox, courseTableView);
         borderPane.setCenter(vBox);
 
-        return borderPane;
+        // 设置场景
+        Scene scene = new Scene(borderPane, 1000, 618); // 调整尺寸以适应新布局
+        primaryStage.setMinWidth(1000); // 最小宽度为800像素
+        primaryStage.setMinHeight(618); // 最小高度为600像素
+
+        scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     private void configureCourseTableView() {
@@ -114,6 +113,18 @@ public class Admin_CourseUI extends Application {
         courseTableView.setItems(courseList);
     }
 
+    private void handleLogout(Stage primaryStage) {
+        primaryStage.close(); // 关闭当前主界面
+
+        // 打开 LoginUI 界面
+        LoginUI loginUI = new LoginUI();
+        Stage loginStage = new Stage();
+        try {
+            loginUI.start(loginStage); // 显示登录界面
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void refreshCourses() {
         // 清除当前的课程列表
         courseList.clear();

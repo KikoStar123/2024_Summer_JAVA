@@ -134,24 +134,18 @@ public class MainUI extends Application {
         leftBox.getChildren().add(updateBox);
         updateBox.setOnMouseClicked(e -> handleupdatepwd(user.getUsername()));
 
-        if(user.getRole()==Librarian)
-        {
-            courseBox.setVisible(false);
-            stuBox.setVisible(false);
-            shopBox.setVisible(false);
-            bankBox.setVisible(false);
-            updateBox.setVisible(false);
-        }
-        if(user.getRole()==StuInfoManager)
-        {
-            courseBox.setVisible(false);
-            stuBox.setVisible(true);
-            shopBox.setVisible(false);
-            bankBox.setVisible(false);
-            updateBox.setVisible(false);
-            libBox.setVisible(false);
+        // 添加登出按钮
+        VBox logoutBox = new VBox();
+        logoutBox.getStyleClass().add("item-box");
+        Circle logoutIcon = new Circle(10, Color.web("#009b9f"));
+        Label logoutLabel = new Label("登出");
+        logoutLabel.getStyleClass().add("label");
+        Tooltip logoutTip = new Tooltip("登出");
+        Tooltip.install(logoutLabel, logoutTip);
+        logoutBox.getChildren().addAll(logoutIcon, logoutLabel);
+        leftBox.getChildren().add(logoutBox);
+        logoutBox.setOnMouseClicked(e -> handleLogout(primaryStage));
 
-        }
 
         // 添加标签
         Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
@@ -165,7 +159,6 @@ public class MainUI extends Application {
         leftBox.getChildren().add(verticalSeparator);
         HBox leftBoxPro = new HBox(leftBox, verticalSeparator, spacer);
         borderPane.setLeft(leftBoxPro);
-        // borderPane.setLeft(leftBox);
 
         // 将搜索栏添加到 BorderPane 的顶部（并添加分割线）
         Separator separatorUnderMain = new Separator();
@@ -242,6 +235,19 @@ public class MainUI extends Application {
                 borderPane.setCenter(stu_studentInfoView); // 假设 borderPane 是 MainUI 的一部分
             }
         });
+    }
+    // 处理登出操作，关闭当前窗口并返回登录界面
+    private void handleLogout(Stage primaryStage) {
+        primaryStage.close(); // 关闭当前主界面
+
+        // 打开 LoginUI 界面
+        LoginUI loginUI = new LoginUI();
+        Stage loginStage = new Stage();
+        try {
+            loginUI.start(loginStage); // 显示登录界面
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void display() {

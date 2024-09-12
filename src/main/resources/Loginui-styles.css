@@ -86,3 +86,11 @@
     -fx-border-radius: 4px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 1, 0.0, 1, 1);
 }
+.link-label {
+    -fx-text-fill: blue;
+    -fx-cursor: hand;
+}
+
+.link-label:hover {
+    -fx-underline: true;
+}

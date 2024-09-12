@@ -42,6 +42,7 @@ import java.net.URL;
 import static client.service.Role.BankManager;
 import static client.service.Role.Librarian;
 import static client.service.Role.CourseManager;
+import static client.service.Role.StuInfoManager;
 import java.util.Date;
 import java.util.UUID;
 import java.util.Random;
@@ -116,17 +117,20 @@ public class LoginUI extends Application {
         loginButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button registerButton = new Button("注册");
         registerButton.getStyleClass().add("main-button");
-        Button forgetButton = new Button("忘记密码");
-        forgetButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+
+        // 创建"忘记密码"标签
+        Label forgetLabel = new Label("忘记密码");
+        forgetLabel.getStyleClass().add("link-label"); // 使用CSS样式模拟链接效果
+        forgetLabel.setOnMouseClicked(e -> handleforget());
 
         loginButton.setOnAction(e -> handleLogin());
         registerButton.setOnAction(e -> handleRegister());
-        forgetButton.setOnAction(e-> handleforget());
+
         HBox buttonBox = new HBox(80); // 间距为10
         buttonBox.setAlignment(Pos.CENTER); // 水平居中
 
         // 将按钮添加到buttonBox
-        buttonBox.getChildren().addAll(loginButton, registerButton,forgetButton);
+        buttonBox.getChildren().addAll(loginButton, registerButton);
 
         // 将组件添加到网格中
         grid.add(title, 0, 0, 2, 1); // 标题居中
@@ -136,6 +140,9 @@ public class LoginUI extends Application {
         grid.add(passwordLabel, 0, 3);
         grid.add(passwordField, 1, 3);
         grid.add(buttonBox, 0, 5, 2, 1);
+        // 将"忘记密码"标签添加到按钮下方，并居中
+        GridPane.setHalignment(forgetLabel, HPos.CENTER); // 设置水平居中
+        grid.add(forgetLabel, 0, 6, 2, 1); // 添加到网格中，占据2列，位于第6行
 
         root.setLeft(webView); // 左侧放置 WebView
         root.setCenter(grid); // 右侧放置登录表单
@@ -210,6 +217,15 @@ public class LoginUI extends Application {
                         e.printStackTrace();
                     }
                 });
+            } else if(user.getRole() == StuInfoManager) {
+                Platform.runLater(() -> {
+                    StuAdminUI adminUI = new StuAdminUI(user);
+                    try {
+                        adminUI.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
             } else {
                 Platform.runLater(() -> {
                     MainUI mainUI = new MainUI(user);
@@ -228,7 +244,6 @@ public class LoginUI extends Application {
             alert.showAndWait();
         }
     }
-
     private void handleRegister() {
         RegisterUI registerUI = new RegisterUI();
         GridPane grid = registerUI.showRegisterUI(this);
