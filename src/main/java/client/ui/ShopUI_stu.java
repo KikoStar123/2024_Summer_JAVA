@@ -301,7 +301,7 @@ public class ShopUI_stu {
                         System.out.println("选中的地址: " + address);
                     }
                     try {
-                        ShoppingMap.addMapRecord(order.getProductID(), oneProduct.getProductAddress(), address);
+                        ShoppingMap.addMapRecord(order.getOrderID(), oneProduct.getProductAddress(), address);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
