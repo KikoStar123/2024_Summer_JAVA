@@ -61,10 +61,18 @@ public class LibraryUI {
             MainUI.borderPane.setCenter(createLibraryView());
         });
 
+        ImageView icon = new ImageView(new Image(getClass().getResource("/icon-library.jpg").toExternalForm()));
+        icon.setFitWidth(200); // 你可以根据窗口大小调整这个值
+        icon.setFitHeight(200); // 你可以根据窗口大小调整这个值
+
+        VBox vbox = new VBox(80); // 创建一个垂直布局，间距为10
+        vbox.getChildren().addAll(icon, loginButton);
+        vbox.setAlignment(Pos.CENTER); // 设置对齐方式为居中
+
         StackPane stackPaneLeft = new StackPane(photo);
         stackPaneLeft.setPrefSize(440, 550); // 设置小框框的大小
 
-        StackPane stackPaneRight = new StackPane(loginButton);
+        StackPane stackPaneRight = new StackPane(vbox);
         stackPaneRight.setPrefSize(440, 550); // 设置小框框的大小
 
         // 设置边框和圆角
@@ -124,16 +132,10 @@ public class LibraryUI {
         Button borrowButton = new Button("借阅记录");
         borrowButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
-//        //borrowButton.setMaxWidth(Region.USE_PREF_SIZE);
-//        webView.setMaxWidth(borrowButton.getMaxWidth());
-//        webView.setMinWidth(borrowButton.getMinWidth());
-//        webView.setStyle("-fx-border-radius: 5; -fx-background-radius: 5;");
-
         Label searchLabel = new Label("书名或作者:");
         searchLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
 
         HBox searchBox = new HBox(10, searchLabel, nameField, searchButton, borrowButton);
-        //HBox searchBox = new HBox(10, new Label("书名或作者:"), nameField, webView, borrowButton);
 
         searchBox.setAlignment(Pos.CENTER);//居中
         searchBox.setStyle("-fx-spacing: 40;");//设置了子节点之间的间距

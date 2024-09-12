@@ -138,12 +138,20 @@ public class RegisterUI  {
             String passwordText = passwordField.getText();
             String emailText = emailField.getText();
 
-            JSONObject result = ClientService.register(truename, Gender.valueOf(gender.toLowerCase()), stuid, originText, birthdayText, academyText, passwordText,emailText);
-            if (result.getString("status").equals("success")) {
-                showAlert(Alert.AlertType.INFORMATION, "注册成功", "注册成功！你的账号是：" + result.getString("username"));
+            // 检查输入内容是否为空
+            if (truename.isEmpty() || stuid.isEmpty() || gender == null || originText.isEmpty() ||
+                    birthdayText.isEmpty() || academyText.isEmpty() || passwordText.isEmpty() || emailText.isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "注册失败", "注册失败，请确保所有字段都已填写。");
             } else {
-                showAlert(Alert.AlertType.ERROR, "注册失败", "注册失败，请重试。");
+                // 如果所有字段都已填写，则继续注册流程
+                JSONObject result = ClientService.register(truename, Gender.valueOf(gender.toLowerCase()), stuid, originText, birthdayText, academyText, passwordText, emailText);
+                if (result.getString("status").equals("success")) {
+                    showAlert(Alert.AlertType.INFORMATION, "注册成功", "注册成功！你的账号是：" + result.getString("username"));
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "注册失败", "注册失败，请重试。");
+                }
             }
+
         });
 
         grid.getChildren().addAll(nameLabel, name, idLabel, id, genderLabel, genderComboBox, originLabel, origin, birthdayLabel, birthday, academyLabel, academy, passwordLabel, passwordField, emailLabel, emailField, registerButton,backButton);
