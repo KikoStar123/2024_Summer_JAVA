@@ -8,9 +8,8 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.UUID;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class FileStorageServer {
 
@@ -87,7 +86,7 @@ public class FileStorageServer {
                     }
                     File uploadFile = new File(UPLOAD_DIR + fileName);
                     try (FileOutputStream fos = new FileOutputStream(uploadFile)) {
-                        byte[] buffer = new byte[4096];
+                        byte[] buffer = new byte[8192]; // 增加缓冲区大小
                         int bytesRead;
                         while ((bytesRead = clientSocket.getInputStream().read(buffer)) != -1) {
                             fos.write(buffer, 0, bytesRead);
@@ -99,7 +98,7 @@ public class FileStorageServer {
                     File downloadFile = new File(UPLOAD_DIR + fileName);
                     if (downloadFile.exists()) {
                         try (FileInputStream fis = new FileInputStream(downloadFile)) {
-                            byte[] buffer = new byte[4096];
+                            byte[] buffer = new byte[8192]; // 增加缓冲区大小
                             int bytesRead;
                             while ((bytesRead = fis.read(buffer)) != -1) {
                                 clientSocket.getOutputStream().write(buffer, 0, bytesRead);
@@ -126,10 +125,36 @@ public class FileStorageServer {
                         System.out.println("delete fail");
                         out.println("Failed to delete file");
                     }
+                } else if (request.startsWith("HASH")) {
+                    String fileName = request.split(" ")[1];
+                    File file = new File(UPLOAD_DIR + fileName);
+                    if (file.exists()) {
+                        String fileHash = calculateFileHash(file);
+                        out.println(fileHash);
+                    } else {
+                        out.println("File not found");
+                    }
                 }
-            } catch (IOException e) {
+            } catch (IOException | NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
+        }
+
+        private String calculateFileHash(File file) throws IOException, NoSuchAlgorithmException {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            try (FileInputStream fis = new FileInputStream(file)) {
+                byte[] byteArray = new byte[1024];
+                int bytesCount;
+                while ((bytesCount = fis.read(byteArray)) != -1) {
+                    digest.update(byteArray, 0, bytesCount);
+                }
+            }
+            byte[] bytes = digest.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte b : bytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
         }
     }
 

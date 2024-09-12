@@ -382,9 +382,9 @@ public class ShoppingProduct {
             request.put("requestType", "product");
             request.put("parameters", new JSONObject()
                             .put("action", "search")
-                            .put("searchTerm", searchTerm))
-                    .put("sortBy", sortBy)
-                    .put("sortOrder", sortOrder);
+                            .put("searchTerm", searchTerm)
+                            .put("sortBy", sortBy)
+                            .put("sortOrder", sortOrder));
 
             // 发送请求
             out.println(request);
