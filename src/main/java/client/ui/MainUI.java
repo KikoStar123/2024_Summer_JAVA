@@ -167,9 +167,6 @@ public class MainUI extends Application {
         borderPane.setLeft(leftBoxPro);
         // borderPane.setLeft(leftBox);
 
-
-
-
         // 将搜索栏添加到 BorderPane 的顶部（并添加分割线）
         Separator separatorUnderMain = new Separator();
         separatorUnderMain.setOrientation(javafx.geometry.Orientation.HORIZONTAL);
