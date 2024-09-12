@@ -11,6 +11,7 @@ import javafx.geometry.VPos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -62,10 +63,27 @@ public class CourseSelectionUI {
             MainUI.borderPane.setCenter(createCourseSelectionView());
         });
 
+        ImageView icon = new ImageView(new Image(getClass().getResource("/icon-course.jpg").toExternalForm()));
+        icon.setFitWidth(200); // 你可以根据窗口大小调整这个值
+        icon.setFitHeight(200); // 你可以根据窗口大小调整这个值
+
+        // 创建阴影效果
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setColor(Color.rgb(0, 0, 0, 0.5)); // 设置阴影颜色
+        dropShadow.setRadius(10); // 设置阴影半径
+        dropShadow.setOffsetX(5); // 设置阴影水平偏移
+        dropShadow.setOffsetY(5); // 设置阴影垂直偏移
+        // 将阴影效果应用到 ImageView
+        icon.setEffect(dropShadow);
+
+        VBox vbox = new VBox(80); // 创建一个垂直布局，间距为10
+        vbox.getChildren().addAll(icon, loginButton);
+        vbox.setAlignment(Pos.CENTER); // 设置对齐方式为居中
+
         StackPane stackPaneLeft = new StackPane(photo);
         stackPaneLeft.setPrefSize(440, 550); // 设置小框框的大小
 
-        StackPane stackPaneRight = new StackPane(loginButton);
+        StackPane stackPaneRight = new StackPane(vbox);
         stackPaneRight.setPrefSize(440, 550); // 设置小框框的大小
 
         // 设置边框和圆角
