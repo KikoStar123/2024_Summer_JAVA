@@ -3,17 +3,22 @@ package client.ui;
 import client.service.CourseSelection;
 import client.service.User;
 import com.sun.javafx.stage.EmbeddedWindow;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.Set;
+import java.util.HashSet;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+
 
 public class CourseSelectionUI {
     private User user;
@@ -22,12 +27,14 @@ public class CourseSelectionUI {
     private ObservableList<CourseInfo> courseList;
     private ObservableList<CourseInfo> selectedCourses;
     private HBox topBar; // 保存顶部栏的引用，以便重新显示
+    private Random random;
 
     public CourseSelectionUI(User user) {
         this.user = user;
         this.courseSelection = new CourseSelection();
         this.courseList = FXCollections.observableArrayList();
         this.selectedCourses = FXCollections.observableArrayList();
+        this.random = new Random();
         updateCourseList();
         updateSelectedCourses();
     }
@@ -45,15 +52,11 @@ public class CourseSelectionUI {
         btnSelectedCourses.getStyleClass().add("main-button");
         btnMySchedule.getStyleClass().add("main-button");
 
-//        // 调整每个按钮的最大宽度
-//        btnAvailableCourses.setMaxWidth(Double.MAX_VALUE);
-//        btnSelectedCourses.setMaxWidth(Double.MAX_VALUE);
-//        btnMySchedule.setMaxWidth(Double.MAX_VALUE);
 
         // 绑定按钮点击事件
         btnAvailableCourses.setOnAction(e -> displayCourses(courseList, "选择", btnAvailableCourses));
         btnSelectedCourses.setOnAction(e -> displayCourses(selectedCourses, "退选", btnSelectedCourses));
-        btnMySchedule.setOnAction(e -> displayCourses(selectedCourses, "查看", btnMySchedule));
+        btnMySchedule.setOnAction(e -> showMySchedule());
 
         // 添加按钮到 topBar
         topBar.getChildren().addAll(btnAvailableCourses, btnSelectedCourses, btnMySchedule);
@@ -69,13 +72,8 @@ public class CourseSelectionUI {
         borderPane.setTop(topBar);
         borderPane.setCenter(courseListView);
 
-        // 加载样式表
-//        Scene scene = new Scene(borderPane, 600, 400);
-//        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-//        Stage primaryStage = new Stage();
-//        primaryStage.setScene(scene); // 将 Scene 添加到 Stage
-//        primaryStage.show();
         // 默认显示可选课程
+        refreshCourses(btnAvailableCourses);
         displayCourses(courseList, "选择", btnAvailableCourses);
 
         return borderPane;
@@ -83,20 +81,10 @@ public class CourseSelectionUI {
 
     private void updateCourseList() {
         CourseSelection.oneCourseinfo[] courseInfoArray = courseSelection.GetAllCourses();
-        CourseSelection.oneCourseinfo[] enrolledCourses = courseSelection.viewEnrolledCourses(user.getUsername());
         courseList.clear();
-
         for (CourseSelection.oneCourseinfo course : courseInfoArray) {
-            boolean isEnrolled = false;
-            if (enrolledCourses != null) {
-                for (CourseSelection.oneCourseinfo enrolledCourse : enrolledCourses) {
-                    if (course.getCourseID().equals(enrolledCourse.getCourseID())) {
-                        isEnrolled = true;
-                        break;
-                    }
-                }
-            }
-            if (!isEnrolled) {
+            // 检查课程是否已经在已选课程列表中
+            if (!selectedCourses.stream().anyMatch(c -> c.getCourseID().equals(course.getCourseID()))) {
                 courseList.add(new CourseInfo(course, courseSelection));
             }
         }
@@ -106,26 +94,136 @@ public class CourseSelectionUI {
         CourseSelection.oneCourseinfo[] enrolledCourses = courseSelection.viewEnrolledCourses(user.getUsername());
         selectedCourses.clear();
 
-        if (enrolledCourses != null && enrolledCourses.length > 0) {
+        if (!(enrolledCourses == null || enrolledCourses.length == 0)) {
             for (CourseSelection.oneCourseinfo course : enrolledCourses) {
+                // 使用 courseSelection 实例创建 CourseInfo 类的实例
                 selectedCourses.add(new CourseInfo(course, courseSelection));
             }
         }
     }
 
-    private void displayCourses(ObservableList<CourseInfo> courses, String buttonLabel, Button activeButton) {
+
+    public void showMySchedule() {
+        Stage scheduleStage = new Stage();
+        scheduleStage.setTitle("我的课表");
+        scheduleStage.initModality(Modality.APPLICATION_MODAL);
+
+        GridPane gridPane = createScheduleView();
+        VBox vbox = new VBox(gridPane);
+        vbox.setPadding(new Insets(10));
+        vbox.setSpacing(5);
+
+        Scene scene = new Scene(vbox, 600, 400);
+        scheduleStage.setScene(scene);
+        scheduleStage.showAndWait();
+    }
+    private GridPane createScheduleView() {
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
+        gridPane.setPadding(new Insets(10));
+        gridPane.setStyle("-fx-background-color: #f0f0f0;"); // 设置背景色
+
+        // 添加时间段标签
+        String[] periods = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        for (int i = 0; i < periods.length; i++) {
+            Label periodLabel = new Label(periods[i]);
+            periodLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
+            gridPane.add(periodLabel, 0, i + 1);
+
+            // 在每个时间段之间添加水平分割线
+            if (i < periods.length - 1) {
+                Line horizontalLine = new Line();
+                horizontalLine.setStroke(Color.LIGHTGRAY);
+                horizontalLine.setStartX(0);
+                horizontalLine.setEndX(gridPane.getWidth()); // 设置分割线宽度为 GridPane 的宽度
+                horizontalLine.setStartY(30 * (i + 2)); // 设置分割线的起始 Y 位置
+                horizontalLine.setEndY(30 * (i + 2)); // 设置分割线的结束 Y 位置
+                gridPane.add(horizontalLine, 0, i + 2, 1, 1); // 修正跨度设置
+            }
+        }
+
+// 添加星期标签
+        String[] days = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
+        for (int i = 0; i < days.length; i++) {
+            Label dayLabel = new Label(days[i]);
+            dayLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
+            gridPane.add(dayLabel, i + 1, 0); // 将星期标签添加到第一列
+
+            // 在每天的课程之间添加垂直分割线
+            Line verticalLine = new Line(0, 0, 0, 400); // 调整长度和位置
+            verticalLine.setStroke(Color.LIGHTGRAY);
+            gridPane.add(verticalLine, i + 1, 0, 1, periods.length + 2); // 跨足整个行
+        }
+
+        // 获取已选课程信息并填充课程表
+        ObservableList<CourseSelection.oneCourseinfo> enrolledCourses = FXCollections.observableArrayList(
+                Arrays.asList(courseSelection.viewEnrolledCourses(user.getUsername()))
+        );
+
+        Set<String> addedCourses = new HashSet<>();
+
+        for (CourseSelection.oneCourseinfo course : enrolledCourses) {
+            if (addedCourses.contains(course.getCourseID())) {
+                continue;
+            }
+
+            String courseName = course.getCourseName();
+            CourseSelection.onePeriod[] periods_course = course.getCourseTime();
+            String dayName = getDayOfWeek(periods_course[0].getDay());
+            int dayIndex = Arrays.asList(days).indexOf(dayName) + 1;
+            int startPeriod = periods_course[0].getStasection();
+            int endPeriod = periods_course[0].getEndsection();
+
+            Label courseLabel = new Label(courseName);
+            BorderPane borderPane = new BorderPane();
+            borderPane.setCenter(courseLabel);
+            // 设置圆角和背景色
+            String backgroundColor = getRandomBackgroundColor();
+            borderPane.setStyle(String.format("-fx-border-color: black; -fx-border-radius: 10; -fx-border-width: 1px; -fx-background-color: %s;", backgroundColor));
+
+            // 确保只添加一次，并设置正确的位置和跨度
+            if (endPeriod - startPeriod + 1 > 0) {
+                gridPane.add(borderPane, dayIndex, startPeriod);
+                GridPane.setRowSpan(borderPane, endPeriod - startPeriod + 1);
+            } else {
+                gridPane.add(borderPane, dayIndex, startPeriod);
+            }
+
+            addedCourses.add(course.getCourseID());
+        }
+
+        // 使用 BorderPane 为整个 GridPane 添加边框
+        BorderPane borderPane = new BorderPane();
+        borderPane.setStyle("-fx-border-color: black; -fx-border-width: 3px; -fx-border-style: solid;");
+        borderPane.setCenter(gridPane);
+
+        // 将 BorderPane 添加到 GridPane 中
+        GridPane finalGridPane = new GridPane();
+        finalGridPane.add(borderPane, 0, 0);
+        return finalGridPane;
+    }
+
+
+    private String getRandomBackgroundColor() {
+        // 生成随机的背景颜色
+        int r = random.nextInt(256);
+        int g = random.nextInt(256);
+        int b = random.nextInt(256);
+        return String.format("#%02X%02X%02X", r, g, b);
+    }
+    private void displayCourses(ObservableList<CourseInfo> courses, String selectButtonLabel, Button activeButton) {
         courseListView.setItems(FXCollections.observableArrayList(courses));
         courseListView.setCellFactory(listView -> new ListCell<CourseInfo>() {
             private final HBox hbox = new HBox(5);
             private final Label courseLabel = new Label();
-            private final Button actionButton = new Button(buttonLabel);
+            private final Button viewButton = new Button("查看");
+            private final Button selectButton = new Button(selectButtonLabel);
 
             {
-                courseLabel.setPrefWidth(200);  // 调整宽度以防止过多空白
-                courseLabel.getStyleClass().add("body-font");
+                courseLabel.setPrefWidth(250);
                 HBox.setHgrow(courseLabel, Priority.ALWAYS);
-                hbox.getChildren().addAll(courseLabel, actionButton);
-                hbox.getStyleClass().add("gray-border");  // 使用灰色边框样式
+                hbox.getChildren().addAll(courseLabel, viewButton, selectButton);
             }
 
             @Override
@@ -136,8 +234,8 @@ public class CourseSelectionUI {
                     setText(null);
                 } else {
                     courseLabel.setText(item.getCourseName());
-                    actionButton.setText(buttonLabel);
-                    actionButton.setOnAction(e -> handleCourseAction(item, buttonLabel, activeButton));
+                    viewButton.setOnAction(e -> handleCourseAction(item, "查看", activeButton));
+                    selectButton.setOnAction(e -> handleCourseAction(item, selectButtonLabel, activeButton));
                     setGraphic(hbox);
                 }
             }
@@ -178,6 +276,8 @@ public class CourseSelectionUI {
                 // 如果获取失败，显示错误提示
                 alert("查看课程信息失败", "无法获取课程详细信息，请重试或联系管理员。");
             }
+        }else if ("我的课表".equals(buttonLabel)) {
+            showMySchedule();
         }
         // Refresh the course list view
         refreshCourses(activeButton);
@@ -215,19 +315,50 @@ public class CourseSelectionUI {
 
     private String formatCourseTime(CourseSelection.onePeriod[] periods) {
         StringBuilder timeStringBuilder = new StringBuilder();
-        for (CourseSelection.onePeriod period : periods) {
-            if (timeStringBuilder.length() > 0) {
+        for (int i = 0; i < periods.length; i++) {
+            CourseSelection.onePeriod period = periods[i];
+            // 拼接单个时间段的字符串表示
+            String singlePeriodTime = period.getStaWeek() + "-" + period.getEndWeek() + " 周 "
+                    + getDayOfWeek(period.getDay()) + " "
+                    + period.getStasection() + "-" + period.getEndsection() + "节";
+            // 将单个时间段的字符串添加到总的字符串构建器中
+            timeStringBuilder.append(singlePeriodTime);
+            // 如果不是最后一个时间段，添加分隔符
+            if (i < periods.length - 1) {
                 timeStringBuilder.append("; ");
             }
-            timeStringBuilder.append(period.toString());
         }
         return timeStringBuilder.toString();
     }
 
+    // 辅助方法，将数字星期转换为文字描述
+    private String getDayOfWeek(int day) {
+        switch (day) {
+            case 1:
+                return "周一";
+            case 2:
+                return "周二";
+            case 3:
+                return "周三";
+            case 4:
+                return "周四";
+            case 5:
+                return "周五";
+            case 6:
+                return "周六";
+            case 7:
+                return "周日";
+            default:
+                return "未知";
+        }
+    }
+
     private void refreshCourses(Button activeButton) {
         if (activeButton == topBar.getChildren().get(0)) { // 可选课程按钮
+            updateCourseList(); // 更新课程列表
             displayCourses(courseList, "选择", activeButton);
         } else if (activeButton == topBar.getChildren().get(1)) { // 已选课程按钮
+            updateSelectedCourses(); // 更新已选课程列表
             displayCourses(selectedCourses, "退选", activeButton);
         }
     }
