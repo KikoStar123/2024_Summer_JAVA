@@ -34,11 +34,9 @@ public class ShopUI_Manager extends Application {
     ShoppingComment shoppingComment = new ShoppingComment();
    // ShoppingProduct.oneProduct oneProduct= new ShoppingProduct.oneProduct();
     BorderPane root;
-    Tab shopInfoTab;
     Tab productsTab;
     Tab ordersTab;
     private double zoomFactor = 1.0;
-    private Stack<BorderPane> history = new Stack<>(); // 用于保存历史布局
     // 构造函数，接收用户名
     public ShopUI_Manager(String username) {
         this.username = username;
@@ -55,9 +53,13 @@ public class ShopUI_Manager extends Application {
 
         // 创建按钮
         Button shopInfoButton = new Button("商店信息");
+        shopInfoButton.getStyleClass().add("main-button");
         Button productsButton = new Button("商品");
+        productsButton.getStyleClass().add("main-button");
         Button ordersButton = new Button("订单");
+        ordersButton.getStyleClass().add("main-button");
         Button logoutButton = new Button("登出");
+        logoutButton.getStyleClass().add("main-button");
 
         // 设置登出按钮的点击事件
         logoutButton.setOnAction(e -> handleLogout(primaryStage)); // 添加登出逻辑
@@ -83,7 +85,10 @@ public class ShopUI_Manager extends Application {
         // 创建一个HBox来布局这些按钮
         HBox buttonBox = new HBox(10); // 设置按钮之间的间距为10
         buttonBox.setPadding(new Insets(10)); // 设置HBox的内边距
-        buttonBox.getChildren().addAll(shopInfoButton, productsButton, ordersButton, logoutButton);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        buttonBox.getChildren().addAll(shopInfoButton, productsButton, ordersButton, spacer,logoutButton);
 
         // 将HBox设置为BorderPane的顶部
         root.setTop(buttonBox);
@@ -156,10 +161,12 @@ public class ShopUI_Manager extends Application {
         shopInfoPane.setCenter(infoArea);
         // 创建修改商家信息的按钮
         Button editButton = new Button("修改商家信息");
+        editButton.getStyleClass().add("main-button");
         editButton.setOnAction(e -> showEditShopInfoDialog(storeInfo));
 
         // 将按钮添加到BorderPane的底部
         shopInfoPane.setBottom(editButton);
+        BorderPane.setAlignment(editButton, Pos.CENTER);
         return shopInfoPane;
 
     }
@@ -272,14 +279,17 @@ public class ShopUI_Manager extends Application {
         loadProducts(productView); // 传入 productView
         // 创建底部添加商品按钮
         Button addButton = new Button("添加商品");
+        addButton.getStyleClass().add("main-button");
         addButton.setOnAction(e -> showEditProductInfoDialog()); // 替换为添加商品的逻辑
 
         // 添加商品图片按钮
         Button uploadButton = new Button("上传图片");
+        uploadButton.getStyleClass().add("main-button");
         uploadButton.setOnAction(e -> showUploadDialog());
 
         // 创建刷新按钮
         Button refreshButton = new Button("刷新");
+        refreshButton.getStyleClass().add("main-button");
         refreshButton.setOnAction(e -> {
             productView.getChildren().clear(); // 清空当前商品列表
             loadProducts(productView); // 重新加载商品列表
@@ -513,6 +523,7 @@ public class ShopUI_Manager extends Application {
 
         // 创建“查看评论”按钮
         Button viewCommentsButton = new Button("查看评论");
+        viewCommentsButton.getStyleClass().add("main-button");
         viewCommentsButton.setOnAction(e -> {
             System.out.println("查看评论按钮被点击"); // 这可以帮助调试
             showProductComments(product.getProductID());
@@ -542,6 +553,7 @@ public class ShopUI_Manager extends Application {
 
         // 添加返回按钮
         Button backButton = new Button("返回");
+        backButton.getStyleClass().add("main-button");
         backButton.setOnAction(e -> {
             System.out.println("返回到商品页面");  // 调试日志
             productsTab.setContent(productView);
@@ -677,6 +689,7 @@ public class ShopUI_Manager extends Application {
 
         // 查看订单详情按钮
         Button viewOrderDetailsButton = new Button("查看订单详情");
+        viewOrderDetailsButton.getStyleClass().add("main-button");
         viewOrderDetailsButton.setOnAction(e -> viewOrderDetails(orderVBox, order));
 
         // 将所有行添加到订单信息的VBox中
@@ -702,8 +715,9 @@ public class ShopUI_Manager extends Application {
 
         // 为返回按钮设置事件处理器，以便返回到订单列表
         Button backButton = new Button("返回");
+        backButton.getStyleClass().add("main-button");
         backButton.setOnAction(e -> {
-            ordersTab.setContent(new BorderPane(createOrdersPane()));
+            root.setCenter(createOrdersPane());
         });
 
         HBox buttonBox = new HBox(10); // 创建一个水平布局的 HBox，用于存放按钮
@@ -717,7 +731,8 @@ public class ShopUI_Manager extends Application {
         //history.push((BorderPane) root.getCenter());
 
         // 将 detailsVBox 设置为根布局的中心内容
-        ordersTab.setContent(detailsVBox);
+        root.setCenter(detailsVBox);
+
     }
 
     public static void main(String[] args) {
