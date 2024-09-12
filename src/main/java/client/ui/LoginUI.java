@@ -35,14 +35,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 
-import static client.service.Role.BankManager;
-import static client.service.Role.Librarian;
-
 import java.net.URL;
 
-import static client.service.Role.BankManager;
-import static client.service.Role.Librarian;
-import static client.service.Role.CourseManager;
+import static client.service.Role.*;
 
 public class LoginUI extends Application {
     private TextField usernameField;
@@ -190,6 +185,15 @@ public class LoginUI extends Application {
                     Admin_CourseUI coursemanagerui = new Admin_CourseUI(user);
                     try {
                         coursemanagerui.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else if(user.getRole() == StuInfoManager) {
+                Platform.runLater(() -> {
+                    StuAdminUI adminUI = new StuAdminUI(user);
+                    try {
+                        adminUI.start(new Stage());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
