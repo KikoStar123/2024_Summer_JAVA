@@ -155,3 +155,31 @@
     -fx-border-radius: 10px; /* 圆角半径 */
 }
 
+
+.alert {
+    -fx-background-color: #f8f8f8; /* 背景颜色 */
+}
+
+.alert .dialog-pane {
+    -fx-border-color: #007bff; /* 边框颜色 */
+    -fx-border-width: 2px; /* 边框宽度 */
+}
+
+.alert .header {
+    -fx-text-fill: #007bff; /* 标题颜色 */
+}
+
+.alert .content {
+    -fx-text-fill: #333333; /* 内容文本颜色 */
+}
+
+.alert .button {
+    -fx-background-color: #007bff; /* 按钮背景颜色 */
+    -fx-text-fill: white; /* 按钮文本颜色 */
+}
+
+.alert .button:hover {
+    -fx-background-color: #0056b3; /* 按钮悬停背景颜色 */
+}
+
+

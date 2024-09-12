@@ -49,7 +49,7 @@ public class CourseSelectionUI {
     }
 
     public BorderPane createCover(){
-        ImageView photo = new ImageView(new Image(getClass().getResource("/cover-library.jpg").toExternalForm()));
+        ImageView photo = new ImageView(new Image(getClass().getResource("/cover-course.jpg").toExternalForm()));
         photo.setFitWidth(440); // 你可以根据窗口大小调整这个值
         photo.setFitHeight(550); // 你可以根据窗口大小调整这个值
         //photo.setPreserveRatio(true);//保持图片的宽高比例不变

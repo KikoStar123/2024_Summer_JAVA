@@ -263,7 +263,9 @@ public class Bankui_stu {
         Label balanceLabel = new Label("总资产: " + user.getBalance());
         Label currentBalanceLabel = new Label("活期资产：" + user.getCurrentBalance());
         Button bankrecord=new Button("收支明细");
+        bankrecord.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button pwdchange=new Button("修改密码");
+        pwdchange.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Label currentRateLabel=new Label("活期利率: " + Bank.getInterestRate("活期"));
         Label fixedDepositRateLabel = new Label("定期利率：" + Bank.getInterestRate("定期"));
         bankMainView.getChildren().addAll(usernameLabel,welcomeLabel,balanceLabel,currentBalanceLabel, bankrecord,pwdchange, currentRateLabel, fixedDepositRateLabel);
@@ -275,6 +277,8 @@ public class Bankui_stu {
     private static void showChangepwd(BankUser user) {
         Stage stage = new Stage();
         stage.setTitle("修改密码");
+        Image image = new Image(Bankui_stu.class.getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        stage.getIcons().add(image);
 
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(10, 10, 10, 10));
@@ -283,18 +287,23 @@ public class Bankui_stu {
 
         Label oldPwdLabel = new Label("旧密码:");
         GridPane.setConstraints(oldPwdLabel, 0, 0);
+        oldPwdLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
 
         PasswordField oldPwdField = new PasswordField();
         GridPane.setConstraints(oldPwdField, 1, 0);
+        oldPwdField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         Label newPwdLabel = new Label("新密码:");
         GridPane.setConstraints(newPwdLabel, 0, 1);
+        newPwdLabel.getStyleClass().add("body-font"); // 应用CSS中的正文字体样式
 
         PasswordField newPwdField = new PasswordField();
         GridPane.setConstraints(newPwdField, 1, 1);
+        newPwdField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         Button confirmButton = new Button("确定");
         GridPane.setConstraints(confirmButton, 1, 2);
+        confirmButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
 
         confirmButton.setOnAction(e -> {
             String oldPwd = oldPwdField.getText();
@@ -315,12 +324,18 @@ public class Bankui_stu {
                 alert.setHeaderText(null);
                 alert.setContentText("原密码输入错误，密码修改失败！");
                 alert.showAndWait();
+                //alert.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+//                Alert alert1 = new Alert(AlertType.INFORMATION);
+//                alert.setTitle("Information Dialog");
+//                alert.setHeaderText("Look, an Information Dialog");
+//                alert.setContentText("I have a great message for you!");
             }
         });
 
         grid.getChildren().addAll(oldPwdLabel, oldPwdField, newPwdLabel, newPwdField, confirmButton);
 
         Scene scene = new Scene(grid, 300, 200);
+        scene.getStylesheets().add(Bankui_stu.class.getResource("/main-styles.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
@@ -328,6 +343,8 @@ public class Bankui_stu {
 
         Stage recordStage = new Stage();
         recordStage.setTitle("收支明细");
+        Image image = new Image(Bankui_stu.class.getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        recordStage.getIcons().add(image);
 
         TableView<BankUser.BankRecord> table = new TableView<>();
         ObservableList<BankUser.BankRecord> data = FXCollections.observableArrayList(Bank.getAllBankRecords(user.getUsername()));
