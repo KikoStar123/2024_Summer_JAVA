@@ -46,57 +46,55 @@ public class ShopUI_Manager extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("商家");
-        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png")); // 加载图标
         primaryStage.getIcons().add(image);
 
         // 创建主BorderPane
         root = new BorderPane();
         root.setPrefSize(400, 300); // 设置宽度为400，高度为300
-        // 创建登出Tab
-        Tab logoutTab = new Tab("登出");
 
-// 禁止关闭登出Tab
-        logoutTab.setClosable(false);
+        // 创建按钮
+        Button shopInfoButton = new Button("商店信息");
+        Button productsButton = new Button("商品");
+        Button ordersButton = new Button("订单");
+        Button logoutButton = new Button("登出");
 
-// 绑定登出逻辑到点击登出Tab
-        logoutTab.setOnSelectionChanged(e -> {
-            if (logoutTab.isSelected()) {
-                handleLogout(primaryStage); // 添加登出逻辑
+        // 设置登出按钮的点击事件
+        logoutButton.setOnAction(e -> handleLogout(primaryStage)); // 添加登出逻辑
+
+        // 设置商店信息按钮的点击事件
+        shopInfoButton.setOnAction(e -> {
+            String storeID = null;
+            try {
+                storeID = shoppingStore.getStoreIDByUsername(username); // 获取商店ID
+                ShoppingStore.oneStore onestore = shoppingStore.oneStore(storeID); // 获取商店信息
+                root.setCenter(createShopInfoPane(onestore)); // 显示商店信息内容
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         });
-        //searchBox.getChildren().addAll(region,logoutButton);
-        // 创建TabPane作为顶部的容器
-        TabPane topTabs = new TabPane();
-        String storeID =null;
-        try {
-            storeID = shoppingStore.getStoreIDByUsername(username);//修改成功！
-            ShoppingStore.oneStore onestore =shoppingStore.oneStore(storeID);
-            // 创建商店信息Tab，并设置内容
-            shopInfoTab = new Tab("商店信息", createShopInfoPane(onestore));
-            // 创建商品Tab，并设置内容
-            productsTab = new Tab("商品", createProductsPane());
-            // 创建订单Tab，并设置内容
-            ordersTab = new Tab("订单", createOrdersPane());
 
-            topTabs.getTabs().addAll(shopInfoTab, productsTab, ordersTab, logoutTab);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        // 设置TabPane样式，使其看起来像标签页
-        topTabs.setStyle("-fx-tab-max-height: 50; -fx-tab-min-height: 50; -fx-tab-max-width: 150; -fx-tab-min-width: 150;");
-        topTabs.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE); // 禁止关闭Tab
+        // 设置商品按钮的点击事件
+        productsButton.setOnAction(e -> root.setCenter(createProductsPane())); // 显示商品内容
 
-        // 设置BorderPane的顶部为TabPane
-        root.setCenter(topTabs);
+        // 设置订单按钮的点击事件
+        ordersButton.setOnAction(e -> root.setCenter(createOrdersPane())); // 显示订单内容
 
+        // 创建一个HBox来布局这些按钮
+        HBox buttonBox = new HBox(10); // 设置按钮之间的间距为10
+        buttonBox.setPadding(new Insets(10)); // 设置HBox的内边距
+        buttonBox.getChildren().addAll(shopInfoButton, productsButton, ordersButton, logoutButton);
+
+        // 将HBox设置为BorderPane的顶部
+        root.setTop(buttonBox);
 
         // 设置默认显示的中心内容
-        topTabs.getSelectionModel().selectFirst();
+        //root.setCenter(createShopInfoPane(null)); // 初始显示商店信息（根据实际需求调整）
 
         // 设置场景
         Scene scene = new Scene(root, 1000, 618); // 调整尺寸以适应新布局
-        primaryStage.setMinWidth(1000); // 最小宽度为800像素
-        primaryStage.setMinHeight(618); // 最小高度为600像素
+        primaryStage.setMinWidth(1000); // 最小宽度为1000像素
+        primaryStage.setMinHeight(618); // 最小高度为618像素
         // 加载CSS样式表
         scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         primaryStage.setScene(scene);
@@ -389,13 +387,15 @@ public class ShopUI_Manager extends Application {
         TextField productIDField = new TextField();
         TextField productNameField = new TextField();
         TextArea productDetailTextArea = new TextArea();
-        productDetailTextArea.setWrapText(true);
-        productDetailTextArea.setMaxWidth(Double.MAX_VALUE);
+        productDetailTextArea.setPrefColumnCount(20); // 例如，设置为20列
+        productDetailTextArea.setPrefRowCount(3); // 例如，设置为4行
+        //productDetailTextArea.setWrapText(true);
+        //productDetailTextArea.setMaxWidth(Double.MAX_VALUE);
         TextField productOriginalPriceField = new TextField();
         TextField productCurrentPriceField = new TextField();
         TextField productInventoryField = new TextField();
         TextField productAddressField = new TextField();
-        TextField productCommentRateField = new TextField();
+        //TextField productCommentRateField = new TextField();
         CheckBox productStatusCheckBox = new CheckBox();
         productStatusCheckBox.setSelected(true);//bumingbai----
 
@@ -407,7 +407,7 @@ public class ShopUI_Manager extends Application {
         Label currentPriceLabel = new Label("现价:");
         Label inventoryLabel = new Label("库存:");
         Label addressLabel = new Label("地址:");
-        Label commentRateLabel = new Label("好评率(%):");
+        //Label commentRateLabel = new Label("好评率(%):");
         Label statusLabel = new Label("状态:");
 
         // 将标签和字段添加到网格中
@@ -425,10 +425,10 @@ public class ShopUI_Manager extends Application {
         gridPane.add(productInventoryField, 1, 5);
         gridPane.add(addressLabel, 0, 6);
         gridPane.add(productAddressField, 1, 6);
-        gridPane.add(commentRateLabel, 0, 7);
-        gridPane.add(productCommentRateField, 1, 7);
-        gridPane.add(statusLabel, 0, 8);
-        gridPane.add(productStatusCheckBox, 1, 8);
+        //gridPane.add(commentRateLabel, 0, 7);
+        //gridPane.add(productCommentRateField, 1, 7);
+        gridPane.add(statusLabel, 0, 7);
+        gridPane.add(productStatusCheckBox, 1, 7);
 
         // 设置弹窗的内容
         dialogPane.setContent(gridPane);
@@ -453,7 +453,7 @@ public class ShopUI_Manager extends Application {
                             Float.parseFloat(productCurrentPriceField.getText()),
                             Integer.parseInt(productInventoryField.getText()),
                             productAddressField.getText(),
-                            Float.parseFloat(productCommentRateField.getText()) / 100, // Convert percentage back to decimal
+                           // Float.parseFloat(productCommentRateField.getText()) / 100, // Convert percentage back to decimal
                             productStatusCheckBox.isSelected(),//可以不传true吗，利用输入框嘎嘎嘎
                             store
                     );

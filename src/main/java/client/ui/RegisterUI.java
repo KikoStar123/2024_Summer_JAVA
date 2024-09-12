@@ -128,7 +128,11 @@ public class RegisterUI  {
             String academyText = academy.getText();
             String passwordText = passwordField.getText();
 
+            if(truename == null || stuid == null || originText == null || birthdayText == null || academyText == null || passwordText == null ){
+                showAlert(Alert.AlertType.ERROR, "注册失败", "注册失败，请重试。");
+            }
             JSONObject result = ClientService.register(truename, Gender.valueOf(gender.toLowerCase()), stuid, originText, birthdayText, academyText, passwordText);
+
             if (result.getString("status").equals("success")) {
                 showAlert(Alert.AlertType.INFORMATION, "注册成功", "注册成功！你的账号是：" + result.getString("username"));
             } else {
