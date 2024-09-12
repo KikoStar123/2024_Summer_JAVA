@@ -7,6 +7,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -43,8 +44,8 @@ public class MainUI extends Application {
         // 创建 BorderPane 作为主布局
         borderPane = new BorderPane();
         ImageView photo = new ImageView(new Image(getClass().getResource("/welcome.png").toExternalForm()));
-        photo.setFitWidth(700); // 你可以根据窗口大小调整这个值
-        photo.setFitHeight(550);
+        photo.setFitWidth(850); // 你可以根据窗口大小调整这个值
+        photo.setFitHeight(525);
 
         // 创建左侧的按钮栏
         VBox leftBox = new VBox(5); // 设置间距
@@ -56,9 +57,9 @@ public class MainUI extends Application {
         // 添加功能按钮
         VBox libBox = new VBox();
         libBox.getStyleClass().add("item-box");
-        FontIcon libicon = new FontIcon(FontAwesome.BANK);
-        libicon.setIconSize(20); // 设置图标大小
-        libicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
+        ImageView libicon = new ImageView(new Image(getClass().getResource("/minicon-library.png").toExternalForm()));
+        libicon.setFitWidth(25); // 你可以根据窗口大小调整这个值
+        libicon.setFitHeight(20); // 你可以根据窗口大小调整这个值
         Label liblabel = new Label("图书馆");
         liblabel.getStyleClass().add("label");
         Tooltip libtip = new Tooltip("图书馆");
@@ -69,9 +70,9 @@ public class MainUI extends Application {
 
         VBox courseBox = new VBox();
         courseBox.getStyleClass().add("item-box");
-        FontIcon courseicon = new FontIcon(FontAwesome.LIST);
-        courseicon.setIconSize(20); // 设置图标大小
-        courseicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
+        ImageView courseicon = new ImageView(new Image(getClass().getResource("/minicon-course.png").toExternalForm()));
+        courseicon.setFitWidth(20); // 你可以根据窗口大小调整这个值
+        courseicon.setFitHeight(20); // 你可以根据窗口大小调整这个值
         Label courselabel = new Label("选课系统");
         courselabel.getStyleClass().add("label");
         Tooltip coursetip = new Tooltip("选课系统");
@@ -82,9 +83,9 @@ public class MainUI extends Application {
 
         VBox stuBox = new VBox();
         stuBox.getStyleClass().add("item-box");
-        FontIcon stuicon = new FontIcon(FontAwesome.USER);
-        stuicon.setIconSize(20); // 设置图标大小
-        stuicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
+        ImageView stuicon = new ImageView(new Image(getClass().getResource("/minicon-stuinfo.png").toExternalForm()));
+        stuicon.setFitWidth(20); // 你可以根据窗口大小调整这个值
+        stuicon.setFitHeight(20); // 你可以根据窗口大小调整这个值
         Label stulabel = new Label("学籍管理");
         stulabel.getStyleClass().add("label");
         Tooltip stutip = new Tooltip("学籍管理");
@@ -95,9 +96,9 @@ public class MainUI extends Application {
 
         VBox shopBox = new VBox();
         shopBox.getStyleClass().add("item-box");
-        FontIcon shopicon = new FontIcon(FontAwesome.SHOPPING_BAG);
-        shopicon.setIconSize(20); // 设置图标大小
-        shopicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
+        ImageView shopicon = new ImageView(new Image(getClass().getResource("/minicon-shop.png").toExternalForm()));
+        shopicon.setFitWidth(20); // 你可以根据窗口大小调整这个值
+        shopicon.setFitHeight(20); // 你可以根据窗口大小调整这个值
         Label shoplabel = new Label("商店");
         shoplabel.getStyleClass().add("label");
         Tooltip shoptip = new Tooltip("商店");
@@ -114,9 +115,9 @@ public class MainUI extends Application {
 
         VBox bankBox = new VBox();
         bankBox.getStyleClass().add("item-box");
-        FontIcon bankicon = new FontIcon(FontAwesome.BANK);// 使用 Ikonli FontIcon 替代 Circle
-        bankicon.setIconSize(20); // 设置图标大小
-        bankicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
+        ImageView bankicon = new ImageView(new Image(getClass().getResource("/minicon-bank.png").toExternalForm()));
+        bankicon.setFitWidth(20); // 你可以根据窗口大小调整这个值
+        bankicon.setFitHeight(20); // 你可以根据窗口大小调整这个值
         Label banklabel = new Label("银行");
         banklabel.getStyleClass().add("label");
         Tooltip banktip = new Tooltip("银行");
@@ -127,9 +128,9 @@ public class MainUI extends Application {
 
         VBox updateBox = new VBox();
         updateBox.getStyleClass().add("item-box");
-        FontIcon updateicon = new FontIcon(FontAwesome.LOCK);// 使用 Ikonli FontIcon 替代 Circle
-        updateicon.setIconSize(20); // 设置图标大小
-        updateicon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
+        ImageView updateicon = new ImageView(new Image(getClass().getResource("/minicon-changemi.png").toExternalForm()));
+        updateicon.setFitWidth(20); // 你可以根据窗口大小调整这个值
+        updateicon.setFitHeight(20); // 你可以根据窗口大小调整这个值
         Label updatelabel = new Label("修改密码");
         updatelabel.getStyleClass().add("label");
         Tooltip updatetip = new Tooltip("修改密码");
@@ -141,9 +142,9 @@ public class MainUI extends Application {
         // 添加登出按钮
         VBox logoutBox = new VBox();
         logoutBox.getStyleClass().add("item-box");
-        FontIcon logoutIcon = new FontIcon(FontAwesome.SIGN_OUT);// 使用 Ikonli FontIcon 替代 Circle
-        logoutIcon.setIconSize(20); // 设置图标大小
-        logoutIcon.setIconColor(Color.web("#009b9f")); // 设置图标颜色
+        ImageView logoutIcon = new ImageView(new Image(getClass().getResource("/minicon-logout.png").toExternalForm()));
+        logoutIcon.setFitWidth(20); // 你可以根据窗口大小调整这个值
+        logoutIcon.setFitHeight(20); // 你可以根据窗口大小调整这个值
         Label logoutLabel = new Label("登出");
         logoutLabel.getStyleClass().add("label");
         Tooltip logoutTip = new Tooltip("登出");

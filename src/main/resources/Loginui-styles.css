@@ -94,3 +94,48 @@
 .link-label:hover {
     -fx-underline: true;
 }
+
+/* 设置表格边框颜色 */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #dcdcdc;
+    -fx-border-width: 1px;
+}
+
+/* 表头样式 */
+.table-view .column-header-background {
+    -fx-background-color: #4CAF50;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #003153; /* 表头文字颜色 */
+    -fx-font-weight: bold;
+}
+
+/* 奇数行的背景色 */
+.table-row-cell:odd {
+    -fx-background-color: #f2f2f2;
+}
+
+/* 偶数行的背景色 */
+.table-row-cell:even {
+    -fx-background-color: white;
+}
+
+/* 表格中的单元格文字 */
+.table-view .cell {
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Microsoft YaHei";
+    -fx-text-fill: #333;
+}
+
+/* 表格的悬停效果 */
+.table-row-cell:hover {
+    -fx-background-color: #cdedde;
+}
+/* 选中行的背景色 */
+.table-row-cell:focused, .table-row-cell:selected {
+    -fx-background-color: rgba(255, 217, 163, 0.8); /* 选中行的背景色 */
+    -fx-text-fill: white; /* 选中行的文字颜色 */
+}

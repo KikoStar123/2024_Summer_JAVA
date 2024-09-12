@@ -90,62 +90,6 @@
 }
 
 
-/* 表格规范 */
-/* 设置 TableView 的背景颜色和边框 */
-.table-view {
-    -fx-background-color: linear-gradient(to bottom, #f9f9f9, #e6e6e6); /* 渐变背景颜色 */
-    -fx-border-color: #d3d3d3;
-    -fx-border-width: 1px;
-    -fx-border-radius: 5px; /* 圆角边框 */
-}
-
-/* 设置列标题背景的颜色和样式 */
-.table-view .column-header-background {
-    -fx-background-color: linear-gradient(to bottom, rgba(0, 49, 83, 0.8), #009b9f); /* 渐变背景颜色 */
-    -fx-border-color: #2E7D32;
-    -fx-border-width: 0 0 1px 0;
-}
-
-.table-view .column-header, .table-view .filler {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
-}
-
-/* 设置奇数行和偶数行的背景颜色 */
-.table-view .table-row-cell:odd {
-    -fx-background-color: #f2f2f2;
-}
-
-.table-view .table-row-cell:even {
-    -fx-background-color: #ffffff;
-}
-
-/* 设置表格单元格的样式 */
-.table-view .table-cell {
-    -fx-padding: 8px;
-    -fx-font-size: 14px;
-    -fx-border-color: #d3d3d3;
-    -fx-border-width: 0 0 1px 0;
-}
-
-/* 设置悬停效果 */
-.table-view .table-row-cell:hover {
-    -fx-background-color: #c8e6c9; /* 悬停时的背景颜色 */
-}
-
-/* 自定义滚动条 */
-.table-view .scroll-bar:vertical .thumb {
-    -fx-background-color: #4CAF50;
-    -fx-background-radius: 5px;
-}
-
-.table-view .scroll-bar:horizontal .thumb {
-    -fx-background-color: #4CAF50;
-    -fx-background-radius: 5px;
-}
-
 /* */
 .stackpane {
     -fx-border-color: #6f9986; /* 边框颜色 */
@@ -180,6 +124,48 @@
 
 .alert .button:hover {
     -fx-background-color: #0056b3; /* 按钮悬停背景颜色 */
+}
+
+
+
+
+/* 设置表格边框颜色 */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #dcdcdc;
+    -fx-border-width: 1px;
+}
+/* 表头样式 */
+.table-view .column-header-background {
+    -fx-background-color: #4CAF50;
+}
+.table-view .column-header .label {
+    -fx-text-fill: #003153; /* 表头文字颜色 */
+    -fx-font-weight: bold;
+}
+/* 奇数行的背景色 */
+.table-row-cell:odd {
+    -fx-background-color: #f2f2f2;
+}
+/* 偶数行的背景色 */
+.table-row-cell:even {
+    -fx-background-color: white;
+}
+/* 表格中的单元格文字 */
+.table-view .cell {
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Microsoft YaHei";
+    -fx-text-fill: #333;
+}
+/* 表格的悬停效果 */
+.table-row-cell:hover {
+    -fx-background-color: #cdedde;
+}
+/* 选中行的背景色 */
+.table-row-cell:focused, .table-row-cell:selected {
+    -fx-background-color: rgba(255, 217, 163, 0.6); /* 选中行的背景色 */
+    -fx-text-fill: white; /* 选中行的文字颜色 */
 }
 
 
