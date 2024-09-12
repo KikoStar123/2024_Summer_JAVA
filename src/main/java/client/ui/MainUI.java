@@ -22,6 +22,7 @@ import static client.service.Role.StuInfoManager;
 import javafx.scene.shape.Circle;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.javafx.FontIcon;
+import javafx.scene.layout.Region;
 
 
 public class MainUI extends Application {
@@ -155,14 +156,24 @@ public class MainUI extends Application {
         Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());
 
         // 将左侧按钮栏添加到 BorderPane 的左侧
+//        Region spacer = new Region();//设置间隔
+//        spacer.setMinWidth(2);  // 设置宽度为2
+//        HBox leftBoxPro = new HBox(leftBox, spacer);
+//        borderPane.setLeft(leftBoxPro);
         borderPane.setLeft(leftBox);
 
-        // 将搜索栏添加到 BorderPane 的顶部
-        borderPane.setBottom(welcomeLabel);
-        // 添加分割线
+        // 将搜索栏添加到 BorderPane 的顶部（并添加分割线）
+//        borderPane.setBottom(welcomeLabel);
         Separator separator = new Separator();
         separator.setOrientation(javafx.geometry.Orientation.HORIZONTAL);
-        leftBox.getChildren().add(separator);
+        separator.setPrefWidth(200); // 设置分隔线的宽度
+//        separator.setStyle("-fx-background-color: #fd1212; -fx-padding: 1px 0;"); // 设置分隔线的颜色和粗细
+        VBox welcomeLabelPro = new VBox(separator, welcomeLabel);
+        borderPane.setBottom(welcomeLabelPro);
+        // 添加分割线
+        Separator separatorUnderButton = new Separator();
+        separatorUnderButton.setOrientation(javafx.geometry.Orientation.HORIZONTAL);
+        leftBox.getChildren().add(separatorUnderButton);
 
         // 创建中心区域，用于显示其他内容
         VBox centerBox = new VBox();
