@@ -200,6 +200,8 @@ public class LibraryUI_Manager extends Application {
     private void showUpdateWindow() {
         Stage updateStage = new Stage();
         updateStage.setTitle("更新书籍");
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        updateStage.getIcons().add(image);
         Label isbnLabel = new Label("Bookid:");
         TextField isbnField = new TextField();
         Label finalLibNumberLabel = new Label("最终数目:");
@@ -300,6 +302,8 @@ public class LibraryUI_Manager extends Application {
 
     private void showBorrowWindow() {
         Stage borrowStage = new Stage();
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        borrowStage.getIcons().add(image);
         borrowStage.setTitle("借阅记录");
 
         //Label userLabel = new Label("用户: " + user.getUsername());
@@ -411,6 +415,8 @@ public class LibraryUI_Manager extends Application {
 
     private void showBookDetails(Book book) {
         Stage detailStage = new Stage();
+        Image image1 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        detailStage.getIcons().add(image1);
         detailStage.initModality(Modality.APPLICATION_MODAL);
         detailStage.setTitle("书籍详情");
         Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png")); // 加载图标
@@ -469,6 +475,8 @@ public class LibraryUI_Manager extends Application {
             Button previewPdfButton = new Button("预览PDF");
             previewPdfButton.setOnAction(e -> {
                 Stage pdfStage = new Stage();
+                Image image11 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+                pdfStage.getIcons().add(image11);
                 pdfStage.initModality(Modality.APPLICATION_MODAL);
                 pdfStage.setTitle("PDF预览");
 

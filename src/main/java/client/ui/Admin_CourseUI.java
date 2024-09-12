@@ -136,6 +136,8 @@ public class Admin_CourseUI extends Application {
 
     private void showCourseDetailsDialog(CourseSelection.oneCourseinfo course) {
         Stage dialogStage = new Stage();
+        Image image1 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        dialogStage.getIcons().add(image1);
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.setTitle("课程详细信息");
 

@@ -346,6 +346,8 @@ public class ShopUI_Manager extends Application {
     }
     private void showUploadDialog() {
         Stage dialog = new Stage();
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        dialog.getIcons().add(image);
         dialog.setTitle("上传图片");
 
         VBox dialogVBox = new VBox(10);

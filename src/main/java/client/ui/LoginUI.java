@@ -261,6 +261,8 @@ public class LoginUI extends Application {
     private void handleforget() {
         // 创建一个新的弹出窗口 (Stage)
         Stage forgetStage = new Stage();
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        forgetStage.getIcons().add(image);
         forgetStage.setTitle("忘记密码");
 
         // 创建一个垂直布局 VBox

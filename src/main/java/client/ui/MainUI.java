@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -41,6 +42,9 @@ public class MainUI extends Application {
 
         // 创建 BorderPane 作为主布局
         borderPane = new BorderPane();
+        ImageView photo = new ImageView(new Image(getClass().getResource("/welcome.png").toExternalForm()));
+        photo.setFitWidth(700); // 你可以根据窗口大小调整这个值
+        photo.setFitHeight(550);
 
         // 创建左侧的按钮栏
         VBox leftBox = new VBox(5); // 设置间距
@@ -176,7 +180,7 @@ public class MainUI extends Application {
         // 创建中心区域，用于显示其他内容
         VBox centerBox = new VBox();
         centerBox.setSpacing(10);
-        borderPane.setCenter(centerBox);
+        borderPane.setCenter(photo);
 
         // 设置场景
         Scene scene = new Scene(borderPane, 1000, 618); // 调整尺寸以适应新布局

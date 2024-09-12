@@ -629,6 +629,8 @@ public class ShopUI_stu {
         deleteButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         deleteButton.setOnAction(event -> {
             Stage popupStage = new Stage();
+            Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+            popupStage.getIcons().add(image);
             popupStage.setTitle("删除收货信息");
             VBox layout = new VBox(10);
             layout.setPadding(new Insets(10));
@@ -675,6 +677,9 @@ public class ShopUI_stu {
         adduserButton.setOnAction(e -> {
             Stage popupStage = new Stage();
             popupStage.setTitle("添加收货信息");
+            Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+            popupStage.getIcons().add(image);
+
             VBox layout = new VBox(10);
             layout.setPadding(new Insets(10));
             Label newinfoLabel = new Label("新的收货信息:");
