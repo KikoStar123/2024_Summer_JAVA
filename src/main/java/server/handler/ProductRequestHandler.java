@@ -129,17 +129,15 @@ public class ProductRequestHandler implements RequestHandler {
         String productID = parameters.getString("productID");
         String productName = parameters.getString("productName");
         String productDetail = parameters.getString("productDetail");
-        String productImage = parameters.getString("productImage");  // 假设图片以base64字符串形式发送
         float productOriginalPrice = (float) parameters.getDouble("productOriginalPrice");
         float productCurrentPrice = (float) parameters.getDouble("productCurrentPrice");
         int productInventory = parameters.getInt("productInventory");
         String productAddress = parameters.getString("productAddress");
-        float productCommentRate = (float) parameters.getDouble("productCommentRate");
         boolean productStatus = parameters.getBoolean("productStatus");
         String storeID = parameters.getString("storeID");  // 新增 storeID 参数
 
-        return productService.addProduct(productID, productName, productDetail, productImage, productOriginalPrice,
-                productCurrentPrice, productInventory, productAddress, productCommentRate,
+        return productService.addProduct(productID, productName, productDetail, productOriginalPrice,
+                productCurrentPrice, productInventory, productAddress,
                 productStatus, storeID); // 将 storeID 传递给 service 层
     }
 }

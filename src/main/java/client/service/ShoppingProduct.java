@@ -188,7 +188,7 @@ public class ShoppingProduct {
     // 添加商品
     // 输入 商品id productID；商品名称 productName；商品属性 productDetail；商品图片 productImage；商品原价 productOriginalPrice；商品现价 productCurrentPrice；商品库存 productInventory；商品发货地址 productAddress；商品好评率 productCommentRate；商品状态 productStatus；商店id storeID
     // 返回 状态
-    public static boolean addProduct(String productID, String productName, String productDetail, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, float productCommentRate, boolean productStatus, String storeID) throws IOException
+    public static boolean addProduct(String productID, String productName, String productDetail, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, boolean productStatus, String storeID) throws IOException
     {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
@@ -206,7 +206,6 @@ public class ShoppingProduct {
                     .put("productCurrentPrice", productCurrentPrice)
                     .put("productInventory", productInventory)
                     .put("productAddress", productAddress)
-                    .put("productCommentRate", productCommentRate)
                     .put("productStatus", productStatus)
                     .put("storeID", storeID));
 

@@ -256,9 +256,9 @@ public class ShoppingProductService {
 
 
     // 添加商品
-    public boolean addProduct(String productID, String productName, String productDetail, String productImage,
+    public boolean addProduct(String productID, String productName, String productDetail,
                               float productOriginalPrice, float productCurrentPrice, int productInventory,
-                              String productAddress, float productCommentRate, boolean productStatus, String storeID) {
+                              String productAddress, boolean productStatus, String storeID) {
         addProductLock.lock();
         try {
             boolean isSuccess = false;
@@ -269,23 +269,21 @@ public class ShoppingProductService {
                 return false;
             }
 
-            String query = "INSERT INTO tblShoppingProduct (productID, productName, productDetail, productImage, " +
+            String query = "INSERT INTO tblShoppingProduct (productID, productName, productDetail,  " +
                     "productOriginalPrice, productCurrentPrice, productInventory, productAddress, " +
-                    "productCommentRate, productStatus, storeID) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "productStatus, storeID) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, productID);
                 preparedStatement.setString(2, productName);
                 preparedStatement.setString(3, productDetail);
-                preparedStatement.setString(4, productImage);
-                preparedStatement.setFloat(5, productOriginalPrice);
-                preparedStatement.setFloat(6, productCurrentPrice);
-                preparedStatement.setInt(7, productInventory);
-                preparedStatement.setString(8, productAddress);
-                preparedStatement.setFloat(9, productCommentRate);
-                preparedStatement.setBoolean(10, productStatus);
-                preparedStatement.setString(11, storeID); // 新增 storeID
+                preparedStatement.setFloat(4, productOriginalPrice);
+                preparedStatement.setFloat(5, productCurrentPrice);
+                preparedStatement.setInt(6, productInventory);
+                preparedStatement.setString(7, productAddress);
+                preparedStatement.setBoolean(8, productStatus);
+                preparedStatement.setString(9, storeID); // 新增 storeID
 
                 int rowsAffected = preparedStatement.executeUpdate();
                 if (rowsAffected > 0) {
