@@ -233,6 +233,8 @@ public class LibraryUI {
 
     private void showUpdateWindow() {
         Stage updateStage =new Stage();
+        Image image11 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        updateStage.getIcons().add(image11);
         updateStage.setTitle("更新书籍");
         Label isbnLabel = new Label("Bookid:");
         TextField isbnField = new TextField();
@@ -299,6 +301,8 @@ public class LibraryUI {
 
     private void showBorrowWindow() {
         Stage borrowStage = new Stage();
+        Image image11 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        borrowStage.getIcons().add(image11);
         borrowStage.setTitle("借阅记录");
 
         Label userLabel = new Label("用户: " + user.getUsername());
@@ -408,6 +412,8 @@ public class LibraryUI {
 
     void showBookDetails(Book book) {
         Stage detailStage = new Stage();
+        Image image11 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        detailStage.getIcons().add(image11);
         detailStage.initModality(Modality.APPLICATION_MODAL);
         detailStage.setTitle("书籍详情");
 
@@ -446,6 +452,8 @@ public class LibraryUI {
             Button previewPdfButton = new Button("预览PDF");
             previewPdfButton.setOnAction(e -> {
                 Stage pdfStage = new Stage();
+                Image image1 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+                pdfStage.getIcons().add(image1);
                 pdfStage.initModality(Modality.APPLICATION_MODAL);
                 pdfStage.setTitle("PDF预览");
 

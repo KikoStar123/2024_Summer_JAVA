@@ -196,6 +196,8 @@ public class CourseSelectionUI {
 
     public void showMySchedule() {
         Stage scheduleStage = new Stage();
+        Image image1 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        scheduleStage.getIcons().add(image1);
         scheduleStage.setTitle("我的课表");
         scheduleStage.initModality(Modality.APPLICATION_MODAL);
 
@@ -362,6 +364,8 @@ public class CourseSelectionUI {
         Stage dialogStage = new Stage();
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.setTitle("课程详细信息");
+        Image image1 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        dialogStage.getIcons().add(image1);
 
         VBox vbox = new VBox(10);
         vbox.setPadding(new Insets(20));
