@@ -418,6 +418,8 @@ public class LibraryUI_Manager extends Application {
 
         VBox vbox = new VBox();
         vbox.setSpacing(10);
+        vbox.setAlignment(Pos.CENTER); // 设置居中对齐
+        vbox.setPadding(new Insets(20)); // 添加内边距
 
         vbox.getChildren().add(new Label("书名: " + book.getName()) {{
             getStyleClass().add("body-font");
@@ -506,7 +508,7 @@ public class LibraryUI_Manager extends Application {
             vbox.getChildren().add(previewPdfButton);
         }
 
-        Scene scene = new Scene(vbox, 600, 800);
+        Scene scene = new Scene(vbox, 400, 600);
         detailStage.setScene(scene);
         detailStage.show();
     }
