@@ -153,11 +153,17 @@ public class ShopUI_Manager extends Application {
         // 创建一个文本区域来显示商店信息
         TextArea infoArea = new TextArea();
         infoArea.setEditable(false); // 设置为不可编辑
+        String status;
+        if(storeInfo.getStoreStatus()==true)
+            status="营业中";
+        else
+            status="停业中";
+
         infoArea.setText("商店ID: " + storeInfo.getStoreID() + "\n" +
                 "商店名称: " + storeInfo.getStoreName() + "\n" +
                 "联系电话: " + storeInfo.getStorePhone() + "\n" +
                 "评分: " + storeInfo.getStoreRate() + "\n" +
-                "状态: " + (storeInfo.getStoreStatus()));
+                "状态: " + status);
 
         // 将文本区域设置为界面的中心内容
         shopInfoPane.setCenter(infoArea);
@@ -207,10 +213,10 @@ public class ShopUI_Manager extends Application {
         gridPane.add(storeNameField, 1, 1);
         gridPane.add(phoneLabel, 0, 2);
         gridPane.add(storePhoneField, 1, 2);
-        gridPane.add(rateLabel, 0, 3);
-        gridPane.add(storeRateField, 1, 3);
-        gridPane.add(statusLabel, 0, 4);
-        gridPane.add(storeStatusField, 1, 4);
+       // gridPane.add(rateLabel, 0, 3);
+       // gridPane.add(storeRateField, 1, 3);
+        gridPane.add(statusLabel, 0, 3);
+        gridPane.add(storeStatusField, 1, 3);
 
         // 设置弹窗的内容
         dialogPane.setContent(gridPane);
