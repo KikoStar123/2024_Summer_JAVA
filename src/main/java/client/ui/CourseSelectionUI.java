@@ -2,6 +2,7 @@ package client.ui;
 
 import client.service.CourseSelection;
 import client.service.User;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -46,7 +47,7 @@ public class CourseSelectionUI {
         this.courseList = FXCollections.observableArrayList();
         this.selectedCourses = FXCollections.observableArrayList();
         this.random = new Random();
-        this.colors = Arrays.asList("#add8e6", "#FF0000", "#FFFF00", "#90EE90", "#00FFFF"); // 蓝色，红色，黄色，浅绿色，青色
+        this.colors = Arrays.asList("#DCDCDC", "#BCCED9","#B4D8B4", "#F5C6C6", "#D8B4A6", "#6B7C8C","#A8B2A6","#E8B6B6");
         updateCourseList();
         updateSelectedCourses();
     }
@@ -206,24 +207,25 @@ public class CourseSelectionUI {
         vbox.setPadding(new Insets(10));
         vbox.setSpacing(5);
 
-        Scene scene = new Scene(vbox, 680, 450);
+        Scene scene = new Scene(vbox, 680, 500);
         scheduleStage.setScene(scene);
         scheduleStage.showAndWait();
+
+
     }
     private GridPane createScheduleView() {
         GridPane gridPane = new GridPane();
         gridPane.setHgap(15);
         gridPane.setVgap(15);
         gridPane.setPadding(new Insets(10));
-        gridPane.setStyle("-fx-background-color: #f0f0f0;"); // 设置背景色
+        gridPane.setStyle("-fx-background-color: #f0f0f0; -fx-background-image: url('/table.png'); -fx-background-repeat: no-repeat; -fx-background-position: center center; -fx-background-size: cover;");
 
-        // 添加时间段标签
+        // 添加时间段标签，每个时间段占用两行
         String[] periods = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
         for (int i = 0; i < periods.length; i++) {
             Label periodLabel = new Label(periods[i]);
             periodLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
-            gridPane.add(periodLabel, 0, i + 1);
-
+            gridPane.add(periodLabel, 0, i  + 1); // 每个时间段占用奇数行，偶数行为分割线或空行
         }
 
         // 添加星期标签
@@ -231,14 +233,24 @@ public class CourseSelectionUI {
         for (int i = 0; i < days.length; i++) {
             Label dayLabel = new Label(days[i]);
             dayLabel.setStyle("-fx-font-size: 16; -fx-font-weight: bold;");
-            gridPane.add(dayLabel, i + 1, 0); // 将星期标签添加到第一列
+             //使用Platform.runLater来获取Label的宽度和高度
+            gridPane.add(dayLabel, i + 1, 0); // 将星期标签添加到第一行
             ColumnConstraints column = new ColumnConstraints();
             column.setPrefWidth(70);
             gridPane.getColumnConstraints().add(column);
             GridPane.setHalignment(dayLabel, HPos.CENTER);
             GridPane.setValignment(dayLabel, VPos.CENTER);
-        }// 设置列的固定宽度
-
+        }
+        // 设置每行的最大高度（每个时间段行和分割线行都设置最大高度）
+        for (int i = 0; i < periods.length ; i++) {
+            RowConstraints row = new RowConstraints();
+            row.setMaxHeight(50); // 设置每行的最大高度为 50 像素（根据需要调整）
+            gridPane.getRowConstraints().add(row);
+        }
+//        // 添加分割线到第 5 和第 6 时间段之间
+//        Separator separator = new Separator();
+//        separator.setStyle("-fx-background-color: #6B8E23;"); // 分割线颜色，可以根据需求调整
+//        gridPane.add(separator, 0, 10, days.length + 1, 1); // 在时间段5-6之间添加分割线（插入在第11行）
 
         // 获取已选课程信息并填充课程表
         ObservableList<CourseSelection.oneCourseinfo> enrolledCourses = FXCollections.observableArrayList(
@@ -266,21 +278,21 @@ public class CourseSelectionUI {
             borderPane.setCenter(courseLabel);
             // 设置圆角和背景色
             String backgroundColor = colors.get(colorIndex % colors.size());
-            borderPane.setStyle(String.format("-fx-border-color: black; -fx-border-radius: 10; -fx-border-width: 1px; -fx-background-color: %s;", backgroundColor));
+            borderPane.setStyle(String.format("-fx-border-color: white; -fx-border-radius: 10; -fx-border-width: 1px; -fx-background-color: %s;", backgroundColor));
 
             // 确保只添加一次，并设置正确的位置和跨度
             if (endPeriod - startPeriod + 1 > 0) {
-                gridPane.add(borderPane, dayIndex, startPeriod);
+                gridPane.add(borderPane, dayIndex, startPeriod );
                 GridPane.setRowSpan(borderPane, endPeriod - startPeriod + 1);
             } else {
-                gridPane.add(borderPane, dayIndex, startPeriod);
+                gridPane.add(borderPane, dayIndex, startPeriod );
             }
 
             addedCourses.add(course.getCourseID());
             colorIndex++; // 更新颜色索引
         }
         BorderPane borderPane = new BorderPane();
-        borderPane.setStyle("-fx-border-color: black; -fx-border-width: 3px; -fx-border-style: solid;");
+        borderPane.setStyle("-fx-border-color: #6B8E23; -fx-border-width: 3px; -fx-border-style: solid;");
         borderPane.setCenter(gridPane);
 
         // 将 BorderPane 放入一个新的 GridPane 中
@@ -386,7 +398,6 @@ public class CourseSelectionUI {
         String courseType = course.getCourseType();
         String courseTypeLabelText = "课程类型: " + (courseType.equals("required") ? "必修" : "选修");
         Label courseTypeLabel = new Label(courseTypeLabelText);
-
 
         vbox.getChildren().addAll(courseIDLabel, courseNameLabel, courseTeacherLabel, courseCreditLabel, courseTimeLabel, courseCapacityLabel, courseSelectLabel, courseRoomLabel, courseTypeLabel);
 
