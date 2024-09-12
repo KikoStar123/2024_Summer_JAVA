@@ -47,7 +47,7 @@ function addMarker(location, title, iconUrl) {
         title: title,
         map: map,
         icon: icon, // 使用自定义图标
-        offset: new AMap.Pixel(-40, -30), // 设置图标偏移量，确保图标底部中心对齐坐标点
+        offset: new AMap.Pixel(-30, -30), // 设置图标偏移量，确保图标底部中心对齐坐标点
         cursor: 'pointer'
     });
 
