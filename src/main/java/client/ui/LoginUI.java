@@ -50,7 +50,6 @@ import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
 import javax.swing.JOptionPane;
-import javax.websocket.Session;
 
 
 
@@ -375,7 +374,7 @@ public class LoginUI extends Application {
         });
         try {
             // 创建邮件消息
-            Message message = new MimeMessage((MimeMessage) session);
+            Message message = new MimeMessage( session);
             message.setFrom(new InternetAddress(smtpUsername));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("重置密码验证码");
