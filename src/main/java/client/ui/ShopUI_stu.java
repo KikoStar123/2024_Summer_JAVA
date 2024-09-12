@@ -817,6 +817,8 @@ public class ShopUI_stu {
 
                 VBox cart=new VBox();
                 ShoppingProduct.oneProduct oneProduct=ShoppingProduct.getProductDetails(cartElement.getProductID());
+                System.out.println("1111wer"+cartElement.getProductID());
+                System.out.println("1111wer"+oneProduct.getProductID());
                 Label productname=new Label("商品名称: "+oneProduct.getProductName());
                 Label productid=new Label("商品id: "+oneProduct.getProductID());
                 Label productdetail=new Label("商品属性: "+oneProduct.getProductDetail());
@@ -853,6 +855,7 @@ public class ShopUI_stu {
 
                         }
                         sumprice.setText("商品总价: "+oneProduct.getProductCurrentPrice()*quantityb);
+                        System.out.println(oneProduct.getProductCurrentPrice());
                         if (selectBox.isSelected()) {
                             totalPrice[0] -= oneProduct.getProductCurrentPrice();
                             totalPriceLabel.setText("总价格: " + totalPrice[0]);
@@ -870,6 +873,8 @@ public class ShopUI_stu {
                         throw new RuntimeException(e);
                     }
                     sumprice.setText("商品总价: "+oneProduct.getProductCurrentPrice()*quantityb);
+                    System.out.println("wrawqfsc"+oneProduct.getProductCurrentPrice());
+                    System.out.println("wrfgdfdgdfgdgawqfsc"+oneProduct.getProductID());
                     if (selectBox.isSelected()) {
                         totalPrice[0] += oneProduct.getProductCurrentPrice();
                         totalPriceLabel.setText("总价格: " + totalPrice[0]);
@@ -980,7 +985,7 @@ public class ShopUI_stu {
                     }
                 });
                 HBox boxa = new HBox(selectBox, productname, productdetail, productid);
-                HBox boxb = new HBox(sumprice, deleteButton);
+                HBox boxb = new HBox( deleteButton);
 
                 cart.getChildren().addAll(boxa, quantityBox, boxb);
                 items.add(cart);
@@ -995,7 +1000,7 @@ public class ShopUI_stu {
                     }
                 });
 
-                HBox bottom = new HBox(totalPriceLabel, buybutton, backButton);
+                HBox bottom = new HBox( buybutton, backButton);
                 VBox layout = new VBox();
                 layout.getChildren().addAll(scrollPane, finalInfoComboBox, bottom);
                 // 设置 scrollPane 在 VBox 中的增长优先级
