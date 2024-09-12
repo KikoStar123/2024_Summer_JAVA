@@ -61,7 +61,6 @@ public class Admin_CourseUI extends Application {
         btnAddCourses.setOnAction(e -> showAddCourseDialog());
         btnRefresh.setOnAction(e -> refreshCourses());
 
-        topBar.getChildren().addAll(btnAddCourses, btnRefresh);
         Region region = new Region();
         region.setMinWidth(600);
         topBar.getChildren().addAll(btnAddCourses, btnRefresh, region, logoutButton);
