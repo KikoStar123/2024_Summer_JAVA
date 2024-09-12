@@ -8,6 +8,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -31,6 +33,10 @@ public class Bankui_stu {
         bankBox = new BorderPane();
         bankBox.setPadding(new Insets(10));
 
+        ImageView photo = new ImageView(new Image(Bankui_stu.class.getResource("/background-seu-2.jpg").toExternalForm()));
+        photo.setFitWidth(400); // 你可以根据窗口大小调整这个值
+        photo.setFitHeight(300);
+        bankBox.setRight(photo);
         // 创建按钮栏
         buttonsBox = new HBox(10);
         buttonsBox.setPadding(new Insets(0, 0, 10, 0));

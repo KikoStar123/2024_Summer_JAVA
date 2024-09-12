@@ -187,7 +187,7 @@ public class MainUI extends Application {
 
     private void handleShop(String username) throws IOException {
         ShopUI_stu shopUI = new ShopUI_stu(user, borderPane);
-        VBox shopLayout = shopUI.getShopLayout();
+        BorderPane shopLayout = shopUI.createCover();
         borderPane.setCenter(shopLayout);
     }
 
