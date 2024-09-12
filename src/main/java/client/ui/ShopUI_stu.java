@@ -43,6 +43,7 @@ import static client.service.ShoppingOrder.createOrder;
 public class ShopUI_stu {
     private User user;
     private BorderPane borderPane;
+    private List<ShoppingProduct.oneProduct> cartProductList = new ArrayList<>(); // 存储购物车中的商品
 
     public ShopUI_stu(User user, BorderPane borderPane) {
         this.user = user;
@@ -803,59 +804,95 @@ public class ShopUI_stu {
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
+
         ShoppingCart shoppingCart = new ShoppingCart();
+
+        // 预加载购物车中的商品，避免重复添加
         ShoppingCart.oneCartElement[] cartElements = shoppingCart.getShoppingCart(user.getUsername());
+
+        cartProductList.clear(); // 清空旧的商品列表，确保从头开始
+
+        if (cartElements != null) {
+            for (ShoppingCart.oneCartElement cartElement : cartElements) {
+                ShoppingProduct.oneProduct oneProduct = ShoppingProduct.getProductDetails(cartElement.getProductID());
+
+                // 打印详细商品信息，帮助追踪问题
+                System.out.println("加载商品信息: ID = " + oneProduct.getProductID() +
+                        ", Name = " + oneProduct.getProductName() +
+                        ", Current Price = " + oneProduct.getProductCurrentPrice() +
+                        ", Original Price = " + oneProduct.getProductOriginalPrice() +
+                        ", Detail = " + oneProduct.getProductDetail());
+
+                // 检查商品是否已经存在购物车中，避免重复添加
+                //boolean productExists = cartProductList.stream()
+                        //.anyMatch(product -> product.getProductID().equals(oneProduct.getProductID()));
+
+                //if (!productExists) {
+                    cartProductList.add(oneProduct); // 仅在商品未添加时加入
+                //}
+            }
+
+            // 打印购物车中的所有商品，确保正确添加
+            System.out.println("购物车商品列表已预加载:");
+            cartProductList.forEach(product ->
+                    System.out.println("商品ID: " + product.getProductID() +
+                            ", 商品名称: " + product.getProductName() +
+                            ", 商品当前价格: " + product.getProductCurrentPrice()));
+        }
+
+
+
         items.clear();
         Label totalPriceLabel = new Label("总价格: 0.0");
-        Button buybutton = new Button("购买");
-        buybutton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        Button buyButton = new Button("购买");
+        buyButton.getStyleClass().add("main-button");
         double[] totalPrice = {0.0};
-        ComboBox<String> infoComboBox = null;
-        if (cartElements == null) {
-        } else {
-            for (ShoppingCart.oneCartElement cartElement : cartElements) {
 
-                VBox cart=new VBox();
-                ShoppingProduct.oneProduct oneProduct=ShoppingProduct.getProductDetails(cartElement.getProductID());
-                System.out.println("1111wer"+cartElement.getProductID());
-                System.out.println("1111wer"+oneProduct.getProductID());
-                Label productname=new Label("商品名称: "+oneProduct.getProductName());
-                Label productid=new Label("商品id: "+oneProduct.getProductID());
-                Label productdetail=new Label("商品属性: "+oneProduct.getProductDetail());
-                Label quantityLabel = new Label("数量: "+cartElement.getProductNumber());
+        if (cartElements != null) {
+            for (ShoppingCart.oneCartElement cartElement : cartElements) {
+                VBox cart = new VBox();
+                ShoppingProduct.oneProduct oneProduct = ShoppingProduct.getProductDetails(cartElement.getProductID());
+
+                Label productname = new Label("商品名称: " + oneProduct.getProductName());
+                Label productid = new Label("商品id: " + oneProduct.getProductID());
+                Label productdetail = new Label("商品属性: " + oneProduct.getProductDetail());
+                Label quantityLabel = new Label("数量: " + cartElement.getProductNumber());
                 CheckBox selectBox = new CheckBox();
+
                 selectBox.setOnAction(event -> {
+                    int quantity = Integer.parseInt(quantityLabel.getText().split(": ")[1]);
                     if (selectBox.isSelected()) {
-                        totalPrice[0] += oneProduct.getProductCurrentPrice() * Integer.parseInt(quantityLabel.getText().split(": ")[1]);
+                        totalPrice[0] += oneProduct.getProductCurrentPrice() * quantity;
                     } else {
-                        totalPrice[0] -= oneProduct.getProductCurrentPrice() * Integer.parseInt(quantityLabel.getText().split(": ")[1]);
+                        totalPrice[0] -= oneProduct.getProductCurrentPrice() * quantity;
                     }
                     totalPriceLabel.setText("总价格: " + totalPrice[0]);
                 });
 
                 Button decreaseButton = new Button("-");
                 Button increaseButton = new Button("+");
-                // 设置按钮样式为圆形
                 decreaseButton.setStyle("-fx-background-radius: 50%; -fx-min-width: 15px; -fx-min-height: 15px;");
                 increaseButton.setStyle("-fx-background-radius: 50%; -fx-min-width: 15px; -fx-min-height: 15px;");
 
                 HBox quantityBox = new HBox(decreaseButton, quantityLabel, increaseButton);
-                int quantity = Integer.parseInt(quantityLabel.getText().split(": ")[1]);
-                Label sumprice=new Label("商品总价: "+oneProduct.getProductCurrentPrice()*quantity);
-                decreaseButton.setOnAction(event -> {
-                    int quantityb = Integer.parseInt(quantityLabel.getText().split(": ")[1]);
-                    if (quantityb > 1) {
-                        quantityb--;
-                        quantityLabel.setText("数量: " + quantityb);
-                        try {
-                            ShoppingCart.updateCart(user.getUsername(),oneProduct.getProductID(), quantityb);
-                        } catch (IOException e) {
-                            System.out.println("error");
-                            throw new RuntimeException(e);
+                Label sumprice = new Label("商品总价: " + oneProduct.getProductCurrentPrice() * cartElement.getProductNumber());
 
+                decreaseButton.setOnAction(event -> {
+                    int quantity = Integer.parseInt(quantityLabel.getText().split(": ")[1]);
+                    if (quantity > 1) {
+                        quantity--;
+                        quantityLabel.setText("数量: " + quantity);
+                        try {
+                            ShoppingCart.updateCart(user.getUsername(), oneProduct.getProductID(), quantity);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setTitle("错误");
+                            alert.setHeaderText(null);
+                            alert.setContentText("更新购物车时出现问题，请稍后再试。");
+                            alert.showAndWait();
                         }
-                        sumprice.setText("商品总价: "+oneProduct.getProductCurrentPrice()*quantityb);
-                        System.out.println(oneProduct.getProductCurrentPrice());
+                        sumprice.setText("商品总价: " + oneProduct.getProductCurrentPrice() * quantity);
                         if (selectBox.isSelected()) {
                             totalPrice[0] -= oneProduct.getProductCurrentPrice();
                             totalPriceLabel.setText("总价格: " + totalPrice[0]);
@@ -864,154 +901,103 @@ public class ShopUI_stu {
                 });
 
                 increaseButton.setOnAction(event -> {
-                    int quantityb = Integer.parseInt(quantityLabel.getText().split(": ")[1]);
-                    quantityb++;
-                    quantityLabel.setText("数量: " + quantityb);
+                    int quantity = Integer.parseInt(quantityLabel.getText().split(": ")[1]);
+                    quantity++;
+                    quantityLabel.setText("数量: " + quantity);
                     try {
-                        ShoppingCart.updateCart(user.getUsername(),oneProduct.getProductID(), quantityb);
+                        ShoppingCart.updateCart(user.getUsername(), oneProduct.getProductID(), quantity);
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("错误");
+                        alert.setHeaderText(null);
+                        alert.setContentText("更新购物车时出现问题，请稍后再试。");
+                        alert.showAndWait();
                     }
-                    sumprice.setText("商品总价: "+oneProduct.getProductCurrentPrice()*quantityb);
-                    System.out.println("wrawqfsc"+oneProduct.getProductCurrentPrice());
-                    System.out.println("wrfgdfdgdfgdgawqfsc"+oneProduct.getProductID());
+                    sumprice.setText("商品总价: " + oneProduct.getProductCurrentPrice() * quantity);
                     if (selectBox.isSelected()) {
                         totalPrice[0] += oneProduct.getProductCurrentPrice();
                         totalPriceLabel.setText("总价格: " + totalPrice[0]);
                     }
                 });
-                Button deleteButton=new Button("删除");
-                deleteButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+
+                Button deleteButton = new Button("删除");
+                deleteButton.getStyleClass().add("main-button");
                 deleteButton.setOnAction(event -> {
                     items.remove(cart);
+                    cartProductList.remove(oneProduct); // 从本地列表中移除商品
+                    System.out.println("商品已删除: " + oneProduct.getProductName());
+                    System.out.println("当前购物车商品列表: ");
+                    cartProductList.forEach(product -> System.out.println(product.getProductName()));
+
                     if (selectBox.isSelected()) {
                         totalPrice[0] -= oneProduct.getProductCurrentPrice() * cartElement.getProductNumber();
                         totalPriceLabel.setText("总价格: " + totalPrice[0]);
                     }
                     try {
-                        ShoppingCart.removeFromCart(user.getUsername(),oneProduct.getProductID());
+                        ShoppingCart.removeFromCart(user.getUsername(), oneProduct.getProductID());
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("错误");
+                        alert.setHeaderText(null);
+                        alert.setContentText("删除商品时出现问题，请稍后再试。");
+                        alert.showAndWait();
                     }
                 });
-                ComboBox<String> finalInfoComboBox = new ComboBox<>();
-                finalInfoComboBox.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-                ShoppingUser.oneUser currentUser = ShoppingUser.getUserDetails(user.getUsername());
-                for (int i = 0; i < currentUser.getAddresses().length; i++) {
-                    String address = currentUser.getAddresses()[i];
-                    String telephone = currentUser.getTelephones()[i];
-                    finalInfoComboBox.getItems().add("地址: " + address + " 电话: " + telephone);
-                }
-                finalInfoComboBox.setPromptText("选择收货信息");
-                // 默认选择第一个收货信息
-                if (!finalInfoComboBox.getItems().isEmpty()) {
-                    finalInfoComboBox.getSelectionModel().selectFirst();
-                }
 
-                buybutton.setOnAction(e -> {
-                    List<String> orderIds = new ArrayList<>();
-                    List<String> productIds = new ArrayList<>();
-                    float totalAmount = 0;
-
-                    for (VBox cartBox : items) {
-                        CheckBox selectBoxb = null;
-                        for (Node node : cartBox.getChildren()) {
-                            if (node instanceof HBox) {
-                                HBox hbox = (HBox) node;
-                                for (Node hboxNode : hbox.getChildren()) {
-                                    if (hboxNode instanceof CheckBox) {
-                                        selectBoxb = (CheckBox) hboxNode;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (selectBoxb != null) {
-                                break;
-                            }
-                        }
-
-                        if (selectBoxb != null && selectBoxb.isSelected()) {
-                            Label productnameb = (Label) ((HBox) cartBox.getChildren().get(0)).getChildren().get(1);
-                            Label productIdd = (Label) ((HBox) cartBox.getChildren().get(0)).getChildren().get(3);
-                            Label quantityLabelb = (Label) ((HBox) cartBox.getChildren().get(1)).getChildren().get(1);
-                            Label paymoney = (Label) ((HBox) cartBox.getChildren().get(2)).getChildren().get(0);
-                            String productName = productnameb.getText().replace("商品名称: ", "");
-                            String productId = productIdd.getText().replace("商品id: ", "");
-                            int quantityb = Integer.parseInt(quantityLabelb.getText().replace("数量: ", ""));
-                            float paymoneyb = Float.parseFloat(paymoney.getText().replace("商品总价: ", ""));
-                            totalAmount += paymoneyb;
-
-                            // 调用创建订单的函数
-                            try {
-                                String orderid = createOrder(user.getUsername(), productId, productName, quantityb, paymoneyb);
-                                orderIds.add(orderid);
-                                productIds.add(productId);
-                            } catch (IOException ex) {
-                                throw new RuntimeException(ex);
-                            }
-                        }
-                    }
-
-                    // 合并结算
-                    if (!orderIds.isEmpty()) {
-                        boolean result = handlePayment(orderIds, totalAmount);
-                        if (result) {
-                            String selectedInfo = finalInfoComboBox.getSelectionModel().getSelectedItem();
-                            String address = null;
-                            if (selectedInfo != null) {
-                                // 假设格式为 "地址: xxx 电话: xxx"
-                                String[] parts = selectedInfo.split(" 电话: ");
-                                address = parts[0].replace("地址: ", "");
-                                System.out.println("选中的地址: " + address);
-                            }
-
-                            for (int i = 0; i < orderIds.size(); i++) {
-                                String orderId = orderIds.get(i);
-                                String productId = productIds.get(i);
-                                try {
-                                    ShoppingProduct.oneProduct oneProduct1 = ShoppingProduct.getProductDetails(productId);
-                                    ShoppingMap.addMapRecord(orderId, oneProduct1.getProductAddress(), address);
-                                } catch (IOException ex) {
-                                    throw new RuntimeException(ex);
-                                }
-                            }
-
-                            try {
-                                borderPane.setCenter(new VBox(showOrders()));
-                            } catch (IOException ex) {
-                                throw new RuntimeException(ex);
-                            }
-                        }
-                    }
-                });
                 HBox boxa = new HBox(selectBox, productname, productdetail, productid);
-                HBox boxb = new HBox( deleteButton);
+                HBox boxb = new HBox(deleteButton);
 
-                cart.getChildren().addAll(boxa, quantityBox, boxb);
+                cart.getChildren().addAll(boxa, quantityBox, sumprice, boxb);
                 items.add(cart);
+            }
+        }
 
-                Button backButton = new Button("返回");
-                backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-                backButton.setOnAction(e -> {
+        buyButton.setOnAction(e -> {
+            List<String> orderIds = new ArrayList<>();
+            float totalAmount = 0;
+
+            System.out.println("开始结算，当前购物车商品列表: ");
+            cartProductList.forEach(product -> System.out.println(product.getProductName()));
+
+            for (ShoppingProduct.oneProduct product : cartProductList) {
+                totalAmount += product.getProductCurrentPrice();
+                orderIds.add(product.getProductID());
+            }
+
+            if (!orderIds.isEmpty()) {
+                boolean result = handlePayment(orderIds, totalAmount);
+                if (result) {
                     try {
-                        borderPane.setCenter(getShopLayout());
+                        borderPane.setCenter(new VBox(showOrders()));
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-                });
+                }
+            }
+        });
 
-                HBox bottom = new HBox( buybutton, backButton);
-                VBox layout = new VBox();
-                layout.getChildren().addAll(scrollPane, finalInfoComboBox, bottom);
-                // 设置 scrollPane 在 VBox 中的增长优先级
-                VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        Button backButton = new Button("返回");
+        backButton.getStyleClass().add("main-button");
+        backButton.setOnAction(e -> {
+            try {
+                borderPane.setCenter(getShopLayout());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
-                // 设置 finalInfoComboBox 和 bottom 的 margin
-                VBox.setMargin(finalInfoComboBox, new Insets(10, 0, 0, 0));
-                VBox.setMargin(bottom, new Insets(5, 0, 0, 0));
-                borderPane.setCenter(layout);
+        HBox bottom = new HBox(buyButton, backButton);
+        VBox layout = new VBox();
+        layout.getChildren().addAll(scrollPane, totalPriceLabel, bottom);
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        borderPane.setCenter(layout);
+    }
 
-    }}}
+
+
+
     //进入商品详情页
     private VBox showProductDetails(ShoppingProduct.oneProduct product) throws IOException {
         VBox detailLayout = new VBox(10); // 间距为10
