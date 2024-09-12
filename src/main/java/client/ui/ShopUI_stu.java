@@ -266,19 +266,21 @@ public class ShopUI_stu {
             if(order.getpaidStatus())
             {
                 paybutton.setText("已支付");
+                orderbox.getChildren().addAll(orderid,productname,paidMoney,commentbutton,paybutton,logisticsButton);
                 paybutton.setDisable(true);
             }
             else
             {
                 //未支付不可评论
+
                 commentbutton.setDisable(true);
+                orderbox.getChildren().addAll(orderid,productname,paidMoney,infoComboBox,paybutton);
             }
             if(ShoppingOrder.getOrderCommentStatus(order.getOrderID()))
             {
                 commentbutton.setText("已评论");
                 commentbutton.setDisable(true);
             }
-            orderbox.getChildren().addAll(orderid,productname,paidMoney,infoComboBox,commentbutton,paybutton,logisticsButton);
             items.add(orderbox);
             paybutton.setOnAction(e-> {
                 List<String> orderIds = new ArrayList<>();
@@ -287,6 +289,7 @@ public class ShopUI_stu {
                 boolean result = handlePayment(orderIds, totalAmount);
                 if (result) {
                     ShoppingProduct.oneProduct oneProduct;
+                    infoComboBox.setDisable(true);
                     try {
                         oneProduct = ShoppingProduct.getProductDetails(order.getProductID());
                     } catch (IOException ex) {
@@ -538,7 +541,7 @@ public class ShopUI_stu {
         backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         backButton.setOnAction(e->{
             try {
-                borderPane.setCenter(new VBox(getShopLayout()));
+                borderPane.setCenter(getShopLayout());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
