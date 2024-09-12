@@ -950,11 +950,12 @@ public class ShopUI_stu {
                                 System.out.println("选中的地址: " + address);
                             }
 
-                            for (String productId : productIds) {
+                            for (int i = 0; i < orderIds.size(); i++) {
+                                String orderId = orderIds.get(i);
+                                String productId = productIds.get(i);
                                 try {
                                     ShoppingProduct.oneProduct oneProduct1 = ShoppingProduct.getProductDetails(productId);
-                                    ShoppingMap.addMapRecord(productId, oneProduct1.getProductAddress(), address);
-
+                                    ShoppingMap.addMapRecord(orderId, oneProduct1.getProductAddress(), address);
                                 } catch (IOException ex) {
                                     throw new RuntimeException(ex);
                                 }
@@ -968,7 +969,6 @@ public class ShopUI_stu {
                         }
                     }
                 });
-
                 HBox boxa = new HBox(selectBox, productname, productdetail, productid);
                 HBox boxb = new HBox(sumprice, deleteButton);
 
