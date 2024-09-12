@@ -699,6 +699,12 @@ public class ShopUI_stu {
         });
 
         ordersBox.getChildren().clear(); // 清除之前的子节点
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true); // 使 ListView 高度适应 ScrollPane
+
+        // 确保 ListView 填充 ScrollPane
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
         ordersBox.getChildren().addAll(searchBox,scrollPane, adduserButton, deleteButton, backButton);
         borderPane.setCenter(ordersBox);
         return ordersBox;
@@ -767,6 +773,8 @@ public class ShopUI_stu {
         cartelementList.setItems(items);
         ScrollPane scrollPane = new ScrollPane(cartelementList);
         scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        VBox.setVgrow(scrollPane, Priority.ALWAYS);
         ShoppingCart shoppingCart = new ShoppingCart();
         ShoppingCart.oneCartElement[] cartElements = shoppingCart.getShoppingCart(user.getUsername());
         items.clear();
@@ -962,6 +970,12 @@ public class ShopUI_stu {
                 HBox bottom = new HBox(totalPriceLabel, buybutton, backButton);
                 VBox layout = new VBox();
                 layout.getChildren().addAll(scrollPane, finalInfoComboBox, bottom);
+                // 设置 scrollPane 在 VBox 中的增长优先级
+                VBox.setVgrow(scrollPane, Priority.ALWAYS);
+
+                // 设置 finalInfoComboBox 和 bottom 的 margin
+                VBox.setMargin(finalInfoComboBox, new Insets(10, 0, 0, 0));
+                VBox.setMargin(bottom, new Insets(5, 0, 0, 0));
                 borderPane.setCenter(layout);
 
     }}}

@@ -193,7 +193,7 @@ public class MainUI extends Application {
     private void handleCourse(String username) {
         Platform.runLater(() -> {
             CourseSelectionUI CourseSelectionUI = new CourseSelectionUI(user);
-            BorderPane CourseSelection=CourseSelectionUI.createCourseSelectionView();
+            BorderPane CourseSelection=CourseSelectionUI.createCover();
             borderPane.setCenter(CourseSelection);
         });
     }
