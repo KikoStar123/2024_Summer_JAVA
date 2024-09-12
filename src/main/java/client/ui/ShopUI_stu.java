@@ -393,12 +393,14 @@ public class ShopUI_stu {
                 VBox commentbox = new VBox();
                 // 创建下拉框用于选择评论态度
                 ComboBox<String> attitudeComboBox = new ComboBox<>();
+                attitudeComboBox.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
                 attitudeComboBox.getItems().addAll("差评", "中评", "好评");
                 attitudeComboBox.setPromptText("选择评论态度");
 
                 // 创建输入框用于输入评论内容
                 TextField commentField = new TextField();
                 commentField.setPromptText("输入评论内容");
+                commentField.getStyleClass().add("input-field");
 
                 // 创建确认和返回按钮
                 Button confirmButton = new Button("确认");
@@ -668,6 +670,7 @@ public class ShopUI_stu {
             });
             layout.getChildren().addAll(delinfoLabel,infoComboBox, confirmButton);
             Scene scene = new Scene(layout, 300, 200);
+            scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
             popupStage.setScene(scene);
             popupStage.show();
         });
@@ -717,6 +720,7 @@ public class ShopUI_stu {
 
             // 设置场景并显示弹出窗口
             Scene scene = new Scene(layout, 300, 200);
+            scene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
             popupStage.setScene(scene);
             popupStage.show();
         });
@@ -776,6 +780,7 @@ public class ShopUI_stu {
         logisticsBox.getChildren().addAll(webView, logisticsStatusLabel, estimatedArrivalLabel);
 
         Button backButton = new Button("返回");
+        backButton.getStyleClass().add("main-button");
         backButton.setOnAction(e -> {
             try {
                 borderPane.setCenter(showOrders());

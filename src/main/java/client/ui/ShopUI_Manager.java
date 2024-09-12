@@ -293,6 +293,7 @@ public class ShopUI_Manager extends Application {
         // 添加商品图片按钮
         Button uploadButton = new Button("上传图片");
         uploadButton.getStyleClass().add("main-button");
+
         uploadButton.setOnAction(e -> showUploadDialog());
 
         // 创建刷新按钮
@@ -357,8 +358,7 @@ public class ShopUI_Manager extends Application {
         productIDField.setPromptText("输入商品ID");
 
         Button uploadImageButton = new Button("上传图片");
-
-        uploadImageButton.setStyle("-fx-background-color: #FFFFFF; -fx-text-fill: #4B0082; -fx-border-color: #6A0DAD; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-font-family: 'Segoe UI'; -fx-font-size: 16px; -fx-font-weight: normal; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 4, 4);");
+        uploadImageButton.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
 
         uploadImageButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
@@ -383,6 +383,7 @@ public class ShopUI_Manager extends Application {
         dialogVBox.getChildren().addAll(new Label("商品ID:"), productIDField, uploadImageButton);
 
         Scene dialogScene = new Scene(dialogVBox, 300, 200);
+        dialogScene.getStylesheets().add(getClass().getResource("/main-styles.css").toExternalForm());
         dialog.setScene(dialogScene);
         dialog.show();
     }
@@ -410,16 +411,24 @@ public class ShopUI_Manager extends Application {
 
         // 创建表单字段
         TextField productIDField = new TextField();
+        productIDField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         TextField productNameField = new TextField();
+        productNameField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         TextArea productDetailTextArea = new TextArea();
+        productDetailTextArea.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         productDetailTextArea.setPrefColumnCount(20); // 例如，设置为20列
         productDetailTextArea.setPrefRowCount(3); // 例如，设置为4行
         //productDetailTextArea.setWrapText(true);
         //productDetailTextArea.setMaxWidth(Double.MAX_VALUE);
         TextField productOriginalPriceField = new TextField();
+        productOriginalPriceField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
+
         TextField productCurrentPriceField = new TextField();
+        productCurrentPriceField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         TextField productInventoryField = new TextField();
+        productInventoryField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         TextField productAddressField = new TextField();
+        productAddressField.getStyleClass().add("input-field"); // 应用CSS中的输入框样式
         //TextField productCommentRateField = new TextField();
         CheckBox productStatusCheckBox = new CheckBox();
         productStatusCheckBox.setSelected(true);//bumingbai----
@@ -460,9 +469,116 @@ public class ShopUI_Manager extends Application {
 
         // 设置弹窗的确认按钮
         ButtonType okButtonType = new ButtonType("确认");
+        //okButtonType.getStyleClass().add("main-button");
         ButtonType cancelButtonType = new ButtonType("取消", ButtonBar.ButtonData.CANCEL_CLOSE);
         alert.getButtonTypes().setAll(okButtonType, cancelButtonType);
 
+        alert.getDialogPane().lookupButton(cancelButtonType).setStyle(
+                "-fx-background-color: rgba(220,245,240, 0.1);" +
+                        "-fx-border-color: #718771;" +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-radius: 8px;" +
+                        "-fx-background-radius: 8px;" +
+                        "transition: background-color 3s ease;"
+        );
+
+        // 设置鼠标悬停和按下时的样式
+        alert.getDialogPane().lookupButton(cancelButtonType).setOnMouseEntered(e -> {
+            alert.getDialogPane().lookupButton(cancelButtonType).setStyle(
+                    "-fx-background-color: rgba(255, 217, 163, 0.8);" +
+                            "-fx-border-color: #718771;" +
+                            "-fx-border-width: 2px;" +
+                            "-fx-border-radius: 8px;" +
+                            "-fx-background-radius: 8px;" +
+                            "transition: background-color 3s ease;"
+            );
+        });
+
+        alert.getDialogPane().lookupButton(cancelButtonType).setOnMouseExited(e -> {
+            alert.getDialogPane().lookupButton(cancelButtonType).setStyle(
+                    "-fx-background-color: rgba(220,245,240, 0.1);" +
+                            "-fx-border-color: #718771;" +
+                            "-fx-border-width: 2px;" +
+                            "-fx-border-radius: 8px;" +
+                            "-fx-background-radius: 8px;" +
+                            "transition: background-color 3s ease;"
+            );
+        });
+
+        alert.getDialogPane().lookupButton(cancelButtonType).setOnMousePressed(e -> {
+            alert.getDialogPane().lookupButton(cancelButtonType).setStyle(
+                    "-fx-background-color: rgba(0, 155, 159, 0.3);" +
+                            "-fx-border-color: #003153;" +
+                            "-fx-border-width: 2px;" +
+                            "-fx-border-radius: 8px;" +
+                            "-fx-background-radius: 8px;" +
+                            "transition: background-color 3s ease;"
+            );
+        });
+
+        alert.getDialogPane().lookupButton(cancelButtonType).setOnMouseReleased(e -> {
+            alert.getDialogPane().lookupButton(cancelButtonType).setStyle(
+                    "-fx-background-color: rgba(255, 217, 163, 0.8);" +
+                            "-fx-border-color: #718771;" +
+                            "-fx-border-width: 2px;" +
+                            "-fx-border-radius: 8px;" +
+                            "-fx-background-radius: 8px;" +
+                            "transition: background-color 3s ease;"
+            );
+        });
+        alert.getDialogPane().lookupButton(okButtonType).setStyle(
+                "-fx-background-color: rgba(220,245,240, 0.1);" +
+                        "-fx-border-color: #718771;" +
+                        "-fx-border-width: 2px;" +
+                        "-fx-border-radius: 8px;" +
+                        "-fx-background-radius: 8px;" +
+                        "transition: background-color 3s ease;"
+        );
+
+        // 设置鼠标悬停和按下时的样式
+        alert.getDialogPane().lookupButton(okButtonType).setOnMouseEntered(e -> {
+            alert.getDialogPane().lookupButton(okButtonType).setStyle(
+                    "-fx-background-color: rgba(255, 217, 163, 0.8);" +
+                            "-fx-border-color: #718771;" +
+                            "-fx-border-width: 2px;" +
+                            "-fx-border-radius: 8px;" +
+                            "-fx-background-radius: 8px;" +
+                            "transition: background-color 3s ease;"
+            );
+        });
+
+        alert.getDialogPane().lookupButton(okButtonType).setOnMouseExited(e -> {
+            alert.getDialogPane().lookupButton(okButtonType).setStyle(
+                    "-fx-background-color: rgba(220,245,240, 0.1);" +
+                            "-fx-border-color: #718771;" +
+                            "-fx-border-width: 2px;" +
+                            "-fx-border-radius: 8px;" +
+                            "-fx-background-radius: 8px;" +
+                            "transition: background-color 3s ease;"
+            );
+        });
+
+        alert.getDialogPane().lookupButton(okButtonType).setOnMousePressed(e -> {
+            alert.getDialogPane().lookupButton(okButtonType).setStyle(
+                    "-fx-background-color: rgba(0, 155, 159, 0.3);" +
+                            "-fx-border-color: #003153;" +
+                            "-fx-border-width: 2px;" +
+                            "-fx-border-radius: 8px;" +
+                            "-fx-background-radius: 8px;" +
+                            "transition: background-color 3s ease;"
+            );
+        });
+
+        alert.getDialogPane().lookupButton(okButtonType).setOnMouseReleased(e -> {
+            alert.getDialogPane().lookupButton(okButtonType).setStyle(
+                    "-fx-background-color: rgba(255, 217, 163, 0.8);" +
+                            "-fx-border-color: #718771;" +
+                            "-fx-border-width: 2px;" +
+                            "-fx-border-radius: 8px;" +
+                            "-fx-background-radius: 8px;" +
+                            "transition: background-color 3s ease;"
+            );
+        });
         // 确认按钮的事件处理器
         alert.setResultConverter(dialogButton -> {
             if (dialogButton == okButtonType) {
