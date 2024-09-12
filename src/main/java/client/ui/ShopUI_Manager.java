@@ -582,6 +582,7 @@ public class ShopUI_Manager extends Application {
     // 创建订单界面
     private BorderPane createOrdersPane() {
         BorderPane ordersPane = new BorderPane();
+        ScrollPane scrollPane=new ScrollPane();
         VBox orderVBox = new VBox(10); // 创建一个垂直布局的VBox，用于存放所有订单信息
         orderVBox.setPadding(new Insets(10)); // 设置内边距
 
@@ -598,7 +599,8 @@ public class ShopUI_Manager extends Application {
             throw new RuntimeException(e);
         }
         // 将订单信息VBox设置为BorderPane的中心内容
-        ordersPane.setCenter(orderVBox);
+        ordersPane.setCenter(scrollPane);
+        scrollPane.setContent(orderVBox);
         // 将初始订单列表布局压入历史栈
         history.push(ordersPane);
         return ordersPane;

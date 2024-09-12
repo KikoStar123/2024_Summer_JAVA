@@ -139,14 +139,7 @@ public class MainUI extends Application {
         logoutBox.setOnMouseClicked(e -> handleLogout(primaryStage));
 
 
-        if(user.getRole()==Librarian)
-        {
-            courseBox.setVisible(false);
-            stuBox.setVisible(false);
-            shopBox.setVisible(false);
-            bankBox.setVisible(false);
-            updateBox.setVisible(false);
-        }
+
         if(user.getRole()==StuInfoManager)
         {
             courseBox.setVisible(false);
