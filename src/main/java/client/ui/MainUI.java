@@ -42,14 +42,8 @@ public class MainUI extends Application {
         borderPane = new BorderPane();
 
         // 创建左侧的按钮栏
-        VBox leftBox = new VBox(0); // 设置间距
+        VBox leftBox = new VBox(); // 设置间距
         leftBox.setPadding(new Insets(10)); // 设置内边距
-//        leftBox.setStyle("-fx-background-color: #fff; " +
-//                "-fx-padding: 16px; " +
-//                "-fx-spacing: 8px; " +
-//                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 40, 0, 0, 0);" +
-//                "-fx-border-radius: 10px; " +
-//                "-fx-background-radius: 10px;");
 
         // 添加功能按钮
         VBox libBox = new VBox();

@@ -21,10 +21,10 @@ import javafx.stage.Stage;
 
 public class Bankui_stu {
     private static BorderPane bankBox;
+    private static BorderPane rightBox;
     private static HBox buttonsBox;
     private static VBox loginBox;
     private static VBox registerBox;
-    private static HBox actionBox;
     private static User user;
 
     public Bankui_stu(User user) {
@@ -33,56 +33,93 @@ public class Bankui_stu {
 
     static BorderPane createBankUI() {
 
+        //左侧图片栏
+        ImageView photo = new ImageView(new Image(Bankui_stu.class.getResource("/cover-bank.jpg").toExternalForm()));
+        photo.setFitWidth(440); // 你可以根据窗口大小调整这个值
+        photo.setFitHeight(550); // 你可以根据窗口大小调整这个值
 
-        bankBox = new BorderPane();
-        bankBox.setPadding(new Insets(10));
+        //右侧交互栏
 
-        ImageView photo = new ImageView(new Image(Bankui_stu.class.getResource("/background-seu-2.jpg").toExternalForm()));
-        photo.setFitWidth(400); // 你可以根据窗口大小调整这个值
-        photo.setFitHeight(300);
-        bankBox.setRight(photo);
-        // 创建按钮栏
+        // 创建按钮栏，结构为HBox
         buttonsBox = new HBox(10);
         buttonsBox.setPadding(new Insets(0, 0, 10, 0));
 
         Button loginButton = new Button("登录");
         loginButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-        //loginButton.setStyle("-fx-min-width: 100px; -fx-min-height: 50px; -fx-padding: 10px; -fx-font-size: 16px;-fx-font-size: 22px;-fx-font-weight: bold;");// 覆盖CSS样式，使按钮变大
         loginButton.setOnAction(e -> showLoginForm());
         buttonsBox.getChildren().add(loginButton);
 
         Button registerButton = new Button("注册");
         registerButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-        //registerButton.setStyle("-fx-min-width: 100px; -fx-min-height: 50px; -fx-padding: 10px; -fx-font-size: 16px;-fx-font-size: 22px;-fx-font-weight: bold;");// 覆盖CSS样式，使按钮变大
         registerButton.setOnAction(e -> showRegisterForm());
         buttonsBox.getChildren().add(registerButton);
 
+        //右侧布局
+        rightBox = new BorderPane();
         // 将按钮栏放置在顶部
-        bankBox.setTop(buttonsBox);
-        // 设置 buttonsBox 在 bankBox 的顶部居中对齐
-       // bankBox.setAlignment(Pos.CENTER);
+        rightBox.setTop(buttonsBox);
+        // 设置 buttonsBox 在 rightBox 的顶部居中对齐
+        BorderPane.setAlignment(buttonsBox, Pos.CENTER);
 
-        // 创建登录表单
+        // 创建登录表单，结构为VBox
         loginBox = createLoginForm(user);
         // 将登录表单放置在中心
-        bankBox.setCenter(loginBox);
+        rightBox.setCenter(loginBox);
 
-        // 创建注册表单
+        // 创建注册表单，结构为VBox
         registerBox = createRegisterForm();
         // 初始时隐藏注册表单
         registerBox.setVisible(false);
 
-        // 创建确认和返回按钮
-        actionBox = new HBox(10);
+        StackPane stackPaneLeft = new StackPane(photo);
+        stackPaneLeft.setPrefSize(440, 550); // 设置小框框的大小
 
-        Button backButton = new Button("返回");
-        backButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-        //backButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px;");
-        backButton.setOnAction(e -> handleBack());
-        actionBox.getChildren().add(backButton);
-        // 将操作按钮栏放置在底部
-        bankBox.setBottom(actionBox);
-        actionBox.setVisible(false);
+        StackPane stackPaneRight = new StackPane(rightBox);
+        stackPaneRight.setPrefSize(440, 550); // 设置小框框的大小
+
+        // 设置边框和圆角
+        stackPaneLeft.setBorder(new Border(new BorderStroke(
+                Color.rgb(205, 237, 222), // 边框颜色
+                BorderStrokeStyle.SOLID, // 边框样式
+                new CornerRadii(10), // 圆角半径
+                new BorderWidths(4) // 边框宽度
+        )));
+        stackPaneRight.setBorder(new Border(new BorderStroke(
+                Color.rgb(205, 237, 222), // 边框颜色
+                BorderStrokeStyle.SOLID, // 边框样式
+                new CornerRadii(10), // 圆角半径
+                new BorderWidths(4) // 边框宽度
+        )));
+
+        // 设置右侧背景颜色为浅灰色
+        stackPaneRight.setBackground(new Background(new BackgroundFill(
+                Color.rgb(245, 245, 245), // 背景颜色
+                new CornerRadii(10), // 圆角半径
+                Insets.EMPTY // 内边距
+        )));
+
+
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER); // 设置GridPane居中
+        gridPane.setHgap(20);
+        gridPane.setVgap(20);
+        gridPane.setPadding(new Insets(10, 10, 10, 10));
+
+        // 将photo放置在GridPane的第一列第一行，并居中
+        GridPane.setConstraints(stackPaneLeft, 0, 0);
+        GridPane.setHalignment(stackPaneLeft, HPos.LEFT);
+        GridPane.setValignment(stackPaneLeft, VPos.CENTER);
+        gridPane.getChildren().add(stackPaneLeft);
+
+        // 将loginButton放置在GridPane的第二列第一行，并靠右
+        GridPane.setConstraints(stackPaneRight, 1, 0);
+        GridPane.setHalignment(stackPaneRight, HPos.RIGHT);
+        GridPane.setValignment(stackPaneLeft, VPos.CENTER);
+        gridPane.getChildren().add(stackPaneRight);
+
+        bankBox = new BorderPane();
+        bankBox.setCenter(gridPane); // 将GridPane放置在BorderPane的中心
+
         return bankBox;
     }
 
@@ -176,13 +213,13 @@ public class Bankui_stu {
     private static void showLoginForm() {
         loginBox.setVisible(true);
         registerBox.setVisible(false);
-        bankBox.setCenter(loginBox);
+        rightBox.setCenter(loginBox);
     }
 
     private static void showRegisterForm() {
         loginBox.setVisible(false);
         registerBox.setVisible(true);
-        bankBox.setCenter(registerBox);
+        rightBox.setCenter(registerBox);
     }
 
     private static void handleConfirm(User user, PasswordField passwordField) {
@@ -197,7 +234,7 @@ public class Bankui_stu {
             alert.setHeaderText(null);
             alert.setContentText("欢迎回来, " + username);
             alert.showAndWait();
-            bankBox.setCenter(showBankMainView(Bank.getBankUser(username, password)));
+            rightBox.setCenter(showBankMainView(Bank.getBankUser(username, password)));
         } else {
             // 登录失败
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -224,7 +261,6 @@ public class Bankui_stu {
         bankMainView.getChildren().addAll(usernameLabel,welcomeLabel,balanceLabel,currentBalanceLabel, bankrecord,pwdchange, currentRateLabel, fixedDepositRateLabel);
         bankrecord.setOnAction(e -> showBankRecord(user));
         pwdchange.setOnAction(e->showChangepwd(user));
-        actionBox.setVisible(true);
         return bankMainView;
     }
 
@@ -308,13 +344,6 @@ public class Bankui_stu {
         recordStage.setScene(scene);
         recordStage.show();
 
-    }
-    private static void handleBack() {
-        // 处理返回逻辑
-        buttonsBox.setVisible(true);
-        loginBox.setVisible(true);
-        registerBox.setVisible(false);
-        bankBox.setCenter(null);
     }
 }
 
