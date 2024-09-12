@@ -582,9 +582,14 @@ public class ShopUI_Manager extends Application {
     // 创建订单界面
     private BorderPane createOrdersPane() {
         BorderPane ordersPane = new BorderPane();
-        ScrollPane scrollPane=new ScrollPane();
-        VBox orderVBox = new VBox(10); // 创建一个垂直布局的VBox，用于存放所有订单信息
-        orderVBox.setPadding(new Insets(10)); // 设置内边距
+        ScrollPane scrollPane = new ScrollPane();
+        HBox hbox = new HBox(20); // 创建一个水平布局的HBox，间距为20
+        hbox.setAlignment(Pos.CENTER); // 居中对齐
+
+        VBox leftVBox = new VBox(10); // 左侧列
+        VBox rightVBox = new VBox(10); // 右侧列
+        leftVBox.setPadding(new Insets(10));
+        rightVBox.setPadding(new Insets(10));
 
         String storeID = null; // 替换为实际的商店ID
         try {
@@ -593,44 +598,63 @@ public class ShopUI_Manager extends Application {
 
             for (int i = 0; i < shoppingOrderList.length; i++) {
                 ShoppingOrder.oneOrder order = shoppingOrderList[i];
-                createOrderItem(orderVBox, order);
+                if (i % 2 == 0) {
+                    createOrderItem(leftVBox, order); // 将偶数索引的订单添加到左列
+                } else {
+                    createOrderItem(rightVBox, order); // 将奇数索引的订单添加到右列
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        // 将订单信息VBox设置为BorderPane的中心内容
-        ordersPane.setCenter(scrollPane);
-        scrollPane.setContent(orderVBox);
-        // 将初始订单列表布局压入历史栈
-        history.push(ordersPane);
+
+        hbox.getChildren().addAll(leftVBox, rightVBox);
+        scrollPane.setContent(hbox); // 将HBox放入滚动面板中
+        ordersPane.setCenter(scrollPane); // 将滚动面板设置为BorderPane的中心
         return ordersPane;
     }
 
     private void createOrderItem(VBox orderVBox, ShoppingOrder.oneOrder order) {
-        HBox orderItem = new HBox(10); // 间距为10
-        orderItem.setPadding(new Insets(5)); // 内边距为5
-        orderItem.setStyle("-fx-border-color: #b61c94; -fx-border-width: 1; -fx-border-style: solid; -fx-background-color: rgba(16,234,216,0.5); -fx-background-radius: 5; -fx-border-radius: 5;");
+        VBox orderItem = new VBox(5); // 每行间距为5
+        orderItem.setPadding(new Insets(10)); // 设置内边距为10
+        orderItem.setStyle("-fx-border-color: #b61c94; -fx-border-width: 1; -fx-border-style: solid; " +
+                "-fx-background-color: rgba(16,234,216,0.5); -fx-background-radius: 5; -fx-border-radius: 5;");
 
-        // 订单信息
+        // 第一行：订单号和用户名
+        HBox row1 = new HBox(20); // 设置列之间的间距
         Label orderIDLabel = new Label("订单号: " + order.getOrderID());
         Label usernameLabel = new Label("用户: " + order.getUsername());
+        row1.getChildren().addAll(orderIDLabel, usernameLabel);
+
+        // 第二行：商品ID和名称
+        HBox row2 = new HBox(20);
         Label productIDLabel = new Label("商品ID: " + order.getProductID());
         Label productNameLabel = new Label("商品名称: " + order.productName());
+        row2.getChildren().addAll(productIDLabel, productNameLabel);
+
+        // 第三行：商品数量和支付状态
+        HBox row3 = new HBox(20);
         Label productNumberLabel = new Label("数量: " + order.getProductNumber());
         Label paidStatusLabel = new Label("支付状态: " + (order.getpaidStatus() ? "已支付" : "未支付"));
+        row3.getChildren().addAll(productNumberLabel, paidStatusLabel);
+
+        // 第四行：支付金额和是否评价
+        HBox row4 = new HBox(20);
         Label paidMoneyLabel = new Label("支付金额: " + String.format("%.2f", order.getPaidMoney()));
         Label commentStatusLabel = new Label("是否评价: " + (order.isWhetherComment() ? "已评价" : "未评价"));
+        row4.getChildren().addAll(paidMoneyLabel, commentStatusLabel);
 
         // 查看订单详情按钮
         Button viewOrderDetailsButton = new Button("查看订单详情");
         viewOrderDetailsButton.setOnAction(e -> viewOrderDetails(orderVBox, order));
-        // 将所有组件添加到HBox中
-        orderItem.getChildren().addAll(orderIDLabel, usernameLabel, productIDLabel, productNameLabel,
-                productNumberLabel, paidStatusLabel, paidMoneyLabel, commentStatusLabel, viewOrderDetailsButton);
 
-        // 将订单信息HBox添加到根VBox中
+        // 将所有行添加到订单信息的VBox中
+        orderItem.getChildren().addAll(row1, row2, row3, row4, viewOrderDetailsButton);
+
+        // 将订单信息VBox添加到根VBox中
         orderVBox.getChildren().add(orderItem);
     }
+
 
     private void viewOrderDetails(VBox orderVBox, ShoppingOrder.oneOrder order) {
         // 创建一个新的 TextArea 来显示订单的详细信息

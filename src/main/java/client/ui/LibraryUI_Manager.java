@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
@@ -73,11 +74,16 @@ public class LibraryUI_Manager extends Application {
         updateButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
         Button uploadButton = new Button("上传文件");
         uploadButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
-
+        Button logoutButton = new Button("登出");
+        logoutButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        logoutButton.setOnAction(e -> handleLogout(primaryStage)); // 添加登出逻辑
         HBox searchBox = new HBox(10);
         searchBox.getChildren().addAll(searchTipLabel, nameField, searchButton, borrowButton);
         searchBox.getChildren().addAll(addButton, addbButton, updateButton, uploadButton);
-
+        Region region=new Region();
+        region.setMinWidth(160);
+        searchBox.getChildren().addAll(region,logoutButton);
+        logoutButton.setAlignment(Pos.TOP_RIGHT);//fuck
         addButton.setOnAction(e -> showAddDeleteWindow());
         addbButton.setOnAction(e -> showAddbWindow());
         updateButton.setOnAction(e -> showUpdateWindow());
@@ -128,11 +134,24 @@ public class LibraryUI_Manager extends Application {
 
         VBox resultBox = new VBox(10, resultTable);
 
+//        // 添加登出按钮
+//        VBox logoutBox = new VBox();
+//        logoutBox.getStyleClass().add("item-box");
+//        //Circle logoutIcon = new Circle(10, Color.web("#009b9f"));
+//        Label logoutLabel = new Label("登出");
+//        logoutLabel.getStyleClass().add("label");
+//        Tooltip logoutTip = new Tooltip("登出");
+//        Tooltip.install(logoutLabel, logoutTip);
+//        logoutBox.getChildren().addAll(logoutLabel);
+//        logoutBox.setOnMouseClicked(e -> handleLogout(primaryStage)); // 处理登出逻辑
+
+
         // 布局
         BorderPane mainLayout = new BorderPane();
         mainLayout.setTop(searchBox);
         mainLayout.setCenter(resultBox);
 
+        //mainLayout.setRight(logoutBox); // 将登出按钮添加到右上角
         // 查询按钮事件
         searchButton.setOnAction(e -> {
             String bookName = nameField.getText();
@@ -155,6 +174,8 @@ public class LibraryUI_Manager extends Application {
 
         root.setTop(searchBox);
         root.setCenter(resultBox);
+        //root.setRight(logoutBox);
+        //root.setRight(logoutButton);
 
         // 设置场景
         Scene scene = new Scene(root, 1000, 618); // 调整尺寸以适应新布局
@@ -167,6 +188,18 @@ public class LibraryUI_Manager extends Application {
         primaryStage.show();
     }
 
+    private void handleLogout(Stage primaryStage) {
+        primaryStage.close(); // 关闭当前主界面
+
+        // 打开 LoginUI 界面
+        LoginUI loginUI = new LoginUI();
+        Stage loginStage = new Stage();
+        try {
+            loginUI.start(loginStage); // 显示登录界面
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void showUpdateWindow() {
         Stage updateStage = new Stage();
         updateStage.setTitle("更新书籍");

@@ -5,16 +5,13 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.geometry.Insets;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import client.service.Bank;
 
 import javafx.application.Platform;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 import java.util.Optional;
@@ -55,12 +52,16 @@ public class Bankui_Manager extends Application {
         searchButton.getStyleClass().add("main-button");
         searchButton.setOnAction(e -> showPasswordDialog(searchField.getText(), primaryStage, root));
         searchBox.getChildren().addAll(searchLabel, searchField, searchButton);
-
+        Button logoutButton = new Button("登出");
+        logoutButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+        logoutButton.setOnAction(e -> handleLogout(primaryStage)); // 添加登出逻辑
         accountInfoBox = new HBox(5);
         accountInfoBox.setVisible(false); // 初始时不显示
         userLabel = new Label();
         balanceLabel = new Label();
         currentBalanceLabel = new Label();
+
+
         accountInfoBox.getChildren().addAll(userLabel, balanceLabel, currentBalanceLabel);
 
         VBox depositBox = new VBox(5);
@@ -209,7 +210,6 @@ public class Bankui_Manager extends Application {
             }
         });
 
-
         // 模拟过月按钮事件
         simulateMonthEndButton.setOnAction(e -> {
             boolean success = bank.simulateMonthEnd();
@@ -250,7 +250,9 @@ public class Bankui_Manager extends Application {
         managementButton.setOnAction(e -> {
             root.setCenter(managementBox);
         });
-        hBox.getChildren().addAll(businessButton, managementButton);
+        Region region=new Region();
+        region.setMinWidth(830);//登出按钮做出的更改。
+        hBox.getChildren().addAll(businessButton, managementButton,region,logoutButton);
         root.setTop(hBox);
 
         Scene scene = new Scene(root, 1000, 500);
@@ -261,9 +263,18 @@ public class Bankui_Manager extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+    private void handleLogout(Stage primaryStage) {
+        primaryStage.close(); // 关闭当前主界面
 
-
-
+        // 打开 LoginUI 界面
+        LoginUI loginUI = new LoginUI();
+        Stage loginStage = new Stage();
+        try {
+            loginUI.start(loginStage); // 显示登录界面
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private void showPasswordDialog(String username, Stage primaryStage, BorderPane root) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("输入密码");

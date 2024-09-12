@@ -138,8 +138,6 @@ public class MainUI extends Application {
         leftBox.getChildren().add(logoutBox);
         logoutBox.setOnMouseClicked(e -> handleLogout(primaryStage));
 
-
-
         if(user.getRole()==StuInfoManager)
         {
             courseBox.setVisible(false);
