@@ -4,6 +4,7 @@ import client.service.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -51,6 +52,25 @@ public class ShopUI_stu {
     public ShopUI_stu(User user, BorderPane borderPane) {
         this.user = user;
         this.borderPane = borderPane;
+    }
+    public BorderPane createCover(){
+        ImageView photo = new ImageView(new Image(getClass().getResource("/background-seu-2.jpg").toExternalForm()));
+        photo.setFitWidth(800); // 你可以根据窗口大小调整这个值
+        photo.setFitHeight(600); // 你可以根据窗口大小调整这个值
+        photo.setPreserveRatio(true);
+        Button loginButton=new Button("进入商店");
+        loginButton.setOnAction(e->{
+            try {
+                MainUI.borderPane.setCenter(getShopLayout());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        BorderPane Pane = new BorderPane();
+        Pane.setCenter(photo);
+        Pane.setBottom(loginButton);
+        BorderPane.setAlignment(loginButton, Pos.CENTER);
+        return Pane;
     }
     public VBox getShopLayout() throws IOException {
         VBox shopLayout = new VBox();
