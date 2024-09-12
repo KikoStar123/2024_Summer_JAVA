@@ -42,6 +42,7 @@ import java.net.URL;
 import static client.service.Role.BankManager;
 import static client.service.Role.Librarian;
 import static client.service.Role.CourseManager;
+import static client.service.Role.StuInfoManager;
 import java.util.Date;
 import java.util.UUID;
 import java.util.Random;
@@ -176,7 +177,7 @@ public class LoginUI extends Application {
             // 启动主界面
             //User user = new User(username, Role.student, 12, Gender.male, "123");
             User user = clientService.login_return(username, password);
-            if(user.getRole()==BankManager)//银行管理员
+            if(user.getRole()==BankManager)
             {
                 Platform.runLater(() -> {
                     Bankui_Manager managerui=new Bankui_Manager();
@@ -187,7 +188,7 @@ public class LoginUI extends Application {
                     }
                 });
             }
-            else if(user.getRole()==Librarian)//图书馆管理员
+            else if(user.getRole()==Librarian)
             {
                 Platform.runLater(() -> {
                     LibraryUI_Manager librarymanagerui=new LibraryUI_Manager(user);
@@ -198,7 +199,7 @@ public class LoginUI extends Application {
                     }
                 });
             }
-            else if(user.getRole()==Role.ShopAssistant){//商店管理员
+            else if(user.getRole()==Role.ShopAssistant){
                 Platform.runLater(() -> {
                     ShopUI_Manager shopmanagerui=new ShopUI_Manager(user.getUsername());
                     try {
@@ -207,7 +208,7 @@ public class LoginUI extends Application {
                         e.printStackTrace();
                     }
                 });
-            } else if (user.getRole() == CourseManager) {//课程管理员
+            } else if (user.getRole() == CourseManager) {
                 Platform.runLater(() -> {
                     Admin_CourseUI coursemanagerui = new Admin_CourseUI(user);
                     try {
@@ -216,7 +217,16 @@ public class LoginUI extends Application {
                         e.printStackTrace();
                     }
                 });
-            } else {//学生/教师信息
+            } else if(user.getRole() == StuInfoManager) {
+                Platform.runLater(() -> {
+                    StuAdminUI adminUI = new StuAdminUI(user);
+                    try {
+                        adminUI.start(new Stage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else {
                 Platform.runLater(() -> {
                     MainUI mainUI = new MainUI(user);
                     try {
@@ -234,6 +244,7 @@ public class LoginUI extends Application {
             alert.showAndWait();
         }
     }
+
 
     private void handleRegister() {
         RegisterUI registerUI = new RegisterUI();

@@ -80,6 +80,7 @@ public class LibraryUI_Manager extends Application {
         HBox searchBox = new HBox(10);
         searchBox.getChildren().addAll(searchTipLabel, nameField, searchButton, borrowButton);
         searchBox.getChildren().addAll(addButton, addbButton, updateButton, uploadButton);
+        //添加空白
         Region region=new Region();
         region.setMinWidth(160);
         searchBox.getChildren().addAll(region,logoutButton);
@@ -133,18 +134,6 @@ public class LibraryUI_Manager extends Application {
         resultTable.getColumns().addAll(imageColumn, titleColumn, authorColumn, isbnColumn,libnumColumn, curnumColumn);
 
         VBox resultBox = new VBox(10, resultTable);
-
-//        // 添加登出按钮
-//        VBox logoutBox = new VBox();
-//        logoutBox.getStyleClass().add("item-box");
-//        //Circle logoutIcon = new Circle(10, Color.web("#009b9f"));
-//        Label logoutLabel = new Label("登出");
-//        logoutLabel.getStyleClass().add("label");
-//        Tooltip logoutTip = new Tooltip("登出");
-//        Tooltip.install(logoutLabel, logoutTip);
-//        logoutBox.getChildren().addAll(logoutLabel);
-//        logoutBox.setOnMouseClicked(e -> handleLogout(primaryStage)); // 处理登出逻辑
-
 
         // 布局
         BorderPane mainLayout = new BorderPane();

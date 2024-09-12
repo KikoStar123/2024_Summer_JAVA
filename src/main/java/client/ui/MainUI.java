@@ -138,15 +138,15 @@ public class MainUI extends Application {
         leftBox.getChildren().add(logoutBox);
         logoutBox.setOnMouseClicked(e -> handleLogout(primaryStage));
 
-        if(user.getRole()==StuInfoManager)
-        {
-            courseBox.setVisible(false);
-            stuBox.setVisible(true);
-            shopBox.setVisible(false);
-            bankBox.setVisible(false);
-            updateBox.setVisible(false);
-            libBox.setVisible(false);
-        }
+//        if(user.getRole()==StuInfoManager)
+//        {
+//            courseBox.setVisible(false);
+//            stuBox.setVisible(true);
+//            shopBox.setVisible(false);
+//            bankBox.setVisible(false);
+//            updateBox.setVisible(false);
+//            libBox.setVisible(false);
+//        }
 
         // 添加标签
         Label welcomeLabel = new Label("用户名: " + user.getUsername() + "\t身份: " + user.getRole() + "\t年龄: " + user.getAge());

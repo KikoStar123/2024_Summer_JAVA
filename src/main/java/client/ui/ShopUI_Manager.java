@@ -52,7 +52,19 @@ public class ShopUI_Manager extends Application {
         // 创建主BorderPane
         root = new BorderPane();
         root.setPrefSize(400, 300); // 设置宽度为400，高度为300
+        // 创建登出Tab
+        Tab logoutTab = new Tab("登出");
 
+// 禁止关闭登出Tab
+        logoutTab.setClosable(false);
+
+// 绑定登出逻辑到点击登出Tab
+        logoutTab.setOnSelectionChanged(e -> {
+            if (logoutTab.isSelected()) {
+                handleLogout(primaryStage); // 添加登出逻辑
+            }
+        });
+        //searchBox.getChildren().addAll(region,logoutButton);
         // 创建TabPane作为顶部的容器
         TabPane topTabs = new TabPane();
         String storeID =null;
@@ -66,7 +78,7 @@ public class ShopUI_Manager extends Application {
             // 创建订单Tab，并设置内容
             ordersTab = new Tab("订单", createOrdersPane());
 
-            topTabs.getTabs().addAll(shopInfoTab, productsTab, ordersTab);
+            topTabs.getTabs().addAll(shopInfoTab, productsTab, ordersTab, logoutTab);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -76,6 +88,7 @@ public class ShopUI_Manager extends Application {
 
         // 设置BorderPane的顶部为TabPane
         root.setCenter(topTabs);
+
 
         // 设置默认显示的中心内容
         topTabs.getSelectionModel().selectFirst();
@@ -98,6 +111,19 @@ public class ShopUI_Manager extends Application {
                 zoomIn();
             }
             event.consume(); // 阻止事件进一步传播
+        }
+    }
+
+    private void handleLogout(Stage primaryStage) {
+        primaryStage.close(); // 关闭当前主界面
+
+        // 打开 LoginUI 界面
+        LoginUI loginUI = new LoginUI();
+        Stage loginStage = new Stage();
+        try {
+            loginUI.start(loginStage); // 显示登录界面
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     //用于窗口的缩放
@@ -618,7 +644,7 @@ public class ShopUI_Manager extends Application {
         VBox orderItem = new VBox(5); // 每行间距为5
         orderItem.setPadding(new Insets(10)); // 设置内边距为10
         orderItem.setStyle("-fx-border-color: #b61c94; -fx-border-width: 1; -fx-border-style: solid; " +
-                "-fx-background-color: rgba(16,234,216,0.5); -fx-background-radius: 5; -fx-border-radius: 5;");
+                "-fx-background-color: rgb(255,255,255); -fx-background-radius: 5; -fx-border-radius: 5;");
 
         // 第一行：订单号和用户名
         HBox row1 = new HBox(20); // 设置列之间的间距
