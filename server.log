@@ -10501,3 +10501,43 @@ java.net.BindException: Address already in use: bind
 信息: Accepted new client connection from /127.0.0.1
 9月 12, 2024 9:34:56 下午 server.MainServer main
 信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 9:41:57 下午 server.MainServer main
+信息: Server is starting...
+9月 12, 2024 9:41:57 下午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 12, 2024 9:42:36 下午 server.MainServer main
+信息: Server is starting...
+9月 12, 2024 9:42:36 下午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 12, 2024 9:42:45 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 9:42:47 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 9:43:41 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 9:43:42 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 9:44:02 下午 server.MainServer main
+信息: Server is starting...
+9月 12, 2024 9:44:02 下午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 12, 2024 9:44:07 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 9:44:08 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 9:45:06 下午 server.MainServer main
+信息: Server is starting...
+9月 12, 2024 9:45:06 下午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 12, 2024 9:45:17 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 9:45:17 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 9:49:05 下午 server.MainServer main
+信息: Server is starting...
+9月 12, 2024 9:49:06 下午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 12, 2024 9:49:14 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 12, 2024 9:49:15 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
