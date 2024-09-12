@@ -169,3 +169,36 @@
 }
 
 
+
+/* 设置ListView边框颜色 */
+.list-view {
+    -fx-background-color: white;
+    -fx-border-color: #dcdcdc;
+    -fx-border-width: 1px;
+}
+/* 奇数行的背景色 */
+.list-cell:odd {
+    -fx-background-color: #f2f2f2;
+}
+/* 偶数行的背景色 */
+.list-cell:even {
+    -fx-background-color: white;
+}
+/* ListView中的单元格文字 */
+.list-view .list-cell {
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Microsoft YaHei";
+    -fx-text-fill: #333;
+}
+/* ListView的悬停效果 */
+.list-cell:hover {
+    -fx-background-color: #cdedde;
+}
+/* 选中行的背景色 */
+.list-cell:focused, .list-cell:selected {
+    -fx-background-color: rgba(255, 217, 163, 0.8); /* 选中行的背景色 */
+    -fx-text-fill: white; /* 选中行的文字颜色 */
+}
+
+
