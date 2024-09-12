@@ -194,6 +194,7 @@ public class LibraryUI_Manager extends Application {
             e.printStackTrace();
         }
     }
+
     private void showUpdateWindow() {
         Stage updateStage = new Stage();
         updateStage.setTitle("更新书籍");

@@ -18,6 +18,8 @@ import java.util.Set;
 import java.util.HashSet;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 
 
 public class CourseSelectionUI {
@@ -143,7 +145,7 @@ public class CourseSelectionUI {
             }
         }
 
-// 添加星期标签
+        // 添加星期标签
         String[] days = {"周一", "周二", "周三", "周四", "周五", "周六", "周日"};
         for (int i = 0; i < days.length; i++) {
             Label dayLabel = new Label(days[i]);
@@ -212,12 +214,16 @@ public class CourseSelectionUI {
         int b = random.nextInt(256);
         return String.format("#%02X%02X%02X", r, g, b);
     }
+
     private void displayCourses(ObservableList<CourseInfo> courses, String selectButtonLabel, Button activeButton) {
         courseListView.setItems(FXCollections.observableArrayList(courses));
         courseListView.setCellFactory(listView -> new ListCell<CourseInfo>() {
             private final HBox hbox = new HBox(5);
-            private final Label courseLabel = new Label();
-            private final Button viewButton = new Button("查看");
+            private Label courseLabel = new Label();
+            Button viewButton = new Button("查看");
+            //viewButton.getStyleClass().add("main-button"); // 应用CSS中的按钮样式
+            //System.out.println("111");
+
             private final Button selectButton = new Button(selectButtonLabel);
 
             {

@@ -102,6 +102,11 @@ public class ShopUI_Manager extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+
+
+
+
     private void handleScrollEvent(ScrollEvent event) {
         if (event.isControlDown()) {
             double delta = event.getDeltaY();
