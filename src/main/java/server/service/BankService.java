@@ -14,6 +14,9 @@ import java.sql.Date;
 import java.util.List;
 import java.util.ArrayList;
 import org.json.JSONArray;
+/**
+ * 银行服务类，提供处理银行相关操作的服务，例如支付、存款、取款等。
+ */
 public class BankService {
 
     private static BankService instance;
@@ -21,14 +24,21 @@ public class BankService {
     private final Lock lock = new ReentrantLock();
 
     private BankService() {}
-
+    /**
+     * 获取 BankService 的单例实例。
+     * @return BankService 的唯一实例。
+     */
     public static synchronized BankService getInstance() {
         if (instance == null) {
             instance = new BankService();
         }
         return instance;
     }
-
+    /**
+     * 根据存款类型获取利率。
+     * @param type 存款类型（如活期或定期）。
+     * @return 包含利率的 JSON 响应。
+     */
     public JSONObject getInterestRate(String type) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -74,17 +84,18 @@ public class BankService {
         return response;
     }
 
+    /**
+     * 内部类 PaymentInfo，用于存储支付信息。
+     */
     public class PaymentInfo {
         private double amount;
         private boolean processed;
         private JSONObject paymentResult;
         private int passwordErrorCount;
-
         public PaymentInfo(double amount) {
             this.amount = amount;
             this.processed = false;
         }
-
         public double getAmount() {
             return amount;
         }
@@ -108,8 +119,15 @@ public class BankService {
     }
 
 
-
-
+    /**
+     * 处理支付请求。
+     *
+     * @param orderID 订单ID
+     * @param username 用户名
+     * @param bankpwd 银行密码
+     * @param amount 支付金额
+     * @return 支付结果的JSONObject
+     */
     public JSONObject processPayment(String orderID, String username, String bankpwd, double amount) {
         lock.lock();
         try {
@@ -220,7 +238,13 @@ public class BankService {
         }
     }
 
-
+    /**
+     * 等待支付的结果，设置超时。
+     *
+     * @param orderID 订单ID
+     * @param amount 支付金额
+     * @return 支付结果的JSONObject
+     */
         public JSONObject waitForPayment(String orderID, double amount) {
             lock.lock();
             try {
@@ -261,8 +285,14 @@ public class BankService {
         }
 
 
-
-
+    /**
+     * 处理存款请求。
+     * @param username 用户名。
+     * @param amount 存款金额。
+     * @param depositType 存款类型（活期或定期）。
+     * @param term 存款期限（仅定期）。
+     * @return 包含存款结果的 JSON 响应。
+     */
     public JSONObject deposit(String username, double amount, String depositType, int term) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -341,7 +371,12 @@ public class BankService {
         return response;
     }
 
-
+    /**
+     * 处理取款请求。
+     * @param username 用户名。
+     * @param amount 取款金额。
+     * @return 包含取款结果的 JSON 响应。
+     */
     public JSONObject withdraw(String username, double amount) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -409,7 +444,12 @@ public class BankService {
 
         return response;
     }
-
+    /**
+     * 处理银行登录请求。
+     * @param username 用户名。
+     * @param bankpwd 银行密码。
+     * @return 包含登录结果的 JSON 响应。
+     */
     public JSONObject bankLogin(String username, String bankpwd) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -455,6 +495,12 @@ public class BankService {
         return response;
     }
 
+    /**
+     * 处理银行注册请求。
+     * @param username 用户名。
+     * @param bankpwd 银行密码。
+     * @return 包含注册结果的 JSON 响应。
+     */
     public JSONObject bankRegister(String username, String bankpwd) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -512,7 +558,11 @@ public class BankService {
 
         return response;
     }
-
+    /**
+     * 获取用户的银行交易记录。
+     * @param username 用户名。
+     * @return 包含交易记录的 JSON 响应。
+     */
     public JSONObject getAllBankRecords(String username) {
         JSONObject response = new JSONObject();
         List<JSONObject> records = new ArrayList<>();
@@ -561,7 +611,13 @@ public class BankService {
 
         return response;
     }
-
+    /**
+     * 更新用户的银行密码。
+     * @param username 用户名。
+     * @param oldPwd 旧密码。
+     * @param newPwd 新密码。
+     * @return 包含更新结果的 JSON 响应。
+     */
     public JSONObject updatePwd(String username, String oldPwd, String newPwd) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -608,7 +664,11 @@ public class BankService {
 
         return response;
     }
-
+    /**
+     * 根据用户名搜索用户信息。
+     * @param username 用户名。
+     * @return 包含用户信息的 JSON 响应。
+     */
     public JSONObject searchByUsername(String username) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -658,7 +718,12 @@ public class BankService {
 
         return response;
     }
-
+    /**
+     * 获取银行用户信息。
+     * @param username 用户名。
+     * @param bankpwd 银行密码。
+     * @return 包含用户信息的 JSON 响应。
+     */
     public JSONObject getBankUser(String username, String bankpwd) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -709,7 +774,12 @@ public class BankService {
 
         return response;
     }
-
+    /**
+     * 更新存款利率。
+     * @param type 存款类型（如活期或定期）。
+     * @param newRate 新的利率。
+     * @return 包含更新结果的 JSON 响应。
+     */
     public JSONObject updateInterestRate(String type, double newRate) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -753,6 +823,11 @@ public class BankService {
 
         return response;
     }
+    /**
+     * 模拟月末结算。
+     * 计算用户的存款利息并更新余额。
+     * @return 包含模拟结果的 JSON 响应。
+     */
     public JSONObject simulateMonthEnd() {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -897,7 +972,11 @@ public class BankService {
     }
 
 
-
+    /**
+     * 模拟年末结算。
+     * 计算用户的存款利息并更新余额。
+     * @return 包含模拟结果的 JSON 响应。
+     */
     public JSONObject simulateYearEnd() {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();

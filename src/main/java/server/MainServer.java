@@ -14,12 +14,19 @@ import java.util.logging.Level;
 import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
 import java.net.InetAddress;
-
+/**
+ * 主服务器类，负责启动主要服务，包括 H2 数据库服务器和文件存储服务。
+ * 该类还负责监听客户端连接并处理这些连接。
+ */
 public class MainServer {
     private static final int SERVER_PORT = 8080; // 服务器端口
     private static final int THREAD_POOL_SIZE = 10; // 线程池大小
     private static final Logger logger = Logger.getLogger(MainServer.class.getName());
 
+    /**
+     * 服务器主入口。
+     * @param args 命令行参数。
+     */
     public static void main(String[] args) {
         ExecutorService threadPool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
 
@@ -57,7 +64,10 @@ public class MainServer {
             logger.log(Level.SEVERE, "Failed to initialize the logger: ", e);
         }
     }
-
+    /**
+     * 启动 H2 数据库服务器。
+     * 数据库服务器在本地端口 9092 上启动，允许远程连接。
+     */
     private static void startH2Server() {
         try {
             // 启动 H2 数据库服务器，指定相对路径

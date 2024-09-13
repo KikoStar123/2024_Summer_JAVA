@@ -7,11 +7,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+/**
+ * 学籍服务类，提供与学籍相关的操作
+ */
 public class StudentInformationService {
 
     private final Lock lock = new ReentrantLock();
-
+    /**
+     * 检查所有学生信息。
+     * @return 包含所有学生信息的 JSON 对象。
+     */
     public JSONObject checkStudentInfo() {
         JSONObject studentInfo = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -56,7 +61,11 @@ public class StudentInformationService {
 
         return studentInfo;
     }
-
+    /**
+     * 根据学生ID查看学生详细信息。
+     * @param id 学生ID。
+     * @return 包含指定学生详细信息的 JSON 对象。
+     */
     public JSONObject viewStudentInfo(String id) {
         JSONObject student = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -97,7 +106,11 @@ public class StudentInformationService {
         System.out.println(student.toString());
         return student;
     }
-
+    /**
+     * 修改学生信息。
+     * @param studentInfo 包含学生信息的 JSON 对象。
+     * @return 修改是否成功。
+     */
     public boolean modifyStudentInfo(JSONObject studentInfo) {
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
@@ -142,7 +155,15 @@ public class StudentInformationService {
         }
     }
 
-
+    /**
+     * 创建新的学生记录。
+     * @param studentId 学生ID。
+     * @param origin 学生籍贯。
+     * @param birthday 学生生日。
+     * @param academy 学院信息。
+     * @param username 用户名。
+     * @return 创建是否成功。
+     */
     public boolean createStudent(String studentId, String origin, String birthday, String academy, String username) {
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();

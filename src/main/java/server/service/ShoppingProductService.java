@@ -12,7 +12,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.UUID;
 
-
+/**
+ * 商品服务类，提供与商品相关的操作
+ */
 public class ShoppingProductService {
 
     private final Lock getAllProductsLock = new ReentrantLock();
@@ -31,7 +33,12 @@ public class ShoppingProductService {
     private final Lock updateProductImagePathLock = new ReentrantLock();
 
 
-    // 获取所有的商品
+    /**
+     * 获取所有商品信息。
+     * @param sortBy 按照指定字段排序（"price" 或 "rate"）。
+     * @param sortOrder 排序顺序（"ASC" 或 "DESC"）。
+     * @return 包含商品列表的 JSON 对象。
+     */
     public JSONObject getAllProducts(String sortBy, String sortOrder) {
         getAllProductsLock.lock();
         try {
@@ -105,7 +112,11 @@ public class ShoppingProductService {
 
 
 
-    // 根据商品ID查询商品详情
+    /**
+     * 根据商品ID查询商品详情。
+     * @param productID 商品ID。
+     * @return 包含商品详情的 JSON 对象。
+     */
     public JSONObject getProductDetails(String productID) {
         getProductDetailsLock.lock();
         try {
@@ -164,7 +175,13 @@ public class ShoppingProductService {
     }
 
 
-    // 检索商品
+    /**
+     * 检索商品，根据关键词、排序字段和排序顺序。
+     * @param searchTerm 搜索关键词。
+     * @param sortBy 排序字段（"price" 或 "rate"）。
+     * @param sortOrder 排序顺序（"ASC" 或 "DESC"）。
+     * @return 包含搜索结果的 JSON 对象。
+     */
     public JSONObject searchProducts(String searchTerm, String sortBy, String sortOrder) {
         searchProductsLock.lock();
         System.out.println("sortOrder: " + sortOrder);
@@ -255,7 +272,19 @@ public class ShoppingProductService {
 
 
 
-    // 添加商品
+    /**
+     * 添加新商品。
+     * @param productID 商品ID。
+     * @param productName 商品名称。
+     * @param productDetail 商品详情。
+     * @param productOriginalPrice 商品原价。
+     * @param productCurrentPrice 商品现价。
+     * @param productInventory 商品库存。
+     * @param productAddress 商品地址。
+     * @param productStatus 商品状态（上架或下架）。
+     * @param storeID 商店ID。
+     * @return 添加是否成功。
+     */
     public boolean addProduct(String productID, String productName, String productDetail,
                               float productOriginalPrice, float productCurrentPrice, int productInventory,
                               String productAddress, boolean productStatus, String storeID) {
@@ -307,7 +336,11 @@ public class ShoppingProductService {
         }
     }
 
-    // 删除商品
+    /**
+     * 根据商品ID删除商品。
+     * @param productID 商品ID。
+     * @return 删除是否成功。
+     */
     public boolean deleteProduct(String productID) {
         deleteProductLock.lock();
         try {
@@ -348,12 +381,20 @@ public class ShoppingProductService {
 
     //------------------------------------------------------------------------------------------------------//
     // 上架或者下架商品
-    // 上架商品
+    /**
+     * 上架商品。
+     * @param productID 商品ID。
+     * @return 上架是否成功。
+     */
     public boolean enableProduct(String productID) {
         return updateProductStatus(productID, true);
     }
 
-    // 下架商品
+    /**
+     * 下架商品。
+     * @param productID 商品ID。
+     * @return 下架是否成功。
+     */
     public boolean disableProduct(String productID) {
         return updateProductStatus(productID, false);
     }
@@ -399,7 +440,11 @@ public class ShoppingProductService {
     }
     //-------------------------------------------------------------------------------------//
 
-    // 获取同品类的商品
+    /**
+     * 获取同品类商品。
+     * @param productID 商品ID。
+     * @return 包含同品类商品列表的 JSON 对象。
+     */
     public JSONObject getSameCategoryProducts(String productID) {
         getSameCategoryProductsLock.lock();
         try {
@@ -469,13 +514,23 @@ public class ShoppingProductService {
 
     //调整商品价格
 
-    // 调整商品原价
+    /**
+     * 更新商品的原价。
+     * @param productID 商品ID。
+     * @param newOriginalPrice 新的商品原价。
+     * @return 更新是否成功。
+     */
     public boolean updateProductOriginalPrice(String productID, float newOriginalPrice) {
         return updateProductPrice(productID, "productOriginalPrice", newOriginalPrice);
     }
 
 
-    // 调整商品现价
+    /**
+     * 更新商品的现价。
+     * @param productID 商品ID。
+     * @param newCurrentPrice 新的商品现价。
+     * @return 更新是否成功。
+     */
     public boolean updateProductCurrentPrice(String productID, float newCurrentPrice) {
         return updateProductPrice(productID, "productCurrentPrice", newCurrentPrice);
     }
@@ -523,12 +578,22 @@ public class ShoppingProductService {
 
     //---------------------------------------------------------------------------------------------------
 
-    // 增加商品库存
+    /**
+     * 增加商品库存。
+     * @param productID 商品ID。
+     * @param amount 增加的库存数量。
+     * @return 增加是否成功。
+     */
     public boolean increaseProductInventory(String productID, int amount) {
         return updateProductInventory(productID, amount, true);
     }
 
-    // 减少商品库存
+    /**
+     * 减少商品库存。
+     * @param productID 商品ID。
+     * @param amount 减少的库存数量。
+     * @return 减少是否成功。
+     */
     public boolean decreaseProductInventory(String productID, int amount) {
         return updateProductInventory(productID, amount, false);
     }
@@ -577,7 +642,12 @@ public class ShoppingProductService {
 
     //------------------------------------------------------------------------------------------------------//
 
-    //查询商品的评论
+    /**
+     * 查询商品的评论。
+     * @param productID 商品ID。
+     * @param commentAttitude 评论态度（可选）。
+     * @return 包含评论列表的 JSON 对象。
+     */
     public JSONObject getProductComments(String productID, Integer commentAttitude) {
         getProductCommentsLock.lock();
         try {
@@ -716,7 +786,14 @@ public class ShoppingProductService {
 
     //------------------------------------------------------------------------------------------------------//
 
-    //根据订单添加评论
+    /**
+     * 添加商品评论。
+     * @param username 用户名。
+     * @param productID 商品ID。
+     * @param commentAttitude 评论态度（好评、中评、差评）。
+     * @param commentContent 评论内容。
+     * @return 添加是否成功。
+     */
     public boolean addComment(String username, String productID, int commentAttitude, String commentContent) {
         addCommentLock.lock();
         try {
@@ -809,7 +886,11 @@ public class ShoppingProductService {
 
 
     //------------------------------------------------------------------------------------------------------//
-    //根据商店ID获取商店里的所有商品
+    /**
+     * 根据商店ID获取所有商品。
+     * @param storeID 商店ID。
+     * @return 包含商店商品列表的 JSON 对象。
+     */
     public JSONObject getProductsByStore(String storeID) {
         getProductsByStoreLock.lock();
         try {
@@ -872,7 +953,12 @@ public class ShoppingProductService {
     }
 
     //------------------------------------------------------------------------------------------------------//
-    //更新商品图片路径
+    /**
+     * 更新商品图片路径。
+     * @param productID 商品ID。
+     * @param imagePath 新的图片路径。
+     * @return 更新是否成功的 JSON 对象。
+     */
     public JSONObject updateProductImagePath(String productID, String imagePath) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();

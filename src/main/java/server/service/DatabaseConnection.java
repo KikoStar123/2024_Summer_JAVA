@@ -5,7 +5,9 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
+/**
+ * 数据库连接服务类，使用 HikariCP 连接池管理数据库连接。
+ */
 public class DatabaseConnection {
     private static HikariDataSource dataSource;
 
@@ -18,7 +20,10 @@ public class DatabaseConnection {
         config.setPassword("");
         dataSource = new HikariDataSource(config);
     }
-
+    /**
+     * 获取数据库连接。
+     * @return 数据库连接对象，如果获取失败则返回 null。
+     */
     public Connection connect() {
         try {
             return dataSource.getConnection();
@@ -27,6 +32,10 @@ public class DatabaseConnection {
             return null;
         }
     }
+    /**
+     * 关闭数据库连接。
+     * @param conn 需要关闭的数据库连接对象。
+     */
     public void close(Connection conn) {
         if (conn != null) {
             try {

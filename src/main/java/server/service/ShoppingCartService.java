@@ -9,7 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+/**
+ * 购物车服务类，提供与购物车相关的操作
+ */
 public class ShoppingCartService {
 
     private final Lock getShoppingCartLock = new ReentrantLock();
@@ -17,7 +19,11 @@ public class ShoppingCartService {
     private final Lock updateCartLock = new ReentrantLock();
     private final Lock removeFromCartLock = new ReentrantLock();
 
-    // 获取一个用户的购物车
+    /**
+     * 获取指定用户的购物车信息。
+     * @param username 用户名。
+     * @return 包含购物车信息的 JSON 对象。
+     */
     public JSONObject getShoppingCart(String username) {
         getShoppingCartLock.lock();
         try {
@@ -72,7 +78,13 @@ public class ShoppingCartService {
     }
 
 
-    // 添加一个商品到购物车
+    /**
+     * 向购物车添加商品。
+     * @param username 用户名。
+     * @param productID 商品ID。
+     * @param quantity 添加的商品数量。
+     * @return 添加是否成功。
+     */
     public boolean addToCart(String username, String productID, int quantity) {
         addToCartLock.lock();
         try {
@@ -140,7 +152,13 @@ public class ShoppingCartService {
     }
 
 
-    // 更改购物车某个商品的数量
+    /**
+     * 更新购物车中商品的数量。
+     * @param username 用户名。
+     * @param productID 商品ID。
+     * @param quantity 更新后的商品数量。
+     * @return 更新是否成功。
+     */
     public boolean updateCart(String username, String productID, int quantity) {
         updateCartLock.lock();
         try {
@@ -181,7 +199,12 @@ public class ShoppingCartService {
         }
     }
 
-    // 从购物车上面删除某个商品
+    /**
+     * 从购物车中删除商品。
+     * @param username 用户名。
+     * @param productID 商品ID。
+     * @return 删除是否成功。
+     */
     public boolean removeFromCart(String username, String productID) {
         removeFromCartLock.lock();
         try {

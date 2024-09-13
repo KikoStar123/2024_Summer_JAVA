@@ -10,7 +10,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
+/**
+ * 文件存储服务器类，负责文件的上传、下载、删除以及获取文件哈希值。
+ */
 public class FileStorageServer {
 
     private static final int FILE_SERVER_PORT = 8081;
@@ -18,6 +20,10 @@ public class FileStorageServer {
     private static final String UPLOAD_DIR = "uploads/";
     private static final String RESOURCE_DIR = "src/main/resources/";
 
+    /**
+     * 启动文件存储服务器。
+     * 启动两个服务：一个用于处理文件上传和下载，另一个用于通过 HTTP 处理文件请求。
+     */
     public static void startFileServer() {
         try (ServerSocket serverSocket = new ServerSocket(FILE_SERVER_PORT)) {
             System.out.println("File storage server is running on port " + FILE_SERVER_PORT);
@@ -33,7 +39,11 @@ public class FileStorageServer {
             e.printStackTrace();
         }
     }
-
+    /**
+     * 启动 HTTP 服务器，用于处理文件的 HTTP 请求。
+     * 文件请求会由 {@link HttpFileHandler} 处理。
+     * @throws IOException 如果服务器启动失败
+     */
     private static void startHttpServer() throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(HTTP_SERVER_PORT), 0);
         server.createContext("/files", new HttpFileHandler());
@@ -41,7 +51,9 @@ public class FileStorageServer {
         server.start();
         System.out.println("HTTP server is running on port " + HTTP_SERVER_PORT);
     }
-
+    /**
+     * HTTP 处理器，用于处理文件请求。
+     */
     private static class HttpFileHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
@@ -64,7 +76,9 @@ public class FileStorageServer {
             }
         }
     }
-
+    /**
+     * 文件上传处理器，处理文件上传、下载、检查文件是否存在及删除文件的请求。
+     */
     private static class FileUploadHandler implements Runnable {
         private final Socket clientSocket;
 
@@ -139,7 +153,13 @@ public class FileStorageServer {
                 e.printStackTrace();
             }
         }
-
+        /**
+         * 计算文件的 SHA-256 哈希值。
+         * @param file 要计算哈希值的文件。
+         * @return 文件的 SHA-256 哈希值。
+         * @throws IOException 如果读取文件时发生错误。
+         * @throws NoSuchAlgorithmException 如果计算哈希值时指定的算法不可用。
+         */
         private String calculateFileHash(File file) throws IOException, NoSuchAlgorithmException {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             try (FileInputStream fis = new FileInputStream(file)) {

@@ -8,11 +8,18 @@ import java.sql.SQLException;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+/**
+ * 用户服务类，提供与用户相关的操作
+ */
 public class UserService {
 
     private final Lock lock = new ReentrantLock();
-
+    /**
+     * 用户登录。
+     * @param username 用户名。
+     * @param password 用户密码。
+     * @return 用户是否成功登录。
+     */
     public boolean login(String username, String password) {
         boolean isAuthenticated = false;
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -56,6 +63,12 @@ public class UserService {
 
         return isAuthenticated;
     }
+    /**
+     * 用户登录并返回用户信息。
+     * @param username 用户名。
+     * @param password 用户密码。
+     * @return 包含用户信息的 JSON 对象。
+     */
     public JSONObject loginReturn(String username, String password) {
         JSONObject userJson = null;
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -104,7 +117,11 @@ public class UserService {
         }
         return userJson;
     }
-
+    /**
+     * 用户注册。
+     * @param parameters 包含注册信息的 JSON 对象。
+     * @return 注册成功的用户信息。
+     */
     public JSONObject register(JSONObject parameters){
         String truename = parameters.getString("truename");
         String gender = parameters.getString("gender");
@@ -171,7 +188,17 @@ public class UserService {
 
         return userJson;
     }
-
+    /**
+     * 创建新用户。
+     * @param username 用户名。
+     * @param truename 用户真实姓名。
+     * @param role 用户角色。
+     * @param age 用户年龄。
+     * @param pwd 用户密码。
+     * @param gender 用户性别。
+     * @param email 用户邮箱。
+     * @return 是否成功创建用户。
+     */
     private boolean createUser(String username, String truename, String role, int age, String pwd, String gender,String email) {
         DatabaseConnection dbConnection = new DatabaseConnection();
         Connection conn = dbConnection.connect();
@@ -216,6 +243,13 @@ public class UserService {
             lock.unlock();
         }
     }
+    /**
+     * 更新用户密码。
+     * @param username 用户名。
+     * @param oldPwd 旧密码。
+     * @param newPwd 新密码。
+     * @return 包含操作状态的 JSON 对象。
+     */
     public JSONObject updateUserPwd(String username, String oldPwd, String newPwd) {//更改用户密码****
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -263,6 +297,12 @@ public class UserService {
         return response;
     }
 
+    /**
+     * 忘记密码时重置密码。
+     * @param username 用户名。
+     * @param newPwd 新密码。
+     * @return 包含操作状态的 JSON 对象。
+     */
     public JSONObject forgetPwd(String username, String newPwd) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -309,7 +349,11 @@ public class UserService {
         return response;
     }
 
-
+    /**
+     * 通过用户名获取用户邮箱。
+     * @param username 用户名。
+     * @return 包含邮箱信息的 JSON 对象。
+     */
     public JSONObject getEmailByUsername(String username) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();

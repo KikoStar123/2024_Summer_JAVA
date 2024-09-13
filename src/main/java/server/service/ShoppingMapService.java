@@ -9,12 +9,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+/**
+ * 地图服务类，提供与地图相关的操作
+ */
 public class ShoppingMapService {
 
     private final Lock mapLock = new ReentrantLock();
 
-    // 增加一条记录
+    /**
+     * 增加一条地图记录。
+     * @param productID 商品ID。
+     * @param mapStart 起始位置。
+     * @param mapEnd 终止位置。
+     * @return 包含操作状态和信息的 JSON 对象。
+     */
     public JSONObject addMapRecord(String productID, String mapStart, String mapEnd) {
         mapLock.lock();
         JSONObject response = new JSONObject();
@@ -52,7 +60,11 @@ public class ShoppingMapService {
         return response;
     }
 
-    // 删除一条记录
+    /**
+     * 删除一条地图记录。
+     * @param productID 商品ID。
+     * @return 包含操作状态和信息的 JSON 对象。
+     */
     public JSONObject deleteMapRecord(String productID) {
         mapLock.lock();
         JSONObject response = new JSONObject();
@@ -88,7 +100,13 @@ public class ShoppingMapService {
         return response;
     }
 
-    // 更新一条记录
+    /**
+     * 更新一条地图记录。
+     * @param productID 商品ID。
+     * @param mapStart 起始位置。
+     * @param mapEnd 终止位置。
+     * @return 包含操作状态和信息的 JSON 对象。
+     */
     public JSONObject updateMapRecord(String productID, String mapStart, String mapEnd) {
         mapLock.lock();
         JSONObject response = new JSONObject();
@@ -126,7 +144,10 @@ public class ShoppingMapService {
         return response;
     }
 
-    // 查询所有记录
+    /**
+     * 查询所有地图记录。
+     * @return 包含所有记录的 JSON 对象。
+     */
     public JSONObject getAllMapRecords() {
         mapLock.lock();
         JSONObject response = new JSONObject();
@@ -169,7 +190,11 @@ public class ShoppingMapService {
         return response;
     }
 
-    // 根据productID获取起始位置和终止位置
+    /**
+     * 根据商品ID获取地图记录。
+     * @param productID 商品ID。
+     * @return 包含起始位置和终止位置的 JSON 对象。
+     */
     public JSONObject getMapRecordByProductID(String productID) {
         mapLock.lock();
         JSONObject response = new JSONObject();

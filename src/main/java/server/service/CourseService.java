@@ -9,12 +9,25 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.List;
 import java.util.ArrayList;
-
+/**
+ * 课程服务类，提供与课程相关的操作，如添加课程、选课、退课、查询课程信息等。
+ */
 public class CourseService {
 
     private final Lock lock = new ReentrantLock();
 
-    // 添加课程
+    /**
+     * 添加课程。
+     * @param courseID 课程ID。
+     * @param courseName 课程名称。
+     * @param courseTeacher 课程教师。
+     * @param courseCredits 课程学分。
+     * @param courseTime 课程时间。
+     * @param courseCapacity 课程容量。
+     * @param courseRoom 课程教室。
+     * @param courseType 课程类型（必修或选修）。
+     * @return 包含添加结果的 JSON 响应。
+     */
     public JSONObject addCourse(String courseID, String courseName, String courseTeacher, int courseCredits, String courseTime, int courseCapacity, String courseRoom, String courseType) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -110,7 +123,11 @@ public class CourseService {
         return response;
     }
 
-    // 解析课程时间字符串为 onePeriod 对象数组
+    /**
+     * 解析课程时间字符串为 onePeriod 对象数组。
+     * @param timeString 课程时间字符串。
+     * @return onePeriod 对象数组，表示课程时间段。
+     */
     private onePeriod[] parseCourseTime(String timeString) {
         List<onePeriod> thePeriods = new ArrayList<>();
         String[] timeSegments = timeString.split(";");
@@ -132,7 +149,12 @@ public class CourseService {
         return thePeriods.toArray(new onePeriod[0]);
     }
 
-    // 检查时间冲突
+    /**
+     * 检查两个课程时间段是否冲突。
+     * @param periods1 第一个课程的时间段数组。
+     * @param periods2 第二个课程的时间段数组。
+     * @return 如果冲突返回 true，否则返回 false。
+     */
     private boolean isTimeConflict(onePeriod[] periods1, onePeriod[] periods2) {
         for (onePeriod p1 : periods1) {
             for (onePeriod p2 : periods2) {
@@ -156,7 +178,12 @@ public class CourseService {
         int endsection;
     }
 
-    // 选课
+    /**
+     * 学生选课。
+     * @param username 学生用户名。
+     * @param courseID 课程ID。
+     * @return 包含选课结果的 JSON 响应。
+     */
     public JSONObject enrollInCourse(String username, String courseID) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -264,7 +291,12 @@ public class CourseService {
         return response;
     }
 
-    // 退课
+    /**
+     * 学生退课。
+     * @param username 学生用户名。
+     * @param courseID 课程ID。
+     * @return 包含退课结果的 JSON 响应。
+     */
     public JSONObject dropCourse(String username, String courseID) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -351,7 +383,11 @@ public class CourseService {
         return response;
     }
 
-    // 查询课程信息
+    /**
+     * 查询课程信息。
+     * @param courseID 课程ID。
+     * @return 包含课程信息的 JSON 对象。
+     */
     public JSONObject getCourseInfo(String courseID) {
         JSONObject courseJson = null;
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -400,7 +436,11 @@ public class CourseService {
         return courseJson;
     }
 
-    // 查询已经选的课程
+    /**
+     * 获取学生已经选的课程。
+     * @param username 学生用户名。
+     * @return 包含选课信息的 JSON 对象。
+     */
     public JSONObject getEnrolledCourses(String username) {
         JSONObject coursesJson = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -451,7 +491,12 @@ public class CourseService {
         return coursesJson;
     }
 
-    // 检索课程
+    /**
+     * 搜索课程。
+     * @param courseName 课程名称（可选）。
+     * @param courseTeacher 课程教师（可选）。
+     * @return 包含搜索结果的 JSON 对象。
+     */
     public JSONObject searchCourses(String courseName, String courseTeacher) {
         JSONObject coursesJson = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -516,7 +561,10 @@ public class CourseService {
         return coursesJson;
     }
 
-    // 查看所有课程信息
+    /**
+     * 获取所有课程信息。
+     * @return 包含所有课程的 JSON 对象。
+     */
     public JSONObject getAllCourses() {
         JSONObject coursesJson = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();

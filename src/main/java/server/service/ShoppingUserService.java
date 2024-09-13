@@ -9,12 +9,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+/**
+ * 商店用户服务类，提供与商店用户相关的操作
+ */
 public class ShoppingUserService {
 
     private final Lock userLock = new ReentrantLock();
 
-    // 获取用户的所有地址和电话（使用分隔符）
+    /**
+     * 获取用户的所有地址和电话信息。
+     * @param username 用户名。
+     * @return 包含用户地址和电话信息的 JSON 对象。
+     */
     public JSONObject getUserDetails(String username) {
         userLock.lock();
         JSONObject response = new JSONObject();
@@ -68,7 +74,13 @@ public class ShoppingUserService {
         return response;
     }
 
-    // 更新用户的地址和电话（使用分隔符）
+    /**
+     * 更新用户的地址和电话。
+     * @param username 用户名。
+     * @param addresses 地址列表。
+     * @param telephones 电话列表。
+     * @return 更新是否成功的 JSON 对象。
+     */
     public JSONObject updateUserContacts(String username, String[] addresses, String[] telephones) {
         userLock.lock();
         JSONObject response = new JSONObject();
@@ -113,7 +125,12 @@ public class ShoppingUserService {
         return response;
     }
 
-    //删除一行地址和电话
+    /**
+     * 删除用户的某一行地址和电话。
+     * @param username 用户名。
+     * @param index 要删除的地址和电话的索引。
+     * @return 删除是否成功的 JSON 对象。
+     */
     public JSONObject deleteUserContact(String username, int index) {
         userLock.lock();
         JSONObject response = new JSONObject();
@@ -179,7 +196,13 @@ public class ShoppingUserService {
         return newArray;
     }
 
-    // 添加用户新的地址和电话
+    /**
+     * 添加用户新的地址和电话。
+     * @param username 用户名。
+     * @param newAddress 新的地址。
+     * @param newTelephone 新的电话。
+     * @return 添加是否成功的 JSON 对象。
+     */
     public JSONObject addUserContact(String username, String newAddress, String newTelephone) {
         userLock.lock();
         JSONObject response = new JSONObject();
@@ -240,7 +263,14 @@ public class ShoppingUserService {
         return response;
     }
 
-    // 更新用户的某个地址和电话（指定索引）
+    /**
+     * 更新用户的某个地址和电话（根据索引）。
+     * @param username 用户名。
+     * @param index 要更新的地址和电话的索引。
+     * @param newAddress 新的地址。
+     * @param newTelephone 新的电话。
+     * @return 更新是否成功的 JSON 对象。
+     */
     public JSONObject updateUserContactAtIndex(String username, int index, String newAddress, String newTelephone) {
         userLock.lock();
         JSONObject response = new JSONObject();

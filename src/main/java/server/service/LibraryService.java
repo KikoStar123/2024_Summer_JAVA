@@ -11,11 +11,17 @@ import java.util.Calendar;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
+/**
+ * 图书馆服务类，提供与图书馆相关的操作
+ */
 public class LibraryService {
 
     private final Lock lock = new ReentrantLock();
-
+    /**
+     * 根据书名搜索图书。
+     * @param bookName 要搜索的书名。
+     * @return 包含符合搜索条件的图书数组的 JSON 对象。
+     */
     public JSONObject searchBooksByName(String bookName) {
         JSONObject response = new JSONObject();
         JSONArray booksArray = new JSONArray();
@@ -71,7 +77,11 @@ public class LibraryService {
 
         return response;
     }
-
+    /**
+     * 根据书籍ID获取书籍详情。
+     * @param bookID 要获取详情的书籍ID。
+     * @return 包含书籍详细信息的 JSON 对象。
+     */
     public JSONObject getBookDetailsById(String bookID) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -129,7 +139,11 @@ public class LibraryService {
         return response;
     }
 
-
+    /**
+     * 根据用户名获取借阅记录。
+     * @param username 用户名。
+     * @return 包含借阅记录的 JSON 对象。
+     */
     public JSONObject getLibRecordsByUsername(String username) {
         JSONObject response = new JSONObject();
         JSONArray recordArray = new JSONArray();
@@ -210,7 +224,12 @@ public class LibraryService {
         return response;
     }
 
-
+    /**
+     * 归还图书。
+     * @param username 用户名。
+     * @param bookID 书籍ID。
+     * @return 包含归还结果的 JSON 对象。
+     */
     public JSONObject returnBook(String username, String bookID) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -282,7 +301,12 @@ public class LibraryService {
 
         return response;
     }
-
+    /**
+     * 借阅图书。
+     * @param username 用户名。
+     * @param bookId 书籍ID。
+     * @return 包含借阅结果的 JSON 对象。
+     */
     public JSONObject borrowBook(String username, String bookId) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -357,7 +381,12 @@ public class LibraryService {
 
         return response;
     }
-
+    /**
+     * 更新书籍信息。
+     * @param bookID 书籍ID。
+     * @param finalLibNumber 最终的馆藏数量。
+     * @return 包含更新结果的 JSON 对象。
+     */
     public JSONObject updateBook(String bookID, int finalLibNumber) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -422,6 +451,11 @@ public class LibraryService {
 
         return response;
     }
+    /**
+     * 添加书籍信息。
+     * @param bookDetails 包含书籍详细信息的 JSON 对象。
+     * @return 包含添加结果的 JSON 对象。
+     */
     public JSONObject addBook(JSONObject bookDetails) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -479,7 +513,11 @@ public class LibraryService {
 
         return response;
     }
-
+    /**
+     * 续借图书。
+     * @param borrowID 借阅记录ID。
+     * @return 包含续借结果的 JSON 对象。
+     */
     public JSONObject renewBook(int borrowID) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -546,7 +584,10 @@ public class LibraryService {
 
         return response;
     }
-
+    /**
+     * 获取所有借阅记录。
+     * @return 包含所有借阅记录的 JSON 对象。
+     */
     public JSONObject getAllLibRecords() {
         JSONObject response = new JSONObject();
         JSONArray recordsArray = new JSONArray();
@@ -619,7 +660,12 @@ public class LibraryService {
 
         return response;
     }
-
+    /**
+     * 更新书籍图片路径。
+     * @param bookID 书籍ID。
+     * @param imagePath 图片路径。
+     * @return 包含更新结果的 JSON 对象。
+     */
     public JSONObject updateBookImagePath(String bookID, String imagePath) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -659,7 +705,12 @@ public class LibraryService {
     }
 
 
-
+    /**
+     * 更新书籍PDF路径。
+     * @param bookID 书籍ID。
+     * @param pdfPath PDF路径。
+     * @return 包含更新结果的 JSON 对象。
+     */
     public JSONObject updateBookPDFPath(String bookID, String pdfPath) {
         JSONObject response = new JSONObject();
         DatabaseConnection dbConnection = new DatabaseConnection();

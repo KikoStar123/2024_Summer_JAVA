@@ -13,7 +13,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.io.*;
 import java.net.Socket;
-
+/**
+ * 订单服务类，提供与订单相关的操作
+ */
 public class ShoppingOrderService {
 
     private final Lock createOrderLock = new ReentrantLock();
@@ -22,7 +24,15 @@ public class ShoppingOrderService {
     private final Lock getOrderCommentStatusLock = new ReentrantLock();
     private final Lock payOrderLock = new ReentrantLock();
 
-    // 创建订单
+    /**
+     * 创建订单。
+     * @param username 用户名。
+     * @param productID 商品ID。
+     * @param productName 商品名称。
+     * @param productNumber 商品数量。
+     * @param paidMoney 支付金额。
+     * @return 包含订单状态和订单ID的 JSON 对象。
+     */
     public JSONObject createOrder(String username, String productID, String productName, int productNumber, float paidMoney) {
         createOrderLock.lock();
         JSONObject response = new JSONObject();
@@ -81,7 +91,11 @@ public class ShoppingOrderService {
             createOrderLock.unlock();
         }
     }
-
+    /**
+     * 根据商品ID获取商店ID。
+     * @param productID 商品ID。
+     * @return 商店ID。
+     */
     private String getStoreIDByProductID(String productID) {
         String storeID = null;
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -108,7 +122,11 @@ public class ShoppingOrderService {
         return storeID;
     }
 
-    // 根据商店ID查询该商店的所有订单
+    /**
+     * 根据商店ID获取所有订单。
+     * @param storeID 商店ID。
+     * @return 包含订单信息的 JSON 对象。
+     */
     public JSONObject getAllOrdersByStore(String storeID) {
         getOrderDetailsLock.lock();
         try {
@@ -163,7 +181,13 @@ public class ShoppingOrderService {
     }
 
 
-    // 更新订单支付状态
+
+    /**
+     * 更新订单支付状态。
+     * @param orderID 订单ID。
+     * @param paidStatus 支付状态。
+     * @return 更新状态是否成功。
+     */
     public boolean updateOrderPaidStatus(String orderID, boolean paidStatus) {
         boolean isSuccess = false;
         DatabaseConnection dbConnection = new DatabaseConnection();
@@ -200,7 +224,10 @@ public class ShoppingOrderService {
 
 
 
-    // 生成订单ID
+    /**
+     * 生成订单ID。
+     * @return 生成的订单ID。
+     */
     private String generateOrderID() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
         String datePart = sdf.format(new Date());
@@ -212,22 +239,38 @@ public class ShoppingOrderService {
 
     //---------------------------------------------------------------------------------------------------
 
-    //查询所有用户订单
+    /**
+     * 获取用户的所有订单。
+     * @param username 用户名。
+     * @return 包含订单信息的 JSON 对象。
+     */
     public JSONObject getAllOrdersByUser(String username) {
         return searchOrders(username, null);
     }
 
-    //搜索用户订单
+    /**
+     * 根据关键词搜索用户订单。
+     * @param username 用户名。
+     * @param searchTerm 搜索关键词。
+     * @return 包含订单信息的 JSON 对象。
+     */
     public JSONObject searchOrdersByUser(String username, String searchTerm) {
         return searchOrders(username, searchTerm);
     }
 
-    //在所有订单中用关键词搜索
+    /**
+     * 在所有订单中根据关键词搜索。
+     * @param searchTerm 搜索关键词。
+     * @return 包含订单信息的 JSON 对象。
+     */
     public JSONObject searchOrdersByKeyword(String searchTerm) {
         return searchOrders(null, searchTerm);
     }
 
-    //查看所有用户的订单
+    /**
+     * 获取所有用户的订单。
+     * @return 包含订单信息的 JSON 对象。
+     */
     public JSONObject getAllOrders() {
         return searchOrders(null, null);
     }
@@ -312,7 +355,11 @@ public class ShoppingOrderService {
 
     // 用订单编号获取订单详情
 
-    // 在查询订单详情时返回 paidStatus
+    /**
+     * 获取订单详情。
+     * @param orderID 订单ID。
+     * @return 包含订单详细信息的 JSON 对象。
+     */
     public JSONObject getOrderDetails(String orderID) {
         getOrderDetailsLock.lock();
         try {
@@ -365,7 +412,12 @@ public class ShoppingOrderService {
     }
 
 
-    // 更新订单评论状态
+    /**
+     * 更新订单评论状态。
+     * @param orderID 订单ID。
+     * @param whetherComment 是否已评论。
+     * @return 更新状态是否成功。
+     */
     public boolean updateOrderCommentStatus(String orderID, boolean whetherComment) {
         updateOrderCommentStatusLock.lock();
         try {
@@ -404,7 +456,11 @@ public class ShoppingOrderService {
             updateOrderCommentStatusLock.unlock();
         }
     }
-    //显示是否评论
+    /**
+     * 获取订单评论状态。
+     * @param orderID 订单ID。
+     * @return 包含评论状态的 JSON 对象。
+     */
     public JSONObject getOrderCommentStatus(String orderID) {
         getOrderCommentStatusLock.lock();
         try {
@@ -452,7 +508,12 @@ public class ShoppingOrderService {
 
     //------------------------------------------------------------------------------------------------------//
 
-    // 支付系统
+    /**
+     * 支付订单。
+     * @param orderIDs 订单ID数组。
+     * @param amount 支付金额。
+     * @return 包含支付结果的 JSON 对象。
+     */
     public JSONObject payOrder(String[] orderIDs, double amount) {
         payOrderLock.lock();
         JSONObject response = new JSONObject();
