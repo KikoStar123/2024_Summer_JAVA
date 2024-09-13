@@ -2,9 +2,17 @@ package server.handler;
 
 import org.json.JSONObject;
 import server.service.ShoppingMapService;
-
+/**
+ * 处理商店地图相关请求。
+ * 根据不同的操作类型处理添加、删除、更新或查询地图记录的操作。
+ */
 public class ShoppingMapRequestHandler implements RequestHandler {
-
+    /**
+     * 处理地图记录相关请求。
+     *
+     * @param parameters 包含地图记录相关操作的 JSON 对象
+     * @return 返回处理结果的 JSON 字符串
+     */
     @Override
     public String handle(JSONObject parameters) {
         ShoppingMapService mapService = new ShoppingMapService();

@@ -2,7 +2,10 @@ package server.handler;
 
 import org.json.JSONObject;
 import server.service.CourseService;
-
+/**
+ * 处理获取用户所有银行记录的请求。
+ * 调用 BankService 来获取用户的银行记录。
+ */
 public class GetAllCoursesRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {

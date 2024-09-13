@@ -2,7 +2,10 @@ package server.handler;
 
 import server.service.LibraryService;
 import org.json.JSONObject;
-
+/**
+ * 处理获取所有课程信息的请求。
+ * 调用 CourseService 来获取所有课程信息。
+ */
 public class GetAllLibRecordsRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {

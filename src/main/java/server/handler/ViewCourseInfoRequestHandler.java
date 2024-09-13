@@ -2,9 +2,16 @@ package server.handler;
 
 import org.json.JSONObject;
 import server.service.CourseService;
-
+/**
+ * 处理查看课程详细信息的请求。
+ */
 public class ViewCourseInfoRequestHandler implements RequestHandler {
-
+    /**
+     * 处理查看指定课程信息的请求。
+     *
+     * @param parameters 请求参数，包括课程 ID
+     * @return JSON 格式的响应，包含课程信息或失败消息
+     */
     @Override
     public String handle(JSONObject parameters) {
         CourseService courseService = new CourseService();

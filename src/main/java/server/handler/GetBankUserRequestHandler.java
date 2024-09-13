@@ -2,7 +2,10 @@ package server.handler;
 
 import server.service.BankService;
 import org.json.JSONObject;
-
+/**
+ * 处理获取所有图书馆借阅记录的请求。
+ * 调用 LibraryService 获取所有借阅记录。
+ */
 public class GetBankUserRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {

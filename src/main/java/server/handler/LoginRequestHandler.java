@@ -2,6 +2,9 @@ package server.handler;
 import org.json.JSONObject;
 import server.service.UserService;
 
+/**
+ * 处理用户登录请求，调用 UserService 验证用户名和密码。
+ */
 public class LoginRequestHandler implements RequestHandler {
 
     private final UserService userService;

@@ -2,8 +2,11 @@ package server.handler;
 
 import server.service.StudentInformationService;
 import org.json.JSONObject;
-
+/**
+ * 处理修改学生信息的请求，调用 StudentInformationService 修改学生信息。
+ */
 public class ModifyStudentInfoRequestHandler implements RequestHandler {
+
     @Override
     public String handle(JSONObject parameters) {
         StudentInformationService studentService = new StudentInformationService();

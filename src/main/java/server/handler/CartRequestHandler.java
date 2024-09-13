@@ -2,7 +2,10 @@ package server.handler;
 
 import org.json.JSONObject;
 import server.service.ShoppingCartService;
-
+/**
+ * CartRequestHandler 处理与购物车相关的请求。
+ * 支持添加、更新、删除和查看购物车内容的操作。
+ */
 public class CartRequestHandler implements RequestHandler {
 
     @Override

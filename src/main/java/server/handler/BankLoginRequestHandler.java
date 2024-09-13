@@ -3,6 +3,10 @@ package server.handler;
 import server.service.BankService;
 import org.json.JSONObject;
 
+/**
+ * BankLoginRequestHandler 处理银行用户登录的请求。
+ * 调用 BankService 进行用户验证，并返回处理结果。
+ */
 public class BankLoginRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {

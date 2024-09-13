@@ -2,7 +2,10 @@ package server.handler;
 
 import org.json.JSONObject;
 import server.service.CourseService;
-
+/**
+ * 处理退选课程的请求。
+ * 调用 CourseService 来退选指定课程。
+ */
 public class EnrollInCourseRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {

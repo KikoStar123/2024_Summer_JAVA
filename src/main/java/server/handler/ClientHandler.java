@@ -7,13 +7,25 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * ClientHandler 类用于处理来自客户端的请求。
+ * 实现了 Runnable 接口，能够在多线程环境下运行。
+ */
 public class ClientHandler implements Runnable {
     private final Socket clientSocket;
 
+    /**
+     * 构造函数，用于初始化客户端的 Socket 连接。
+     * @param clientSocket 客户端的 Socket 连接
+     */
     public ClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
     }
 
+    /**
+     * run 方法为线程执行的核心逻辑。
+     * 负责接收、处理客户端请求，并将处理结果返回给客户端。
+     */
     @Override
     public void run() {
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -46,6 +58,10 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    /**
+     * 初始化路由映射表，将请求类型映射到相应的处理器。
+     * @return 包含请求类型和处理器的映射表
+     */
     private Map<String, RequestHandler> initializeRoutes() {
         Map<String, RequestHandler> routeMap = new HashMap<>();
         routeMap.put("login", new LoginRequestHandler());

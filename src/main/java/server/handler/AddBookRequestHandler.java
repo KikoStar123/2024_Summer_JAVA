@@ -2,7 +2,10 @@ package server.handler;
 
 import server.service.LibraryService;
 import org.json.JSONObject;
-
+/**
+ * AddBookRequestHandler 处理添加图书的请求。
+ * 调用 LibraryService 进行图书添加，并返回处理结果。
+ */
 public class AddBookRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {

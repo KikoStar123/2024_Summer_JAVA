@@ -3,9 +3,17 @@ package server.handler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import server.service.ShoppingUserService;
-
+/**
+ * 处理模拟月末的请求。
+ * 该类负责调用 BankService 模拟月末处理银行业务。
+ */
 public class ShoppingUserRequestHandler implements RequestHandler {
-
+    /**
+     * 处理模拟月末的请求。
+     *
+     * @param parameters 请求参数的 JSON 对象
+     * @return 返回处理结果的 JSON 字符串
+     */
     @Override
     public String handle(JSONObject parameters) {
         ShoppingUserService userService = new ShoppingUserService();

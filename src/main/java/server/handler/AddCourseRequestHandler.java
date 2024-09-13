@@ -2,7 +2,10 @@ package server.handler;
 
 import org.json.JSONObject;
 import server.service.CourseService;
-
+/**
+ * AddCourseRequestHandler 处理添加课程的请求。
+ * 调用 CourseService 进行课程添加，并返回处理结果。
+ */
 public class AddCourseRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {

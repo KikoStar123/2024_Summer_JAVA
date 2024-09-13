@@ -2,7 +2,9 @@ package server.handler;
 
 import org.json.JSONObject;
 import server.service.UserService;
-
+/**
+ * 处理登录并返回用户信息的请求，调用 UserService 验证用户并返回用户详细信息。
+ */
 public class LoginReturnRequestHandler implements RequestHandler {
 
     private final UserService userService;

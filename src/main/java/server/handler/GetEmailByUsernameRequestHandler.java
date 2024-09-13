@@ -2,7 +2,10 @@ package server.handler;
 
 import server.service.UserService;
 import org.json.JSONObject;
-
+/**
+ * 处理通过书籍ID获取书籍详情的请求。
+ * 调用 LibraryService 来获取书籍详细信息。
+ */
 public class GetEmailByUsernameRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {

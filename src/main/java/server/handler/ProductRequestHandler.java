@@ -2,9 +2,16 @@ package server.handler;
 
 import org.json.JSONObject;
 import server.service.ShoppingProductService;
-
+/**
+ * 处理商品相关请求的类。负责处理客户端发来的商品查看、添加、删除、更新等操作请求。
+ */
 public class ProductRequestHandler implements RequestHandler {
-
+    /**
+     * 处理商品相关请求。
+     *
+     * @param parameters 包含商品操作相关参数的 JSON 对象。
+     * @return 包含操作结果的 JSON 响应字符串，表示成功或失败状态。
+     */
     @Override
     public String handle(JSONObject parameters) {
         ShoppingProductService productService = new ShoppingProductService();
@@ -124,7 +131,14 @@ public class ProductRequestHandler implements RequestHandler {
         return response.toString();
     }
 
-    // Helper method to add a product
+
+    /**
+     * 添加商品的辅助方法。
+     *
+     * @param parameters 包含商品相关数据的 JSON 对象。
+     * @param productService 商品服务实例。
+     * @return true 如果商品添加成功；否则返回 false。
+     */
     private boolean addProduct(JSONObject parameters, ShoppingProductService productService) {
         String productID = parameters.getString("productID");
         String productName = parameters.getString("productName");

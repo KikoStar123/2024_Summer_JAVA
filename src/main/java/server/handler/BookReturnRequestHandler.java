@@ -2,7 +2,10 @@ package server.handler;
 
 import server.service.LibraryService;
 import org.json.JSONObject;
-
+/**
+ * BookReturnRequestHandler 处理归还图书的请求。
+ * 调用 LibraryService 进行图书归还，并返回处理结果。
+ */
 public class BookReturnRequestHandler implements RequestHandler {
     @Override
     public String handle(JSONObject parameters) {

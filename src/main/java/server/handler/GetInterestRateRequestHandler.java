@@ -2,8 +2,11 @@ package server.handler;
 
 import server.service.BankService;
 import org.json.JSONObject;
-
+/**
+ * 处理获取利率的请求，调用 BankService 获取指定类型的利率。
+ */
 public class GetInterestRateRequestHandler implements RequestHandler {
+
     @Override
     public String handle(JSONObject parameters) {
         BankService bankService = BankService.getInstance();

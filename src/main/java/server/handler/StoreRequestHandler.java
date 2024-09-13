@@ -2,9 +2,16 @@ package server.handler;
 
 import org.json.JSONObject;
 import server.service.StoreService;
-
+/**
+ * 处理商店相关的请求，如添加、更新、删除商店或查询商店信息。
+ */
 public class StoreRequestHandler implements RequestHandler {
-
+    /**
+     * 处理商店相关的请求。
+     *
+     * @param parameters 请求参数的 JSON 对象，包含商店的相关操作和信息
+     * @return 包含操作结果的 JSON 字符串
+     */
     @Override
     public String handle(JSONObject parameters) {
         StoreService storeService = new StoreService();
@@ -67,7 +74,13 @@ public class StoreRequestHandler implements RequestHandler {
         return response.toString();
     }
 
-    // Helper method to handle adding a store
+    /**
+     * 辅助方法，用于添加商店。
+     *
+     * @param parameters 请求参数的 JSON 对象
+     * @param storeService 商店服务实例
+     * @return 包含添加结果的 JSON 对象
+     */
     private JSONObject handleAddStore(JSONObject parameters, StoreService storeService) {
         JSONObject response = new JSONObject();
         try {
@@ -85,7 +98,13 @@ public class StoreRequestHandler implements RequestHandler {
         return response;
     }
 
-    // Helper method to handle updating a store
+    /**
+     * 辅助方法，用于更新商店信息。
+     *
+     * @param parameters 请求参数的 JSON 对象
+     * @param storeService 商店服务实例
+     * @return 包含更新结果的 JSON 对象
+     */
     private JSONObject handleUpdateStore(JSONObject parameters, StoreService storeService) {
         JSONObject response = new JSONObject();
         try {

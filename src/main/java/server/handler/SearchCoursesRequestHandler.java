@@ -2,9 +2,17 @@ package server.handler;
 
 import org.json.JSONObject;
 import server.service.CourseService;
-
+/**
+ * 处理课程搜索请求。
+ * 该类根据课程名或教师名搜索课程。
+ */
 public class SearchCoursesRequestHandler implements RequestHandler {
-
+    /**
+     * 处理课程搜索请求。
+     *
+     * @param parameters 包含搜索条件的 JSON 对象，课程名和教师名可选
+     * @return 返回包含课程搜索结果的 JSON 字符串
+     */
     @Override
     public String handle(JSONObject parameters) {
         CourseService courseService = new CourseService();

@@ -3,7 +3,9 @@ package server.handler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import server.service.ShoppingOrderService;
-
+/**
+ * 处理购物订单相关请求，包括创建订单、获取订单详情、支付订单等。
+ */
 public class OrderRequestHandler implements RequestHandler {
 
     @Override
@@ -85,7 +87,12 @@ public class OrderRequestHandler implements RequestHandler {
         return response.toString();
     }
 
-    // Helper method to handle order creation
+    /**
+     * 处理订单创建请求。
+     * @param parameters 包含创建订单的参数
+     * @param orderService 订单服务实例
+     * @return 返回创建订单的响应
+     */
     private JSONObject handleCreateOrder(JSONObject parameters, ShoppingOrderService orderService) {
         JSONObject response = new JSONObject();
 
@@ -117,7 +124,12 @@ public class OrderRequestHandler implements RequestHandler {
         return response;
     }
 
-    // Helper method to handle updating the order comment status
+    /**
+     * 处理更新订单评论状态的请求。
+     * @param parameters 包含订单ID和是否评论的状态
+     * @param orderService 订单服务实例
+     * @return 返回更新评论状态的响应
+     */
     private JSONObject handleUpdateCommentStatus(JSONObject parameters, ShoppingOrderService orderService) {
         JSONObject response = new JSONObject();
 
