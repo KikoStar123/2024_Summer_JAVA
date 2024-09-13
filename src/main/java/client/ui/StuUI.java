@@ -35,14 +35,27 @@ import java.net.URL;
 import static client.service.Role.StuInfoManager;
 import static client.service.StudentInformation.modifyOneStudentInfo;
 
+/**
+ * StuUI 类为学生和管理员提供了一个管理和查看学生信息的用户界面。
+ * 管理员可以编辑学生的详细信息，而学生仅能查看自己的学籍信息。
+ */
 public class StuUI extends Application {
     private User user;
 
+    /**
+     * 构造函数，初始化用户。
+     *
+     * @param user 当前登录的用户对象
+     */
     public StuUI(User user) {
         this.user = user;
     }
 
-    //管理员界面
+    /**
+     * 创建管理员界面，展示所有学生的信息表格。管理员可以直接在表格中修改学生的姓名、ID、性别等信息。
+     *
+     * @return 返回一个包含学生信息表格的 VBox 布局
+     */
     public VBox createStudentInfoView_StuInfoManager() {
         StudentInformation.oneStudentInformation[] students = StudentInformation.viewAllStudentInfo();
 
@@ -122,7 +135,11 @@ public class StuUI extends Application {
         return vbox;
     }
 
-    //学生界面
+    /**
+     * 创建学生界面，用于学生查看自己的学籍信息。显示姓名、学号、性别、出生日期、籍贯、学院等信息。
+     *
+     * @return 返回一个包含学生个人信息的 BorderPane 布局
+     */
     public BorderPane createStudentInfoView_Student() {
         //学生只需要显示信息
 
@@ -219,7 +236,12 @@ public class StuUI extends Application {
         return Pane;
     }
 
-    //学籍修改成功后显示提示框
+    /**
+     * 显示学籍修改后的提示框，提示修改是否成功。
+     *
+     * @param success 一个布尔值，表示修改操作是否成功
+     * @param id 学生的 ID，用于在提示中显示具体的学生
+     */
     private void showAlert(boolean success, String id) {
         Alert alert;
         if (success) {

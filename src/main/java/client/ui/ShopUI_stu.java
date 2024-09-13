@@ -39,16 +39,31 @@ import java.util.Objects;
 import static client.service.Bank.payment;
 import static client.service.ShoppingOrder.createOrder;
 
-
+/**
+ * ShopUI_stu 类为学生用户提供了一个在线购物的用户界面，包括查看商品、添加商品到购物车、
+ * 查看订单、支付和评论商品的功能。该类还实现了与购物车、订单、物流、商店信息等相关的功能。
+ *
+ */
 public class ShopUI_stu {
     private User user;
     private BorderPane borderPane;
     private List<ShoppingProduct.oneProduct> cartProductList = new ArrayList<>(); // 存储购物车中的商品
 
+    /**
+     * 构造函数，初始化用户和界面布局。
+     *
+     * @param user 当前登录的用户
+     * @param borderPane 主布局
+     */
     public ShopUI_stu(User user, BorderPane borderPane) {
         this.user = user;
         this.borderPane = borderPane;
     }
+    /**
+     * 创建应用程序的封面布局，包含图标和进入商店的按钮。
+     *
+     * @return 返回一个 BorderPane，显示商店封面
+     */
     public BorderPane createCover(){
         ImageView photo = new ImageView(new Image(getClass().getResource("/cover-shop.jpg").toExternalForm()));
         photo.setFitWidth(440); // 你可以根据窗口大小调整这个值
@@ -131,6 +146,12 @@ public class ShopUI_stu {
 
         return Pane;
     }
+    /**
+     * 创建商店主界面布局，显示商品列表、购物车和订单按钮。
+     *
+     * @return 返回一个 VBox，显示商店布局
+     * @throws IOException 处理输入输出异常
+     */
     public VBox getShopLayout() throws IOException {
         VBox shopLayout = new VBox();
 
@@ -293,6 +314,12 @@ public class ShopUI_stu {
         return shopLayout;
     }
 
+    /**
+     * 显示用户的订单信息，用户可以查看订单详情和物流信息，进行支付和评论。
+     *
+     * @return 返回包含订单信息的 VBox 布局
+     * @throws IOException 处理输入输出异常
+     */
     private VBox showOrders() throws IOException {
 
         // 创建搜索栏
@@ -739,7 +766,13 @@ public class ShopUI_stu {
 
     }
 
-    private void showlogistics(String startAddress,String endAddress) {
+    /**
+     * 显示物流信息，展示地图和预计到达时间。
+     *
+     * @param startAddress 物流起点地址
+     * @param endAddress 物流终点地址
+     */
+    private void showlogistics(String startAddress, String endAddress) {
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
 
@@ -794,8 +827,12 @@ public class ShopUI_stu {
     }
 
 
-
-    //购物车页
+    /**
+     * 显示购物车页面，用户可以查看购物车中的商品，修改商品数量或进行结算。
+     *
+     * @param user 当前用户
+     * @throws IOException 处理输入输出异常
+     */
     private void showShoppingCart(User user) throws IOException {
         ListView<VBox> cartelementList = new ListView<>();
         ObservableList<VBox> items = FXCollections.observableArrayList();
@@ -998,8 +1035,15 @@ public class ShopUI_stu {
 
 
 
-    //进入商品详情页
+    /**
+     * 显示商品的详细信息，包括价格、库存、商家信息、商品属性等。用户可以选择购买商品或加入购物车。
+     *
+     * @param product 当前选中的商品
+     * @return 返回一个包含商品详细信息的 VBox 布局
+     * @throws IOException 处理输入输出异常
+     */
     private VBox showProductDetails(ShoppingProduct.oneProduct product) throws IOException {
+
         VBox detailLayout = new VBox(10); // 间距为10
         detailLayout.setPadding(new Insets(10)); // 内边距为10
 
@@ -1080,7 +1124,14 @@ public class ShopUI_stu {
         return detailLayout;
     }
 
+    /**
+     * 将商品添加到购物车，用户可以选择商品数量，并查看同类商品。
+     *
+     * @param product 当前选中的商品
+     * @throws IOException 处理输入输出异常
+     */
     private void addproduct(ShoppingProduct.oneProduct product) throws IOException {
+
         VBox buyproductBox=new VBox();
         Label common=new Label("同类商品");
         ListView<VBox> commonproductList = new ListView<>();
@@ -1186,8 +1237,14 @@ public class ShopUI_stu {
         });
         borderPane.setCenter(buyproductBox);
     }
-    //商品购买页
+    /**
+     * 用户可以选择立即购买商品，填写订单信息并进行支付。
+     *
+     * @param product 当前选中的商品
+     * @throws IOException 处理输入输出异常
+     */
     private void buyproduct(ShoppingProduct.oneProduct product) throws IOException {
+
         VBox buyproductBox=new VBox();
         Label common=new Label("同类商品");
         ListView<VBox> commonproductList = new ListView<>();
@@ -1295,8 +1352,15 @@ public class ShopUI_stu {
         });
         borderPane.setCenter(buyproductBox);
     }
-    //商店商品页
+    /**
+     * 显示商店页面，展示商店的详细信息如名称、电话和好评率。
+     *
+     * @param product 当前选中的商品
+     * @return 返回包含商店信息的 VBox 布局
+     * @throws IOException 处理输入输出异常
+     */
     private VBox showShoppingStore(ShoppingProduct.oneProduct product) throws IOException {
+
         VBox shoppingStore=new VBox();
         ShoppingStore.oneStore oneStore=ShoppingStore.oneStore(product.getStoreID());
         VBox store=new VBox();
@@ -1315,8 +1379,14 @@ public class ShopUI_stu {
 
 
     }
-    //评论页
+    /**
+     * 显示商品的评论页面，用户可以按评论类型筛选评论内容。
+     *
+     * @param product 当前选中的商品
+     * @throws IOException 处理输入输出异常
+     */
     private void showComment(ShoppingProduct.oneProduct product) throws IOException {
+
 
         VBox commentBox=new VBox();
 
@@ -1374,7 +1444,15 @@ public class ShopUI_stu {
         commentBox.getChildren().addAll(select,scrollPane);
         borderPane.setCenter(commentBox);
     }
+    /**
+     * 处理支付操作，弹出输入框让用户输入用户名和密码进行支付。
+     *
+     * @param orderIds 订单 ID 列表
+     * @param totalAmount 总支付金额
+     * @return 支付是否成功
+     */
     private boolean handlePayment(List<String> orderIds, float totalAmount) {
+
         // 弹出窗口输入用户名和密码
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("支付");

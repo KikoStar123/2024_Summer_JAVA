@@ -28,16 +28,28 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+/**
+ * LibraryUI_Manager 是图书馆管理系统的管理员用户界面类。
+ * 继承自 Application，用于启动 JavaFX 应用程序，管理图书馆系统中的书籍信息、借阅记录、上传文件等操作。
+ */
 public class LibraryUI_Manager extends Application {
 
     private TableView<Book> resultTable;
     private User user;
     private Library library;
 
+    /**
+     * LibraryUI_Manager 的构造函数。
+     * @param user 当前登录的管理员用户
+     */
     public LibraryUI_Manager(User user) {
         this.user = user;
     }
 
+    /**
+     * 启动图书馆管理界面。
+     * @param primaryStage 主舞台，用于显示图书馆管理系统的界面
+     */
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("图书馆管理界面");
@@ -184,6 +196,11 @@ public class LibraryUI_Manager extends Application {
         primaryStage.show();
     }
 
+    /**
+     * 处理登出功能。
+     * 当管理员点击登出按钮时，关闭当前界面并打开登录界面。
+     * @param primaryStage 当前主界面
+     */
     private void handleLogout(Stage primaryStage) {
         primaryStage.close(); // 关闭当前主界面
 
@@ -197,6 +214,10 @@ public class LibraryUI_Manager extends Application {
         }
     }
 
+    /**
+     * 显示书籍信息更新窗口。
+     * 该窗口允许管理员输入书籍的 ID 和新的馆藏数量，并进行更新操作。
+     */
     private void showUpdateWindow() {
         Stage updateStage = new Stage();
         updateStage.setTitle("更新书籍");
@@ -227,6 +248,10 @@ public class LibraryUI_Manager extends Application {
 
     }
 
+    /**
+     * 显示添加新书的窗口。
+     * 管理员可以通过该窗口输入新书的详细信息，并将新书添加到图书馆系统中。
+     */
     private void showAddbWindow() {
         Stage addbStage = new Stage();
         Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
@@ -300,6 +325,10 @@ public class LibraryUI_Manager extends Application {
         addbStage.show();
     }
 
+    /**
+     * 显示借阅记录窗口。
+     * 根据当前用户的角色展示借阅记录，学生可以续借，管理员可以查看所有用户的借阅记录。
+     */
     private void showBorrowWindow() {
         Stage borrowStage = new Stage();
         Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
@@ -407,12 +436,22 @@ public class LibraryUI_Manager extends Application {
         borrowStage.show();
     }
 
+    /**
+     * 更新书籍信息表格。
+     * 根据搜索结果更新显示在表格中的书籍信息。
+     * @param books 搜索到的书籍列表
+     */
     private void updateTableData(List<Book> books) {
         resultTable.getItems().clear();
         resultTable.getItems().addAll(books);
     }
 
 
+    /**
+     * 显示书籍详细信息窗口。
+     * 该窗口展示书籍的详细信息，包括书名、作者、馆藏数量、图片等，并提供 PDF 预览功能。
+     * @param book 要展示的书籍对象
+     */
     private void showBookDetails(Book book) {
         Stage detailStage = new Stage();
         Image image1 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
@@ -523,6 +562,10 @@ public class LibraryUI_Manager extends Application {
 
 
 
+    /**
+     * 显示借阅或归还书籍的窗口。
+     * 管理员可以通过该窗口借阅或归还书籍。
+     */
     private void showAddDeleteWindow() {
         Stage addDeleteStage = new Stage();
         addDeleteStage.setTitle("借阅/归还书籍");
@@ -595,6 +638,10 @@ public class LibraryUI_Manager extends Application {
         addDeleteStage.show();
     }
 
+    /**
+     * 显示上传文件的对话框。
+     * 管理员可以通过该对话框上传书籍的图片或 PDF 文件。
+     */
     private void showUploadDialog() {
         Stage dialog = new Stage();
         Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
@@ -661,8 +708,11 @@ public class LibraryUI_Manager extends Application {
         dialog.setScene(dialogScene);
         dialog.show();
     }
-
-    // 显示消息对话框
+    /**
+     * 显示消息对话框。
+     * @param alertType 提示框的类型，如信息提示或错误提示
+     * @param message 要显示的消息内容
+     */
     private void showAlert(Alert.AlertType alertType, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle("提示");

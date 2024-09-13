@@ -27,14 +27,28 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.scene.layout.Region;
 
 
+/**
+ * MainUI 是主界面类。
+ * 根据不同的用户角色，显示不同的功能模块，例如图书馆、选课系统、商店、银行等功能。
+ * 继承自 Application 类，用于实现 JavaFX 应用程序的主界面。
+ */
 public class MainUI extends Application {
     private User user;
     public static BorderPane borderPane;
 
+    /**
+     * MainUI 构造函数。
+     * @param user 当前登录的用户，用于确定其角色和权限。
+     */
     public MainUI(User user) {
         this.user = user;
     }
 
+    /**
+     * 启动主界面。
+     * 根据用户角色加载不同的功能模块，并展示在主界面中。
+     * @param primaryStage 主舞台，用于展示主界面。
+     */
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("主界面");
@@ -195,6 +209,11 @@ public class MainUI extends Application {
         primaryStage.show();
     }
 
+    /**
+     * 处理选课系统按钮点击事件。
+     * 加载选课系统界面并显示。
+     * @param username 当前登录用户的用户名。
+     */
     private void handleCourse(String username) {
         Platform.runLater(() -> {
             CourseSelectionUI CourseSelectionUI = new CourseSelectionUI(user);
@@ -203,17 +222,33 @@ public class MainUI extends Application {
         });
     }
 
+    /**
+     * 处理商店按钮点击事件。
+     * 加载商店界面并显示。
+     * @param username 当前登录用户的用户名。
+     * @throws IOException 如果商店界面加载失败，则抛出此异常。
+     */
     private void handleShop(String username) throws IOException {
         ShopUI_stu shopUI = new ShopUI_stu(user, borderPane);
         BorderPane shopLayout = shopUI.createCover();
         borderPane.setCenter(shopLayout);
     }
 
+    /**
+     * 处理修改密码按钮点击事件。
+     * 显示修改密码窗口。
+     * @param username 当前登录用户的用户名。
+     */
     private void handleupdatepwd(String username) {
         UpdatePwdUI updatePwdUI = new UpdatePwdUI(user);
         updatePwdUI.showUpdatePwdWindow();  // 显示新窗口
     }
-    private void handleBank(String username) {//解决学生的bankui
+    /**
+     * 处理银行按钮点击事件。
+     * 加载学生银行界面并显示。
+     * @param username 当前登录用户的用户名。
+     */
+    private void handleBank(String username) {
         Platform.runLater(() -> {
             Bankui_stu bankUI = new Bankui_stu(user);
             BorderPane bankstu=Bankui_stu.createBankUI();
@@ -222,6 +257,11 @@ public class MainUI extends Application {
 
     }
 
+    /**
+     * 处理图书馆按钮点击事件。
+     * 加载图书馆界面并显示。
+     * @param username 当前登录用户的用户名。
+     */
     private void handleLibrary(String username) {
         Platform.runLater(() -> {
             LibraryUI libraryUI = new LibraryUI(user);
@@ -230,6 +270,11 @@ public class MainUI extends Application {
         });
     }
 
+    /**
+     * 处理学生信息管理按钮点击事件。
+     * 加载学生信息管理界面，根据用户角色展示不同的视图。
+     * @param username 当前登录用户的用户名。
+     */
     private void handleStudent(String username) {
         Platform.runLater(() -> {
                     StuUI stuUI = new StuUI(user);
@@ -243,7 +288,11 @@ public class MainUI extends Application {
             }
         });
     }
-    // 处理登出操作，关闭当前窗口并返回登录界面
+    /**
+     * 处理登出操作。
+     * 关闭当前主界面并返回登录界面。
+     * @param primaryStage 当前的主界面舞台。
+     */
     private void handleLogout(Stage primaryStage) {
         primaryStage.close(); // 关闭当前主界面
 
@@ -257,6 +306,10 @@ public class MainUI extends Application {
         }
     }
 
+
+    /**
+     * 启动主界面。
+     */
     public void display() {
         launch();
     }

@@ -29,6 +29,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Stack;
 import client.service.ShoppingComment;
+/**
+ * ShopUI_Manager 类是商家管理界面类，用于展示商家信息、商品信息和订单管理功能。
+ * 商家可以通过此界面查看和编辑商店信息、管理商品以及处理订单。
+ */
 public class ShopUI_Manager extends Application {
     private String username; // 成员变量，用于存储用户名
     ShoppingStore shoppingStore = new ShoppingStore(); // 借用商店服务来实现
@@ -40,9 +44,17 @@ public class ShopUI_Manager extends Application {
     Tab ordersTab;
     private double zoomFactor = 1.0;
     // 构造函数，接收用户名
+    /**
+     * 构造函数，接收用户名并初始化类。
+     * @param username 当前登录的商家用户名。
+     */
     public ShopUI_Manager(String username) {
         this.username = username;
     }
+    /**
+     * start 方法用于设置并启动 JavaFX 应用程序的主界面。
+     * @param primaryStage 主舞台，应用的根窗口。
+     */
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("商家");
@@ -112,6 +124,10 @@ public class ShopUI_Manager extends Application {
 
 
 
+    /**
+     * 处理缩放事件，用于用户滚动鼠标时缩放界面。
+     * @param event 滚动事件，用于判断是缩小还是放大。
+     */
     private void handleScrollEvent(ScrollEvent event) {
         if (event.isControlDown()) {
             double delta = event.getDeltaY();
@@ -124,6 +140,10 @@ public class ShopUI_Manager extends Application {
         }
     }
 
+    /**
+     * 处理用户登出操作，关闭当前窗口并返回登录界面。
+     * @param primaryStage 当前的主舞台。
+     */
     private void handleLogout(Stage primaryStage) {
         primaryStage.close(); // 关闭当前主界面
 
@@ -136,19 +156,29 @@ public class ShopUI_Manager extends Application {
             e.printStackTrace();
         }
     }
-    //用于窗口的缩放
+    /**
+     * 执行界面的放大操作。
+     */
     private void zoomIn() {
         zoomFactor *= 1.15;
         root.getTransforms().clear();
         root.getTransforms().add(new Scale(zoomFactor, zoomFactor, 0, 0));
     }
+    /**
+     * 执行界面的缩小操作。
+     */
     private void zoomOut() {
         zoomFactor /= 1.15;
         root.getTransforms().clear();
         root.getTransforms().add(new Scale(zoomFactor, zoomFactor, 0, 0));
     }
-    // 创建商店信息界面
+    /**
+     * 创建商店信息界面并返回一个 BorderPane 以展示商店的详细信息。
+     * @param storeInfo 商店信息对象，包含商店的详细信息。
+     * @return 返回一个 BorderPane 显示商店信息。
+     */
     private BorderPane createShopInfoPane(ShoppingStore.oneStore storeInfo) {
+
         BorderPane shopInfoPane = new BorderPane();
         // 创建一个文本区域来显示商店信息
         TextArea infoArea = new TextArea();
@@ -178,8 +208,12 @@ public class ShopUI_Manager extends Application {
         return shopInfoPane;
 
     }
-    // 显示修改商家信息的对话框
+    /**
+     * 显示一个弹窗用于修改商店信息。
+     * @param storeInfo 当前商店的信息。
+     */
     private void showEditShopInfoDialog(ShoppingStore.oneStore storeInfo) {
+
         // 创建一个弹窗
         Alert alert = new Alert(Alert.AlertType.NONE);
         alert.setTitle("修改商家信息");
@@ -276,6 +310,10 @@ public class ShopUI_Manager extends Application {
 //        root.setCenter(productView); // 设置初始界面为商品界面
 //        return productView;
 //    }
+    /**
+     * 创建商品界面，显示商品的相关信息，并提供添加、上传图片等功能。
+     * @return 返回一个 BorderPane 用于显示商品信息。
+     */
     private BorderPane createProductsPane() {
         System.out.println("Creating products pane...");
         BorderPane productsPane = new BorderPane();
@@ -321,6 +359,10 @@ public class ShopUI_Manager extends Application {
         return productsPane;
     }
 
+    /**
+     * 加载并显示商品列表。
+     * @param productVBox 商品列表容器，用于显示商品项。
+     */
     private void loadProducts(VBox productVBox) {
         String storeID = null;
         try {
@@ -345,6 +387,9 @@ public class ShopUI_Manager extends Application {
             System.out.println("获取商店信息或商品列表时发生错误");
         }
     }
+    /**
+     * 显示上传商品图片的弹窗。
+     */
     private void showUploadDialog() {
         Stage dialog = new Stage();
         Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
@@ -395,7 +440,9 @@ public class ShopUI_Manager extends Application {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    // 显示修改商家信息的对话框
+    /**
+     * 显示修改商品信息的对话框，用于添加新商品或编辑现有商品。
+     */
     private void showEditProductInfoDialog() {
         // 创建一个弹窗
         Alert alert = new Alert(Alert.AlertType.NONE);
@@ -624,7 +671,13 @@ public class ShopUI_Manager extends Application {
     }
 
     // 创建商品信息的方法
+    /**
+     * 创建商品项并添加到界面中显示。
+     * @param productVBox 商品列表的容器。
+     * @param product 商品对象，包含商品的详细信息。
+     */
     private void createProductItem(VBox productVBox, ShoppingProduct.oneProduct product) {
+
         // 创建一个VBox，用于垂直堆叠两个HBox
         productVBox.setPadding(new Insets(5)); // 内边距为5
         productVBox.setStyle("-fx-border-color: #b61c94; -fx-border-width: 1; -fx-border-style: solid; -fx-background-color: rgb(255,255,255); -fx-background-radius: 5; -fx-border-radius: 5;");
@@ -669,7 +722,11 @@ public class ShopUI_Manager extends Application {
         productVBox.getChildren().addAll(productImageView, productItemTop, productItemBottom, viewCommentsButton);
     }
 
-    // 显示评论界面，跳转到评论界面
+    /**
+     * 显示指定商品的评论页面，并提供返回商品列表的功能。
+     *
+     * @param productID 商品的唯一标识符，用于获取对应的评论信息。
+     */
     private void showProductComments(String productID) {
         // 创建评论界面
         System.out.println("显示评论: " + productID); // 调试日志
@@ -719,7 +776,11 @@ public class ShopUI_Manager extends Application {
             alert.showAndWait();
         }
     }
-    // 创建订单界面
+    /**
+     * 创建并显示订单列表界面，按订单的顺序展示在两个垂直布局列中。
+     *
+     * @return 返回一个包含订单信息的 BorderPane 布局。
+     */
     private BorderPane createOrdersPane() {
         BorderPane ordersPane = new BorderPane();
         ScrollPane scrollPane = new ScrollPane();
@@ -754,7 +815,14 @@ public class ShopUI_Manager extends Application {
         return ordersPane;
     }
 
+    /**
+     * 创建订单项并将其显示在订单列表的指定容器中。
+     *
+     * @param orderVBox 显示订单项的容器。
+     * @param order 订单对象，包含订单的详细信息。
+     */
     private void createOrderItem(VBox orderVBox, ShoppingOrder.oneOrder order) {
+
         VBox orderItem = new VBox(5); // 每行间距为5
         orderItem.setPadding(new Insets(10)); // 设置内边距为10
         orderItem.setStyle("-fx-border-color: #b61c94; -fx-border-width: 1; -fx-border-style: solid; " +
@@ -797,7 +865,14 @@ public class ShopUI_Manager extends Application {
     }
 
 
+    /**
+     * 显示指定订单的详细信息。
+     *
+     * @param orderVBox 显示订单的父容器。
+     * @param order 当前订单对象，包含订单详细信息。
+     */
     private void viewOrderDetails(VBox orderVBox, ShoppingOrder.oneOrder order) {
+
         // 创建一个新的 TextArea 来显示订单的详细信息
         TextArea detailsArea = new TextArea();
         detailsArea.setEditable(false); // 设置为不可编辑

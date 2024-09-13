@@ -10,12 +10,24 @@ import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * UpdatePwdUI 类用于为用户提供一个界面来修改密码。
+ * 用户可以输入旧密码、新密码和确认新密码，并通过点击“更新密码”按钮来修改密码。
+ * 提供了显示/隐藏密码的功能，方便用户查看输入的密码。
+ */
 public class UpdatePwdUI extends Application {
     User user=new User();
+    /**
+     * 构造函数，初始化用户信息。
+     *
+     * @param user 当前登录的用户对象
+     */
     public UpdatePwdUI(User user) {
         this.user=user;
     }
-    //显示修改密码的窗口
+    /**
+     * 显示修改密码的窗口，调用 start 方法启动新窗口。
+     */
     public void showUpdatePwdWindow() {
         Stage stage = new Stage();
         try {
@@ -28,6 +40,11 @@ public class UpdatePwdUI extends Application {
         launch(args);
     }
 
+    /**
+     * 设置并启动 JavaFX 应用程序的主界面，用于修改密码。
+     *
+     * @param primaryStage 主窗口
+     */
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("修改密码");
@@ -167,7 +184,12 @@ public class UpdatePwdUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    // 创建一个只有图标没有边框的按钮
+    /**
+     * 创建带图标的按钮，用于显示/隐藏密码。
+     *
+     * @param imagePath 图标的路径
+     * @return 返回一个 Button 对象
+     */
     private Button createIconButton(String imagePath) {
         Button button = new Button();
         button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");

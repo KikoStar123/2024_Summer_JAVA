@@ -54,6 +54,10 @@ import javax.swing.JOptionPane;
 
 
 import client.service.ClientService;
+/**
+ * LoginUI 是图书馆管理系统的登录界面类。
+ * 该类负责用户登录、注册以及忘记密码的处理逻辑，继承自 Application 类以实现 JavaFX 应用程序。
+ */
 public class LoginUI extends Application {
     private TextField usernameField;
     private PasswordField passwordField;
@@ -77,6 +81,10 @@ public class LoginUI extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    /**
+     * 应用程序的入口点，负责启动登录界面。
+     * @param primaryStage 主舞台，用于展示登录界面。
+     */
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("登录");
@@ -164,6 +172,10 @@ public class LoginUI extends Application {
         primaryStage.show();
     }
 
+    /**
+     * 处理登录按钮点击事件。
+     * 验证用户名和密码，成功后跳转到不同角色的主界面，失败则提示错误信息。
+     */
     private void handleLogin() {
         String username = usernameField.getText();
         String password = passwordField.getText(); // JavaFX的PasswordField没有getPassword方法，使用getText
@@ -252,11 +264,19 @@ public class LoginUI extends Application {
             alert.showAndWait();
         }
     }
+    /**
+     * 处理注册按钮点击事件。
+     * 跳转到注册界面。
+     */
     private void handleRegister() {
         RegisterUI registerUI = new RegisterUI();
         GridPane grid = registerUI.showRegisterUI(this);
         root.setCenter(grid);
     }
+    /**
+     * 处理忘记密码功能。
+     * 创建一个新窗口，用户可以输入账号、邮箱和验证码，验证后可修改密码。
+     */
     private void handleforget() {
         // 创建一个新的弹出窗口 (Stage)
         Stage forgetStage = new Stage();
@@ -346,8 +366,13 @@ public class LoginUI extends Application {
         forgetStage.setScene(scene);
         forgetStage.show();
     }
-    //完成向邮箱发送正确的验证码；
-    public int Forget(String toEmail,String toPassword) {
+    /**
+     * 发送验证码到用户的邮箱，用于密码重置。
+     * @param toEmail 发送验证码的目标邮箱
+     * @param toPassword 邮箱授权码
+     * @return 生成的验证码，用于验证用户输入的验证码是否正确
+     */
+    public int Forget(String toEmail, String toPassword) {
         smtpUsername = toEmail;//确保用户输入的邮箱与发送的邮箱保持一致。
         smtpPassword = toPassword;//-----
         Random random = new Random();
@@ -399,6 +424,9 @@ public class LoginUI extends Application {
         }
 
 
+    /**
+     * 显示登录界面。
+     */
     public void showLoginUI() {
         Stage stage = new Stage();
         try {
@@ -408,10 +436,18 @@ public class LoginUI extends Application {
         }
     }
 
+    /**
+     * 获取根布局对象。
+     * @return 返回登录界面的根布局 BorderPane
+     */
     public BorderPane getRoot() {
         return root;
     }
 
+    /**
+     * 获取网格布局对象。
+     * @return 返回登录界面的网格布局 GridPane
+     */
     public GridPane getGrid() {
         return grid;
     }

@@ -27,13 +27,28 @@ import java.net.URL;
 import static client.service.Role.StuInfoManager;
 import static client.service.StudentInformation.modifyOneStudentInfo;
 
+/**
+ * StuAdminUI 类为管理员提供了一个管理学生信息的用户界面，管理员可以查看、编辑和修改学生信息。
+ * 学生信息包括姓名、ID、性别、籍贯、生日和学院信息，所有信息均可在表格中直接编辑。
+ */
 public class StuAdminUI extends Application {
     private User user;
 
+    /**
+     * 构造函数，初始化用户。
+     *
+     * @param user 当前登录的管理员用户
+     */
     public StuAdminUI(User user) {
         this.user = user;
     }
 
+    /**
+     * 创建一个表格视图，用于显示和编辑学生信息。学生信息包括姓名、ID、性别、籍贯、生日和学院。
+     * 管理员可以在表格中直接修改每个字段，修改后会同步更新数据库。
+     *
+     * @return 返回一个包含学生信息表格的 VBox 布局
+     */
     public VBox createStudentInfoView() {
         StudentInformation.oneStudentInformation[] students = StudentInformation.viewAllStudentInfo();
 
@@ -117,6 +132,13 @@ public class StuAdminUI extends Application {
         return vbox;
     }
 
+
+    /**
+     * 显示提示信息，用于通知用户信息修改是否成功。
+     *
+     * @param success 一个布尔值，表示修改操作是否成功
+     * @param id 学生的 ID，用于在提示中显示具体的学生
+     */
     private void showAlert(boolean success, String id) {
         Alert alert;
         if (success) {
@@ -136,6 +158,11 @@ public class StuAdminUI extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    /**
+     * 处理登出操作，关闭当前窗口并打开登录界面。
+     *
+     * @param primaryStage 当前的主窗口
+     */
     private void handleLogout(Stage primaryStage) {
         primaryStage.close(); // 关闭当前主界面
 
@@ -149,6 +176,11 @@ public class StuAdminUI extends Application {
         }
     }
 
+    /**
+     * 设置并启动 JavaFX 应用程序的主界面，包含登出按钮和学生信息表格。
+     *
+     * @param primaryStage 主窗口
+     */
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("管理员界面");

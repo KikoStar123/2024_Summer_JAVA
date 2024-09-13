@@ -23,7 +23,11 @@ import java.awt.event.ActionListener;
 import static antlr.build.ANTLR.root;
 
 
-public class RegisterUI  {
+/**
+ * RegisterUI 类用于创建用户注册界面，并处理用户的注册操作。
+ * 提供了用户输入姓名、学号、性别、籍贯、生日、学院、密码和邮箱等信息的表单，完成注册功能。
+ */
+public class RegisterUI {
     private TextField name;
     private TextField id;
     private ComboBox<String> genderComboBox;
@@ -38,6 +42,12 @@ public class RegisterUI  {
 
     private GridPane grid;
 
+    /**
+     * 显示注册界面。
+     * 该方法生成用户注册的表单，并设置事件处理器。
+     * @param loginUI 登录界面对象，用于在点击“返回”按钮时切换回登录界面。
+     * @return 返回包含注册表单的 GridPane 布局。
+     */
     public GridPane showRegisterUI(LoginUI loginUI) {
         grid = new GridPane();
         grid.setPadding(new Insets(10, 10, 10, 10));
@@ -158,6 +168,12 @@ public class RegisterUI  {
         return grid;
     }
 
+    /**
+     * 显示弹出消息框，用于提示用户操作结果。
+     * @param alertType 弹出框的类型，可以是信息提示或错误提示。
+     * @param title 弹出框的标题。
+     * @param message 弹出框显示的内容信息。
+     */
     private void showAlert(Alert.AlertType alertType, String title, String message) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

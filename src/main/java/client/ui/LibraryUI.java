@@ -30,12 +30,20 @@ import java.util.List;
 
 import javafx.scene.paint.Color;
 
+/**
+ * LibraryUI 是图书馆管理系统的用户界面类。
+ * 该类负责处理用户与图书馆管理系统的交互，包括展示书籍信息、搜索、借阅记录等功能。
+ */
 public class LibraryUI {
 
     private TableView<Book> resultTable;
     private User user;
     private Library library; // 添加 Library 类的实例
 
+    /**
+     * 构造函数
+     * @param user 当前登录的用户信息
+     */
     public LibraryUI(User user) {
         this.user = user;
         this.library = new Library(); // 初始化 Library 实例
@@ -50,7 +58,12 @@ public class LibraryUI {
     private JavaMethod javaMethod = new JavaMethod();
 
 
-    public BorderPane createCover(){
+    /**
+     * 创建图书馆封面界面。
+     * 此方法创建封面布局，包括图标、进入图书馆的按钮等。
+     * @return BorderPane 封面布局的 BorderPane 对象
+     */
+    public BorderPane createCover() {
         ImageView photo = new ImageView(new Image(getClass().getResource("/cover-library.jpg").toExternalForm()));
         photo.setFitWidth(440); // 你可以根据窗口大小调整这个值
         photo.setFitHeight(550); // 你可以根据窗口大小调整这个值
@@ -129,6 +142,11 @@ public class LibraryUI {
 
         return Pane;
     }
+    /**
+     * 创建图书馆主视图界面。
+     * 此方法创建搜索书籍、展示书籍列表、借阅记录等功能的用户界面。
+     * @return BorderPane 主视图的 BorderPane 对象
+     */
     public BorderPane createLibraryView() {
 
         // 搜索栏和按钮
@@ -231,6 +249,10 @@ public class LibraryUI {
         return mainLayout;
     }
 
+    /**
+     * 显示书籍更新窗口。
+     * 此方法创建一个窗口，用于管理员更新书籍馆藏数量。
+     */
     private void showUpdateWindow() {
         Stage updateStage =new Stage();
         Image image11 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
@@ -250,6 +272,10 @@ public class LibraryUI {
         });
     }
 
+    /**
+     * 显示添加书籍的窗口。
+     * 此方法创建一个窗口，用于管理员添加新的书籍到图书馆系统。
+     */
     private void showAddbWindow() {
         Stage addbStage=new Stage();
         addbStage.setTitle("增加书籍");
@@ -299,6 +325,10 @@ public class LibraryUI {
 
     }
 
+    /**
+     * 显示借阅记录窗口。
+     * 此方法根据用户角色展示借阅记录，对于管理员还可搜索其他用户的借阅记录。
+     */
     private void showBorrowWindow() {
         Stage borrowStage = new Stage();
         Image image11 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
@@ -404,12 +434,22 @@ public class LibraryUI {
         borrowStage.show();
     }
 
+    /**
+     * 更新书籍数据表格。
+     * 此方法根据搜索结果更新表格中的书籍信息。
+     * @param books 包含搜索结果的书籍列表
+     */
     void updateTableData(List<Book> books) {
         resultTable.getItems().clear();
         resultTable.getItems().addAll(books);
     }
 
 
+    /**
+     * 显示书籍详细信息窗口。
+     * 此方法创建一个窗口，显示书籍的详细信息，如书名、作者、馆藏数量等，并支持预览 PDF 文件。
+     * @param book 要展示详细信息的书籍对象
+     */
     void showBookDetails(Book book) {
         Stage detailStage = new Stage();
         Image image11 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
