@@ -262,25 +262,6 @@ public class UserService {
 
         return response;
     }
-    public String logout(JSONObject parameters) {
-        JSONObject jsonResponse = new JSONObject();
-
-        try {
-            String username = parameters.getString("username");
-            if (username != null && !username.isEmpty()) {
-                jsonResponse.put("status", "success").put("message", "Logout successful");
-                System.out.println("Logout successful for username: " + username);
-            } else {
-                jsonResponse.put("status", "fail").put("message", "Invalid username");
-                System.out.println("Logout failed: Invalid username");
-            }
-        } catch (Exception e) {
-            jsonResponse.put("status", "error").put("message", "An error occurred during logout");
-            System.out.println("An error occurred during logout: " + e.getMessage());
-        }
-
-        return jsonResponse.toString();
-    }
 
     public JSONObject forgetPwd(String username, String newPwd) {
         JSONObject response = new JSONObject();

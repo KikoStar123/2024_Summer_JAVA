@@ -1,7 +1,6 @@
 package client.service;
 
 public enum Role {
-    teacher,//101--普通身份
     student,//001学生--普通身份
     BankManager,//银行管理员
     Librarian,//图书馆管理员
