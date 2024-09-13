@@ -2,24 +2,30 @@ package client.service;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * 购物评论服务类，提供查看商品评论、添加评论等功能。
+ */
 public class ShoppingComment {
     private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
     private static final int SERVER_PORT = IpConfig.SERVER_PORT;
 
+    /**
+     * 内部类表示商品评论的详细信息。
+     */
     public static class oneComment {
-        String username;//用户账号
-        String productID;//商品id
-        String commentID;//评论id
-        int commentAttitude;//评论态度（差评=1、中评=2、好评=3）
-        String commentContent;//评论内容
+        String username;         // 用户账号
+        String productID;        // 商品ID
+        String commentID;        // 评论ID
+        int commentAttitude;     // 评论态度（差评=1、中评=2、好评=3）
+        String commentContent;   // 评论内容
 
+        // Getter方法
         public String getUsername() {
             return username;
         }
@@ -41,20 +47,21 @@ public class ShoppingComment {
         }
     }
 
-    // 管理员：查看所有商品的评论
-    // 输入 无
-    // 返回 评论数组
-    public oneComment[] getAllProductComments() throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 管理员查看所有商品的评论。
+     *
+     * @return 包含所有商品评论的数组
+     * @throws IOException 如果出现IO异常
+     */
+    public oneComment[] getAllProductComments() throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
             request.put("requestType", "product");
-            request.put("parameters", new JSONObject()
-                    .put("action", "getAllProductComments"));
+            request.put("parameters", new JSONObject().put("action", "getAllProductComments"));
 
             // 发送请求
             out.println(request);
@@ -62,17 +69,16 @@ public class ShoppingComment {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            JSONArray data = jsonResponse.getJSONArray("comments");//获取JSON数组
+            JSONArray data = jsonResponse.getJSONArray("comments");
 
             // 获取评论数量
             int numComments = data.length();
 
-            // 创建一个数组来存储所有商品信息
+            // 创建一个数组来存储所有评论信息
             oneComment[] commentsArray = new oneComment[numComments];
 
             for (int i = 0; i < numComments; i++) {
                 JSONObject theComment = data.getJSONObject(i);
-
                 commentsArray[i] = new oneComment();
                 commentsArray[i].username = theComment.getString("username");
                 commentsArray[i].productID = theComment.getString("productID");
@@ -88,50 +94,50 @@ public class ShoppingComment {
         return null;
     }
 
-    // 管理员/顾客：查询商品的评论（用于商品详情页）（可选择评论态度也可以不选择）
-    // 输入 商品id productID； 评论态度 commentAttitude（查看差评=1、查看中评=2、查看好评=3，查看所有评论=0）
-    // 返回 评论数组
-    public oneComment[] getProductComments(String productID, int commentAttitude) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 根据商品ID和评论态度查询商品的评论。
+     *
+     * @param productID       商品ID
+     * @param commentAttitude 评论态度（差评=1、中评=2、好评=3，查看所有评论=0）
+     * @return 包含筛选后评论的数组
+     * @throws IOException 如果出现IO异常
+     */
+    public oneComment[] getProductComments(String productID, int commentAttitude) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
-            request.put("requestType", "product");
-            if(commentAttitude == 0)//查看所有评论
-            {
+            if (commentAttitude == 0) {
+                // 查看所有评论
                 request.put("parameters", new JSONObject()
                         .put("action", "getProductComments")
                         .put("productID", productID));
-            }
-            else//查看差评/中评/好评
-            {
+            } else {
+                // 根据态度筛选评论
                 request.put("parameters", new JSONObject()
                         .put("action", "getProductComments")
                         .put("productID", productID)
                         .put("commentAttitude", commentAttitude));
             }
 
-
             // 发送请求
             out.println(request);
 
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            JSONArray data = jsonResponse.getJSONArray("comments");//获取JSON数组
+            JSONArray data = jsonResponse.getJSONArray("comments");
 
             // 获取评论数量
             int numComments = data.length();
 
-            // 创建一个数组来存储所有商品信息
+            // 创建一个数组来存储评论信息
             oneComment[] commentsArray = new oneComment[numComments];
 
             for (int i = 0; i < numComments; i++) {
                 JSONObject theComment = data.getJSONObject(i);
-
                 commentsArray[i] = new oneComment();
                 commentsArray[i].username = theComment.getString("username");
                 commentsArray[i].productID = theComment.getString("productID");
@@ -147,14 +153,18 @@ public class ShoppingComment {
         return null;
     }
 
-    // 管理员：查询某个用户对某个商品的评论
-    // 输入 用户账号 username；商品id productID
-    // 返回 评论数组
-    public oneComment[] searchProductComments(String username, String productID) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 查询某个用户对某个商品的评论。
+     *
+     * @param username 用户账号
+     * @param productID 商品ID
+     * @return 包含该用户对指定商品的评论的数组
+     * @throws IOException 如果出现IO异常
+     */
+    public oneComment[] searchProductComments(String username, String productID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -170,17 +180,16 @@ public class ShoppingComment {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            JSONArray data = jsonResponse.getJSONArray("comments");//获取JSON数组
+            JSONArray data = jsonResponse.getJSONArray("comments");
 
             // 获取评论数量
             int numComments = data.length();
 
-            // 创建一个数组来存储所有商品信息
+            // 创建一个数组来存储评论信息
             oneComment[] commentsArray = new oneComment[numComments];
 
             for (int i = 0; i < numComments; i++) {
                 JSONObject theComment = data.getJSONObject(i);
-
                 commentsArray[i] = new oneComment();
                 commentsArray[i].username = theComment.getString("username");
                 commentsArray[i].productID = theComment.getString("productID");
@@ -196,24 +205,27 @@ public class ShoppingComment {
         return null;
     }
 
-    // 顾客：添加评论
-    // 输入 用户账号 username；商品id productID；评论态度（差评=1、中评=2、好评=3） commentAttitude；评论内容 commentContent；订单号 orderID
-    // （注意修改订单的 是否评价 属性）
-    // 返回 状态
-    public static boolean addComment(String username, String productID, int commentAttitude, String commentContent, String orderID) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 顾客添加评论。
+     *
+     * @param username        用户账号
+     * @param productID       商品ID
+     * @param commentAttitude 评论态度（差评=1、中评=2、好评=3）
+     * @param commentContent  评论内容
+     * @param orderID         订单ID
+     * @return 如果添加成功返回 true，否则返回 false
+     * @throws IOException 如果出现IO异常
+     */
+    public static boolean addComment(String username, String productID, int commentAttitude, String commentContent, String orderID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
-            //检测是否可评论
-            ShoppingOrder temporder = new ShoppingOrder();
-            if(temporder.getOrderCommentStatus(orderID))//1代表评价过了，0代表没评价过，允许评价
-            {
+            // 检查订单是否已评价
+            ShoppingOrder tempOrder = new ShoppingOrder();
+            if (tempOrder.getOrderCommentStatus(orderID)) { // 如果订单已评价，返回 false
                 return false;
             }
-
-            //可评论，继续操作
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -225,21 +237,19 @@ public class ShoppingComment {
                     .put("commentAttitude", commentAttitude)
                     .put("commentContent", commentContent));
 
-            System.out.println(request.toString());
             // 发送请求
             out.println(request);
 
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            //修改该订单为已评价
-            temporder.updateCommentStatus(orderID,true);//1代表评价过了，以后不允许评价
+            // 修改订单评价状态
+            tempOrder.updateCommentStatus(orderID, true);
 
-            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+            return jsonResponse.getString("status").equals("success");
         } catch (IOException e) {
             e.printStackTrace();
         }
         return false;
     }
-
 }

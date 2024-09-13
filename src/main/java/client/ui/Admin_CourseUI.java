@@ -18,15 +18,23 @@ import javafx.geometry.Insets;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * Admin_CourseUI 类用于管理员管理课程信息的用户界面，提供添加、查看和搜索课程等功能。
+ */
 public class Admin_CourseUI extends Application {
-    private User user;
-    private CourseSelection courseSelection;
-    private TableView<CourseSelection.oneCourseinfo> courseTableView;
-    private ObservableList<CourseSelection.oneCourseinfo> courseList;
+    private User user; // 当前用户
+    private CourseSelection courseSelection; // 课程选择服务
+    private TableView<CourseSelection.oneCourseinfo> courseTableView; // 课程信息表格视图
+    private ObservableList<CourseSelection.oneCourseinfo> courseList; // 课程信息列表
     private HBox topBar; // 保存顶部栏的引用，以便重新显示
-    private TextField searchField;
+    private TextField searchField; // 搜索框
     private AddCourseUI addCourseUI; // 添加一个成员变量来持有 AddCourseUI 的实例
 
+    /**
+     * 构造函数，初始化课程信息和用户。
+     *
+     * @param user 当前用户
+     */
     public Admin_CourseUI(User user) {
         this.user = user;
         this.courseSelection = new CourseSelection();
@@ -41,10 +49,15 @@ public class Admin_CourseUI extends Application {
         this.addCourseUI = new AddCourseUI(user, courseSelection, this);
     }
 
+    /**
+     * 启动 JavaFX 应用程序。
+     *
+     * @param primaryStage 主舞台
+     */
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("课程管理");
-        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png")); // 加载图标
         primaryStage.getIcons().add(image);
 
         BorderPane borderPane = new BorderPane(); // 确保每次调用都创建新的实例
@@ -91,6 +104,9 @@ public class Admin_CourseUI extends Application {
         primaryStage.show();
     }
 
+    /**
+     * 配置课程信息表格视图，包括设置列和操作。
+     */
     private void configureCourseTableView() {
         TableColumn<CourseSelection.oneCourseinfo, String> courseIDColumn = new TableColumn<>("课程号");
         TableColumn<CourseSelection.oneCourseinfo, String> courseNameColumn = new TableColumn<>("课程名称");
@@ -134,9 +150,14 @@ public class Admin_CourseUI extends Application {
         courseTableView.setItems(courseList);
     }
 
+    /**
+     * 显示课程详细信息对话框。
+     *
+     * @param course 需要显示详细信息的课程
+     */
     private void showCourseDetailsDialog(CourseSelection.oneCourseinfo course) {
         Stage dialogStage = new Stage();
-        Image image1 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        Image image1 = new Image(getClass().getResourceAsStream("/东南大学校徽.png")); // 加载图标
         dialogStage.getIcons().add(image1);
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         dialogStage.setTitle("课程详细信息");
@@ -150,7 +171,7 @@ public class Admin_CourseUI extends Application {
         Label courseTeacherLabel = new Label("教师: " + course.getCourseTeacher());
         Label courseCreditLabel = new Label("学分: " + course.getCourseCredits());
 
-        // 调用 parseCourseTime 方法来解析课程时间
+        // 调用 formatCourseTime 方法来解析课程时间
         String formattedCourseTime = formatCourseTime(course.getCourseTime());
         Label courseTimeLabel = new Label("上课时间: " + formattedCourseTime);
 
@@ -161,7 +182,6 @@ public class Admin_CourseUI extends Application {
         String courseTypeLabelText = "课程类型: " + (courseType.equals("required") ? "必修" : "选修");
         Label courseTypeLabel = new Label(courseTypeLabelText);
 
-
         vbox.getChildren().addAll(courseIDLabel, courseNameLabel, courseTeacherLabel, courseCreditLabel, courseTimeLabel, courseCapacityLabel, courseSelectLabel, courseRoomLabel, courseTypeLabel);
 
         Scene dialogScene = new Scene(vbox, 300, 500);
@@ -169,6 +189,12 @@ public class Admin_CourseUI extends Application {
         dialogStage.showAndWait();
     }
 
+    /**
+     * 格式化课程时间，将时间段转为可读字符串。
+     *
+     * @param periods 课程时间段
+     * @return 格式化后的课程时间字符串
+     */
     private String formatCourseTime(CourseSelection.onePeriod[] periods) {
         StringBuilder timeStringBuilder = new StringBuilder();
         for (int i = 0; i < periods.length; i++) {
@@ -186,6 +212,13 @@ public class Admin_CourseUI extends Application {
         }
         return timeStringBuilder.toString();
     }
+
+    /**
+     * 获取星期几的中文表示。
+     *
+     * @param day 星期几的数字表示
+     * @return 星期几的中文名称
+     */
     private String getDayOfWeek(int day) {
         switch (day) {
             case 1:
@@ -207,10 +240,18 @@ public class Admin_CourseUI extends Application {
         }
     }
 
+    /**
+     * 显示课程列表。
+     */
     private void displayCourses() {
         courseTableView.setItems(courseList);
     }
 
+    /**
+     * 处理登出逻辑，关闭当前界面并打开登录界面。
+     *
+     * @param primaryStage 当前主舞台
+     */
     private void handleLogout(Stage primaryStage) {
         primaryStage.close(); // 关闭当前主界面
 
@@ -223,6 +264,10 @@ public class Admin_CourseUI extends Application {
             e.printStackTrace();
         }
     }
+
+    /**
+     * 刷新课程列表，重新加载课程数据并更新表格视图。
+     */
     public void refreshCourses() {
         // 清除当前的课程列表
         courseList.clear();
@@ -237,6 +282,9 @@ public class Admin_CourseUI extends Application {
         courseTableView.setItems(courseList);
     }
 
+    /**
+     * 搜索课程，根据输入的文本筛选课程列表。
+     */
     private void searchCourses() {
         String searchText = searchField.getText();
         if (searchText == null || searchText.isEmpty()) {
@@ -248,10 +296,18 @@ public class Admin_CourseUI extends Application {
         }
     }
 
+    /**
+     * 显示添加课程对话框。
+     */
     private void showAddCourseDialog() {
         addCourseUI.showAddCourseDialog();
     }
 
+    /**
+     * 程序入口。
+     *
+     * @param args 命令行参数
+     */
     public static void main(String[] args) {
         launch(args);
     }

@@ -1,4 +1,5 @@
 package client.ui;
+
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,23 +12,37 @@ import javafx.stage.Stage;
 import javafx.geometry.Insets;
 import client.service.CourseSelection;
 import client.service.User;
-public class AddCourseUI {
-    private User user;
-    private CourseSelection courseSelection;
-    private Admin_CourseUI adminCourseUI; // 添加一个引用到 Admin_CourseUI
 
+/**
+ * AddCourseUI 类用于显示添加课程的用户界面，并处理课程添加的逻辑。
+ */
+public class AddCourseUI {
+    private User user; // 当前用户
+    private CourseSelection courseSelection; // 课程选择服务
+    private Admin_CourseUI adminCourseUI; // Admin_CourseUI 的引用，用于刷新课程列表
+
+    /**
+     * 构造函数，初始化 AddCourseUI。
+     *
+     * @param user            当前用户
+     * @param courseSelection 课程选择服务
+     * @param adminCourseUI   Admin_CourseUI 的引用
+     */
     public AddCourseUI(User user, CourseSelection courseSelection, Admin_CourseUI adminCourseUI) {
         this.user = user;
         this.courseSelection = courseSelection;
         this.adminCourseUI = adminCourseUI; // 初始化引用
     }
 
+    /**
+     * 显示添加课程的对话框。
+     */
     public void showAddCourseDialog() {
         // 创建一个新的舞台（窗口）来作为对话框
         Stage dialogStage = new Stage();
         dialogStage.setTitle("添加新课程");
         dialogStage.initModality(Modality.APPLICATION_MODAL); // 模态对话框
-        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
+        Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png")); // 加载图标
         dialogStage.getIcons().add(image);
 
         // 创建一个垂直盒布局来组织控件
@@ -143,6 +158,9 @@ public class AddCourseUI {
         dialogStage.showAndWait();
     }
 
+    /**
+     * 刷新课程列表的方法，调用 Admin_CourseUI 中的 refreshCourses 方法。
+     */
     private void refreshCourses() {
         // 调用 Admin_CourseUI 中的 refreshCourses 方法来刷新课程列表
         adminCourseUI.refreshCourses();

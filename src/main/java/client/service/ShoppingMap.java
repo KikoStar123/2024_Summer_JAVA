@@ -1,17 +1,30 @@
 package client.service;
 
-import java.io.*;
-import java.net.Socket;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
+/**
+ * 购物地图服务类，用于管理商品的地图记录，包括添加、删除、更新和查询地图记录。
+ */
 public class ShoppingMap {
 
     private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
     private static final int SERVER_PORT = IpConfig.SERVER_PORT;
 
-    // 添加地图记录
+    /**
+     * 添加商品的地图记录。
+     *
+     * @param productID 商品ID
+     * @param mapStart  地图的起点
+     * @param mapEnd    地图的终点
+     * @return 如果添加成功返回 true，否则返回 false
+     * @throws IOException 如果出现IO异常
+     */
     public static boolean addMapRecord(String productID, String mapStart, String mapEnd) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -38,7 +51,13 @@ public class ShoppingMap {
         }
     }
 
-    // 删除地图记录
+    /**
+     * 删除商品的地图记录。
+     *
+     * @param productID 商品ID
+     * @return 如果删除成功返回 true，否则返回 false
+     * @throws IOException 如果出现IO异常
+     */
     public boolean deleteMapRecord(String productID) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -63,7 +82,15 @@ public class ShoppingMap {
         }
     }
 
-    // 更新地图记录
+    /**
+     * 更新商品的地图记录。
+     *
+     * @param productID 商品ID
+     * @param mapStart  地图的起点
+     * @param mapEnd    地图的终点
+     * @return 如果更新成功返回 true，否则返回 false
+     * @throws IOException 如果出现IO异常
+     */
     public boolean updateMapRecord(String productID, String mapStart, String mapEnd) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -90,7 +117,12 @@ public class ShoppingMap {
         }
     }
 
-    // 获取所有地图记录
+    /**
+     * 获取所有商品的地图记录。
+     *
+     * @return 包含所有地图记录的JSONArray对象
+     * @throws IOException 如果出现IO异常
+     */
     public JSONArray getAllMapRecords() throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -122,7 +154,13 @@ public class ShoppingMap {
         }
     }
 
-    //根据product查询begin和end
+    /**
+     * 根据商品ID查询对应的地图记录。
+     *
+     * @param productID 商品ID
+     * @return 包含查询结果的JSONObject对象
+     * @throws IOException 如果出现IO异常
+     */
     public static JSONObject getMapRecordByProductID(String productID) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -149,5 +187,4 @@ public class ShoppingMap {
             return jsonResponse;
         }
     }
-
 }

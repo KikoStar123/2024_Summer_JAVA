@@ -30,18 +30,57 @@ import javafx.scene.shape.Line;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 
-
+/**
+ * CourseSelectionUI 类用于处理学生选课的图形用户界面，包括可选课程、已选课程和我的课表等功能。
+ */
 public class CourseSelectionUI {
+    /**
+     * 当前登录的用户实例，用于获取用户相关的选课信息。
+     */
     private User user;
-    private CourseSelection courseSelection;
-    private ListView<CourseInfo> courseListView;
-    private ObservableList<CourseInfo> courseList;
-    private ObservableList<CourseInfo> selectedCourses;
-    private HBox topBar; // 保存顶部栏的引用，以便重新显示
-    private Random random;
-    private List<String> colors; // 颜色列表
 
+    /**
+     * CourseSelection 实例，用于与选课系统交互，包括获取课程信息、选课、退课等功能。
+     */
+    private CourseSelection courseSelection;
+
+    /**
+     * ListView 用于显示课程列表，可以显示可选课程或已选课程。
+     */
+    private ListView<CourseInfo> courseListView;
+
+    /**
+     * ObservableList 课程列表，存储从 CourseSelection 获取的所有课程信息。
+     */
+    private ObservableList<CourseInfo> courseList;
+
+    /**
+     * ObservableList 已选课程列表，存储当前用户已选择的课程信息。
+     */
+    private ObservableList<CourseInfo> selectedCourses;
+
+    /**
+     * HBox 顶部工具栏，包含可选课程、已选课程和我的课表按钮。
+     */
+    private HBox topBar;
+
+    /**
+     * Random 对象用于在显示课程表时随机分配颜色。
+     */
+    private Random random;
+
+    /**
+     * 颜色列表，用于在显示课程表时为课程块随机分配背景颜色。
+     */
+    private List<String> colors;
+
+    /**
+     * 构造函数，初始化 CourseSelectionUI 类的实例，并设置当前用户和课程选择服务。
+     *
+     * @param user 当前登录的用户
+     */
     public CourseSelectionUI(User user) {
+
         this.user = user;
         this.courseSelection = new CourseSelection();
         this.courseList = FXCollections.observableArrayList();
@@ -52,7 +91,13 @@ public class CourseSelectionUI {
         updateSelectedCourses();
     }
 
-    public BorderPane createCover(){
+    /**
+     * 创建选课系统的封面界面，包括欢迎图片和进入选课系统按钮。
+     *
+     * @return 返回封面界面的 BorderPane 布局
+     */
+    public BorderPane createCover() {
+
         ImageView photo = new ImageView(new Image(getClass().getResource("/cover-course.jpg").toExternalForm()));
         photo.setFitWidth(440); // 你可以根据窗口大小调整这个值
         photo.setFitHeight(550); // 你可以根据窗口大小调整这个值
@@ -131,7 +176,13 @@ public class CourseSelectionUI {
 
         return Pane;
     }
+    /**
+     * 创建选课系统主界面，包括可选课程、已选课程和我的课表等功能。
+     *
+     * @return 返回选课系统主界面的 BorderPane 布局
+     */
     public BorderPane createCourseSelectionView() {
+
         BorderPane borderPane = new BorderPane();
         Scene scene = new Scene(borderPane, 600, 400);
         topBar = new HBox(10);  // 调整为VBox，按钮垂直排列，更加紧凑
@@ -171,7 +222,11 @@ public class CourseSelectionUI {
         return borderPane;
     }
 
+    /**
+     * 更新课程列表，将所有未被选中的课程添加到可选课程列表中。
+     */
     private void updateCourseList() {
+
         CourseSelection.oneCourseinfo[] courseInfoArray = courseSelection.GetAllCourses();
         courseList.clear();
         for (CourseSelection.oneCourseinfo course : courseInfoArray) {
@@ -182,7 +237,11 @@ public class CourseSelectionUI {
         }
     }
 
+    /**
+     * 更新已选课程列表，将当前用户已选择的课程信息添加到已选课程列表中。
+     */
     private void updateSelectedCourses() {
+
         CourseSelection.oneCourseinfo[] enrolledCourses = courseSelection.viewEnrolledCourses(user.getUsername());
         selectedCourses.clear();
 
@@ -195,7 +254,11 @@ public class CourseSelectionUI {
     }
 
 
+    /**
+     * 显示当前用户的课表，弹出一个新窗口以显示已选课程的时间安排。
+     */
     public void showMySchedule() {
+
         Stage scheduleStage = new Stage();
         Image image1 = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
         scheduleStage.getIcons().add(image1);
@@ -213,7 +276,13 @@ public class CourseSelectionUI {
 
 
     }
+    /**
+     * 创建课表视图，显示当前用户的已选课程及其对应的时间安排。
+     *
+     * @return 返回创建好的课表 GridPane 布局
+     */
     private GridPane createScheduleView() {
+
         GridPane gridPane = new GridPane();
         gridPane.setHgap(15);
         gridPane.setVgap(15);
@@ -301,6 +370,13 @@ public class CourseSelectionUI {
         return finalGridPane; // 返回包含边框的 GridPane
     }
 
+    /**
+     * 显示课程列表，包括可选课程或已选课程，并为每门课程添加操作按钮。
+     *
+     * @param courses          要显示的课程列表
+     * @param selectButtonLabel 操作按钮的标签（选择或退选）
+     * @param activeButton      当前激活的按钮（可选课程或已选课程按钮）
+     */
     private void displayCourses(ObservableList<CourseInfo> courses, String selectButtonLabel, Button activeButton) {
         courseListView.setItems(FXCollections.observableArrayList(courses));
         courseListView.setCellFactory(listView -> new ListCell<CourseInfo>() {
@@ -331,6 +407,13 @@ public class CourseSelectionUI {
         });
     }
 
+    /**
+     * 处理课程操作，例如选择课程、退选课程或查看课程详细信息。
+     *
+     * @param course       课程信息
+     * @param buttonLabel  按钮标签（选择、退选或查看）
+     * @param activeButton 当前激活的按钮（可选课程或已选课程按钮）
+     */
     private void handleCourseAction(CourseInfo course, String buttonLabel, Button activeButton) {
         if ("选择".equals(buttonLabel)) {
             // 检查课程是否已经在已选课程列表中
@@ -372,6 +455,11 @@ public class CourseSelectionUI {
         refreshCourses(activeButton);
     }
 
+    /**
+     * 显示课程详细信息的对话框，展示选中的课程的具体信息。
+     *
+     * @param course 要显示详细信息的课程
+     */
     private void showCourseDetailsDialog(CourseSelection.oneCourseinfo course) {
         Stage dialogStage = new Stage();
         dialogStage.initModality(Modality.APPLICATION_MODAL);
@@ -406,6 +494,12 @@ public class CourseSelectionUI {
         dialogStage.showAndWait();
     }
 
+    /**
+     * 格式化课程时间，将课程时间段转换为可读的字符串形式。
+     *
+     * @param periods 课程时间段数组
+     * @return 格式化后的课程时间字符串
+     */
     private String formatCourseTime(CourseSelection.onePeriod[] periods) {
         StringBuilder timeStringBuilder = new StringBuilder();
         for (int i = 0; i < periods.length; i++) {
@@ -425,6 +519,12 @@ public class CourseSelectionUI {
     }
 
     // 辅助方法，将数字星期转换为文字描述
+    /**
+     * 根据数字星期获取对应的中文描述，例如将数字1转换为“周一”。
+     *
+     * @param day 数字星期
+     * @return 对应的中文星期描述
+     */
     private String getDayOfWeek(int day) {
         switch (day) {
             case 1:
@@ -446,8 +546,13 @@ public class CourseSelectionUI {
         }
     }
 
+    /**
+     * 刷新课程列表，更新并显示可选课程或已选课程列表。
+     *
+     * @param activeButton 当前激活的按钮（可选课程或已选课程按钮）
+     */
     private void refreshCourses(Button activeButton) {
-        if (activeButton == topBar.getChildren().get(0)) { // 可选课程按钮
+       if (activeButton == topBar.getChildren().get(0)) { // 可选课程按钮
             updateCourseList(); // 更新课程列表
             displayCourses(courseList, "选择", activeButton);
         } else if (activeButton == topBar.getChildren().get(1)) { // 已选课程按钮
@@ -456,15 +561,25 @@ public class CourseSelectionUI {
         }
     }
 
+    /**
+     * 显示提示框，弹出一个提示信息对话框。
+     *
+     * @param title   对话框的标题
+     * @param content 对话框的内容
+     */
     private void alert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+       Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
     }
 
+    /**
+     * CourseInfo 类用于封装课程信息，包含课程名称和课程ID。
+     */
     public static class CourseInfo {
+
         private final CourseSelection.oneCourseinfo courseInfo;
         private final CourseSelection courseSelection;
 

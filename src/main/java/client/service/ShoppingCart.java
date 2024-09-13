@@ -2,24 +2,28 @@ package client.service;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public  class ShoppingCart {
+/**
+ * 购物车服务类，提供添加、删除、更新购物车商品以及获取购物车信息等功能。
+ */
+public class ShoppingCart {
     private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
     private static final int SERVER_PORT = IpConfig.SERVER_PORT;
 
-    public static class oneCartElement
-    {
-        String productID;//商品id
-        int productNumber;//商品数量
+    /**
+     * 购物车元素类，表示购物车中的一个商品项。
+     */
+    public static class oneCartElement {
+        String productID;    // 商品ID
+        int productNumber;   // 商品数量
+        String storeID;      // 商店ID
 
-        String storeID;//商店id
-
+        // Getter方法
         public String getProductID() {
             return productID;
         }
@@ -28,36 +32,42 @@ public  class ShoppingCart {
             return productNumber;
         }
 
-        public String getStoreID() {return storeID;}
+        public String getStoreID() {
+            return storeID;
+        }
     }
 
-    // 添加商品到购物车
-    // 输入 用户账号 username；商品id productID；商品数量 productNumber
-    // 返回 状态
-    public static boolean AddToCart(String username, String productID, int quantity) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 添加商品到购物车。
+     *
+     * @param username    用户账号
+     * @param productID   商品ID
+     * @param quantity    商品数量
+     * @return 如果添加成功返回 true，否则返回 false
+     * @throws IOException 如果出现IO异常
+     */
+    public static boolean AddToCart(String username, String productID, int quantity) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             oneCartElement[] theCartElements = getShoppingCart(username);
-            boolean isexist = false;
+            boolean isExist = false;
             int existingQuantity = 0;
+
+            // 检查购物车中是否已有该商品
             for (oneCartElement element : theCartElements) {
-                if (element.productID.equals(productID)) //如果存在添加的是已有商品
-                {
-                    isexist = true;
-                    existingQuantity=element.productNumber;
+                if (element.productID.equals(productID)) {
+                    isExist = true;
+                    existingQuantity = element.productNumber;
                     break;
                 }
             }
-            if (isexist)
-            {
-                updateCart(username, productID, quantity+existingQuantity);
+
+            if (isExist) {
+                updateCart(username, productID, quantity + existingQuantity);
                 return true;
-            }
-            else
-            {
+            } else {
                 // 构建请求
                 JSONObject request = new JSONObject();
                 request.put("requestType", "cart");
@@ -68,12 +78,12 @@ public  class ShoppingCart {
                         .put("quantity", quantity));
 
                 // 发送请求
-                out.println(request);
+                out.println(request.toString());
 
                 String response = in.readLine();
                 JSONObject jsonResponse = new JSONObject(response);
 
-                return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+                return jsonResponse.getString("status").equals("success");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -81,14 +91,18 @@ public  class ShoppingCart {
         }
     }
 
-    // 删除购物车的商品
-    // 输入 用户账号 username；商品id productID
-    // 返回 状态
-    public static boolean removeFromCart(String username, String productID) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 从购物车中删除商品。
+     *
+     * @param username  用户账号
+     * @param productID 商品ID
+     * @return 如果删除成功返回 true，否则返回 false
+     * @throws IOException 如果出现IO异常
+     */
+    public static boolean removeFromCart(String username, String productID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -99,26 +113,31 @@ public  class ShoppingCart {
                     .put("productID", productID));
 
             // 发送请求
-            out.println(request);
+            out.println(request.toString());
 
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+            return jsonResponse.getString("status").equals("success");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    // 更新购物车商品信息
-    // 输入 用户账号 username；商品id productID；商品数量 productNumber
-    // 返回 状态
-    public static boolean updateCart(String username, String productID, int quantity) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 更新购物车中的商品数量。
+     *
+     * @param username    用户账号
+     * @param productID   商品ID
+     * @param quantity    更新后的商品数量
+     * @return 如果更新成功返回 true，否则返回 false
+     * @throws IOException 如果出现IO异常
+     */
+    public static boolean updateCart(String username, String productID, int quantity) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -130,26 +149,29 @@ public  class ShoppingCart {
                     .put("quantity", quantity));
 
             // 发送请求
-            out.println(request);
+            out.println(request.toString());
 
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+            return jsonResponse.getString("status").equals("success");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    // 获取购物车信息
-    // 输入 用户账号 username
-    // 返回 购物车元素数组
-    public static oneCartElement[] getShoppingCart(String username) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 获取用户的购物车信息。
+     *
+     * @param username 用户账号
+     * @return 包含购物车商品的数组
+     * @throws IOException 如果出现IO异常
+     */
+    public static oneCartElement[] getShoppingCart(String username) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -159,24 +181,23 @@ public  class ShoppingCart {
                     .put("username", username));
 
             // 发送请求
-            out.println(request);
+            out.println(request.toString());
 
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            JSONArray data = jsonResponse.getJSONArray("cartItems");//获取JSON数组
+            JSONArray data = jsonResponse.getJSONArray("cartItems");
 
-            // 获取商品数量
+            // 获取购物车中的商品数量
             int numElements = data.length();
 
             // 创建一个数组来存储所有商品信息
             oneCartElement[] theCartElements = new oneCartElement[numElements];
 
             for (int i = 0; i < numElements; i++) {
-
                 JSONObject course = data.getJSONObject(i);
 
-                theCartElements[i]=new oneCartElement();
+                theCartElements[i] = new oneCartElement();
                 theCartElements[i].productID = course.getString("productID");
                 theCartElements[i].productNumber = course.getInt("productNumber");
                 theCartElements[i].storeID = course.getString("storeID");
@@ -188,5 +209,4 @@ public  class ShoppingCart {
         }
         return null;
     }
-
 }

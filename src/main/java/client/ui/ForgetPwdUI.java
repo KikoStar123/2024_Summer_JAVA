@@ -14,17 +14,32 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import javax.swing.*;
-
+/**
+ * ForgetPwdUI 类用于创建重置密码的用户界面，用户可以通过此界面输入新密码并确认更新。
+ */
 public class ForgetPwdUI extends Application {
+    /**
+     * User 类的实例，表示当前需要重置密码的用户。
+     */
     User user = new User();
 
+
+    /**
+     * 构造函数，初始化 ForgetPwdUI 类并设置当前用户的用户名。
+     *
+     * @param username 当前用户的用户名
+     */
     public ForgetPwdUI(String username) {
+
         //this.getusername = username;//不知道咋写
         user.setUsername(username);//问题就出现在这2024-9-11-20-07
     }
 
-    // 显示修改密码的窗口
+    /**
+     * 显示修改密码窗口，调用 start 方法显示重置密码的界面。
+     */
     public void showUpdatePwdWindow() {
+
         Stage stage = new Stage();
         try {
             start(stage);  // 调用 start 方法显示新窗口
@@ -37,8 +52,14 @@ public class ForgetPwdUI extends Application {
         launch(args);
     }
 
+    /**
+     * JavaFX 应用程序的入口方法，启动并显示重置密码的主窗口。
+     *
+     * @param primaryStage JavaFX 主舞台
+     */
     @Override
     public void start(Stage primaryStage) {
+
         primaryStage.setTitle("重置密码");
         Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png")); // 加载图标
         primaryStage.getIcons().add(image);
@@ -140,8 +161,14 @@ public class ForgetPwdUI extends Application {
         primaryStage.show();
     }
 
-    // 创建一个只有图标没有边框的按钮
+    /**
+     * 创建一个图标按钮，用于显示/隐藏密码输入框中的文本。
+     *
+     * @param imagePath 图标的路径
+     * @return 返回创建好的按钮
+     */
     private Button createIconButton(String imagePath) {
+
         Button button = new Button();
         button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
         ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream(imagePath)));

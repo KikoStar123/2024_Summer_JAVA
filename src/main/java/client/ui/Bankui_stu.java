@@ -18,20 +18,58 @@ import client.service.Bank;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+/**
+ * Bankui_stu 类用于显示学生银行账户相关的用户界面，包括登录、注册和查看账户信息等功能。
+ */
 public class Bankui_stu {
+    /**
+     * BorderPane 布局的银行主界面，用于显示登录和注册表单。
+     */
     private static BorderPane bankBox;
+
+    /**
+     * BorderPane 布局的右侧交互区，用于切换显示登录和注册表单。
+     */
     private static BorderPane rightBox;
+
+    /**
+     * HBox 布局的按钮栏，包含登录和注册按钮。
+     */
     private static HBox buttonsBox;
+
+    /**
+     * VBox 布局的登录表单，用于用户登录银行账户。
+     */
     private static VBox loginBox;
+
+    /**
+     * VBox 布局的注册表单，用于用户注册银行账户。
+     */
     private static VBox registerBox;
+
+    /**
+     * User 类的实例，表示当前登录的用户。
+     */
     private static User user;
 
+
+    /**
+     * 构造函数，初始化 Bankui_stu 类，并设置当前用户。
+     *
+     * @param user 当前用户
+     */
     public Bankui_stu(User user) {
+
         this.user = user;
     }
 
+    /**
+     * 创建银行用户界面，包含图片栏、登录表单、注册表单等元素。
+     *
+     * @return 返回构建好的银行用户界面 BorderPane 布局
+     */
     static BorderPane createBankUI() {
+
 
         //左侧图片栏
         ImageView photo = new ImageView(new Image(Bankui_stu.class.getResource("/cover-bank.jpg").toExternalForm()));
@@ -126,7 +164,14 @@ public class Bankui_stu {
         return bankBox;
     }
 
+    /**
+     * 创建登录表单，允许用户输入密码进行登录。
+     *
+     * @param user 当前用户
+     * @return 返回登录表单 VBox 布局
+     */
     private static VBox createLoginForm(User user) {
+
         VBox loginForm = new VBox(10);
         loginForm.setPadding(new Insets(10));
         Region region=new Region();
@@ -152,7 +197,13 @@ public class Bankui_stu {
         return loginForm;
     }
 
+    /**
+     * 创建注册表单，允许用户输入密码和确认密码进行注册。
+     *
+     * @return 返回注册表单 VBox 布局
+     */
     private static VBox createRegisterForm() {
+
         VBox registerForm = new VBox(10);
         registerForm.setPadding(new Insets(10));
         Label welcomeLabel=new Label("注册银行账号");
@@ -186,8 +237,15 @@ public class Bankui_stu {
         return registerForm;
     }
 
+    /**
+     * 处理注册确认逻辑，验证两次输入的密码是否一致并执行注册。
+     *
+     * @param user 当前用户
+     * @param passwordField 密码输入框
+     * @param confirmPasswordField 确认密码输入框
+     */
     private static void handleConfirmb(User user, PasswordField passwordField, PasswordField confirmPasswordField) {
-        String username = user.getUsername();
+       String username = user.getUsername();
         String password = passwordField.getText();
         String confirmPassword = confirmPasswordField.getText();
         if (!password.equals(confirmPassword)) {
@@ -218,19 +276,34 @@ public class Bankui_stu {
         }
     }
 
+    /**
+     * 显示登录表单，并隐藏注册表单。
+     */
     private static void showLoginForm() {
+
         loginBox.setVisible(true);
         registerBox.setVisible(false);
         rightBox.setCenter(loginBox);
     }
 
+    /**
+     * 显示注册表单，并隐藏登录表单。
+     */
     private static void showRegisterForm() {
+
         loginBox.setVisible(false);
         registerBox.setVisible(true);
         rightBox.setCenter(registerBox);
     }
 
+    /**
+     * 处理登录确认逻辑，验证用户输入的密码是否正确并执行登录操作。
+     *
+     * @param user 当前用户
+     * @param passwordField 密码输入框
+     */
     private static void handleConfirm(User user, PasswordField passwordField) {
+
         // 处理登录确认逻辑
         String username = user.getUsername();
         String password = passwordField.getText();
@@ -254,7 +327,14 @@ public class Bankui_stu {
 
     }
 
+    /**
+     * 显示银行主界面，包括用户的账户信息、余额以及相关操作按钮。
+     *
+     * @param user 当前银行用户
+     * @return 返回银行主界面 VBox 布局
+     */
     private static VBox showBankMainView(BankUser user) {
+
 
         VBox bankMainView = new VBox(10);
         bankMainView.setPadding(new Insets(10));
@@ -274,7 +354,13 @@ public class Bankui_stu {
         return bankMainView;
     }
 
+    /**
+     * 显示修改密码界面，允许用户修改当前银行账户的密码。
+     *
+     * @param user 当前银行用户
+     */
     private static void showChangepwd(BankUser user) {
+
         Stage stage = new Stage();
         stage.setTitle("修改密码");
         Image image = new Image(Bankui_stu.class.getResourceAsStream("/东南大学校徽.png"));// 加载图标
@@ -339,7 +425,13 @@ public class Bankui_stu {
         stage.setScene(scene);
         stage.show();
     }
+    /**
+     * 显示收支明细界面，列出用户的所有账户变动记录。
+     *
+     * @param user 当前银行用户
+     */
     private static void showBankRecord(BankUser user) {
+
 
         Stage recordStage = new Stage();
         recordStage.setTitle("收支明细");

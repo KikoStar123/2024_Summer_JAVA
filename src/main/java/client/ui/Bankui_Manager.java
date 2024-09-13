@@ -19,16 +19,46 @@ import java.util.Optional;
 
 import java.time.LocalDate;
 
+/**
+ * Bankui_Manager 类继承了 JavaFX Application 类，用于启动银行管理系统的图形用户界面。
+ */
 public class Bankui_Manager extends Application {
 
+
+    /**
+     * BorderPane 布局的根节点，用于界面整体布局。
+     */
     BorderPane root;
+
+    /**
+     * HBox 布局，用于显示账户信息。
+     */
     HBox accountInfoBox;
+
+    /**
+     * Label 显示用户名。
+     */
     Label userLabel;
+
+    /**
+     * Label 显示总余额。
+     */
     Label balanceLabel;
+
+    /**
+     * Label 显示活期余额。
+     */
     Label currentBalanceLabel;
 
+
+    /**
+     * start 方法是 JavaFX 应用程序的入口点，用于初始化主舞台和界面布局。
+     *
+     * @param primaryStage 主舞台
+     */
     @Override
     public void start(Stage primaryStage) {
+
         primaryStage.setTitle("银行管理界面");
 
         Image image = new Image(getClass().getResourceAsStream("/东南大学校徽.png"));// 加载图标
@@ -263,7 +293,13 @@ public class Bankui_Manager extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+    /**
+     * 处理登出逻辑，关闭当前界面并打开登录界面。
+     *
+     * @param primaryStage 当前主舞台
+     */
     private void handleLogout(Stage primaryStage) {
+
         primaryStage.close(); // 关闭当前主界面
 
         // 打开 LoginUI 界面
@@ -275,6 +311,13 @@ public class Bankui_Manager extends Application {
             e.printStackTrace();
         }
     }
+    /**
+     * 创建并显示密码输入对话框，以验证用户身份。
+     *
+     * @param username      用户名
+     * @param primaryStage  主舞台
+     * @param root          界面根节点
+     */
     private void showPasswordDialog(String username, Stage primaryStage, BorderPane root) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setTitle("输入密码");
@@ -327,6 +370,12 @@ public class Bankui_Manager extends Application {
     }
 
 
+    /**
+     * 更新账户信息的显示，包括总余额和活期余额。
+     *
+     * @param bank     银行服务对象
+     * @param username 用户名
+     */
     private void updateAccountInfo(Bank bank, String username) {
         BankUser user = bank.searchByUsername(username);
         if (user != null) {

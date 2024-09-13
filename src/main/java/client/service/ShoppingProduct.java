@@ -7,26 +7,34 @@ import java.util.UUID;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
+/**
+ * 购物商品服务类，提供商品的相关操作，包括查看、添加、删除、更新商品信息等功能。
+ */
 public class ShoppingProduct {
     private static final String SERVER_ADDRESS = IpConfig.SERVER_ADDRESS;
     private static final int SERVER_PORT = IpConfig.SERVER_PORT;
     private static final FileService fileService = new FileService();
 
+    /**
+     * 内部类，用于表示商品信息
+     */
     public static class oneProduct {
-        String productID;
-        String productName;
-        String productDetail;
-        String productImage;
-        float productOriginalPrice;
-        float productCurrentPrice;
-        int productInventory;
-        String productAddress;
-        float productCommentRate;
-        boolean productStatus;
-        String storeID;
-        String storeName;
+        String productID;              // 商品ID
+        String productName;            // 商品名称
+        String productDetail;          // 商品详情
+        String productImage;           // 商品图片路径
+        float productOriginalPrice;    // 商品原价
+        float productCurrentPrice;     // 商品现价
+        int productInventory;          // 商品库存
+        String productAddress;         // 商品发货地址
+        float productCommentRate;      // 商品好评率
+        boolean productStatus;         // 商品状态，是否上架
+        String storeID;                // 商店ID
+        String storeName;              // 商店名称
 
+        /**
+         * 默认构造函数
+         */
         public oneProduct() {
             // 默认构造函数
         }
@@ -46,10 +54,13 @@ public class ShoppingProduct {
         public String getStoreName() { return storeName; }
     }
 
-    // 查看单个商品详细信息
-    // 输入 商品id productID
-    // 返回 一个商品对象
-    //public static oneProduct theproduct =new oneProduct();
+    /**
+     * 查看单个商品的详细信息
+     *
+     * @param productID 商品ID
+     * @return 一个商品对象
+     * @throws IOException 如果发生IO异常
+     */
     public static oneProduct getProductDetails(String productID) throws IOException {
         oneProduct product = new oneProduct();  // 创建新的商品对象
 
@@ -94,10 +105,14 @@ public class ShoppingProduct {
         return product;  // 返回新创建的商品对象
     }
 
-    // 查看所有商品详细信息
-    // 输入 排序关键词 sortBy 取值为 price（按价格）或 rate（按好评率）
-    //     排序顺序 sortOrder 取值为 ASC（升序） 或 DESC（降序）
-    // 返回 商品数组
+    /**
+     * 查看所有商品的详细信息
+     *
+     * @param sortBy    排序关键词，取值为 price（按价格）或 rate（按好评率）
+     * @param sortOrder 排序顺序，取值为 ASC（升序）或 DESC（降序）
+     * @return 商品数组
+     * @throws IOException 如果发生IO异常
+     */
     public oneProduct[] getAllProducts(String sortBy, String sortOrder) throws IOException {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -151,14 +166,25 @@ public class ShoppingProduct {
         return null;
     }
 
-    // 添加商品
-    // 输入 商品id productID；商品名称 productName；商品属性 productDetail；商品图片 productImage；商品原价 productOriginalPrice；商品现价 productCurrentPrice；商品库存 productInventory；商品发货地址 productAddress；商品好评率 productCommentRate；商品状态 productStatus；商店id storeID
-    // 返回 状态
-    public static boolean addProduct(String productID, String productName, String productDetail, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, boolean productStatus, String storeID) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 添加商品
+     *
+     * @param productID            商品ID
+     * @param productName          商品名称
+     * @param productDetail        商品详情
+     * @param productOriginalPrice 商品原价
+     * @param productCurrentPrice  商品现价
+     * @param productInventory     商品库存
+     * @param productAddress       商品发货地址
+     * @param productStatus        商品状态
+     * @param storeID              商店ID
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public static boolean addProduct(String productID, String productName, String productDetail, float productOriginalPrice, float productCurrentPrice, int productInventory, String productAddress, boolean productStatus, String storeID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -188,14 +214,17 @@ public class ShoppingProduct {
         }
     }
 
-    // 删除商品
-    // 输入 商品id productID
-    // 返回 状态
-    public boolean deleteProduct(String productID) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 删除商品
+     *
+     * @param productID 商品ID
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public boolean deleteProduct(String productID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -217,14 +246,17 @@ public class ShoppingProduct {
         }
     }
 
-    // 上架商品
-    // 输入 商品id productID
-    // 返回 状态
-    public boolean enableProduct(String productID) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 上架商品
+     *
+     * @param productID 商品ID
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public boolean enableProduct(String productID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -246,14 +278,17 @@ public class ShoppingProduct {
         }
     }
 
-    // 下架商品
-    // 输入 商品id productID
-    // 返回 状态
-    public boolean disableProduct(String productID) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 下架商品
+     *
+     * @param productID 商品ID
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public boolean disableProduct(String productID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -275,14 +310,17 @@ public class ShoppingProduct {
         }
     }
 
-    // 获取所有同类商品
-    // 输入 商品id productID
-    // 返回 商品数组
-    public oneProduct[] getSameCategoryProducts(String productID) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 获取同类商品信息
+     *
+     * @param productID 商品ID
+     * @return 同类商品数组
+     * @throws IOException 如果发生IO异常
+     */
+    public oneProduct[] getSameCategoryProducts(String productID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -297,12 +335,9 @@ public class ShoppingProduct {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            JSONArray data = jsonResponse.getJSONArray("products");//获取JSON数组
+            JSONArray data = jsonResponse.getJSONArray("products");
 
-            // 获取商品数量
             int numProducts = data.length();
-
-            // 创建一个数组来存储所有商品信息
             oneProduct[] productsArray = new oneProduct[numProducts];
 
             for (int i = 0; i < numProducts; i++) {
@@ -330,39 +365,37 @@ public class ShoppingProduct {
         return null;
     }
 
-
-    // 带排序的搜索
-    // 输入 检索关键词 searchTerm
-    //     排序关键词 sortBy 取值为 price（按价格）或 rate（按好评率）
-    //     排序顺序 sortOrder 取值为 ASC（升序） 或 DESC（降序）
-    // 返回 商品数组
-    public oneProduct[] searchProducts(String searchTerm,String sortBy, String sortOrder) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 带排序的搜索商品
+     *
+     * @param searchTerm 检索关键词
+     * @param sortBy     排序关键词，取值为 price（按价格）或 rate（按好评率）
+     * @param sortOrder  排序顺序，取值为 ASC（升序）或 DESC（降序）
+     * @return 商品数组
+     * @throws IOException 如果发生IO异常
+     */
+    public oneProduct[] searchProducts(String searchTerm, String sortBy, String sortOrder) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
             request.put("requestType", "product");
             request.put("parameters", new JSONObject()
-                            .put("action", "search")
-                            .put("searchTerm", searchTerm)
-                            .put("sortBy", sortBy)
-                            .put("sortOrder", sortOrder));
+                    .put("action", "search")
+                    .put("searchTerm", searchTerm)
+                    .put("sortBy", sortBy)
+                    .put("sortOrder", sortOrder));
 
             // 发送请求
             out.println(request);
 
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
+            JSONArray data = jsonResponse.getJSONArray("products");
 
-            JSONArray data = jsonResponse.getJSONArray("products");//获取JSON数组
-
-            // 获取商品数量
             int numProducts = data.length();
-
-            // 创建一个数组来存储所有商品信息
             oneProduct[] productsArray = new oneProduct[numProducts];
 
             for (int i = 0; i < numProducts; i++) {
@@ -389,14 +422,18 @@ public class ShoppingProduct {
         return null;
     }
 
-    // 更新商品原价
-    // 输入 商品id productID； 商品原价更新为 newOriginalPrice
-    // 返回 状态
-    public boolean updateOriginalPrice(String productID,float newOriginalPrice) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 更新商品原价
+     *
+     * @param productID        商品ID
+     * @param newOriginalPrice 新的原价
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public boolean updateOriginalPrice(String productID, float newOriginalPrice) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -419,14 +456,18 @@ public class ShoppingProduct {
         }
     }
 
-    // 更新商品现价
-    // 输入 商品id productID； 商品现价更新为 newCurrentPrice
-    // 返回 状态
-    public boolean updateCurrentPrice(String productID,float newCurrentPrice) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 更新商品现价
+     *
+     * @param productID       商品ID
+     * @param newCurrentPrice 新的现价
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public boolean updateCurrentPrice(String productID, float newCurrentPrice) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -449,14 +490,18 @@ public class ShoppingProduct {
         }
     }
 
-    // 增加库存
-    // 输入 商品id productID； 商品库存增加 amount
-    // 返回 状态
-    public boolean increaseInventory(String productID,int amount) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 增加库存
+     *
+     * @param productID 商品ID
+     * @param amount    增加的数量
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public boolean increaseInventory(String productID, int amount) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -479,15 +524,18 @@ public class ShoppingProduct {
         }
     }
 
-
-    // 减少库存
-    // 输入 商品id productID； 商品库存减少 amount
-    // 返回 状态
-    public boolean decreaseInventory(String productID,int amount) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 减少库存
+     *
+     * @param productID 商品ID
+     * @param amount    减少的数量
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public boolean decreaseInventory(String productID, int amount) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -510,10 +558,17 @@ public class ShoppingProduct {
         }
     }
 
-    public oneProduct[] getAllProductsByStore(String storeID) throws IOException{
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 根据商店ID获取所有商品
+     *
+     * @param storeID 商店ID
+     * @return 商品数组
+     * @throws IOException 如果发生IO异常
+     */
+    public oneProduct[] getAllProductsByStore(String storeID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -527,23 +582,15 @@ public class ShoppingProduct {
 
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
+            JSONArray data = jsonResponse.getJSONArray("products");
 
-            System.out.println(jsonResponse.toString());
-
-            JSONArray data = jsonResponse.getJSONArray("products");//获取JSON数组
-
-            // 获取商品数量
             int numProducts = data.length();
-
-            // 创建一个数组来存储所有商品信息
-            ShoppingProduct.oneProduct[] productsArray = new ShoppingProduct.oneProduct[numProducts];
+            oneProduct[] productsArray = new oneProduct[numProducts];
 
             for (int i = 0; i < numProducts; i++) {
-
                 JSONObject theproduct = data.getJSONObject(i);
 
-                productsArray[i] = new ShoppingProduct.oneProduct();
-
+                productsArray[i] = new oneProduct();
                 productsArray[i].productID = theproduct.getString("productID");
                 productsArray[i].productName = theproduct.getString("productName");
                 productsArray[i].productDetail = theproduct.getString("productDetail");
@@ -564,6 +611,14 @@ public class ShoppingProduct {
             return null;
         }
     }
+
+    /**
+     * 上传商品图片
+     *
+     * @param imageFile 商品图片文件
+     * @param productID 商品ID
+     * @return 是否成功
+     */
     public static boolean uploadProductImage(File imageFile, String productID) {
         String fileName = productID + ".jpg";
         if (fileService.fileExists(fileName)) {
@@ -575,6 +630,14 @@ public class ShoppingProduct {
         }
         return false;
     }
+
+    /**
+     * 更新商品图片路径
+     *
+     * @param productID 商品ID
+     * @param imagePath 新的图片路径
+     * @return 是否成功
+     */
     public static boolean updateProductImagePath(String productID, String imagePath) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -601,4 +664,3 @@ public class ShoppingProduct {
         }
     }
 }
-

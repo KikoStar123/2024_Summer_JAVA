@@ -9,50 +9,68 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * ShoppingStore 类用于处理与商店相关的操作，如添加、更新、删除和获取商店信息。
+ */
 public class ShoppingStore {
-    private static final String SERVER_ADDRESS = "localhost";//服务器的地址 即本地服务器
-    private static final int SERVER_PORT = 8080;//定义服务器的端口号
+    private static final String SERVER_ADDRESS = "localhost"; // 服务器的地址，即本地服务器
+    private static final int SERVER_PORT = 8080; // 定义服务器的端口号
 
-    public static class oneStore{
-        String storeID;//商店id
-        String storeName;//商店名称
-        String storePhone;//联系电话
-        float storeRate;//商店好评率
-        boolean storeStatus;//商店状态
+    /**
+     * oneStore 类表示一个商店的基本信息。
+     */
+    public static class oneStore {
+        String storeID; // 商店ID
+        String storeName; // 商店名称
+        String storePhone; // 联系电话
+        float storeRate; // 商店好评率
+        boolean storeStatus; // 商店状态
 
+        // 获取商店ID
         public String getStoreID() {
             return storeID;
         }
 
+        // 获取商店名称
         public String getStoreName() {
             return storeName;
         }
 
+        // 获取商店联系电话
         public String getStorePhone() {
             return storePhone;
         }
 
+        // 获取商店好评率
         public float getStoreRate() {
             return storeRate;
         }
 
+        // 获取商店状态
         public boolean getStoreStatus() {
             return storeStatus;
         }
     }
 
-    // 添加商店
-    // 输入 商店id storeID；商店名称 storeName；联系电话 storePhone；商店好评率 storeRate；商店状态 storeStatus
-    // 返回 状态
-    public boolean addStore(String storeID, String storeName, String storePhone, float storeRate, boolean storeStatus) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 添加商店
+     *
+     * @param storeID    商店ID
+     * @param storeName  商店名称
+     * @param storePhone 联系电话
+     * @param storeRate  商店好评率
+     * @param storeStatus 商店状态
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public boolean addStore(String storeID, String storeName, String storePhone, float storeRate, boolean storeStatus) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
-            request.put("requestType", "store");//是这个type吗？
+            request.put("requestType", "store");
             request.put("parameters", new JSONObject()
                     .put("action", "add")
                     .put("storeID", storeID)
@@ -67,7 +85,7 @@ public class ShoppingStore {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+            return jsonResponse.getString("status").equals("success"); // 判断返回值，是否成功
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,18 +93,25 @@ public class ShoppingStore {
         }
     }
 
-    // 更新商店信息
-    // 输入 商店id storeID；商店名称 storeName；联系电话 storePhone；商店好评率 storeRate；商店状态 storeStatus
-    // 返回 状态
-    public static boolean updateStore(String storeID, String storeName, String storePhone, float storeRate, boolean storeStatus) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 更新商店信息
+     *
+     * @param storeID    商店ID
+     * @param storeName  商店名称
+     * @param storePhone 联系电话
+     * @param storeRate  商店好评率
+     * @param storeStatus 商店状态
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public static boolean updateStore(String storeID, String storeName, String storePhone, float storeRate, boolean storeStatus) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
-            request.put("requestType", "store");//是这个type吗？
+            request.put("requestType", "store");
             request.put("parameters", new JSONObject()
                     .put("action", "update")
                     .put("storeID", storeID)
@@ -101,7 +126,7 @@ public class ShoppingStore {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+            return jsonResponse.getString("status").equals("success"); // 判断返回值，是否成功
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -109,18 +134,21 @@ public class ShoppingStore {
         }
     }
 
-    // 删除商店
-    // 输入 商店id storeID
-    // 返回 状态
-    public boolean deleteStore(String storeID) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 删除商店
+     *
+     * @param storeID 商店ID
+     * @return 是否成功
+     * @throws IOException 如果发生IO异常
+     */
+    public boolean deleteStore(String storeID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
-            request.put("requestType", "store");//是这个type吗？
+            request.put("requestType", "store");
             request.put("parameters", new JSONObject()
                     .put("action", "delete")
                     .put("storeID", storeID));
@@ -131,7 +159,7 @@ public class ShoppingStore {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            return jsonResponse.getString("status").equals("success");//判断返回值，是否成功
+            return jsonResponse.getString("status").equals("success"); // 判断返回值，是否成功
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -139,19 +167,21 @@ public class ShoppingStore {
         }
     }
 
-    // 获取商店详情
-    // 输入 商店id storeID
-    // 返回 商店对象
-    static oneStore theoStore=new oneStore() ;
-    public static oneStore oneStore(String storeID) throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 获取商店详情
+     *
+     * @param storeID 商店ID
+     * @return 商店对象
+     * @throws IOException 如果发生IO异常
+     */
+    public static oneStore oneStore(String storeID) throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
-            request.put("requestType", "store");//是这个type吗？
+            request.put("requestType", "store");
             request.put("parameters", new JSONObject()
                     .put("action", "getStore")
                     .put("storeID", storeID));
@@ -161,7 +191,6 @@ public class ShoppingStore {
 
             String response = in.readLine();
             JSONObject data = new JSONObject(response);
-
 
             oneStore theoStore = new oneStore();
 
@@ -179,18 +208,20 @@ public class ShoppingStore {
         }
     }
 
-    // 获取所有商店信息
-    // 输入 无
-    // 返回 商店数组
-    public oneStore[] getAllStores() throws IOException
-    {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);//创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));// 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)){//创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+    /**
+     * 获取所有商店信息
+     *
+     * @return 商店数组
+     * @throws IOException 如果发生IO异常
+     */
+    public oneStore[] getAllStores() throws IOException {
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
-            request.put("requestType", "store");//是这个type吗？
+            request.put("requestType", "store");
             request.put("parameters", new JSONObject()
                     .put("action", "getAll"));
 
@@ -200,12 +231,9 @@ public class ShoppingStore {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            JSONArray data = jsonResponse.getJSONArray("stores");//获取JSON数组
+            JSONArray data = jsonResponse.getJSONArray("stores");
 
-            // 获取商品数量
             int numStores = data.length();
-
-            // 创建一个数组来存储所有商品信息
             oneStore[] storesArray = new oneStore[numStores];
 
             for (int i = 0; i < numStores; i++) {
@@ -226,10 +254,18 @@ public class ShoppingStore {
             return null;
         }
     }
+
+    /**
+     * 根据用户名获取商店ID
+     *
+     * @param username 用户名
+     * @return 商店ID
+     * @throws IOException 如果发生IO异常
+     */
     public String getStoreIDByUsername(String username) throws IOException {
-        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT); // 创建一个Socket对象，并连接到指定的服务器地址和端口号
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // 输入流，从服务器读取数据
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) { // 创建一个PrintWriter对象，用于向网络连接的输出流写入数据
+        try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
+             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
 
             // 构建请求
             JSONObject request = new JSONObject();
@@ -244,14 +280,11 @@ public class ShoppingStore {
             String response = in.readLine();
             JSONObject jsonResponse = new JSONObject(response);
 
-            // 获取商店ID
-            String storeID = jsonResponse.getString("storeID");
+            return jsonResponse.getString("storeID"); // 返回商店ID
 
-            return storeID;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
-
 }

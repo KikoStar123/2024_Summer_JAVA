@@ -19943,3 +19943,46 @@ java.net.BindException: Address already in use: bind
 信息: Server is starting...
 9月 13, 2024 4:26:39 下午 server.MainServer main
 信息: Server is running and listening on port 8080...
+9月 13, 2024 4:56:40 下午 server.MainServer main
+信息: Server is starting...
+9月 13, 2024 4:56:41 下午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 13, 2024 4:56:56 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 13, 2024 4:56:58 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 13, 2024 4:57:00 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 13, 2024 4:57:01 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 13, 2024 4:57:02 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 13, 2024 4:57:43 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 13, 2024 4:57:44 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 13, 2024 4:57:44 下午 server.MainServer main
+信息: Accepted new client connection from /127.0.0.1
+9月 13, 2024 6:16:07 下午 server.MainServer main
+信息: Server is starting...
+9月 13, 2024 6:16:07 下午 server.MainServer main
+严重: Server encountered an error: 
+java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:648)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:388)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:274)
+	at server.MainServer.main(MainServer.java:42)
+
+9月 13, 2024 6:16:07 下午 server.MainServer main
+信息: Server is shutting down...
+9月 13, 2024 6:16:16 下午 server.MainServer main
+信息: Server is starting...
+9月 13, 2024 6:16:16 下午 server.MainServer main
+信息: Server is running and listening on port 8080...
+9月 13, 2024 6:27:50 下午 server.MainServer main
+信息: Server is starting...
+9月 13, 2024 6:27:51 下午 server.MainServer main
+信息: Server is running and listening on port 8080...
